@@ -80,7 +80,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20.0),
                   child: ElevatedButton(
-                    onPressed: () => context.push('/CreateAccount'),
+                    onPressed: () {},
                     style: ElevatedButton.styleFrom(
                         backgroundColor: AppColors.buttonColorOrange,
                         minimumSize: Size(devicewidth, 50),
@@ -98,7 +98,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       horizontal: deviceheight * 0.029,
                       vertical: deviceheight * 0.029),
                   child: ElevatedButton(
-                    onPressed: () => context.push('/Loginpage'),
+                    onPressed: () {},
                     style: ElevatedButton.styleFrom(
                         elevation: 5,
                         backgroundColor: AppColors.kwhiteColor,
