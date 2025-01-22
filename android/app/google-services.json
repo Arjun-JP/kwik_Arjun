@@ -1,0 +1,67 @@
+{
+  "project_info": {
+    "project_number": "760883509884",
+    "project_id": "kwikgroceries-8a11e",
+    "storage_bucket": "kwikgroceries-8a11e.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:760883509884:android:72dc47cc5a47c01cc4a7f9",
+        "android_client_info": {
+          "package_name": "com.example.kwik"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA2uFclqIT0ie1gWtqperj9Chzv5JiGH1Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:760883509884:android:3582310591bf02abc4a7f9",
+        "android_client_info": {
+          "package_name": "com.mycompany.kwik"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA2uFclqIT0ie1gWtqperj9Chzv5JiGH1Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:760883509884:android:026622e6a0fd4317c4a7f9",
+        "android_client_info": {
+          "package_name": "com.mycompany.kwikadmin"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA2uFclqIT0ie1gWtqperj9Chzv5JiGH1Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
