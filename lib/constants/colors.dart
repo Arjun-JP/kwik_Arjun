@@ -7,7 +7,7 @@ class AppColors {
   static const textpurplelite = Color(0xffCBB4F7);
   static const textColorWhite = Color.fromARGB(255, 255, 255, 255);
   static const textColorblack = Color.fromARGB(255, 0, 0, 0);
- 
+  static const textColorGrey = Color(0xff6F6F6F);
 
   static const textColorDimGrey = Color(0xffC8C3C3);
   static const textColorSettings = Color(0xff5923C4);
@@ -20,7 +20,7 @@ class AppColors {
   static const backgroundpurple = Color(0xff995CDD);
   static const backgrountdarkpurple = Color(0xff612ACE);
 
-  static const primaryColor = Color(0xff612ACE);
+  static const primaryColor = Color(0xffFC5B00);
   static const secondaryColor = Color(0xffCEBEFB);
   static const tertiarycolor = Color(0xff612ACE);
   static const koffwhiteColor = Color(0xffECECEC);
@@ -36,7 +36,7 @@ class AppColors {
   static const sliderBackground = Color.fromARGB(255, 255, 255, 255);
   static const iconColor = Color(0xff612ACE);
 
-  static const buttonColor1 = Color(0xff5923C4);
+  static const buttonColorOrange = Color(0xffFC5B00);
   static const buttonColor2 = Color(0xffAF52DE);
   static const outerButtonColor1 = Color(0xffAC8BEC);
   static const outerButtonColor2 = Color(0xff00FFF0);
