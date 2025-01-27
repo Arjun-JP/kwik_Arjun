@@ -1,9 +1,12 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:kwik/bloc/home_Ui_bloc/home_Ui_Bloc.dart';
 import 'package:kwik/constants/textstyle.dart';
 import 'package:kwik/firebase_options.dart';
+import 'package:kwik/repositories/home_Ui_repository.dart';
 import 'package:kwik/routes/routes.dart';
 
 void main() async {
@@ -17,8 +20,6 @@ void main() async {
 }
 
 class MyApp extends StatefulWidget {
-  
-  
   const MyApp({super.key});
 
   @override
@@ -26,18 +27,21 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-   final GoRouter _router = router; 
+  final GoRouter _router = router;
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
-      routerConfig: _router,
-      title: 'Kwik',
-      theme: appTheme(context),
-      debugShowCheckedModeBanner: false,
-    //  home: 
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<HomeUiBloc>(
+            create: (_) => HomeUiBloc(uiRepository: HomeUiRepository()))
+      ],
+      child: MaterialApp.router(
+        routerConfig: _router,
+        title: 'Kwik',
+        theme: appTheme(context),
+        debugShowCheckedModeBanner: false,
+        //  home:
+      ),
     );
   }
 }
-
-
-
