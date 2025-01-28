@@ -36,7 +36,7 @@ ThemeData appTheme(BuildContext context) {
     ),
     useMaterial3: true,
     primaryColor: AppColors.primaryColor,
-    scaffoldBackgroundColor: AppColors.secondaryBackgroundColor,
+    scaffoldBackgroundColor: AppColors.backgroundColorWhite,
     textTheme: TextTheme(
       displayLarge: getTextStyle(
           scaler: scaler,
@@ -123,7 +123,7 @@ ThemeData appTheme(BuildContext context) {
           weight: FontWeight.w500),
     ),
     appBarTheme: AppBarTheme(
-      color: AppColors.secondaryBackgroundColor,
+      color: AppColors.backgroundColorWhite,
       titleTextStyle: TextStyle(
         color: AppColors.textColorblack,
         fontSize: scaler.scaleFontSize(20.0),
@@ -155,7 +155,7 @@ ThemeData appTheme(BuildContext context) {
     cardColor: AppColors.secondaryColor,
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
-      fillColor: AppColors.secondaryBackgroundColor,
+      fillColor: AppColors.backgroundColorWhite,
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(8),
         borderSide:
@@ -180,7 +180,7 @@ ThemeData appTheme(BuildContext context) {
       onSecondary: AppColors.textColorblack,
       error: Color(0xFFE57373),
       onError: Color(0xFFE53935),
-      surface: AppColors.secondaryBackgroundColor,
+      surface: AppColors.backgroundColorWhite,
       onSurface: AppColors.textColorblack,
     ),
   );

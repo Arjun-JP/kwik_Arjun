@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:kwik/constants/colors.dart';
-
+import 'package:kwik/widgets/kiwi_button.dart';
+import 'package:kwik/widgets/waveclipper.dart';
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
@@ -18,19 +20,19 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       "title": "Welcome to XYZ App",
       "description":
           "Effortlessly buy items with just a few taps, making transactions quick and simple",
-    
+      "image": "assets/images/vegetables.png"
     },
     {
       "title": "Groceries",
       "description":
           "Effortlessly buy items with just a few taps, making transactions quick and simple",
-     
+      "image": "assets/images/vegetables.png"
     },
     {
       "title": "Groceries",
       "description":
           "Effortlessly buy items with just a few taps, making transactions quick and simple",
-     // "image": "assets/images/3.png"
+      "image": "assets/images/vegetables.png"
     },
   ];
 
@@ -63,7 +65,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             ),
           ),
           Expanded(
-            flex: 2,
+            flex: 1,
             child: Column(
               children: [
                 Row(
@@ -73,44 +75,13 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     (index) => buildDot(index),
                   ),
                 ),
-                SizedBox(
-                  height: deviceheight * 0.029, // 20
-                ),
+                SizedBox(height: deviceheight * 0.029),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                  child: ElevatedButton(
-                    onPressed: () {},
-                    style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.buttonColorOrange,
-                        minimumSize: Size(devicewidth, 50),
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12))),
-                    child: Text("Get started",
-                        style: theme.textTheme.titleMedium!.copyWith(
-                            color: AppColors.textColorWhite,
-                            fontSize: 20,
-                            fontWeight: FontWeight.w400)),
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.symmetric(
-                      horizontal: deviceheight * 0.029,
-                      vertical: deviceheight * 0.029),
-                  child: ElevatedButton(
-                    onPressed: () {},
-                    style: ElevatedButton.styleFrom(
-                        elevation: 5,
-                        backgroundColor: AppColors.kwhiteColor,
-                        minimumSize: Size(devicewidth, deviceheight * 0.0737),
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12))),
-                    child: Text("Already have an account",
-                        style: theme.textTheme.titleMedium!.copyWith(
-                            color: AppColors.textColorblue,
-                            fontSize: 20,
-                            fontWeight: FontWeight.w400)),
-                  ),
-                ),
+                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                    child: KiwiButton(
+                      text: 'Next',
+                      onPressed: () => context.go('/loginPage'),
+                    )),
               ],
             ),
           )
@@ -137,7 +108,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 class OnboardContent extends StatelessWidget {
   final String title;
   final String description;
-  final String? image;
+  final String image;
 
   const OnboardContent({
     super.key,
@@ -152,20 +123,12 @@ class OnboardContent extends StatelessWidget {
     final deviceheight = MediaQuery.of(context).size.height;
     final devicewidth = MediaQuery.of(context).size.width;
     return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
       children: [
-        SizedBox(
-          width: devicewidth,
-          height: deviceheight * 0.46,
-          child: Image.asset(
-            image!,
-            fit: BoxFit.cover,
-          ),
-        ),
+        const WaveclipperWidget(image: 'assets/images/vegetables.png'),
         Padding(
-          padding: EdgeInsets.only(
-            left: deviceheight * 0.0589,
-            right: deviceheight * 0.0589,
-          ),
+          padding: EdgeInsets.symmetric(horizontal: deviceheight * 0.08),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -175,7 +138,7 @@ class OnboardContent extends StatelessWidget {
                 child: Text(
                   title,
                   style: theme.textTheme.displaySmall!.copyWith(
-                      color: AppColors.textColorblue,
+                      color: AppColors.textColorblack,
                       fontWeight: FontWeight.w700,
                       fontSize: 34),
                   textAlign: TextAlign.center,
@@ -186,10 +149,7 @@ class OnboardContent extends StatelessWidget {
         ),
         SizedBox(height: deviceheight * 0.01),
         Padding(
-          padding: EdgeInsets.only(
-            left: deviceheight * 0.029,
-            right: deviceheight * 0.029,
-          ),
+          padding: EdgeInsets.symmetric(horizontal: deviceheight * 0.029),
           child: Text(
             description,
             style: theme.textTheme.bodyLarge!.copyWith(

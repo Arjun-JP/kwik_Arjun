@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:kwik/main.dart';
+import 'package:kwik/pages/OnboardingScreen/onboarding_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -8,17 +11,41 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+  String version = '';
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final deviceHeight = MediaQuery.of(context).size.height;
-    final deviceWidth = MediaQuery.of(context).size.width;
+    final deviceheight = MediaQuery.of(context).size.height; //678
 
-    return  SizedBox(
-width:deviceWidth ,
-height: deviceHeight,
+    void toOnboardScreen() {
+      context.go('/onboardingScreen');
+    }
 
-
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: SafeArea(
+        child: Center(
+          child: TweenAnimationBuilder(
+            onEnd: () {
+              toOnboardScreen();
+            },
+            tween: Tween<double>(
+                begin: deviceheight * 0.1474, end: 500), //deviceheight*0.1474
+            curve: Curves.bounceInOut,
+            duration: Duration(seconds: 3),
+            builder: (context, value, child) => Image.asset(
+              "assets/images/logo.png",
+              height: value,
+              width: value,
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
