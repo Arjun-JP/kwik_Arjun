@@ -1,3 +1,4 @@
 {
-    "cmake.sourceDirectory": "C:/Users/Roopa Mohan/Documents/Desktop/kwik/kwik/windows"
+    "cmake.sourceDirectory": "C:/Users/Roopa Mohan/Documents/Desktop/kwik/kwik/windows",
+    "C_Cpp.errorSquiggles": "enabled"
 }

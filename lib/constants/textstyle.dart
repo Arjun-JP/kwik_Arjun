@@ -180,8 +180,6 @@ ThemeData appTheme(BuildContext context) {
       onSecondary: AppColors.textColorblack,
       error: Color(0xFFE57373),
       onError: Color(0xFFE53935),
-      background: AppColors.secondaryBackgroundColor,
-      onBackground: AppColors.textColorblack,
       surface: AppColors.secondaryBackgroundColor,
       onSurface: AppColors.textColorblack,
     ),

@@ -42,12 +42,12 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions web = FirebaseOptions(
     apiKey: 'AIzaSyAjwFdaFs181x-W1S25zmVAPADHeJ_Z440',
-    appId: '1:760883509884:web:fffd3b1f5b3d6e81c4a7f9',
+    appId: '1:760883509884:web:a9cd4ea6afba170ac4a7f9',
     messagingSenderId: '760883509884',
     projectId: 'kwikgroceries-8a11e',
     authDomain: 'kwikgroceries-8a11e.firebaseapp.com',
     storageBucket: 'kwikgroceries-8a11e.firebasestorage.app',
-    measurementId: 'G-K3WP2RJWV3',
+    measurementId: 'G-QMD6Q2ZDXF',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
@@ -85,4 +85,5 @@ class DefaultFirebaseOptions {
     storageBucket: 'kwikgroceries-8a11e.firebasestorage.app',
     measurementId: 'G-QMD6Q2ZDXF',
   );
+
 }

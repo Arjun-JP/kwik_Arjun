@@ -41,7 +41,7 @@ class AppColors {
   static const outerButtonColor1 = Color(0xffAC8BEC);
   static const outerButtonColor2 = Color(0xff00FFF0);
   static const cardColor = Color(0xffECECEC);
-  static const cardColorRetell = Color(0xffFFFEE733);
+  static const cardColorRetell = Color(0xfffffee733);
   static const audioPlayColor = Color(0xffF3ACFF);
 
   static const bottomSheetBackground = Color.fromARGB(255, 242, 242, 247);
