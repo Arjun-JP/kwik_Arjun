@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:kwik/constants/colors.dart';
-import 'package:kwik/widgets/waveclipper.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -68,6 +68,11 @@ class _LoginPageState extends State<LoginPage> {
                         softWrap: true,
                       ),
                     ),
+                    ElevatedButton(
+                        onPressed: () {
+                          context.go("/home");
+                        },
+                        child: const Text("Home"))
                   ],
                 ),
               ))

@@ -3,10 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:kwik/bloc/banner_bloc/banner_bloc.dart';
+import 'package:kwik/bloc/category_bloc/category_bloc.dart';
 import 'package:kwik/bloc/home_Ui_bloc/home_Ui_Bloc.dart';
 import 'package:kwik/constants/textstyle.dart';
 import 'package:kwik/firebase_options.dart';
+import 'package:kwik/repositories/banner_repository.dart';
 import 'package:kwik/repositories/home_Ui_repository.dart';
+import 'package:kwik/repositories/home_category_repository.dart';
 import 'package:kwik/routes/routes.dart';
 
 void main() async {
@@ -33,7 +37,12 @@ class _MyAppState extends State<MyApp> {
     return MultiBlocProvider(
       providers: [
         BlocProvider<HomeUiBloc>(
-            create: (_) => HomeUiBloc(uiRepository: HomeUiRepository()))
+            create: (_) => HomeUiBloc(uiRepository: HomeUiRepository())),
+        BlocProvider<CategoryBloc>(
+            create: (_) =>
+                CategoryBloc(categoryRepository: CategoryRepository())),
+        BlocProvider<BannerBloc>(
+            create: (_) => BannerBloc(bannerepository: BannerRepository()))
       ],
       child: MaterialApp.router(
         routerConfig: _router,
