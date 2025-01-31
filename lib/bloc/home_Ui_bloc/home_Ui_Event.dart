@@ -5,4 +5,10 @@ abstract class HomeUiEvent extends Equatable {
   List<Object?> get props => [];
 }
 
-class FetchUiDataEvent extends HomeUiEvent {}
+class FetchUiDataEvent extends HomeUiEvent {
+  final bool forceRefresh;
+
+  FetchUiDataEvent({this.forceRefresh = false});
+}
+
+class ClearUiCacheEvent extends HomeUiEvent {}

@@ -39,7 +39,7 @@ class _SplashScreenState extends State<SplashScreen> {
             curve: Curves.bounceInOut,
             duration: Duration(seconds: 3),
             builder: (context, value, child) => Image.asset(
-              "assets/images/logo.png",
+              "assets/images/Screenshot 2025-01-31 at 6.20.37 PM.jpeg",
               height: value,
               width: value,
             ),
