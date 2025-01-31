@@ -11,8 +11,6 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
       emit(CategoryLoading());
       try {
         final categories = await categoryRepository.fetchCategories();
-        print("categories");
-        print(categories);
         emit(CategoryLoaded(categories));
       } catch (e) {
         emit(CategoryError(e.toString()));

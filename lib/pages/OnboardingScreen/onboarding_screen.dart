@@ -20,19 +20,19 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       "title": "Welcome to XYZ App",
       "description":
           "Effortlessly buy items with just a few taps, making transactions quick and simple",
-      "image": "assets/images/vegetables.png"
+      "image": "assets/images/image.jpeg"
     },
     {
       "title": "Groceries",
       "description":
           "Effortlessly buy items with just a few taps, making transactions quick and simple",
-      "image": "assets/images/vegetables.png"
+      "image": "assets/images/image1.jpeg"
     },
     {
       "title": "Groceries",
       "description":
           "Effortlessly buy items with just a few taps, making transactions quick and simple",
-      "image": "assets/images/vegetables.png"
+      "image": "assets/images/imag2.jpeg"
     },
   ];
 

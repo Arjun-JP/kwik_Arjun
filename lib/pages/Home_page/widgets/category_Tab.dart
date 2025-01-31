@@ -57,7 +57,7 @@ class _CategoryTabState extends State<CategoryTab> {
                           if (widget.categories.contains(category.catref)) {
                             return Padding(
                               padding:
-                                  const EdgeInsets.symmetric(horizontal: 8.0),
+                                  const EdgeInsets.symmetric(horizontal: 10.0),
                               child: Container(
                                 padding:
                                     const EdgeInsetsDirectional.only(end: 10),

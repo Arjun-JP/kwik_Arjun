@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:kwik/bloc/home_Ui_bloc/home_Ui_Bloc.dart';
+import 'package:kwik/bloc/home_Ui_bloc/home_Ui_Event.dart';
 import 'package:kwik/constants/colors.dart';
+
+import '../../bloc/category_model1_bloc/category_model1_bloc.dart';
+import '../../bloc/category_model1_bloc/category_model1_event.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -19,7 +25,13 @@ class _LoginPageState extends State<LoginPage> {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          Expanded(flex: 5, child: Image.asset('assets/images/loginImage.png')),
+          Expanded(
+              flex: 8,
+              child: Image.asset(
+                'assets/images/image2.png',
+                fit: BoxFit.fill,
+                width: double.infinity,
+              )),
           SizedBox(height: deviceheight * 0.03),
           Expanded(
               flex: 6,
@@ -70,6 +82,9 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     ElevatedButton(
                         onPressed: () {
+                          context.read<HomeUiBloc>().add(ClearUiCacheEvent());
+                          BlocProvider.of<CategoryBlocModel1>(context)
+                              .add(ClearCache());
                           context.go("/home");
                         },
                         child: const Text("Home"))

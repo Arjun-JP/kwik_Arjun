@@ -21,9 +21,6 @@ class BannerRepository {
       if (response.statusCode == 200) {
         List<dynamic> body = json.decode(response.body);
 
-        // Print the response for debugging
-        print("Response body: $body");
-
         // Map the JSON response to BannerModel instances
         List<BannerModel> banners = [];
 
@@ -41,7 +38,6 @@ class BannerRepository {
           throw Exception("No banners were parsed successfully");
         }
 
-        print("Parsed banners: ${banners.length}");
         return banners;
       } else {
         throw Exception("Failed to load banners: ${response.statusCode}");
