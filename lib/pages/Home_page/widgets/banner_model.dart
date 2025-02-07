@@ -11,6 +11,8 @@ class BannerModel1 extends StatelessWidget {
   final String titlecolor;
   final double height;
   final int bannerId;
+  final double padding;
+  final double borderradious;
 
   const BannerModel1({
     super.key,
@@ -18,6 +20,8 @@ class BannerModel1 extends StatelessWidget {
     required this.titlecolor,
     required this.height,
     required this.bannerId,
+    this.padding = 8,
+    this.borderradious = 15,
   });
 
   @override
@@ -44,7 +48,7 @@ class BannerModel1 extends StatelessWidget {
                   color: parseColor(
                       bgColor), // Optional: Apply background color to container
                   child: Padding(
-                    padding: const EdgeInsets.all(8.0),
+                    padding: EdgeInsets.all(padding),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -57,12 +61,13 @@ class BannerModel1 extends StatelessWidget {
                               final banner = filteredBanners[index];
                               return Padding(
                                 padding:
-                                    const EdgeInsets.symmetric(horizontal: 8.0),
+                                    EdgeInsets.symmetric(horizontal: padding),
                                 child: Container(
                                   width: double.infinity,
                                   height: 100,
                                   decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(15),
+                                    borderRadius:
+                                        BorderRadius.circular(borderradious),
                                     // color: parseColor(bgColor), // Optional background color
                                     image: DecorationImage(
                                       image: NetworkImage(banner.bannerImage),
