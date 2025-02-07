@@ -28,7 +28,7 @@ class _LoginPageState extends State<LoginPage> {
           Expanded(
               flex: 8,
               child: Image.asset(
-                'assets/images/image2.png',
+                'assets/images/image.jpeg',
                 fit: BoxFit.fill,
                 width: double.infinity,
               )),

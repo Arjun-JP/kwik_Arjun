@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:kwik/bloc/category_model1_bloc/category_model1_bloc.dart';
-import 'package:kwik/bloc/category_model1_bloc/category_model1_event.dart';
-import 'package:kwik/bloc/category_model1_bloc/category_model1_state.dart';
+import 'package:kwik/bloc/category_model2_bloc/category_model2_event.dart';
+import 'package:kwik/bloc/category_model2_bloc/category_model2_state.dart';
 import 'package:kwik/constants/colors.dart';
-import 'package:kwik/repositories/category_model1_repository.dart';
+import 'package:kwik/repositories/category_model2_repository.dart';
 
-class CategoryModel1 extends StatelessWidget {
+import '../../../bloc/category_model2_bloc/category_model2_bloc.dart';
+
+class CategoryModel4 extends StatelessWidget {
   final String categoryId;
   final String bgcolor;
   final String titleColor;
   final String subcatColor;
 
-  const CategoryModel1(
+  const CategoryModel4(
       {super.key,
       required this.categoryId,
       required this.bgcolor,
@@ -22,12 +23,12 @@ class CategoryModel1 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => CategoryBlocModel1(
-          categoryRepositoryModel1: CategoryRepositoryModel1())
+      create: (context) => CategoryBlocModel2(
+          categoryRepositoryModel2: CategoryRepositoryModel2())
         ..add(FetchCategoryDetails(categoryId)),
       child: Builder(
         builder: (context) {
-          return BlocBuilder<CategoryBlocModel1, CategoryState>(
+          return BlocBuilder<CategoryBlocModel2, CategoryState>(
             builder: (context, state) {
               if (state is CategoryLoading) {
                 return const Center(child: CircularProgressIndicator());
@@ -35,7 +36,6 @@ class CategoryModel1 extends StatelessWidget {
                 return Container(
                   color: parseColor(bgcolor),
                   width: double.infinity,
-                  height: 350,
                   padding: const EdgeInsets.symmetric(horizontal: 10),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
@@ -51,24 +51,19 @@ class CategoryModel1 extends StatelessWidget {
                       ),
                       const SizedBox(height: 10),
                       SizedBox(
-                        height: 294,
+                        height: 150,
                         width: MediaQuery.of(context).size.width,
-                        child: GridView.builder(
+                        child: ListView.builder(
+                          scrollDirection:
+                              Axis.horizontal, // Keep it horizontal if needed
                           itemCount: state.subCategories.length,
-                          scrollDirection: Axis.horizontal,
-                          gridDelegate:
-                              const SliverGridDelegateWithFixedCrossAxisCount(
-                            childAspectRatio: 1.2,
-                            crossAxisCount: 2,
-                            mainAxisSpacing: 5,
-                            crossAxisSpacing: 5,
-                          ),
                           itemBuilder: (context, index) {
                             return subcategoryItem(
-                                name: state.subCategories[index].name,
-                                bgcolor: state.category.color,
-                                textcolor: subcatColor,
-                                imageurl: state.subCategories[index].imageUrl);
+                              name: state.subCategories[index].name,
+                              bgcolor: state.category.color,
+                              textcolor: subcatColor,
+                              imageurl: state.subCategories[index].imageUrl,
+                            );
                           },
                         ),
                       )
@@ -91,25 +86,32 @@ class CategoryModel1 extends StatelessWidget {
       required String bgcolor,
       required String textcolor,
       required String imageurl}) {
-    return Column(
-      mainAxisSize: MainAxisSize.max,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Container(
-          height: 98,
-          width: 100,
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(8),
-              color: parseColor(bgcolor),
-              image: DecorationImage(
-                  image: NetworkImage(imageurl), fit: BoxFit.fill)),
-        ),
-        Text(
-          name,
-          textAlign: TextAlign.center,
-          style: TextStyle(fontSize: 16, color: parseColor(textcolor)),
-        )
-      ],
+    return Padding(
+      padding: const EdgeInsets.only(right: 10),
+      child: Column(
+        mainAxisSize: MainAxisSize.max,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Container(
+            height: 98,
+            width: 100,
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(8),
+                color: parseColor(bgcolor),
+                image: DecorationImage(
+                    image: NetworkImage(imageurl), fit: BoxFit.fill)),
+          ),
+          SizedBox(
+            width: 100,
+            child: Text(
+              name,
+              textAlign: TextAlign.center,
+              maxLines: 2,
+              style: TextStyle(fontSize: 16, color: parseColor(textcolor)),
+            ),
+          )
+        ],
+      ),
     );
   }
 }

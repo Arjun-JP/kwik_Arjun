@@ -16,7 +16,7 @@ class SubCategoryModel {
   // Factory method to create a SubCategoryModel from JSON
   factory SubCategoryModel.fromJson(Map<String, dynamic> json) {
     return SubCategoryModel(
-      id: json['sub_category_id'] ?? '',
+      id: json['_id'] ?? '',
       name: json['sub_category_name'] ?? '',
       description: json['sub_category_des'] ?? '',
       imageUrl: json['sub_category_image'] ?? '',
@@ -27,7 +27,7 @@ class SubCategoryModel {
   // Method to convert SubCategoryModel instance to JSON
   Map<String, dynamic> toJson() {
     return {
-      'sub_category_id': id,
+      '_id': id,
       'sub_category_name': name,
       'sub_category_des': description,
       'sub_category_image': imageUrl,

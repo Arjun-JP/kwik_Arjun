@@ -1,4 +1,3 @@
-import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 
 abstract class NavbarEvent extends Equatable {
@@ -8,6 +7,25 @@ abstract class NavbarEvent extends Equatable {
   List<Object> get props => [];
 }
 
+// Update only index
+class UpdateNavBarIndex extends NavbarEvent {
+  final int index;
+  const UpdateNavBarIndex(this.index);
+
+  @override
+  List<Object> get props => [index];
+}
+
+// Update only visibility
+class UpdateNavBarVisibility extends NavbarEvent {
+  final bool isVisible;
+  const UpdateNavBarVisibility(this.isVisible);
+
+  @override
+  List<Object> get props => [isVisible];
+}
+
+// Update both index and visibility
 class SelectNavBarItem extends NavbarEvent {
   final int index;
   final bool isBottomNavBarVisible;

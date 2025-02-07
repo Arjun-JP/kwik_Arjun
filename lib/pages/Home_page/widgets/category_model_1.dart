@@ -6,12 +6,12 @@ import '../../../bloc/category_bloc/category_event.dart';
 import '../../../bloc/category_bloc/category_state.dart';
 import '../../../repositories/home_category_repository.dart';
 
-class CategoryTab extends StatefulWidget {
+class CategoryModel1 extends StatefulWidget {
   final String bgColor;
   final List<String> categories;
   final String titlecolor;
   final String textcolor;
-  const CategoryTab(
+  const CategoryModel1(
       {super.key,
       required this.bgColor,
       required this.categories,
@@ -19,10 +19,10 @@ class CategoryTab extends StatefulWidget {
       required this.textcolor});
 
   @override
-  State<CategoryTab> createState() => _CategoryTabState();
+  State<CategoryModel1> createState() => _CategoryModel1State();
 }
 
-class _CategoryTabState extends State<CategoryTab> {
+class _CategoryModel1State extends State<CategoryModel1> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(

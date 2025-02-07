@@ -126,7 +126,7 @@ class OnboardContent extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
-        const WaveclipperWidget(image: 'assets/images/vegetables.png'),
+        const WaveclipperWidget(image: 'assets/images/image1.jpeg'),
         Padding(
           padding: EdgeInsets.symmetric(horizontal: deviceheight * 0.08),
           child: Column(

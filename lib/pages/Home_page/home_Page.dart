@@ -2,18 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 import 'package:kwik/bloc/category_model1_bloc/category_model1_bloc.dart';
 import 'package:kwik/bloc/home_Ui_bloc/home_Ui_Bloc.dart';
 import 'package:kwik/bloc/home_Ui_bloc/home_Ui_Event.dart';
 import 'package:kwik/bloc/home_Ui_bloc/home_Ui_State.dart';
-import 'package:kwik/pages/Home_page/widgets/banner_model1.dart';
-import 'package:kwik/pages/Home_page/widgets/category_Tab.dart';
-import 'package:kwik/pages/Home_page/widgets/category_model1.dart';
-import 'package:kwik/pages/Home_page/widgets/category_model2.dart';
+import 'package:kwik/bloc/navbar_bloc/navbar_bloc.dart';
+import 'package:kwik/pages/Home_page/widgets/banner_model.dart';
+
+import 'package:kwik/pages/Home_page/widgets/category_model_2.dart';
+import 'package:kwik/pages/Home_page/widgets/category_model_3.dart';
+import 'package:kwik/pages/Home_page/widgets/category_model_4.dart';
 import 'package:kwik/widgets/navbar/navbar.dart';
 import '../../bloc/category_model1_bloc/category_model1_event.dart';
+import '../../bloc/navbar_bloc/navbar_event.dart';
 import '../../constants/colors.dart';
+import 'widgets/category_model_1.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -36,7 +39,6 @@ class _HomePageState extends State<HomePage> {
     context.read<HomeUiBloc>().add(FetchUiDataEvent());
   }
 
-  bool _isBottomNavBarVisible = true;
   @override
   Widget build(BuildContext context) {
     return NotificationListener<ScrollNotification>(
@@ -48,23 +50,23 @@ class _HomePageState extends State<HomePage> {
           if (scrollNotification.scrollDelta! > 0) {
             // Scrolling down: Hide navbar, but keep it visible at top/bottom
             if (position > 100 && position < maxScroll - 100) {
-              setState(() {
-                _isBottomNavBarVisible = false;
-              });
+              context
+                  .read<NavbarBloc>()
+                  .add(const UpdateNavBarVisibility(false));
             }
           } else if (scrollNotification.scrollDelta! < 0) {
             // Scrolling up: Show navbar when within 100 pixels from top OR at bottom
             if (position < 100 || position >= maxScroll - 100) {
-              setState(() {
-                _isBottomNavBarVisible = true;
-              });
+              context
+                  .read<NavbarBloc>()
+                  .add(const UpdateNavBarVisibility(true));
             }
           }
         }
         return true;
       },
       child: Scaffold(
-        backgroundColor: Color(0xFFFFFFFF),
+        backgroundColor: const Color(0xFFFFFFFF),
         body: BlocBuilder<HomeUiBloc, HomeUiState>(
           builder: (context, state) {
             if (state is UiLoading) {
@@ -75,7 +77,7 @@ class _HomePageState extends State<HomePage> {
                   List<String>.from(uiData["categorylist"]["category_ref"]);
               final templates = [
                 {
-                  'template': CategoryTab(
+                  'template': CategoryModel1(
                     bgColor: uiData["categorylist"]["background_color"],
                     categories: categoryRef,
                     titlecolor: uiData["categorylist"]["title_color"],
@@ -93,7 +95,11 @@ class _HomePageState extends State<HomePage> {
                   'order': uiData["template2"]["ui_order_number"]
                 },
                 {
-                  'template': CategoryModel1(
+                  'template': CategoryModel3(
+                    maincategories: List<String>.from(
+                        uiData["template3"]["main_sub_category"]),
+                    secondarycategories: List<String>.from(
+                        uiData["template3"]["secondary_sub_category"]),
                     categoryId: uiData["template3"]["category_ref"],
                     bgcolor: uiData["template3"]["background_color"],
                     titleColor: uiData["template3"]["title_color"],
@@ -101,14 +107,48 @@ class _HomePageState extends State<HomePage> {
                   ),
                   'order': uiData["template3"]["ui_order_number"]
                 },
+                {'template': const SizedBox(height: 85), 'order': "500"},
                 {
-                  'template': CategoryModel2(
+                  'template': CategoryModel3(
+                    maincategories: List<String>.from(
+                        uiData["template4"]["main_sub_category"]),
+                    secondarycategories: List<String>.from(
+                        uiData["template4"]["secondary_sub_category"]),
                     categoryId: uiData["template4"]["category_ref"],
                     bgcolor: uiData["template4"]["background_color"],
                     titleColor: uiData["template4"]["title_color"],
                     subcatColor: uiData["template4"]["subcat_color"],
                   ),
                   'order': uiData["template4"]["ui_order_number"]
+                },
+                {
+                  'template': BannerModel1(
+                    titlecolor: uiData["template5"]["title_color"],
+                    bgColor: uiData["template5"]["background_color"],
+                    bannerId: 3,
+                    height: 300,
+                    padding: 0,
+                    borderradious: 0,
+                  ),
+                  'order': uiData["template5"]["ui_order_number"]
+                },
+                {
+                  'template': CategoryModel4(
+                    categoryId: uiData["template6"]["category_ref"],
+                    bgcolor: uiData["template6"]["background_color"],
+                    titleColor: uiData["template6"]["title_color"],
+                    subcatColor: uiData["template6"]["subcat_color"],
+                  ),
+                  'order': uiData["template6"]["ui_order_number"]
+                },
+                {
+                  'template': CategoryModel2(
+                    categoryId: uiData["template7"]["category_ref"],
+                    bgcolor: uiData["template7"]["background_color"],
+                    titleColor: uiData["template7"]["title_color"],
+                    subcatColor: uiData["template7"]["subcat_color"],
+                  ),
+                  'order': uiData["template7"]["ui_order_number"]
                 },
                 {'template': const SizedBox(height: 85), 'order': "500"}
               ];
@@ -118,9 +158,9 @@ class _HomePageState extends State<HomePage> {
 
               return InkWell(
                 onTap: () {
-                  setState(() {
-                    _isBottomNavBarVisible = true;
-                  });
+                  context
+                      .read<NavbarBloc>()
+                      .add(const UpdateNavBarVisibility(true));
                 },
                 child: SafeArea(
                   child: RefreshIndicator(
@@ -209,7 +249,10 @@ class _HomePageState extends State<HomePage> {
             return const Text('Unexpected state');
           },
         ),
-        bottomNavigationBar: _isBottomNavBarVisible ? Navbar() : SizedBox(),
+        bottomNavigationBar:
+            context.watch<NavbarBloc>().state.isBottomNavBarVisible
+                ? const Navbar()
+                : const SizedBox(),
       ),
     );
   }
