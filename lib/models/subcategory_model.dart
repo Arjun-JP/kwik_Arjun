@@ -1,8 +1,21 @@
+import 'package:hive/hive.dart';
+part 'subcategory_model.g.dart';
+
+@HiveType(typeId: 55) // Unique typeId for the SubCategoryModel
 class SubCategoryModel {
+  @HiveField(0)
   final String id;
+
+  @HiveField(1)
   final String name;
+
+  @HiveField(2)
   final String description;
+
+  @HiveField(3)
   final String imageUrl;
+
+  @HiveField(4)
   final String createdTime;
 
   SubCategoryModel({
@@ -13,7 +26,6 @@ class SubCategoryModel {
     required this.createdTime,
   });
 
-  // Factory method to create a SubCategoryModel from JSON
   factory SubCategoryModel.fromJson(Map<String, dynamic> json) {
     return SubCategoryModel(
       id: json['_id'] ?? '',
@@ -24,7 +36,6 @@ class SubCategoryModel {
     );
   }
 
-  // Method to convert SubCategoryModel instance to JSON
   Map<String, dynamic> toJson() {
     return {
       '_id': id,
@@ -33,5 +44,15 @@ class SubCategoryModel {
       'sub_category_image': imageUrl,
       'sub_created_time': createdTime,
     };
+  }
+
+  static SubCategoryModel empty() {
+    return SubCategoryModel(
+      id: '',
+      name: '',
+      description: '',
+      imageUrl: '',
+      createdTime: '',
+    );
   }
 }

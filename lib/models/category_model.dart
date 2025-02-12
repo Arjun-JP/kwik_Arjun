@@ -1,11 +1,31 @@
+import 'package:hive/hive.dart';
+
+part 'category_model.g.dart'; // The generated file from build_runner
+
+@HiveType(typeId: 11) // Unique typeId for Category model
 class Category {
+  @HiveField(0)
   final String catref;
+
+  @HiveField(1)
   final String id;
+
+  @HiveField(2)
   final String name;
+
+  @HiveField(3)
   final String description;
+
+  @HiveField(4)
   final String imageUrl;
+
+  @HiveField(5)
   final String color;
+
+  @HiveField(6)
   final bool? visibility; // Optional field
+
+  @HiveField(7)
   final String? createdTime; // Optional field
 
   Category({
@@ -30,9 +50,8 @@ class Category {
       imageUrl: json['category_image'] ?? "image", // Default value for imageUrl
       color: json['color'] ?? "FFFFFF", // Default value for color
       visibility: json['visibility'] ?? true, // Handle null visibility
-      createdTime: json['created_time'] != null
-          ? json['created_time']
-          : DateTime.now().toString(), // Handle null createdTime
+      createdTime: json['created_time'] ??
+          DateTime.now().toString(), // Handle null createdTime
     );
   }
 
@@ -48,5 +67,19 @@ class Category {
       'visibility': visibility,
       'created_time': createdTime,
     };
+  }
+
+  // Empty method to return a Category with default values
+  static Category empty() {
+    return Category(
+      catref: '',
+      id: '',
+      name: '',
+      description: '',
+      imageUrl: '',
+      color: 'FFFFFF',
+      visibility: true,
+      createdTime: DateTime.now().toString(),
+    );
   }
 }

@@ -1,68 +1,103 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:kwik/bloc/category_model2_bloc/category_model2_event.dart';
-import 'package:kwik/bloc/category_model2_bloc/category_model2_state.dart';
-import 'package:kwik/constants/colors.dart';
-import 'package:kwik/repositories/category_model2_repository.dart';
 
-import '../../../bloc/category_model2_bloc/category_model2_bloc.dart';
+import 'package:kwik/constants/colors.dart';
+
+import '../../../bloc/category_model_4_bloc/category_model_4_bloc.dart';
+import '../../../bloc/category_model_4_bloc/category_model_4_event.dart';
+import '../../../bloc/category_model_4_bloc/category_model_4_state.dart';
+import '../../../repositories/sub_category_product_repository.dart';
 
 class CategoryModel4 extends StatelessWidget {
-  final String categoryId;
+  final String subCategoryId;
   final String bgcolor;
   final String titleColor;
-  final String subcatColor;
+  final String productColor;
+  final String sellingpricecolor;
+  final String mrpColor;
 
-  const CategoryModel4(
-      {super.key,
-      required this.categoryId,
-      required this.bgcolor,
-      required this.titleColor,
-      required this.subcatColor});
+  const CategoryModel4({
+    super.key,
+    required this.subCategoryId,
+    required this.bgcolor,
+    required this.titleColor,
+    required this.productColor,
+    required this.sellingpricecolor,
+    required this.mrpColor,
+  });
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => CategoryBlocModel2(
-          categoryRepositoryModel2: CategoryRepositoryModel2())
-        ..add(FetchCategoryDetails(categoryId)),
+      create: (context) =>
+          CategoryModel4Bloc(repository: SubcategoryProductRepository())
+            ..add(FetchSubCategoryProducts(subCategoryId)),
       child: Builder(
         builder: (context) {
-          return BlocBuilder<CategoryBlocModel2, CategoryState>(
+          return BlocBuilder<CategoryModel4Bloc, CategoryModel4State>(
             builder: (context, state) {
-              if (state is CategoryLoading) {
+              if (state is CategoryModel4Loading) {
                 return const Center(child: CircularProgressIndicator());
-              } else if (state is CategoryLoaded) {
+              } else if (state is CategoryModel4Loaded) {
+                print(state.products.length);
                 return Container(
                   color: parseColor(bgcolor),
                   width: double.infinity,
-                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const SizedBox(height: 10),
-                      Text(
-                        state.category.name, // Display main category name
-                        style: TextStyle(
-                            color: parseColor(titleColor),
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text(
+                            state.products.first.subCategoryRef
+                                .name, // Display section title
+                            style: TextStyle(
+                                color: parseColor(titleColor),
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold),
+                          ),
+                          Row(
+                            children: [
+                              Text(
+                                "See All ", // Display section title
+                                style: TextStyle(
+                                    color: parseColor(productColor),
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                              Icon(
+                                Icons.arrow_right_alt_outlined,
+                                color: parseColor(productColor),
+                              )
+                            ],
+                          ),
+                        ],
                       ),
                       const SizedBox(height: 10),
                       SizedBox(
-                        height: 150,
+                        height: 215,
                         width: MediaQuery.of(context).size.width,
                         child: ListView.builder(
-                          scrollDirection:
-                              Axis.horizontal, // Keep it horizontal if needed
-                          itemCount: state.subCategories.length,
+                          scrollDirection: Axis.horizontal,
+                          itemCount: state.products.length <= 5
+                              ? state.products.length
+                              : 5,
                           itemBuilder: (context, index) {
-                            return subcategoryItem(
-                              name: state.subCategories[index].name,
-                              bgcolor: state.category.color,
-                              textcolor: subcatColor,
-                              imageurl: state.subCategories[index].imageUrl,
+                            return productItem(
+                              mrpColor: mrpColor,
+                              sellingpricecolor: sellingpricecolor,
+                              productcolor: productColor,
+                              name: state.products[index].productName,
+                              price: 200,
+                              bgcolor: state.products.first.categoryRef.color,
+                              imageurl:
+                                  state.products[index].productImages.first,
                             );
                           },
                         ),
@@ -70,7 +105,7 @@ class CategoryModel4 extends StatelessWidget {
                     ],
                   ),
                 );
-              } else if (state is CategoryError) {
+              } else if (state is CategoryModel4Error) {
                 return Center(child: Text(state.message));
               }
               return const SizedBox();
@@ -81,36 +116,110 @@ class CategoryModel4 extends StatelessWidget {
     );
   }
 
-  Widget subcategoryItem(
+  Widget productItem(
       {required String name,
+      required double price,
+      required String imageurl,
       required String bgcolor,
-      required String textcolor,
-      required String imageurl}) {
+      required String productcolor,
+      required String sellingpricecolor,
+      required String mrpColor}) {
     return Padding(
       padding: const EdgeInsets.only(right: 10),
-      child: Column(
-        mainAxisSize: MainAxisSize.max,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Container(
-            height: 98,
-            width: 100,
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8),
-                color: parseColor(bgcolor),
-                image: DecorationImage(
-                    image: NetworkImage(imageurl), fit: BoxFit.fill)),
-          ),
-          SizedBox(
-            width: 100,
-            child: Text(
-              name,
-              textAlign: TextAlign.center,
-              maxLines: 2,
-              style: TextStyle(fontSize: 16, color: parseColor(textcolor)),
+      child: SizedBox(
+        width: 132,
+        height: 221,
+        child: Stack(
+          children: [
+            Container(
+              width: 132,
+              height: 221,
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12),
+                  color: lightenColor(parseColor(bgcolor), .6)),
+              child: Column(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Container(
+                    margin: const EdgeInsets.only(top: 49),
+                    height: 80,
+                    width: 80,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(100),
+                        image: DecorationImage(
+                            image: NetworkImage(imageurl), fit: BoxFit.cover)),
+                  ),
+                  SizedBox(
+                    width: 120,
+                    child: Text(
+                      name,
+                      textAlign: TextAlign.center,
+                      maxLines: 2,
+                      style: const TextStyle(
+                        fontSize: 16,
+                      ),
+                    ),
+                  ),
+                  Container(
+                    height: 35,
+                    width: 121,
+                    margin: const EdgeInsets.only(bottom: 5),
+                    decoration: BoxDecoration(
+                      color: lightenColor(parseColor(productcolor), .8),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: parseColor(productcolor)),
+                    ),
+                    child: Center(
+                      child: Text(
+                        "Add to Cart",
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: parseColor(productcolor),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
-          )
-        ],
+            Container(
+              height: 42,
+              width: 132,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
+                color: parseColor(productcolor),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text("₹85",
+                      style: TextStyle(
+                          fontSize: 24,
+                          color: parseColor(sellingpricecolor),
+                          fontWeight: FontWeight.w800)),
+                  const SizedBox(width: 10),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text(
+                        "MRP",
+                        style: TextStyle(
+                            fontSize: 12, color: parseColor(mrpColor)),
+                      ),
+                      Text("₹85",
+                          style: TextStyle(
+                              fontSize: 12, color: parseColor(mrpColor))),
+                    ],
+                  )
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

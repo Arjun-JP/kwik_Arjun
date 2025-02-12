@@ -21,8 +21,7 @@ class CategoryRepositoryModel2 {
 
       final response = await http
           .get(Uri.parse('$baseUrl/category/$categoryId'), headers: headers);
-      print("Response body: ${response.body}");
-      print("Status code: ${response.statusCode}");
+
       if (response.statusCode == 200) {
         var category = Category.fromJson(jsonDecode(response.body));
         return category;

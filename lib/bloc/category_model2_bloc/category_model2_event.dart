@@ -14,4 +14,4 @@ class FetchCategoryDetails extends CategoryEvent {
   List<Object> get props => [categoryId];
 }
 
-class ClearCache extends CategoryEvent {}
+class ClearCacheCM2 extends CategoryEvent {}

@@ -62,7 +62,6 @@ class CategoryBlocModel1 extends Bloc<CategoryEvent, CategoryState> {
         emit(CategoryLoaded(category: category, subCategories: subCategories));
       }
     } catch (e) {
-      print("Error fetching category details: $e");
       emit(CategoryError("Failed to load category details"));
     }
   }
