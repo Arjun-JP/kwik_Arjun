@@ -16,7 +16,7 @@ class CategoryBlocModel2 extends Bloc<CategoryEvent, CategoryState> {
   CategoryBlocModel2({required this.categoryRepositoryModel2})
       : super(CategoryInitial()) {
     on<FetchCategoryDetails>(_onFetchCategoryDetails);
-    on<ClearCache>(_onClearCache);
+    on<ClearCacheCM2>(_onClearCache);
   }
 
   void _onFetchCategoryDetails(
@@ -25,8 +25,8 @@ class CategoryBlocModel2 extends Bloc<CategoryEvent, CategoryState> {
       emit(CategoryLoading());
 
       // Open boxes for cache
-      var categoryBox = await Hive.openBox('categorymodel1Cache');
-      var subCategoryBox = await Hive.openBox('subCategorymodel1Cache');
+      var categoryBox = await Hive.openBox('categorymodel2Cache');
+      var subCategoryBox = await Hive.openBox('subCategorymodel2Cache');
 
       Category? cachedCategory;
       List<SubCategoryModel>? cachedSubCategories;
@@ -63,16 +63,15 @@ class CategoryBlocModel2 extends Bloc<CategoryEvent, CategoryState> {
         emit(CategoryLoaded(category: category, subCategories: subCategories));
       }
     } catch (e) {
-      print("Error fetching category details: $e");
       emit(CategoryError("Failed to load category details"));
     }
   }
 
-  void _onClearCache(ClearCache event, Emitter<CategoryState> emit) async {
+  void _onClearCache(ClearCacheCM2 event, Emitter<CategoryState> emit) async {
     try {
       // Open cache boxes
-      var categoryBox = await Hive.openBox('categorymodel1Cache');
-      var subCategoryBox = await Hive.openBox('subCategorymodel1Cache');
+      var categoryBox = await Hive.openBox('categorymodel2Cache');
+      var subCategoryBox = await Hive.openBox('subCategorymodel2Cache');
 
       // Clear the cache
       await categoryBox.clear();

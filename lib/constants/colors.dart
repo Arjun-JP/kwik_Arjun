@@ -58,3 +58,16 @@ Color parseColor(String? hexColor) {
 String colorToHex(Color color) {
   return '#${color.value.toRadixString(16).padLeft(8, '0').toUpperCase()}';
 }
+
+
+Color lightenColor(Color color, double amount) {
+  int r = color.red;
+  int g = color.green;
+  int b = color.blue;
+
+  r = (r + ((255 - r) * amount)).round();
+  g = (g + ((255 - g) * amount)).round();
+  b = (b + ((255 - b) * amount)).round();
+
+  return Color.fromRGBO(r, g, b, 1.0);
+}
