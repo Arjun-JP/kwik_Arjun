@@ -41,6 +41,7 @@ class _CategoryModel1State extends State<CategoryModel1> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    const SizedBox(height: 7),
                     Text(
                       "Top Categories For You",
                       style: TextStyle(

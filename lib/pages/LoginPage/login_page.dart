@@ -13,6 +13,8 @@ import '../../bloc/category_model1_bloc/category_model1_event.dart';
 import '../../bloc/category_model_4_bloc/category_model_4_bloc.dart';
 import '../../bloc/category_model_4_bloc/category_model_4_event.dart';
 import '../../bloc/category_model_5__Bloc/category_model5__event.dart';
+import '../../bloc/category_model_6_bloc/category_model_6_bloc.dart';
+import '../../bloc/category_model_6_bloc/category_model_6_event.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -95,8 +97,10 @@ class _LoginPageState extends State<LoginPage> {
                               .add(ClearCacheCM2());
                           BlocProvider.of<CategoryModel4Bloc>(context)
                               .add(Clearsubcatproduct1Cache());
-                          // BlocProvider.of<CategoryBloc5>(context)
-                          //     .add(ClearCacheEventCM5());
+                          BlocProvider.of<CategoryBloc5>(context)
+                              .add(ClearCacheEventCM5());
+                          BlocProvider.of<CategoryBlocModel6>(context)
+                              .add(ClearCacheCM6());
                           context.read<HomeUiBloc>().add(FetchUiDataEvent());
                           context.go("/home");
                         },

@@ -7,6 +7,8 @@ import 'package:kwik/bloc/category_model2_bloc/category_model2_bloc.dart';
 import 'package:kwik/bloc/category_model_4_bloc/category_model_4_bloc.dart';
 import 'package:kwik/bloc/category_model_5__Bloc/category_model5__bloc.dart';
 import 'package:kwik/bloc/category_model_5__Bloc/category_model5__event.dart';
+import 'package:kwik/bloc/category_model_6_bloc/category_model_6_bloc.dart';
+import 'package:kwik/bloc/category_model_6_bloc/category_model_6_event.dart';
 import 'package:kwik/bloc/home_Ui_bloc/home_Ui_Bloc.dart';
 import 'package:kwik/bloc/home_Ui_bloc/home_Ui_Event.dart';
 import 'package:kwik/bloc/home_Ui_bloc/home_Ui_State.dart';
@@ -15,6 +17,8 @@ import 'package:kwik/pages/Home_page/widgets/banner_model.dart';
 import 'package:kwik/pages/Home_page/widgets/category_model_2.dart';
 import 'package:kwik/pages/Home_page/widgets/category_model_3.dart';
 import 'package:kwik/pages/Home_page/widgets/category_model_4.dart';
+import 'package:kwik/pages/Home_page/widgets/category_model_7.dart';
+//import 'package:kwik/pages/Home_page/widgets/category_model_8.dart';
 import 'package:kwik/widgets/navbar/navbar.dart';
 import '../../bloc/category_model1_bloc/category_model1_event.dart';
 import '../../bloc/category_model2_bloc/category_model2_event.dart';
@@ -40,6 +44,7 @@ class _HomePageState extends State<HomePage> {
     BlocProvider.of<CategoryModel4Bloc>(context)
         .add(Clearsubcatproduct1Cache());
     BlocProvider.of<CategoryBloc5>(context).add(ClearCacheEventCM5());
+    BlocProvider.of<CategoryBlocModel6>(context).add(ClearCacheCM6());
     context.read<HomeUiBloc>().add(FetchUiDataEvent());
   }
 
@@ -186,13 +191,31 @@ class _HomePageState extends State<HomePage> {
                     title: uiData["template9"]["title"],
                     subcategories: List<String>.from(
                         uiData["template9"]["sub_categories"]),
-                    categoryId: uiData["template9"]["category_ref"],
                     bgcolor: uiData["template9"]["background_color"],
                     titleColor: uiData["template9"]["title_color"],
-                    subcatColor: uiData["template9"]["subcat_color"],
+                    catnamecolor: uiData["template9"]["subcat_color"],
+                    offertextcolor: uiData["template9"]["offer_text_color"],
+                    offerbgcolor: uiData["template9"]["offer_bg_color"],
+                    catnamebgcolor: uiData["template9"]["subcatbg_color"],
                   ),
                   'order': uiData["template9"]["ui_order_number"]
                 },
+                // {
+                //   'template': CategoryModel7(
+                //     productName: 'Explore Dairy Products',
+                //     products:
+                //         List<String>.from(uiData["template9"]["Products"]),
+                //     bgcolor: uiData["template9"]["background_color"],
+                //     titleColor: uiData["template9"]["title_color"],
+                //     productBgColor: uiData["template9"]["ProductBg_color"],
+                //     offer_text_color: uiData["template9"]["offer_text_color"],
+                //     offer_bg_color: uiData["template9"]["offer_bg_color"],
+                //     selling_price_color: uiData["template9"]
+                //         ["selling_price_color"],
+                //     mrp_color: uiData["template9"]["mrp_color"],
+                //   ),
+                //   'order': uiData["template9"]["ui_order_number"]
+                // },
                 {'template': const SizedBox(height: 85), 'order': "500"}
               ];
 

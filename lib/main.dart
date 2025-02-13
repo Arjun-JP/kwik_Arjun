@@ -9,6 +9,7 @@ import 'package:kwik/bloc/category_bloc/category_bloc.dart';
 import 'package:kwik/bloc/category_model1_bloc/category_model1_bloc.dart';
 import 'package:kwik/bloc/category_model2_bloc/category_model2_bloc.dart';
 import 'package:kwik/bloc/category_model_5__Bloc/category_model5__bloc.dart';
+import 'package:kwik/bloc/category_model_6_bloc/category_model_6_bloc.dart';
 import 'package:kwik/bloc/home_Ui_bloc/home_Ui_Bloc.dart';
 import 'package:kwik/bloc/navbar_bloc/navbar_bloc.dart';
 import 'package:kwik/constants/textstyle.dart';
@@ -19,6 +20,7 @@ import 'package:kwik/models/Hiveadapter/review_model_adapter.dart';
 import 'package:kwik/models/Hiveadapter/stock_model_adapter.dart';
 import 'package:kwik/repositories/banner_repository.dart';
 import 'package:kwik/repositories/category_model1_repository.dart';
+import 'package:kwik/repositories/category_model_6_repo.dart';
 import 'package:kwik/repositories/category_subcategory_product_repo.dart';
 import 'package:kwik/repositories/home_Ui_repository.dart';
 import 'package:kwik/repositories/home_category_repository.dart';
@@ -101,6 +103,9 @@ class _MyAppState extends State<MyApp> {
         BlocProvider<CategoryBloc5>(
             create: (_) =>
                 CategoryBloc5(categoryRepository: Categorymodel5Repository())),
+        BlocProvider<CategoryBlocModel6>(
+            create: (_) =>
+                CategoryBlocModel6(categoryModel6Repo: CategoryModel6Repo())),
       ],
       child: MaterialApp.router(
         routerConfig: _router,
