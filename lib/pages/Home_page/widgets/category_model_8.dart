@@ -6,7 +6,7 @@ import 'package:kwik/constants/colors.dart';
 import 'package:kwik/repositories/category_model_6_repo.dart';
 import '../../../bloc/category_model_6_bloc/category_model_6_bloc.dart';
 
-class CategoryModel6 extends StatelessWidget {
+class CategoryModel7 extends StatelessWidget {
   final String bgcolor;
   final String titleColor;
 
@@ -17,7 +17,7 @@ class CategoryModel6 extends StatelessWidget {
   final String offertextcolor;
   final String offerbgcolor;
 
-  const CategoryModel6({
+  const CategoryModel7({
     super.key,
     required this.bgcolor,
     required this.titleColor,

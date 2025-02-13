@@ -13,7 +13,7 @@ class CategoryBlocModel6 extends Bloc<CategoryEvent6, CategoryState6> {
   CategoryBlocModel6({required this.categoryModel6Repo})
       : super(CategoryInitial()) {
     on<FetchCategoryDetails>(_onFetchCategoryDetails);
-    on<ClearCache>(_onClearCache);
+    on<ClearCacheCM6>(_onClearCache);
   }
 
   void _onFetchCategoryDetails(
@@ -53,7 +53,7 @@ class CategoryBlocModel6 extends Bloc<CategoryEvent6, CategoryState6> {
     }
   }
 
-  void _onClearCache(ClearCache event, Emitter<CategoryState6> emit) async {
+  void _onClearCache(ClearCacheCM6 event, Emitter<CategoryState6> emit) async {
     try {
       // Open cache boxes
 

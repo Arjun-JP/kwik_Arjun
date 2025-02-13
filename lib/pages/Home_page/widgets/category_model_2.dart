@@ -42,7 +42,7 @@ class CategoryModel2 extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const SizedBox(height: 10),
+                      const SizedBox(height: 15),
                       Text(
                         state.category.name, // Display main category name
                         style: TextStyle(
@@ -50,7 +50,7 @@ class CategoryModel2 extends StatelessWidget {
                             fontSize: 18,
                             fontWeight: FontWeight.bold),
                       ),
-                      const SizedBox(height: 10),
+                      const SizedBox(height: 12),
                       SizedBox(
                         height: 294,
                         width: MediaQuery.of(context).size.width,
