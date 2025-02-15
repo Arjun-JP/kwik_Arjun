@@ -200,22 +200,29 @@ class _HomePageState extends State<HomePage> {
                   ),
                   'order': uiData["template9"]["ui_order_number"]
                 },
-                // {
-                //   'template': CategoryModel7(
-                //     productName: 'Explore Dairy Products',
+                {
+                  'template': CategoryModel7(
+                    titleColor: uiData["template9"]["title_color"],
+                    bgcolor: uiData["template9"]["background_color"],
+                  ),
+                  'order': "500"
+                },
+                //    {
+                //    'template': CategoryModel7(
+                //       productName: 'Explore Dairy Products',
                 //     products:
-                //         List<String>.from(uiData["template9"]["Products"]),
-                //     bgcolor: uiData["template9"]["background_color"],
-                //     titleColor: uiData["template9"]["title_color"],
-                //     productBgColor: uiData["template9"]["ProductBg_color"],
-                //     offer_text_color: uiData["template9"]["offer_text_color"],
-                //     offer_bg_color: uiData["template9"]["offer_bg_color"],
-                //     selling_price_color: uiData["template9"]
-                //         ["selling_price_color"],
-                //     mrp_color: uiData["template9"]["mrp_color"],
-                //   ),
-                //   'order': uiData["template9"]["ui_order_number"]
-                // },
+                //        List<String>.from(uiData["template9"]["Products"]),
+                //    bgcolor: uiData["template9"]["background_color"],
+                //        titleColor: uiData["template9"]["title_color"],
+                //       productBgColor: uiData["template9"]["ProductBg_color"],
+                //        offer_text_color: uiData["template9"]["offer_text_color"],
+                //       offer_bg_color: uiData["template9"]["offer_bg_color"],
+                //        selling_price_color: uiData["template9"]
+                //           ["selling_price_color"],
+                //       mrp_color: uiData["template9"]["mrp_color"],
+                //     ),
+                //      'order': uiData["template9"]["ui_order_number"]
+                //    },
                 {'template': const SizedBox(height: 85), 'order': "500"}
               ];
 
