@@ -19,10 +19,10 @@ class KiwiButton extends StatelessWidget {
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
           backgroundColor: AppColors.buttonColorOrange,
-          minimumSize: Size(devicewidth, 76),
+          minimumSize: Size(devicewidth, 60),
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(12))),
-      child: Text("Next",
+      child: Text(text,
           style: theme.textTheme.titleMedium!.copyWith(
               color: AppColors.textColorWhite,
               fontSize: 20,

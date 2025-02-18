@@ -27,6 +27,8 @@ class AppColors {
   static const kgreyColor = Color(0xff838383);
   static const kgreyColorlite = Color(0xffC8C3C3);
 
+  static const korangeColor = Color(0xffFC5B00);
+
   static const buttonColorOrange = Color(0xffFC5B00);
 }
 
@@ -58,7 +60,6 @@ Color parseColor(String? hexColor) {
 String colorToHex(Color color) {
   return '#${color.value.toRadixString(16).padLeft(8, '0').toUpperCase()}';
 }
-
 
 Color lightenColor(Color color, double amount) {
   int r = color.red;

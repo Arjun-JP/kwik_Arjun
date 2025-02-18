@@ -1,0 +1,2 @@
+C:/Users/Roopa Mohan/Documents/Desktop/kwik/kwik/android/app/.cxx/Debug/c6vh5j6m/armeabi-v7a/CMakeFiles/edit_cache.dir
+C:/Users/Roopa Mohan/Documents/Desktop/kwik/kwik/android/app/.cxx/Debug/c6vh5j6m/armeabi-v7a/CMakeFiles/rebuild_cache.dir

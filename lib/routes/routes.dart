@@ -5,6 +5,7 @@ import 'package:kwik/pages/Home_page/home_Page.dart';
 import 'package:kwik/pages/LoginPage/login_page.dart';
 import 'package:kwik/pages/Offer_Page/offer_page.dart';
 import 'package:kwik/pages/OnboardingScreen/onboarding_screen.dart';
+import 'package:kwik/pages/OtpVerificationPage/otp_verification_page.dart';
 import 'package:kwik/pages/SplashScreen/splash_screen.dart';
 import 'package:kwik/pages/cart_page/cart_page.dart';
 import 'package:kwik/pages/profile/profile_page.dart';
@@ -22,6 +23,13 @@ final GoRouter router = GoRouter(
       path: '/onboardingScreen',
       builder: (BuildContext context, GoRouterState state) {
         return const OnboardingScreen();
+      },
+    ),
+    GoRoute(
+      path: '/OtpVerificationPage/:verificationId',
+      builder: (BuildContext context, GoRouterState state) {
+        final verificationId = state.pathParameters['verificationId']!;
+        return OtpVerificationPage(verificationId: verificationId);
       },
     ),
     GoRoute(
