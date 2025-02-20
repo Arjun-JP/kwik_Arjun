@@ -23,7 +23,6 @@ import 'package:kwik/pages/Home_page/widgets/category_model_4.dart';
 import 'package:kwik/pages/Home_page/widgets/category_model_7.dart';
 import 'package:kwik/pages/Home_page/widgets/category_model_8.dart';
 import 'package:kwik/pages/Home_page/widgets/category_model_9.dart';
-//import 'package:kwik/pages/Home_page/widgets/category_model_8.dart';
 import 'package:kwik/widgets/navbar/navbar.dart';
 import '../../bloc/category_model1_bloc/category_model1_event.dart';
 import '../../bloc/category_model2_bloc/category_model2_event.dart';
