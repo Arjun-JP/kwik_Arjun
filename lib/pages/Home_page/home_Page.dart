@@ -9,20 +9,30 @@ import 'package:kwik/bloc/category_model_5__Bloc/category_model5__bloc.dart';
 import 'package:kwik/bloc/category_model_5__Bloc/category_model5__event.dart';
 import 'package:kwik/bloc/category_model_6_bloc/category_model_6_bloc.dart';
 import 'package:kwik/bloc/category_model_6_bloc/category_model_6_event.dart';
+import 'package:kwik/bloc/category_model_9_bloc/category_model_9_bloc.dart';
 import 'package:kwik/bloc/home_Ui_bloc/home_Ui_Bloc.dart';
 import 'package:kwik/bloc/home_Ui_bloc/home_Ui_Event.dart';
 import 'package:kwik/bloc/home_Ui_bloc/home_Ui_State.dart';
 import 'package:kwik/bloc/navbar_bloc/navbar_bloc.dart';
 import 'package:kwik/pages/Home_page/widgets/banner_model.dart';
+import 'package:kwik/pages/Home_page/widgets/category_model_10.dart';
+import 'package:kwik/pages/Home_page/widgets/category_model_11.dart';
 import 'package:kwik/pages/Home_page/widgets/category_model_2.dart';
 import 'package:kwik/pages/Home_page/widgets/category_model_3.dart';
 import 'package:kwik/pages/Home_page/widgets/category_model_4.dart';
 import 'package:kwik/pages/Home_page/widgets/category_model_7.dart';
+import 'package:kwik/pages/Home_page/widgets/category_model_8.dart';
+import 'package:kwik/pages/Home_page/widgets/category_model_9.dart';
 //import 'package:kwik/pages/Home_page/widgets/category_model_8.dart';
 import 'package:kwik/widgets/navbar/navbar.dart';
 import '../../bloc/category_model1_bloc/category_model1_event.dart';
 import '../../bloc/category_model2_bloc/category_model2_event.dart';
+import '../../bloc/category_model_10_bloc/category_model_10_bloc.dart';
+import '../../bloc/category_model_10_bloc/category_model_10_event.dart';
 import '../../bloc/category_model_4_bloc/category_model_4_event.dart';
+import '../../bloc/category_model_7_bloc/category_model_7_bloc.dart';
+import '../../bloc/category_model_7_bloc/category_model_7_event.dart';
+import '../../bloc/category_model_9_bloc/category_model_9_event.dart';
 import '../../bloc/navbar_bloc/navbar_event.dart';
 import '../../constants/colors.dart';
 import 'widgets/category_model_1.dart';
@@ -45,6 +55,11 @@ class _HomePageState extends State<HomePage> {
         .add(Clearsubcatproduct1Cache());
     BlocProvider.of<CategoryBloc5>(context).add(ClearCacheEventCM5());
     BlocProvider.of<CategoryBlocModel6>(context).add(ClearCacheCM6());
+    BlocProvider.of<CategoryModel7Bloc>(context)
+        .add(Clearsubcatproduct7Cache());
+    BlocProvider.of<CategoryBloc9>(context).add(ClearCacheEventCM9());
+    BlocProvider.of<CategoryModel10Bloc>(context)
+        .add(Clearsubcatproduct10Cache());
     context.read<HomeUiBloc>().add(FetchUiDataEvent());
   }
 
@@ -88,8 +103,13 @@ class _HomePageState extends State<HomePage> {
               return const Center(child: CircularProgressIndicator());
             } else if (state is UiLoaded) {
               final uiData = state.uiData;
+
               final categoryRef =
                   List<String>.from(uiData["categorylist"]["category_ref"]);
+              final categorymodel8Categories =
+                  List<String>.from(uiData["template11"]["subcategories"]);
+              print(categorymodel8Categories);
+              print(uiData["template11"]["subcategories"]);
               final templates = [
                 {
                   'template': CategoryModel1(
@@ -122,7 +142,6 @@ class _HomePageState extends State<HomePage> {
                   ),
                   'order': uiData["template3"]["ui_order_number"]
                 },
-                {'template': const SizedBox(height: 85), 'order': "500"},
                 {
                   'template': CategoryModel3(
                     maincategories: List<String>.from(
@@ -202,28 +221,87 @@ class _HomePageState extends State<HomePage> {
                 },
                 {
                   'template': CategoryModel7(
-                    titleColor: uiData["template9"]["title_color"],
-                    bgcolor: uiData["template9"]["background_color"],
+                    subcategoryid: uiData["template10"]["category_ref"],
+                    titleColor: uiData["template10"]["title_color"],
+                    bgcolor: uiData["template10"]["background_color"],
+                    cartbuttontextcolor: uiData["template10"]
+                        ["cartbuttontextcolor"],
+                    mrpcolor: uiData["template10"]["mrpcolor"],
+                    offerBGcolor: uiData["template10"]["offerBGcolor"],
+                    offerTextcolor: uiData["template10"]["offerTextcolor"],
+                    prodoductbgcolor: uiData["template10"]["prodoductbgcolor"],
+                    productTextColor: uiData["template10"]["productTextColor"],
+                    sellingpricecolor: uiData["template10"]
+                        ["sellingpricecolor"],
+                    seeAllButtonBG: uiData["template10"]["seeAllButtonBG"],
+                    seeAllButtontext: uiData["template10"]["seeAllButtontext"],
                   ),
-                  'order': "500"
+                  'order': uiData["template10"]["ui_order_number"]
                 },
-                //    {
-                //    'template': CategoryModel7(
-                //       productName: 'Explore Dairy Products',
-                //     products:
-                //        List<String>.from(uiData["template9"]["Products"]),
-                //    bgcolor: uiData["template9"]["background_color"],
-                //        titleColor: uiData["template9"]["title_color"],
-                //       productBgColor: uiData["template9"]["ProductBg_color"],
-                //        offer_text_color: uiData["template9"]["offer_text_color"],
-                //       offer_bg_color: uiData["template9"]["offer_bg_color"],
-                //        selling_price_color: uiData["template9"]
-                //           ["selling_price_color"],
-                //       mrp_color: uiData["template9"]["mrp_color"],
-                //     ),
-                //      'order': uiData["template9"]["ui_order_number"]
-                //    },
-                {'template': const SizedBox(height: 85), 'order': "500"}
+                {
+                  'template': CategoryModel8(
+                    bgColor: uiData["template11"]["background_color"],
+                    categoryBG: uiData["template11"]["subcategorybg"],
+                    iconBGcolor: uiData["template11"]["icon_bg_color"],
+                    iconcolor: uiData["template11"]["icon_color"],
+                    title: uiData["template11"]["title"],
+                    categories: categorymodel8Categories,
+                    titlecolor: uiData["template11"]["title_color"],
+                    categorytitlecolor: uiData["template11"]
+                        ["subcat_title_color"],
+                  ),
+                  'order': uiData["template11"]["ui_order_number"]
+                },
+                {
+                  'template': CategoryModel9(
+                    maincategories: List<String>.from(
+                        uiData["template12"]["maincategories"]),
+                    categoryId: uiData["template12"]["categoryId"],
+                    bgcolor: uiData["template12"]["bgcolor"],
+                    titleColor: uiData["template12"]["titleColor"],
+                    subcatColor: uiData["template12"]["offerBGcolor"],
+                    offerBGcolor: uiData["template12"]["offerBGcolor"],
+                    mrpColor: uiData["template12"]["mrpColor"],
+                    productBgColor: uiData["template12"]["productBgColor"],
+                    sellingPriceColor: uiData["template12"]
+                        ["sellingPriceColor"],
+                    buttontextcolor: uiData["template12"]["buttontextcolor"],
+                    offerTextcolor: uiData["template12"]["offerTextcolor"],
+                    title: uiData["template12"]["title"],
+                    unitTextcolor: uiData["template12"]["unitTextcolor"],
+                    unitbgcolor: uiData["template12"]["unitbgcolor"],
+                  ),
+                  'order': uiData["template12"]["ui_order_number"]
+                },
+                {
+                  'template': CategoryModel10(
+                    title: uiData["template13"]["title"],
+                    titleColor: uiData["template13"]["titleColor"],
+                    bgcolor: uiData["template13"]["background_color"],
+                    image: uiData["template13"]["image"],
+                    cartbuttontextcolor: uiData["template13"]
+                        ["cartbuttontextcolor"],
+                    mrpcolor: uiData["template13"]["mrpcolor"],
+                    crosscolor: uiData["template13"]["crosscolor"],
+                    prodoductbgcolor: uiData["template13"]["prodoductbgcolor"],
+                    productTextColor: uiData["template13"]["productTextColor"],
+                    sellingpricecolor: uiData["template13"]
+                        ["sellingpricecolor"],
+                    seeAllButtonBG: uiData["template13"]["seeAllButtonBG"],
+                    seeAllButtontext: uiData["template13"]["seeAllButtontext"],
+                  ),
+                  'order': uiData["template13"]["ui_order_number"]
+                },
+                {
+                  'template': CategoryModel11(
+                    categoryId: uiData["template7"]["category_ref"],
+                    bgcolor: uiData["template7"]["background_color"],
+                    titleColor: uiData["template7"]["title_color"],
+                    subcatColor: uiData["template7"]["subcat_color"],
+                  ),
+                  'order': uiData["template14"]["ui_order_number"]
+                },
+                {'template': const SizedBox(height: 40), 'order': "500"}
               ];
 
               templates.sort((a, b) =>

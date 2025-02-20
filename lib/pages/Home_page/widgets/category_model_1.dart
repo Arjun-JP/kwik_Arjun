@@ -11,12 +11,13 @@ class CategoryModel1 extends StatefulWidget {
   final List<String> categories;
   final String titlecolor;
   final String textcolor;
-  const CategoryModel1(
-      {super.key,
-      required this.bgColor,
-      required this.categories,
-      required this.titlecolor,
-      required this.textcolor});
+  const CategoryModel1({
+    super.key,
+    required this.bgColor,
+    required this.categories,
+    required this.titlecolor,
+    required this.textcolor,
+  });
 
   @override
   State<CategoryModel1> createState() => _CategoryModel1State();
