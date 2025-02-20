@@ -10,6 +10,8 @@ import 'package:kwik/bloc/category_model1_bloc/category_model1_bloc.dart';
 import 'package:kwik/bloc/category_model2_bloc/category_model2_bloc.dart';
 import 'package:kwik/bloc/category_model_5__Bloc/category_model5__bloc.dart';
 import 'package:kwik/bloc/category_model_6_bloc/category_model_6_bloc.dart';
+import 'package:kwik/bloc/category_model_8_bloc/category_model_8_bloc.dart';
+import 'package:kwik/bloc/category_model_9_bloc/category_model_9_bloc.dart';
 import 'package:kwik/bloc/home_Ui_bloc/home_Ui_Bloc.dart';
 import 'package:kwik/bloc/navbar_bloc/navbar_bloc.dart';
 import 'package:kwik/constants/textstyle.dart';
@@ -21,12 +23,16 @@ import 'package:kwik/models/Hiveadapter/stock_model_adapter.dart';
 import 'package:kwik/repositories/banner_repository.dart';
 import 'package:kwik/repositories/category_model1_repository.dart';
 import 'package:kwik/repositories/category_model_6_repo.dart';
+import 'package:kwik/repositories/category_model_8_repo.dart';
 import 'package:kwik/repositories/category_subcategory_product_repo.dart';
 import 'package:kwik/repositories/home_Ui_repository.dart';
 import 'package:kwik/repositories/home_category_repository.dart';
 import 'package:kwik/repositories/sub_category_product_repository.dart';
 import 'package:kwik/routes/routes.dart';
+import 'bloc/category_model_10_bloc/category_model_10_bloc.dart';
 import 'bloc/category_model_4_bloc/category_model_4_bloc.dart';
+import 'bloc/category_model_7_bloc/category_model_7_bloc.dart';
+import 'bloc/category_model_8_bloc/category_model_8_event.dart';
 import 'models/Hiveadapter/banner_model_adapter.dart';
 import 'models/Hiveadapter/product_model_adapter.dart';
 import 'models/Hiveadapter/subcategory_model_adapter.dart';
@@ -34,6 +40,8 @@ import 'models/Hiveadapter/variation_model_adapter.dart';
 import 'models/Hiveadapter/warehouse_model_adapter.dart';
 // import 'models/subcategory_model.dart' as subcategory;
 import 'repositories/category_model2_repository.dart';
+import 'repositories/category_model9_repo.dart';
+import 'repositories/category_model_10_repo.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -51,15 +59,12 @@ void main() async {
   Hive.registerAdapter(BrandAdapter());
 // Print the path to the console
   await Hive.openBox('product_cache');
+  await Hive.openBox('product_cache_category_model7');
   await Hive.openBox('subCategoriesBox'); // Open boxes before usage
   await Hive.openBox('productsBox');
-  // await Hive.openBox('category_cache');
-  // await Hive.openBox('categorymodel1Cache');
-  // await Hive.openBox('subCategorymodel1Cache');
-  // await Hive.openBox('categorymodel2Cache');
-  // await Hive.openBox('subCategorymodel2Cache');
-  String boxPath = await Hive.box('product_cache').path ?? "null";
-  print('Box path: $boxPath');
+  await Hive.openBox('productsBoxcatmodel9');
+  await Hive.openBox('product_cache_category_model10');
+
   // await Hive.openBox('subcategories_CatM5');
 
   SystemChrome.setPreferredOrientations([
@@ -106,6 +111,19 @@ class _MyAppState extends State<MyApp> {
         BlocProvider<CategoryBlocModel6>(
             create: (_) =>
                 CategoryBlocModel6(categoryModel6Repo: CategoryModel6Repo())),
+        BlocProvider<CategoryModel7Bloc>(
+            create: (_) =>
+                CategoryModel7Bloc(repository: SubcategoryProductRepository())),
+        BlocProvider<CategoryModel8Bloc>(
+            create: (_) => CategoryModel8Bloc(
+                categoryRepository: Categorymodel8Repository())
+              ..add(FetchCategoriesmodel8())),
+        BlocProvider<CategoryBloc9>(
+            create: (_) =>
+                CategoryBloc9(categoryRepository: Categorymodel9Repository())),
+        BlocProvider<CategoryModel10Bloc>(
+            create: (_) =>
+                CategoryModel10Bloc(repository: CategoryModel10Repo())),
       ],
       child: MaterialApp.router(
         routerConfig: _router,

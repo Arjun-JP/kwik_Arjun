@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../models/product_model.dart';
 
-class SubcategoryProductRepository {
+class CategoryModel10Repo {
   final String baseUrl = "https://kwik-backend.vercel.app";
 
   Future<List<ProductModel>> getProductsBySubCategory(

@@ -1,188 +1,211 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:kwik/bloc/category_model_6_bloc/category_model_6_event.dart';
-import 'package:kwik/bloc/category_model_6_bloc/category_model_6_state.dart';
-import 'package:kwik/constants/colors.dart';
-import 'package:kwik/repositories/category_model_6_repo.dart';
-import '../../../bloc/category_model_6_bloc/category_model_6_bloc.dart';
+import '../../../bloc/category_model_8_bloc/category_model_8_bloc.dart';
+import '../../../bloc/category_model_8_bloc/category_model_8_event.dart';
+import '../../../bloc/category_model_8_bloc/category_model_8_state.dart';
+import '../../../repositories/category_model_8_repo.dart';
 
-class CategoryModel7 extends StatelessWidget {
-  final String bgcolor;
-  final String titleColor;
-
-  final List<String> subcategories;
+class CategoryModel8 extends StatefulWidget {
   final String title;
-  final String catnamecolor;
-  final String catnamebgcolor;
-  final String offertextcolor;
-  final String offerbgcolor;
-
-  const CategoryModel7({
+  final String bgColor;
+  final List<String> categories;
+  final String titlecolor;
+  final String categorytitlecolor;
+  final String categoryBG;
+  final String iconBGcolor;
+  final String iconcolor;
+  const CategoryModel8({
     super.key,
-    required this.bgcolor,
-    required this.titleColor,
-    required this.subcategories,
     required this.title,
-    required this.catnamecolor,
-    required this.catnamebgcolor,
-    required this.offertextcolor,
-    required this.offerbgcolor,
+    required this.bgColor,
+    required this.categories,
+    required this.titlecolor,
+    required this.categorytitlecolor,
+    required this.categoryBG,
+    required this.iconBGcolor,
+    required this.iconcolor,
   });
 
   @override
+  State<CategoryModel8> createState() => _CategoryModel8State();
+}
+
+class _CategoryModel8State extends State<CategoryModel8> {
+  @override
   Widget build(BuildContext context) {
     return BlocProvider(
-        create: (context) =>
-            CategoryBlocModel6(categoryModel6Repo: CategoryModel6Repo())
-              ..add(FetchCategoryDetails()),
-        child: BlocBuilder<CategoryBlocModel6, CategoryState6>(
-          builder: (context, state) {
-            if (state is CategoryLoading) {
-              return const Center(child: CircularProgressIndicator());
-            } else if (state is CategoryLoaded) {
-              // Filter subcategories by matching their IDs
-              var filteredSubCategories = state.subCategories
-                  .where(
-                    (subCategory) =>
-                        subcategories.contains(subCategory.id.toString()),
-                  )
-                  .toList();
-
-              return Container(
-                color: parseColor(bgcolor),
-                width: double.infinity,
-                padding: const EdgeInsets.symmetric(horizontal: 10),
+      create: (context) =>
+          CategoryModel8Bloc(categoryRepository: Categorymodel8Repository())
+            ..add(FetchCategoriesmodel8()),
+      child: BlocBuilder<CategoryModel8Bloc, CategoryBloc8State>(
+        builder: (context, state) {
+          if (state is Categorymode8Loading) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (state is Categorymode8Loaded) {
+            print(state.categories.length);
+            return Container(
+              color: parseColor(widget.bgColor),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    const SizedBox(height: 15),
+                    const SizedBox(height: 7),
                     Text(
-                      title,
+                      widget.title,
                       style: TextStyle(
-                        color: parseColor(titleColor),
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
+                          color: parseColor(widget.titlecolor),
+                          fontSize: 24,
+                          fontWeight: FontWeight.w800),
                     ),
-                    const SizedBox(height: 12),
-                    SizedBox(
-                      height: 170,
-                      width: MediaQuery.of(context).size.width,
-                      child: ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: filteredSubCategories.length,
-                        itemBuilder: (context, index) {
-                          var subCategory = filteredSubCategories[index];
-                          return subcategoryItem(
-                            name: subCategory.name,
-                            bgcolor: bgcolor,
-                            imageurl: subCategory.imageUrl,
-                            catnamecolor: catnamecolor,
-                            catnamebgcolor: catnamebgcolor,
-                            offerbgcolor: offerbgcolor,
-                            offertextcolor: offertextcolor,
+                    const SizedBox(height: 20),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: state.categories.map((category) {
+                        if (widget.categories.contains(category.id)) {
+                          return Expanded(
+                            child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 10.0),
+                                child: InkWell(
+                                  onTap: () {},
+                                  child: Stack(
+                                    clipBehavior: Clip
+                                        .none, // Allows elements to overflow the container
+                                    children: [
+                                      Container(
+                                        decoration: BoxDecoration(
+                                          borderRadius: const BorderRadius.only(
+                                            bottomRight: Radius.circular(10),
+                                            bottomLeft: Radius.circular(10),
+                                            topLeft: Radius.circular(15),
+                                            topRight: Radius.circular(15),
+                                          ),
+                                          color: parseColor(widget.categoryBG),
+                                        ),
+                                        width: 100,
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Container(
+                                              height: 110,
+                                              decoration: BoxDecoration(
+                                                color: parseColor(
+                                                    widget.categoryBG),
+                                                borderRadius:
+                                                    BorderRadius.circular(12),
+                                                image: DecorationImage(
+                                                  image: NetworkImage(
+                                                      category.imageUrl),
+                                                  fit: BoxFit.cover,
+                                                ),
+                                              ),
+                                            ),
+                                            const SizedBox(height: 7),
+                                            Padding(
+                                              padding: const EdgeInsets.only(
+                                                  bottom: 8, left: 8, right: 8),
+                                              child: Text(
+                                                category.name,
+                                                maxLines: 2,
+                                                overflow: TextOverflow.ellipsis,
+                                                textAlign: TextAlign.center,
+                                                style: TextStyle(
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.w700,
+                                                  color: parseColor(widget
+                                                      .categorytitlecolor),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      // Positioning the Icon at Bottom-Right and Half Outside
+                                      Positioned(
+                                        bottom:
+                                            -8, // Move it downwards by half of its size (30px / 2)
+                                        right:
+                                            -5, // Slightly move it outside the right boundary
+                                        child: Container(
+                                          padding: const EdgeInsets.all(3),
+                                          decoration: BoxDecoration(
+                                            color:
+                                                parseColor(widget.iconBGcolor),
+                                            shape: BoxShape.circle,
+                                            boxShadow: [
+                                              BoxShadow(
+                                                color: Colors.black
+                                                    .withOpacity(0.2),
+                                                blurRadius: 4,
+                                                spreadRadius: 2,
+                                                // ignore: prefer_const_constructors
+                                                offset: Offset(2,
+                                                    2), // Adds depth to floating icon
+                                              )
+                                            ],
+                                          ),
+                                          child: Icon(
+                                            Icons.keyboard_arrow_right_rounded,
+                                            color: parseColor(widget.iconcolor),
+                                            size: 30,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                )),
                           );
-                        },
-                      ),
+                        } else {
+                          return const SizedBox.shrink();
+                        }
+                      }).toList(),
                     ),
                     const SizedBox(height: 10),
                   ],
                 ),
-              );
-            } else if (state is CategoryError) {
-              return Center(child: Text(state.message));
-            }
-            return const SizedBox();
-          },
-        ));
+              ),
+            );
+          } else if (state is Categorymode8Error) {
+            return Center(child: Text("Error: ${state.message}"));
+          }
+          return const Center(child: Text("No data available"));
+        },
+      ),
+    );
   }
 }
 
-Widget subcategoryItem(
-    {required String name,
-    required String bgcolor,
-    required String imageurl,
-    required String catnamebgcolor,
-    required String offertextcolor,
-    required String offerbgcolor,
-    required String catnamecolor}) {
-  return Column(
-    mainAxisSize: MainAxisSize.max,
-    crossAxisAlignment: CrossAxisAlignment.center,
-    children: [
-      Padding(
-        padding: const EdgeInsets.only(right: 5.0),
-        child: SizedBox(
-          height: 170,
-          width: 150,
-          child: Stack(
-            children: [
-              Container(
-                height: 170,
-                width: 150,
-                decoration: BoxDecoration(
-                  borderRadius: const BorderRadius.only(
-                      topLeft: Radius.circular(10),
-                      topRight: Radius.circular(10),
-                      bottomLeft: Radius.circular(80),
-                      bottomRight: Radius.circular(80)),
-                  color: parseColor(bgcolor),
-                  image: DecorationImage(
-                    image: NetworkImage(imageurl),
-                    fit: BoxFit.fill,
-                  ),
-                ),
-              ),
-              Align(
-                alignment: Alignment.topCenter,
-                child: Column(
-                  children: [
-                    Container(
-                      width: 100,
-                      height: 30,
-                      decoration: BoxDecoration(
-                          color: parseColor(offerbgcolor),
-                          borderRadius: const BorderRadius.only(
-                              bottomLeft: Radius.circular(10),
-                              bottomRight: Radius.circular(10))),
-                      child: Center(
-                        child: Text(
-                          "17% off",
-                          style: TextStyle(
-                              color: parseColor(offertextcolor),
-                              fontSize: 14,
-                              fontWeight: FontWeight.w800),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                      child: Container(
-                        padding: const EdgeInsets.all(5),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadiusDirectional.circular(8),
-                          color: parseColor(catnamebgcolor),
-                        ),
-                        child: Center(
-                          child: Text(
-                            name,
-                            maxLines: 2,
-                            style: TextStyle(
-                                fontSize: 10,
-                                fontWeight: FontWeight.w700,
-                                color: parseColor(catnamecolor)),
-                          ),
-                        ),
-                      ),
-                    )
-                  ],
-                ),
-              )
-            ],
-          ),
-        ),
-      ),
-    ],
-  );
+// Function to parse hex color correctly
+
+Color parseColor(String? hexColor) {
+  if (hexColor == null || hexColor.isEmpty) {
+    return const Color(0xFFADD8E6); // Default pastel blue
+  }
+
+  hexColor = hexColor.replaceAll("#", ""); // Remove # if present
+
+  // If the input is 6 characters long (RGB), add "FF" for full opacity
+  if (hexColor.length == 6) {
+    hexColor = "FF$hexColor";
+  }
+  // If the input is not 8 characters (AARRGGBB), return default pastel color
+  else if (hexColor.length != 8) {
+    return const Color(0xFFADD8E6);
+  }
+
+  try {
+    return Color(int.parse("0x$hexColor")); // Ensure correct 0xAARRGGBB format
+  } catch (e) {
+    return const Color(0xFFADD8E6); // Default pastel blue on error
+  }
+}
+
+String colorToHex(Color color) {
+  return '#${color.value.toRadixString(16).padLeft(8, '0').toUpperCase()}';
 }

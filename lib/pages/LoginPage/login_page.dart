@@ -10,11 +10,17 @@ import 'package:kwik/constants/colors.dart';
 
 import '../../bloc/category_model1_bloc/category_model1_bloc.dart';
 import '../../bloc/category_model1_bloc/category_model1_event.dart';
+import '../../bloc/category_model_10_bloc/category_model_10_bloc.dart';
+import '../../bloc/category_model_10_bloc/category_model_10_event.dart';
 import '../../bloc/category_model_4_bloc/category_model_4_bloc.dart';
 import '../../bloc/category_model_4_bloc/category_model_4_event.dart';
 import '../../bloc/category_model_5__Bloc/category_model5__event.dart';
 import '../../bloc/category_model_6_bloc/category_model_6_bloc.dart';
 import '../../bloc/category_model_6_bloc/category_model_6_event.dart';
+import '../../bloc/category_model_7_bloc/category_model_7_bloc.dart';
+import '../../bloc/category_model_7_bloc/category_model_7_event.dart';
+import '../../bloc/category_model_9_bloc/category_model_9_bloc.dart';
+import '../../bloc/category_model_9_bloc/category_model_9_event.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -102,6 +108,12 @@ class _LoginPageState extends State<LoginPage> {
                           BlocProvider.of<CategoryBlocModel6>(context)
                               .add(ClearCacheCM6());
                           context.read<HomeUiBloc>().add(FetchUiDataEvent());
+                          BlocProvider.of<CategoryModel7Bloc>(context)
+                              .add(Clearsubcatproduct7Cache());
+                          BlocProvider.of<CategoryBloc9>(context)
+                              .add(ClearCacheEventCM9());
+                          BlocProvider.of<CategoryModel10Bloc>(context)
+                              .add(Clearsubcatproduct10Cache());
                           context.go("/home");
                         },
                         child: const Text("Home"))
