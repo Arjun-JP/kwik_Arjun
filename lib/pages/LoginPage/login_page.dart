@@ -2,29 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kwik/bloc/Auth_bloc/auth_bloc.dart';
-import 'package:kwik/bloc/Auth_bloc/auth_event.dart';
 import 'package:kwik/bloc/Auth_bloc/auth_state.dart';
-import 'package:kwik/bloc/category_model1_bloc/category_model1_bloc.dart';
-import 'package:kwik/bloc/category_model1_bloc/category_model1_event.dart';
-import 'package:kwik/bloc/category_model2_bloc/category_model2_bloc.dart';
-import 'package:kwik/bloc/category_model2_bloc/category_model2_event.dart';
-import 'package:kwik/bloc/category_model_4_bloc/category_model_4_bloc.dart';
-import 'package:kwik/bloc/category_model_4_bloc/category_model_4_event.dart';
-import 'package:kwik/bloc/category_model_5__Bloc/category_model5__bloc.dart';
-import 'package:kwik/bloc/category_model_5__Bloc/category_model5__event.dart';
-import 'package:kwik/bloc/category_model_6_bloc/category_model_6_bloc.dart';
-import 'package:kwik/bloc/category_model_6_bloc/category_model_6_event.dart';
 import 'package:kwik/bloc/home_Ui_bloc/home_Ui_Bloc.dart';
 import 'package:kwik/bloc/home_Ui_bloc/home_Ui_Event.dart';
 import 'package:kwik/constants/colors.dart';
 
-import '../../bloc/category_model1_bloc/category_model1_bloc.dart';
 import '../../bloc/category_model1_bloc/category_model1_event.dart';
-import '../../bloc/category_model_4_bloc/category_model_4_bloc.dart';
+import '../../bloc/category_model2_bloc/category_model2_event.dart';
 import '../../bloc/category_model_4_bloc/category_model_4_event.dart';
 import '../../bloc/category_model_5__Bloc/category_model5__event.dart';
-import '../../bloc/category_model_6_bloc/category_model_6_bloc.dart';
-import '../../bloc/category_model_6_bloc/category_model_6_event.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -87,48 +73,42 @@ class _LoginPageState extends State<LoginPage> {
                           style: theme.textTheme.bodyLarge?.copyWith(
                             color: AppColors.textColorGrey,
                             fontWeight: FontWeight.w400,
-                            height: devicewidth * 0.0035,
-                            fontSize: 20),
-                        textAlign: TextAlign.center,
-                        softWrap: true,
-                      ),
+                            height: deviceWidth * 0.0035,
+                            fontSize: 20,
+                          ),
+                          textAlign: TextAlign.center,
+                          softWrap: true,
+                        ),
+                        SizedBox(height: deviceHeight * 0.03),
+                        FittedBox(
+                          fit: BoxFit.fitWidth,
+                          child: Text(
+                            'Mobile Number',
+                            style: theme.textTheme.bodyLarge!.copyWith(
+                                color: AppColors.textColorGrey,
+                                fontWeight: FontWeight.w400,
+                                height: deviceWidth * 0.0035,
+                                fontSize: 18),
+                            textAlign: TextAlign.center,
+                            softWrap: true,
+                          ),
+                        ),
+                        ElevatedButton(
+                          onPressed: () {
+                            context.read<HomeUiBloc>().add(FetchUiDataEvent());
+                            context.go("/home");
+                          },
+                          child: const Text("Home"),
+                        ),
+                      ],
                     ),
-                    SizedBox(height: deviceheight * 0.03),
-                    FittedBox(
-                      fit: BoxFit.fitWidth,
-                      child: Text(
-                        'Mobile Number',
-                        style: theme.textTheme.bodyLarge!.copyWith(
-                            color: AppColors.textColorGrey,
-                            fontWeight: FontWeight.w400,
-                            height: devicewidth * 0.0035,
-                            fontSize: 18),
-                        textAlign: TextAlign.center,
-                        softWrap: true,
-                      ),
-                    ),
-                    ElevatedButton(
-                        onPressed: () {
-                          context.read<HomeUiBloc>().add(ClearUiCacheEvent());
-                          BlocProvider.of<CategoryBlocModel1>(context)
-                              .add(ClearCache());
-                          BlocProvider.of<CategoryBlocModel2>(context)
-                              .add(ClearCacheCM2());
-                          BlocProvider.of<CategoryModel4Bloc>(context)
-                              .add(Clearsubcatproduct1Cache());
-                          BlocProvider.of<CategoryBloc5>(context)
-                              .add(ClearCacheEventCM5());
-                          BlocProvider.of<CategoryBlocModel6>(context)
-                              .add(ClearCacheCM6());
-                          context.read<HomeUiBloc>().add(FetchUiDataEvent());
-                          context.go("/home");
-                        },
-                        child: const Text("Home"))
-                  ],
+                  ),
                 ),
-              ))
-        ],
-      ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }
