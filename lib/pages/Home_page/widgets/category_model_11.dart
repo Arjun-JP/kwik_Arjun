@@ -92,7 +92,7 @@ class CategoryModel11 extends StatelessWidget {
                         height: 48,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10),
-                          color: parseColor("000000"),
+                          color: const Color.fromARGB(255, 255, 243, 208),
                         ),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
