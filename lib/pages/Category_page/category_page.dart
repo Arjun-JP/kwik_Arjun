@@ -26,6 +26,8 @@ import 'package:kwik/pages/Home_page/widgets/category_model_6.dart';
 import 'package:kwik/pages/Home_page/widgets/category_model_7.dart';
 import 'package:kwik/pages/Home_page/widgets/category_model_8.dart';
 import 'package:kwik/pages/Home_page/widgets/category_model_9.dart';
+import 'package:kwik/pages/Home_page/widgets/catergories_page_1.dart';
+
 import 'package:kwik/widgets/navbar/navbar.dart';
 import '../../bloc/category_model1_bloc/category_model1_event.dart';
 import '../../bloc/category_model2_bloc/category_model2_event.dart';
@@ -111,71 +113,33 @@ class _CategoryPageState extends State<CategoryPage> {
               print(uiData["template11"]["subcategories"]);
               final templates = [
                 {
-                  'template': BannerModel1(
-                    titlecolor: uiData["template2"]["title_color"],
-                    bgColor: uiData["template2"]["background_color"],
-                    bannerId: 1,
-                    height: 200,
-                  ),
-                  'order': uiData["template2"]["ui_order_number"]
-                },
-                {
-                  'template': CategoryModel3(
-                    maincategories: List<String>.from(
-                        uiData["template3"]["main_sub_category"]),
-                    secondarycategories: List<String>.from(
-                        uiData["template3"]["secondary_sub_category"]),
-                    categoryId: uiData["template3"]["category_ref"],
-                    bgcolor: uiData["template3"]["background_color"],
-                    titleColor: uiData["template3"]["title_color"],
-                    subcatColor: uiData["template3"]["subcat_color"],
-                  ),
-                  'order': uiData["template3"]["ui_order_number"]
-                },
-                {
-                  'template': CategoryModel3(
-                    maincategories: List<String>.from(
-                        uiData["template4"]["main_sub_category"]),
-                    secondarycategories: List<String>.from(
-                        uiData["template4"]["secondary_sub_category"]),
-                    categoryId: uiData["template4"]["category_ref"],
-                    bgcolor: uiData["template4"]["background_color"],
-                    titleColor: uiData["template4"]["title_color"],
-                    subcatColor: uiData["template4"]["subcat_color"],
-                  ),
-                  'order': uiData["template4"]["ui_order_number"]
-                },
-                {
-                  'template': BannerModel1(
-                    titlecolor: uiData["template5"]["title_color"],
-                    bgColor: uiData["template5"]["background_color"],
-                    bannerId: 3,
-                    height: 300,
-                    padding: 0,
-                    borderradious: 0,
-                  ),
-                  'order': uiData["template5"]["ui_order_number"]
-                },
-                {
-                  'template': CategoryModel4(
-                    mrpColor: uiData["template6"]["mrp_color"],
-                    sellingpricecolor: uiData["template6"]
-                        ["selling_price_color"],
-                    subCategoryId: uiData["template6"]["sub_category_ref"],
-                    bgcolor: uiData["template6"]["background_color"],
-                    titleColor: uiData["template6"]["title_color"],
-                    productColor: uiData["template6"]["subcat_color"],
-                  ),
-                  'order': uiData["template6"]["ui_order_number"]
-                },
-                {
                   'template': CategoryModel2(
                     categoryId: uiData["template7"]["category_ref"],
-                    bgcolor: uiData["template7"]["background_color"],
+                    bgcolor: "FFFFFF",
                     titleColor: uiData["template7"]["title_color"],
                     subcatColor: uiData["template7"]["subcat_color"],
                   ),
-                  'order': uiData["template7"]["ui_order_number"]
+                  'order': "1"
+                },
+                {
+                  'template': CatergoriesPage1(
+                    categoryId: uiData["template7"]["category_ref"],
+                    bgcolor: "FFFFFF",
+                    titleColor: uiData["template7"]["title_color"],
+                    priceColor: "841F4A",
+                    subcatcolor1: "EDDDE4",
+                    subcatcolor2: "FFFFFF",
+                  ),
+                  'order': "2"
+                },
+                {
+                  'template': CategoryModel11(
+                    categoryId: uiData["template7"]["category_ref"],
+                    bgcolor: "D5E9FF",
+                    titleColor: uiData["template7"]["title_color"],
+                    subcatColor: uiData["template7"]["subcat_color"],
+                  ),
+                  'order': "3"
                 },
                 {
                   'template': CategoryModel5(
@@ -193,40 +157,7 @@ class _CategoryPageState extends State<CategoryPage> {
                     categoryName: uiData["template8"]["category_name"],
                     brandImage: uiData["template8"]["brand_image"],
                   ),
-                  'order': uiData["template8"]["ui_order_number"]
-                },
-                {
-                  'template': CategoryModel6(
-                    title: uiData["template9"]["title"],
-                    subcategories: List<String>.from(
-                        uiData["template9"]["sub_categories"]),
-                    bgcolor: uiData["template9"]["background_color"],
-                    titleColor: uiData["template9"]["title_color"],
-                    catnamecolor: uiData["template9"]["subcat_color"],
-                    offertextcolor: uiData["template9"]["offer_text_color"],
-                    offerbgcolor: uiData["template9"]["offer_bg_color"],
-                    catnamebgcolor: uiData["template9"]["subcatbg_color"],
-                  ),
-                  'order': uiData["template9"]["ui_order_number"]
-                },
-                {
-                  'template': CategoryModel7(
-                    subcategoryid: uiData["template10"]["category_ref"],
-                    titleColor: uiData["template10"]["title_color"],
-                    bgcolor: uiData["template10"]["background_color"],
-                    cartbuttontextcolor: uiData["template10"]
-                        ["cartbuttontextcolor"],
-                    mrpcolor: uiData["template10"]["mrpcolor"],
-                    offerBGcolor: uiData["template10"]["offerBGcolor"],
-                    offerTextcolor: uiData["template10"]["offerTextcolor"],
-                    prodoductbgcolor: uiData["template10"]["prodoductbgcolor"],
-                    productTextColor: uiData["template10"]["productTextColor"],
-                    sellingpricecolor: uiData["template10"]
-                        ["sellingpricecolor"],
-                    seeAllButtonBG: uiData["template10"]["seeAllButtonBG"],
-                    seeAllButtontext: uiData["template10"]["seeAllButtontext"],
-                  ),
-                  'order': uiData["template10"]["ui_order_number"]
+                  'order': "4"
                 },
                 {
                   'template': CategoryModel8(
@@ -240,7 +171,50 @@ class _CategoryPageState extends State<CategoryPage> {
                     categorytitlecolor: uiData["template11"]
                         ["subcat_title_color"],
                   ),
-                  'order': uiData["template11"]["ui_order_number"]
+                  'order': "5"
+                },
+                {
+                  'template': CategoryModel10(
+                    title: uiData["template13"]["title"],
+                    titleColor: uiData["template13"]["titleColor"],
+                    bgcolor: uiData["template13"]["background_color"],
+                    image: uiData["template13"]["image"],
+                    cartbuttontextcolor: uiData["template13"]
+                        ["cartbuttontextcolor"],
+                    mrpcolor: uiData["template13"]["mrpcolor"],
+                    crosscolor: uiData["template13"]["crosscolor"],
+                    prodoductbgcolor: uiData["template13"]["prodoductbgcolor"],
+                    productTextColor: uiData["template13"]["productTextColor"],
+                    sellingpricecolor: uiData["template13"]
+                        ["sellingpricecolor"],
+                    seeAllButtonBG: uiData["template13"]["seeAllButtonBG"],
+                    seeAllButtontext: uiData["template13"]["seeAllButtontext"],
+                  ),
+                  'order': "6"
+                },
+                {
+                  'template': CategoryModel3(
+                    maincategories: List<String>.from(
+                        uiData["template3"]["main_sub_category"]),
+                    secondarycategories: List<String>.from(
+                        uiData["template3"]["secondary_sub_category"]),
+                    categoryId: uiData["template3"]["category_ref"],
+                    bgcolor: uiData["template3"]["background_color"],
+                    titleColor: uiData["template3"]["title_color"],
+                    subcatColor: uiData["template3"]["subcat_color"],
+                  ),
+                  'order': "7"
+                },
+                {
+                  'template': BannerModel1(
+                    titlecolor: uiData["template5"]["title_color"],
+                    bgColor: uiData["template5"]["background_color"],
+                    bannerId: 3,
+                    height: 300,
+                    padding: 0,
+                    borderradious: 0,
+                  ),
+                  'order': "8"
                 },
                 {
                   'template': CategoryModel9(
@@ -262,34 +236,6 @@ class _CategoryPageState extends State<CategoryPage> {
                     unitbgcolor: uiData["template12"]["unitbgcolor"],
                   ),
                   'order': uiData["template12"]["ui_order_number"]
-                },
-                {
-                  'template': CategoryModel10(
-                    title: uiData["template13"]["title"],
-                    titleColor: uiData["template13"]["titleColor"],
-                    bgcolor: uiData["template13"]["background_color"],
-                    image: uiData["template13"]["image"],
-                    cartbuttontextcolor: uiData["template13"]
-                        ["cartbuttontextcolor"],
-                    mrpcolor: uiData["template13"]["mrpcolor"],
-                    crosscolor: uiData["template13"]["crosscolor"],
-                    prodoductbgcolor: uiData["template13"]["prodoductbgcolor"],
-                    productTextColor: uiData["template13"]["productTextColor"],
-                    sellingpricecolor: uiData["template13"]
-                        ["sellingpricecolor"],
-                    seeAllButtonBG: uiData["template13"]["seeAllButtonBG"],
-                    seeAllButtontext: uiData["template13"]["seeAllButtontext"],
-                  ),
-                  'order': uiData["template13"]["ui_order_number"]
-                },
-                {
-                  'template': CategoryModel11(
-                    categoryId: uiData["template7"]["category_ref"],
-                    bgcolor: uiData["template7"]["background_color"],
-                    titleColor: uiData["template7"]["title_color"],
-                    subcatColor: uiData["template7"]["subcat_color"],
-                  ),
-                  'order': uiData["template14"]["ui_order_number"]
                 },
                 {'template': const SizedBox(height: 40), 'order': "500"}
               ];
@@ -324,48 +270,18 @@ class _CategoryPageState extends State<CategoryPage> {
                                   end: Alignment.bottomCenter,
                                 ),
                               ),
-                              child: const Padding(
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: 16.0, vertical: 10.0),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    Text(
-                                      "Hi, Arjun ",
-                                      style: TextStyle(
-                                        fontSize: 24,
-                                        fontWeight: FontWeight.bold,
-                                        color: AppColors.textColorblack,
-                                      ),
-                                    ),
-                                    Text(
-                                      "Find your favorite content",
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                        color: Color.fromARGB(179, 92, 92, 92),
-                                      ),
-                                    ),
-                                  ],
+                              child: const Center(
+                                child: Text(
+                                  "All Categories",
+                                  style: TextStyle(
+                                    fontSize: 24,
+                                    fontWeight: FontWeight.bold,
+                                    color: AppColors.textColorblack,
+                                  ),
                                 ),
                               ),
                             ),
                           ),
-                          actions: [
-                            Padding(
-                              padding:
-                                  const EdgeInsets.only(right: 12.0, top: 12),
-                              child: GestureDetector(
-                                onTap: () => context.go('/onboardingScreen'),
-                                child: CircleAvatar(
-                                  radius: 20,
-                                  backgroundColor: Colors.white,
-                                  child: Image.asset(
-                                      "assets/images/User_fill.png"),
-                                ),
-                              ),
-                            ),
-                          ],
                         ),
                         SliverPersistentHeader(
                           pinned: true,
@@ -405,7 +321,7 @@ class _SearchBarDelegate extends SliverPersistentHeaderDelegate {
       BuildContext context, double shrinkOffset, bool overlapsContent) {
     return SafeArea(
       child: Container(
-        color: Color(0xFFFFFFFF),
+        color: const Color(0xFFFFFFFF),
         padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
         child: TextField(
           decoration: InputDecoration(

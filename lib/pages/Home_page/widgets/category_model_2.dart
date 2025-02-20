@@ -13,12 +13,13 @@ class CategoryModel2 extends StatelessWidget {
   final String titleColor;
   final String subcatColor;
 
-  const CategoryModel2(
-      {super.key,
-      required this.categoryId,
-      required this.bgcolor,
-      required this.titleColor,
-      required this.subcatColor});
+  const CategoryModel2({
+    super.key,
+    required this.categoryId,
+    required this.bgcolor,
+    required this.titleColor,
+    required this.subcatColor,
+  });
 
   @override
   Widget build(BuildContext context) {

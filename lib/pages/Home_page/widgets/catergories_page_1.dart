@@ -1,26 +1,32 @@
 import 'package:flutter/material.dart';
+import 'package:kwik/constants/colors.dart';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kwik/bloc/category_model2_bloc/category_model2_event.dart';
 import 'package:kwik/bloc/category_model2_bloc/category_model2_state.dart';
-import 'package:kwik/constants/colors.dart';
+
 import 'package:kwik/repositories/category_model2_repository.dart';
 
 import '../../../bloc/category_model2_bloc/category_model2_bloc.dart';
 
-class CategoryModel11 extends StatelessWidget {
+class CatergoriesPage1 extends StatelessWidget {
   final String categoryId;
   final String bgcolor;
+  final String subcatcolor1;
+  final String subcatcolor2;
   final String titleColor;
-  final String subcatColor;
-  final String? seeContainColor;
+  final String priceColor;
+  final String? vegOrNonIcon;
 
-  const CategoryModel11(
+  const CatergoriesPage1(
       {super.key,
       required this.categoryId,
       required this.bgcolor,
+      required this.subcatcolor1,
+      required this.subcatcolor2,
       required this.titleColor,
-      this.seeContainColor,
-      required this.subcatColor});
+      required this.priceColor,
+      this.vegOrNonIcon});
 
   @override
   Widget build(BuildContext context) {
@@ -37,65 +43,51 @@ class CategoryModel11 extends StatelessWidget {
               } else if (state is CategoryLoaded) {
                 return Container(
                   color: parseColor(bgcolor),
-                  width: MediaQuery.of(context).size.width,
+                  width: double.infinity,
                   padding: const EdgeInsets.symmetric(horizontal: 10),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const SizedBox(height: 15),
-                      Row(
-                        children: [
-                          Expanded(
-                            flex: 5,
-                            child: Text(
-                              state.category.name, // Display main category name
-                              style: TextStyle(
-                                  color: parseColor(titleColor),
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                          Expanded(
-                              flex: 1,
-                              child: Image.network(
-                                "https://firebasestorage.googleapis.com/v0/b/kwikgroceries-8a11e.firebasestorage.app/o/bxs_offer.png?alt=media&token=f6cd9a07-d6f5-4f40-84cb-4748769a0ed9",
-                                height: 50,
-                                width: 50,
-                              ))
-                        ],
+                      Text(
+                        "Nuts, Seeds & Berries",
+                        //state.category.name,
+                        style: TextStyle(
+                            color: parseColor(titleColor),
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold),
                       ),
-                      const SizedBox(height: 12),
+                      const SizedBox(height: 15),
                       SizedBox(
-                        height: 340,
+                        height: 294,
                         width: MediaQuery.of(context).size.width,
                         child: GridView.builder(
                           itemCount: state.subCategories.length,
-                          // scrollDirection: Axis.horizontal,
-                          physics: const NeverScrollableScrollPhysics(),
+                          scrollDirection: Axis.horizontal,
                           gridDelegate:
                               const SliverGridDelegateWithFixedCrossAxisCount(
-                            childAspectRatio: .66,
-                            crossAxisCount: 3,
-                            mainAxisSpacing: 25,
-                            crossAxisSpacing: 25,
+                            childAspectRatio: 1.0,
+                            crossAxisCount: 2,
+                            mainAxisSpacing: 10,
+                            crossAxisSpacing: 10,
                           ),
                           itemBuilder: (context, index) {
                             return subcategoryItem(
                                 name: state.subCategories[index].name,
                                 bgcolor: state.category.color,
-                                textcolor: subcatColor,
+                                textcolor: titleColor,
                                 imageurl: state.subCategories[index].imageUrl);
                           },
                         ),
                       ),
+                      const SizedBox(height: 15),
                       Container(
                         width: MediaQuery.of(context).size.width,
                         height: 48,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10),
-                          color: parseColor(seeContainColor) ??
-                              const Color.fromARGB(255, 255, 243, 208),
+                          color: parseColor(subcatcolor1),
                         ),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -104,9 +96,9 @@ class CategoryModel11 extends StatelessWidget {
                               flex: 5,
                               child: Align(
                                 alignment: Alignment.centerRight,
-                                child: Text('See all products',
+                                child: Text('See all Categories',
                                     style: TextStyle(
-                                        color: parseColor("000000"),
+                                        color: parseColor(priceColor),
                                         fontSize: 18)),
                               ),
                             ),
@@ -116,15 +108,17 @@ class CategoryModel11 extends StatelessWidget {
                                 alignment: Alignment.centerRight,
                                 child: Padding(
                                   padding: const EdgeInsets.only(right: 14.0),
-                                  child: Icon(Icons.arrow_forward,
-                                      color: parseColor("000000")),
+                                  child: Icon(
+                                    Icons.arrow_forward,
+                                    color: parseColor(priceColor),
+                                  ),
                                 ),
                               ),
-                            ),
+                            )
                           ],
                         ),
                       ),
-                      const SizedBox(height: 10)
+                      const SizedBox(height: 15),
                     ],
                   ),
                 );
@@ -144,62 +138,86 @@ class CategoryModel11 extends StatelessWidget {
       required String bgcolor,
       required String textcolor,
       required String imageurl}) {
-    return Column(
-      children: [
-        Stack(
-          children: [
-            Container(
-              height: 120,
-              width: 100,
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8),
-                  color: parseColor(bgcolor),
-                  image: DecorationImage(
-                      image: NetworkImage(imageurl), fit: BoxFit.fill)),
-            ),
-            Positioned(
-              top: 30,
-              child: Container(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 1, horizontal: 10),
-                decoration: BoxDecoration(
-                    color: parseColor(seeContainColor) ?? Colors.amber,
-                    borderRadius: const BorderRadius.only(
-                        topRight: Radius.circular(10),
-                        bottomRight: Radius.circular(10))),
-                child: const Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
+    return Container(
+      width: 100,
+      height: 73,
+      padding: const EdgeInsets.only(left: 8, top: 8.0),
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12),
+          gradient: LinearGradient(
+            colors: [
+              parseColor(subcatcolor1),
+              parseColor(subcatcolor2),
+              parseColor(subcatcolor1)
+            ],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          )),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Image.asset(
+                'assets/images/vegicon.png',
+                height: 20,
+                width: 20,
+              ),
+              const SizedBox(height: 5),
+              Text(
+                "Seeds &\nBerries",
+                style: TextStyle(
+                  fontSize: 16,
+                  color: parseColor(titleColor),
+                ),
+              ),
+              const SizedBox(height: 5),
+              const Text(
+                "Starts at",
+                style: TextStyle(fontSize: 12, color: AppColors.kgreyColorlite),
+              ),
+              const SizedBox(height: 3),
+              RichText(
+                text: TextSpan(
+                  text: "₹",
+                  style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      color: parseColor(priceColor)),
                   children: [
-                    Text(
-                      "Upto",
-                      style:
-                          TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
+                    TextSpan(
+                      text: "330",
+                      style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: parseColor(priceColor)),
                     ),
-                    Text(
-                      "20% OFF",
-                      style:
-                          TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
+                    TextSpan(
+                      text: "/kg",
+                      style: TextStyle(
+                          fontSize: 12, color: parseColor(priceColor)),
                     ),
                   ],
                 ),
               ),
-            ),
-            // Text(
-            //   name,
-            //   style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
-            // ),
-          ],
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10.0),
-          child: Text(
-            name,
-            maxLines: 2,
-            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+            ],
           ),
-        ),
-      ],
+          const Spacer(),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(12),
+            child: Transform.rotate(
+              angle: -0.2,
+              child: Image.network(
+                imageurl,
+                width: 50,
+                height: 200,
+                fit: BoxFit.fill,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
