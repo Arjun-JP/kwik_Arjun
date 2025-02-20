@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:kwik/bloc/Auth_bloc/auth_bloc.dart';
 import 'package:kwik/bloc/banner_bloc/banner_bloc.dart';
 import 'package:kwik/bloc/category_bloc/category_bloc.dart';
 import 'package:kwik/bloc/category_model1_bloc/category_model1_bloc.dart';
@@ -88,6 +89,9 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
+        BlocProvider<AuthBloc>(
+          create: (_) => AuthBloc(),
+        ),
         BlocProvider<HomeUiBloc>(
             create: (_) => HomeUiBloc(uiRepository: HomeUiRepository())),
         BlocProvider<CategoryBloc>(
