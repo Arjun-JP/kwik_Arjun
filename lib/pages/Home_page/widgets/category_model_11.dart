@@ -13,6 +13,8 @@ class CategoryModel11 extends StatelessWidget {
   final String titleColor;
   final String subcatColor;
   final String? seeContainColor;
+  final String description;
+  final String brandIcon;
 
   const CategoryModel11(
       {super.key,
@@ -20,6 +22,8 @@ class CategoryModel11 extends StatelessWidget {
       required this.bgcolor,
       required this.titleColor,
       this.seeContainColor,
+      required this.description,
+      required this.brandIcon,
       required this.subcatColor});
 
   @override
@@ -48,20 +52,23 @@ class CategoryModel11 extends StatelessWidget {
                         children: [
                           Expanded(
                             flex: 5,
-                            child: Text(
-                              state.category.name, // Display main category name
-                              style: TextStyle(
-                                  color: parseColor(titleColor),
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold),
+                            child: Row(
+                              children: [
+                                Text(
+                                  state.category
+                                      .name, // Display main category name
+                                  style: TextStyle(
+                                      color: parseColor(titleColor),
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ],
                             ),
                           ),
                           Expanded(
                               flex: 1,
                               child: Image.network(
-                                "https://firebasestorage.googleapis.com/v0/b/kwikgroceries-8a11e.firebasestorage.app/o/bxs_offer.png?alt=media&token=f6cd9a07-d6f5-4f40-84cb-4748769a0ed9",
-                                height: 50,
-                                width: 50,
+                                brandIcon,
                               ))
                         ],
                       ),
@@ -94,8 +101,7 @@ class CategoryModel11 extends StatelessWidget {
                         height: 48,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10),
-                          color: parseColor(seeContainColor) ??
-                              const Color.fromARGB(255, 255, 243, 208),
+                          color: parseColor(seeContainColor),
                         ),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,

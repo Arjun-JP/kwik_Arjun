@@ -221,6 +221,7 @@ class _HomePageState extends State<HomePage> {
                 },
                 {
                   'template': CategoryModel7(
+                    flashSaleBanner: false,
                     subcategoryid: uiData["template10"]["category_ref"],
                     titleColor: uiData["template10"]["title_color"],
                     bgcolor: uiData["template10"]["background_color"],
@@ -240,6 +241,7 @@ class _HomePageState extends State<HomePage> {
                 },
                 {
                   'template': CategoryModel8(
+                    seeAllProducts: false,
                     bgColor: uiData["template11"]["background_color"],
                     categoryBG: uiData["template11"]["subcategorybg"],
                     iconBGcolor: uiData["template11"]["icon_bg_color"],
@@ -294,10 +296,13 @@ class _HomePageState extends State<HomePage> {
                 },
                 {
                   'template': CategoryModel11(
+                    description: "",
                     categoryId: uiData["template7"]["category_ref"],
                     bgcolor: uiData["template7"]["background_color"],
                     titleColor: uiData["template7"]["title_color"],
                     subcatColor: uiData["template7"]["subcat_color"],
+                    brandIcon:
+                        "https://firebasestorage.googleapis.com/v0/b/kwikgroceries-8a11e.firebasestorage.app/o/bxs_offer.png?alt=media&token=f6cd9a07-d6f5-4f40-84cb-4748769a0ed9",
                   ),
                   'order': uiData["template14"]["ui_order_number"]
                 },

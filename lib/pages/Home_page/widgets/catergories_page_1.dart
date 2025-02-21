@@ -67,9 +67,9 @@ class CatergoriesPage1 extends StatelessWidget {
                           scrollDirection: Axis.horizontal,
                           gridDelegate:
                               const SliverGridDelegateWithFixedCrossAxisCount(
-                            childAspectRatio: 1.0,
+                            childAspectRatio: 1.2,
                             crossAxisCount: 2,
-                            mainAxisSpacing: 10,
+                            mainAxisSpacing: 8,
                             crossAxisSpacing: 10,
                           ),
                           itemBuilder: (context, index) {

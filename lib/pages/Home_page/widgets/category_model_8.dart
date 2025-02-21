@@ -14,17 +14,18 @@ class CategoryModel8 extends StatefulWidget {
   final String categoryBG;
   final String iconBGcolor;
   final String iconcolor;
-  const CategoryModel8({
-    super.key,
-    required this.title,
-    required this.bgColor,
-    required this.categories,
-    required this.titlecolor,
-    required this.categorytitlecolor,
-    required this.categoryBG,
-    required this.iconBGcolor,
-    required this.iconcolor,
-  });
+  final bool seeAllProducts;
+  const CategoryModel8(
+      {super.key,
+      required this.title,
+      required this.bgColor,
+      required this.categories,
+      required this.titlecolor,
+      required this.categorytitlecolor,
+      required this.categoryBG,
+      required this.iconBGcolor,
+      required this.iconcolor,
+      required this.seeAllProducts});
 
   @override
   State<CategoryModel8> createState() => _CategoryModel8State();
@@ -166,7 +167,40 @@ class _CategoryModel8State extends State<CategoryModel8> {
                         }
                       }).toList(),
                     ),
-                    const SizedBox(height: 10),
+                    const SizedBox(height: 20),
+                    widget.seeAllProducts
+                        ? Container(
+                            width: MediaQuery.of(context).size.width,
+                            height: 48,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                color: const Color(0xFFEEF3F2)),
+                            child: const Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Expanded(
+                                  flex: 5,
+                                  child: Align(
+                                    alignment: Alignment.centerRight,
+                                    child: Text('See all products',
+                                        style: TextStyle(
+                                            color: Colors.black, fontSize: 18)),
+                                  ),
+                                ),
+                                Expanded(
+                                  flex: 2,
+                                  child: Align(
+                                    alignment: Alignment.centerRight,
+                                    child: Padding(
+                                      padding: EdgeInsets.only(right: 14.0),
+                                      child: Icon(Icons.arrow_forward),
+                                    ),
+                                  ),
+                                )
+                              ],
+                            ),
+                          )
+                        : SizedBox.shrink()
                   ],
                 ),
               ),

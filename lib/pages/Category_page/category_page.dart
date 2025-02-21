@@ -4,26 +4,25 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kwik/bloc/category_model1_bloc/category_model1_bloc.dart';
 import 'package:kwik/bloc/category_model2_bloc/category_model2_bloc.dart';
-import 'package:kwik/bloc/category_model_4_bloc/category_model_4_bloc.dart';
+
 import 'package:kwik/bloc/category_model_5__Bloc/category_model5__bloc.dart';
 import 'package:kwik/bloc/category_model_5__Bloc/category_model5__event.dart';
-import 'package:kwik/bloc/category_model_6_bloc/category_model_6_bloc.dart';
-import 'package:kwik/bloc/category_model_6_bloc/category_model_6_event.dart';
+
 import 'package:kwik/bloc/category_model_9_bloc/category_model_9_bloc.dart';
 import 'package:kwik/bloc/home_Ui_bloc/home_Ui_Bloc.dart';
 import 'package:kwik/bloc/home_Ui_bloc/home_Ui_Event.dart';
 import 'package:kwik/bloc/home_Ui_bloc/home_Ui_State.dart';
 import 'package:kwik/bloc/navbar_bloc/navbar_bloc.dart';
 import 'package:kwik/pages/Home_page/widgets/banner_model.dart';
-import 'package:kwik/pages/Home_page/widgets/category_model_1.dart';
+import 'package:kwik/pages/Home_page/widgets/categories_page_2.dart';
+
 import 'package:kwik/pages/Home_page/widgets/category_model_10.dart';
 import 'package:kwik/pages/Home_page/widgets/category_model_11.dart';
 import 'package:kwik/pages/Home_page/widgets/category_model_2.dart';
 import 'package:kwik/pages/Home_page/widgets/category_model_3.dart';
-import 'package:kwik/pages/Home_page/widgets/category_model_4.dart';
+
 import 'package:kwik/pages/Home_page/widgets/category_model_5.dart';
-import 'package:kwik/pages/Home_page/widgets/category_model_6.dart';
-import 'package:kwik/pages/Home_page/widgets/category_model_7.dart';
+
 import 'package:kwik/pages/Home_page/widgets/category_model_8.dart';
 import 'package:kwik/pages/Home_page/widgets/category_model_9.dart';
 import 'package:kwik/pages/Home_page/widgets/catergories_page_1.dart';
@@ -31,11 +30,7 @@ import 'package:kwik/pages/Home_page/widgets/catergories_page_1.dart';
 import 'package:kwik/widgets/navbar/navbar.dart';
 import '../../bloc/category_model1_bloc/category_model1_event.dart';
 import '../../bloc/category_model2_bloc/category_model2_event.dart';
-import '../../bloc/category_model_10_bloc/category_model_10_bloc.dart';
-import '../../bloc/category_model_10_bloc/category_model_10_event.dart';
-import '../../bloc/category_model_4_bloc/category_model_4_event.dart';
-import '../../bloc/category_model_7_bloc/category_model_7_bloc.dart';
-import '../../bloc/category_model_7_bloc/category_model_7_event.dart';
+
 import '../../bloc/category_model_9_bloc/category_model_9_event.dart';
 import '../../bloc/navbar_bloc/navbar_event.dart';
 import '../../constants/colors.dart';
@@ -52,15 +47,11 @@ class _CategoryPageState extends State<CategoryPage> {
     context.read<HomeUiBloc>().add(ClearUiCacheEvent());
     BlocProvider.of<CategoryBlocModel1>(context).add(ClearCache());
     BlocProvider.of<CategoryBlocModel2>(context).add(ClearCacheCM2());
-    BlocProvider.of<CategoryModel4Bloc>(context)
-        .add(Clearsubcatproduct1Cache());
+
     BlocProvider.of<CategoryBloc5>(context).add(ClearCacheEventCM5());
-    BlocProvider.of<CategoryBlocModel6>(context).add(ClearCacheCM6());
-    BlocProvider.of<CategoryModel7Bloc>(context)
-        .add(Clearsubcatproduct7Cache());
+
     BlocProvider.of<CategoryBloc9>(context).add(ClearCacheEventCM9());
-    BlocProvider.of<CategoryModel10Bloc>(context)
-        .add(Clearsubcatproduct10Cache());
+
     context.read<HomeUiBloc>().add(FetchUiDataEvent());
   }
 
@@ -138,8 +129,24 @@ class _CategoryPageState extends State<CategoryPage> {
                     bgcolor: "D5E9FF",
                     titleColor: uiData["template7"]["title_color"],
                     subcatColor: uiData["template7"]["subcat_color"],
+                    description: '',
+                    brandIcon:
+                        "https://firebasestorage.googleapis.com/v0/b/kwikgroceries-8a11e.firebasestorage.app/o/bxs_offer.png?alt=media&token=f6cd9a07-d6f5-4f40-84cb-4748769a0ed9",
                   ),
                   'order': "3"
+                },
+                {
+                  'template': CategoriesPage2(
+                    subCategoryId: uiData["template6"]["sub_category_ref"],
+                    bgColor: "FFFFF3",
+                    productColor: "FFE8DE",
+                    titleColor: "FF3B30",
+                    mrpBgColor: "FFFA76",
+                    sellTextColor: "FFFFFF",
+                    mrpTextColor: "000000",
+                    sellPriceBgColor: "FF3B30",
+                  ),
+                  'order': "4"
                 },
                 {
                   'template': CategoryModel5(
@@ -157,10 +164,11 @@ class _CategoryPageState extends State<CategoryPage> {
                     categoryName: uiData["template8"]["category_name"],
                     brandImage: uiData["template8"]["brand_image"],
                   ),
-                  'order': "4"
+                  'order': "5"
                 },
                 {
                   'template': CategoryModel8(
+                    seeAllProducts: true,
                     bgColor: uiData["template11"]["background_color"],
                     categoryBG: uiData["template11"]["subcategorybg"],
                     iconBGcolor: uiData["template11"]["icon_bg_color"],
@@ -171,7 +179,7 @@ class _CategoryPageState extends State<CategoryPage> {
                     categorytitlecolor: uiData["template11"]
                         ["subcat_title_color"],
                   ),
-                  'order': "5"
+                  'order': "6"
                 },
                 {
                   'template': CategoryModel10(
@@ -190,19 +198,6 @@ class _CategoryPageState extends State<CategoryPage> {
                     seeAllButtonBG: uiData["template13"]["seeAllButtonBG"],
                     seeAllButtontext: uiData["template13"]["seeAllButtontext"],
                   ),
-                  'order': "6"
-                },
-                {
-                  'template': CategoryModel3(
-                    maincategories: List<String>.from(
-                        uiData["template3"]["main_sub_category"]),
-                    secondarycategories: List<String>.from(
-                        uiData["template3"]["secondary_sub_category"]),
-                    categoryId: uiData["template3"]["category_ref"],
-                    bgcolor: uiData["template3"]["background_color"],
-                    titleColor: uiData["template3"]["title_color"],
-                    subcatColor: uiData["template3"]["subcat_color"],
-                  ),
                   'order': "7"
                 },
                 {
@@ -217,27 +212,42 @@ class _CategoryPageState extends State<CategoryPage> {
                   'order': "8"
                 },
                 {
-                  'template': CategoryModel9(
-                    maincategories: List<String>.from(
-                        uiData["template12"]["maincategories"]),
-                    categoryId: uiData["template12"]["categoryId"],
-                    bgcolor: uiData["template12"]["bgcolor"],
-                    titleColor: uiData["template12"]["titleColor"],
-                    subcatColor: uiData["template12"]["offerBGcolor"],
-                    offerBGcolor: uiData["template12"]["offerBGcolor"],
-                    mrpColor: uiData["template12"]["mrpColor"],
-                    productBgColor: uiData["template12"]["productBgColor"],
-                    sellingPriceColor: uiData["template12"]
-                        ["sellingPriceColor"],
-                    buttontextcolor: uiData["template12"]["buttontextcolor"],
-                    offerTextcolor: uiData["template12"]["offerTextcolor"],
-                    title: uiData["template12"]["title"],
-                    unitTextcolor: uiData["template12"]["unitTextcolor"],
-                    unitbgcolor: uiData["template12"]["unitbgcolor"],
+                  'template': CategoryModel11(
+                    brandIcon:
+                        "https://firebasestorage.googleapis.com/v0/b/kwikgroceries-8a11e.firebasestorage.app/o/image%2023.png?alt=media&token=9925215f-e0eb-4a12-8431-281cea504c44",
+                    categoryId: uiData["template7"]["category_ref"],
+                    bgcolor: "D5E9FF",
+                    titleColor: uiData["template7"]["title_color"],
+                    subcatColor: uiData["template7"]["subcat_color"],
+                    description:
+                        'Taste the Authenticity with Amul – India\'s Favorite Dairy Brand',
                   ),
                   'order': uiData["template12"]["ui_order_number"]
                 },
-                {'template': const SizedBox(height: 40), 'order': "500"}
+
+                // {
+                //   'template': CategoryModel9(
+                //     maincategories: List<String>.from(
+                //         uiData["template12"]["maincategories"]),
+                //     categoryId: uiData["template12"]["categoryId"],
+                //     bgcolor: uiData["template12"]["bgcolor"],
+                //     titleColor: uiData["template12"]["titleColor"],
+                //     subcatColor: uiData["template12"]["offerBGcolor"],
+                //     offerBGcolor: uiData["template12"]["offerBGcolor"],
+                //     mrpColor: uiData["template12"]["mrpColor"],
+                //     productBgColor: uiData["template12"]["productBgColor"],
+                //     sellingPriceColor: uiData["template12"]
+                //         ["sellingPriceColor"],
+                //     buttontextcolor: uiData["template12"]["buttontextcolor"],
+                //     offerTextcolor: uiData["template12"]["offerTextcolor"],
+                //     title: uiData["template12"]["title"],
+                //     unitTextcolor: uiData["template12"]["unitTextcolor"],
+                //     unitbgcolor: uiData["template12"]["unitbgcolor"],
+                //   ),
+                //   'order': uiData["template12"]["ui_order_number"]
+                // },
+
+                //  {'template': const SizedBox(height: 40), 'order': "500"}
               ];
 
               templates.sort((a, b) =>

@@ -22,6 +22,7 @@ class CategoryModel7 extends StatelessWidget {
   final String offerBGcolor;
   final String seeAllButtonBG;
   final String seeAllButtontext;
+  final bool flashSaleBanner;
 
   const CategoryModel7({
     super.key,
@@ -37,6 +38,7 @@ class CategoryModel7 extends StatelessWidget {
     required this.seeAllButtonBG,
     required this.seeAllButtontext,
     required this.subcategoryid,
+    required this.flashSaleBanner
   });
 
   @override
