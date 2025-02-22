@@ -126,7 +126,8 @@ Widget productItem(
       borderRadius: BorderRadius.circular(8),
       color: parseColor(productColor),
     ),
-    child: Column(
+    child: 
+    Column(
       children: [
         Expanded(
           flex: 1,

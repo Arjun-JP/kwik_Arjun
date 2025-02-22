@@ -38,7 +38,8 @@ class _SplashScreenState extends State<SplashScreen> {
                 begin: deviceheight * 0.1474, end: 500), //deviceheight*0.1474
             curve: Curves.bounceInOut,
             duration: Duration(seconds: 3),
-            builder: (context, value, child) => Image.asset(
+            builder: (context, value, child) => 
+            Image.asset(
               "assets/images/Screenshot 2025-01-31 at 6.20.37 PM.jpeg",
               height: value,
               width: value,

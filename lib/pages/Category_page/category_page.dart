@@ -15,6 +15,8 @@ import 'package:kwik/bloc/home_Ui_bloc/home_Ui_State.dart';
 import 'package:kwik/bloc/navbar_bloc/navbar_bloc.dart';
 import 'package:kwik/pages/Home_page/widgets/banner_model.dart';
 import 'package:kwik/pages/Home_page/widgets/categories_page_2.dart';
+import 'package:kwik/pages/Home_page/widgets/categories_page_3.dart';
+import 'package:kwik/pages/Home_page/widgets/categories_page_4.dart';
 
 import 'package:kwik/pages/Home_page/widgets/category_model_10.dart';
 import 'package:kwik/pages/Home_page/widgets/category_model_11.dart';
@@ -26,6 +28,7 @@ import 'package:kwik/pages/Home_page/widgets/category_model_5.dart';
 import 'package:kwik/pages/Home_page/widgets/category_model_8.dart';
 import 'package:kwik/pages/Home_page/widgets/category_model_9.dart';
 import 'package:kwik/pages/Home_page/widgets/catergories_page_1.dart';
+import 'package:kwik/pages/Home_page/widgets/descriptive_widget.dart';
 
 import 'package:kwik/widgets/navbar/navbar.dart';
 import '../../bloc/category_model1_bloc/category_model1_event.dart';
@@ -211,6 +214,7 @@ class _CategoryPageState extends State<CategoryPage> {
                   ),
                   'order': "8"
                 },
+
                 {
                   'template': CategoryModel11(
                     brandIcon:
@@ -222,8 +226,32 @@ class _CategoryPageState extends State<CategoryPage> {
                     description:
                         'Taste the Authenticity with Amul – India\'s Favorite Dairy Brand',
                   ),
-                  'order': uiData["template12"]["ui_order_number"]
+                  'order': "9"
                 },
+                {
+                  'template': CategoriesPage4(
+                    productColor: "F1F7FE",
+                    categoryId: uiData["template3"]["category_ref"],
+                    maincategories: List<String>.from(
+                        uiData["template3"]["main_sub_category"]),
+                    titleColor: "1E7098",
+                    bgcolor: "DDEDFC",
+                    categoryName: 'WINTER COLLECTIONS',
+                    offerPercent: "85%",
+                  ),
+                  'order': "10"
+                },
+
+                {
+                  'template': const DescriptiveWidget(
+                    textColor: '989898',
+                    info: 'Delivery\nAlways on Your Time',
+                    title: "Kwik Delivery",
+                    logo:
+                        "assets/images/Screenshot 2025-01-31 at 6.20.37 PM.jpeg",
+                  ),
+                  'order': uiData["template12"]["ui_order_number"]
+                }
 
                 // {
                 //   'template': CategoryModel9(
