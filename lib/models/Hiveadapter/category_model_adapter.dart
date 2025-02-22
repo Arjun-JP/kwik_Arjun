@@ -15,6 +15,8 @@ class CategoryAdapter extends TypeAdapter<Category> {
     final color = reader.readString();
     final visibility = reader.readBool();
     final createdTime = reader.readString();
+    final bannerImage = reader.readString();
+    final isDeleted = reader.readBool();
 
     return Category(
       catref: catref,
@@ -25,6 +27,8 @@ class CategoryAdapter extends TypeAdapter<Category> {
       color: color,
       visibility: visibility,
       createdTime: createdTime,
+      bannerImage: bannerImage,
+      isDeleted: isDeleted,
     );
   }
 
@@ -39,5 +43,7 @@ class CategoryAdapter extends TypeAdapter<Category> {
     writer.writeBool(obj.visibility ?? true); // Handle null visibility
     writer.writeString(obj.createdTime ??
         DateTime.now().toString()); // Handle null createdTime
+    writer.writeString(obj.bannerImage);
+    writer.writeBool(obj.isDeleted);
   }
 }

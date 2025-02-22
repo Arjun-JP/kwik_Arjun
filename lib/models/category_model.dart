@@ -28,6 +28,12 @@ class Category {
   @HiveField(7)
   final String? createdTime; // Optional field
 
+  @HiveField(8)
+  final String bannerImage; // New field for banner image
+
+  @HiveField(9)
+  final bool isDeleted; // New field for deletion status
+
   Category({
     required this.catref,
     required this.id,
@@ -35,6 +41,8 @@ class Category {
     required this.description,
     required this.imageUrl,
     required this.color,
+    required this.bannerImage,
+    required this.isDeleted,
     this.visibility,
     this.createdTime,
   });
@@ -52,10 +60,13 @@ class Category {
       visibility: json['visibility'] ?? true, // Handle null visibility
       createdTime: json['created_time'] ??
           DateTime.now().toString(), // Handle null createdTime
+      bannerImage:
+          json['category_banner_image'] ?? "", // Handle null banner image
+      isDeleted: json['isDeleted'] ?? false, // Handle null isDeleted
     );
   }
 
-  // Add the toJson method
+  // Convert Category object to JSON
   Map<String, dynamic> toJson() {
     return {
       '_id': catref,
@@ -66,6 +77,8 @@ class Category {
       'color': color,
       'visibility': visibility,
       'created_time': createdTime,
+      'banner_image': bannerImage,
+      'is_deleted': isDeleted,
     };
   }
 
@@ -78,6 +91,8 @@ class Category {
       description: '',
       imageUrl: '',
       color: 'FFFFFF',
+      bannerImage: '',
+      isDeleted: false,
       visibility: true,
       createdTime: DateTime.now().toString(),
     );
