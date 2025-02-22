@@ -23,6 +23,8 @@ class CategoryAdapter extends TypeAdapter<Category> {
       description: fields[3] as String,
       imageUrl: fields[4] as String,
       color: fields[5] as String,
+      bannerImage: fields[8] as String,
+      isDeleted: fields[9] as bool,
       visibility: fields[6] as bool?,
       createdTime: fields[7] as String?,
     );
@@ -31,7 +33,7 @@ class CategoryAdapter extends TypeAdapter<Category> {
   @override
   void write(BinaryWriter writer, Category obj) {
     writer
-      ..writeByte(8)
+      ..writeByte(10)
       ..writeByte(0)
       ..write(obj.catref)
       ..writeByte(1)
@@ -47,7 +49,11 @@ class CategoryAdapter extends TypeAdapter<Category> {
       ..writeByte(6)
       ..write(obj.visibility)
       ..writeByte(7)
-      ..write(obj.createdTime);
+      ..write(obj.createdTime)
+      ..writeByte(8)
+      ..write(obj.bannerImage)
+      ..writeByte(9)
+      ..write(obj.isDeleted);
   }
 
   @override
