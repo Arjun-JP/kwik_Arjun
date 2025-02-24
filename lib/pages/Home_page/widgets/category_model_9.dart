@@ -265,11 +265,12 @@ Widget productItem({
             ),
           ),
         ),
-        // Adjusted "Add" button to be slightly outside the container
+  
         Positioned(
           top: 85,
-          right: -10, // Moves it more outside the right boundary
-          child: Container(
+          right: -10,
+          child:
+           Container(
             height: 35,
             padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 15),
             decoration: BoxDecoration(
@@ -278,10 +279,10 @@ Widget productItem({
               border: Border.all(color: parseColor(buttontextcolor)),
               boxShadow: [
                 BoxShadow(
-                  color: parseColor(buttontextcolor).withOpacity(0.2),
+                  color: parseColor(buttontextcolor),
                   blurRadius: 4,
                   spreadRadius: 2,
-                  offset: const Offset(2, 2), // Adds a floating effect
+                  offset: const Offset(2, 2),
                 ),
               ],
             ),
