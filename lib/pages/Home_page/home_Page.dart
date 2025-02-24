@@ -296,11 +296,16 @@ class _HomePageState extends State<HomePage> {
                 },
                 {
                   'template': CategoryModel11(
+                         percentBgColor:'B8E1FF',
+                    descriptionTextColor: '',
+                    percentDisplayPosition: 30,
+                    titleTopDisplayPosition: false,
                     description: "",
                     categoryId: uiData["template7"]["category_ref"],
-                    bgcolor: uiData["template7"]["background_color"],
+                    bgcolor: "D5E9FF",
                     titleColor: uiData["template7"]["title_color"],
                     subcatColor: uiData["template7"]["subcat_color"],
+                    seeContainColor: "B8E1FF",
                     brandIcon:
                         "https://firebasestorage.googleapis.com/v0/b/kwikgroceries-8a11e.firebasestorage.app/o/bxs_offer.png?alt=media&token=f6cd9a07-d6f5-4f40-84cb-4748769a0ed9",
                   ),

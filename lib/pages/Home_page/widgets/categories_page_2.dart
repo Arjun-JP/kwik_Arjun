@@ -39,66 +39,70 @@ class CategoriesPage2 extends StatelessWidget {
           if (state is CategoryModel4Loading) {
             return const Center(child: CircularProgressIndicator());
           } else if (state is CategoryModel4Loaded) {
-            return Container(
-              color: parseColor(bgColor),
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  const Text(
-                    "ONLY FOR YOU",
-                    style: TextStyle(
-                      color: Colors.grey,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  RichText(
-                    text: TextSpan(
-                      text: state.products.first.subCategoryRef.name,
+            return Padding(
+              padding: const EdgeInsets.only(top: 10.0, bottom: 10.0),
+              child: Container(
+                color: parseColor(bgColor),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const Text(
+                      "ONLY FOR YOU",
                       style: TextStyle(
-                        color: parseColor(titleColor),
+                        color: Colors.grey,
                         fontSize: 18,
+                        fontWeight: FontWeight.bold,
                       ),
-                      children: [
-                        const TextSpan(
-                          text: " Prices ",
-                          style: TextStyle(color: AppColors.kblackColor),
-                        ),
-                        WidgetSpan(
-                          child: Icon(Icons.trending_down,
-                              color: parseColor(titleColor), size: 18),
-                        ),
-                      ],
                     ),
-                  ),
-                  const SizedBox(height: 30),
-                  GridView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 3,
-                      childAspectRatio: 0.8,
-                      crossAxisSpacing: 20,
-                      mainAxisSpacing: 50,
+                    const SizedBox(height: 10),
+                    RichText(
+                      text: TextSpan(
+                        text: state.products.first.subCategoryRef.name,
+                        style: TextStyle(
+                          color: parseColor(titleColor),
+                          fontSize: 18,
+                        ),
+                        children: [
+                          const TextSpan(
+                            text: " Prices ",
+                            style: TextStyle(color: AppColors.kblackColor),
+                          ),
+                          WidgetSpan(
+                            child: Icon(Icons.trending_down,
+                                color: parseColor(titleColor), size: 18),
+                          ),
+                        ],
+                      ),
                     ),
-                    itemCount: 6,
-                    itemBuilder: (context, index) {
-                      return productItem(
-                          imageurl: state.products[index].productImages.first,
-                          price: "₹30",
-                          mrp: "MRP ₹48",
-                          productColor: productColor,
-                          mrpBgColor: mrpBgColor,
-                          mrpTextColor: mrpTextColor,
-                          sellPriceBgColor: sellPriceBgColor,
-                          sellTextColor: sellTextColor);
-                    },
-                  ),
-                  const SizedBox(height: 10),
-                ],
+                    const SizedBox(height: 30),
+                    GridView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 3,
+                        childAspectRatio: 0.8,
+                        crossAxisSpacing: 20,
+                        mainAxisSpacing: 50,
+                      ),
+                      itemCount: 6,
+                      itemBuilder: (context, index) {
+                        return productItem(
+                            imageurl: state.products[index].productImages.first,
+                            price: "₹30",
+                            mrp: "MRP ₹48",
+                            productColor: productColor,
+                            mrpBgColor: mrpBgColor,
+                            mrpTextColor: mrpTextColor,
+                            sellPriceBgColor: sellPriceBgColor,
+                            sellTextColor: sellTextColor);
+                      },
+                    ),
+                    const SizedBox(height: 10),
+                  ],
+                ),
               ),
             );
           } else if (state is CategoryModel4Error) {
@@ -126,8 +130,7 @@ Widget productItem(
       borderRadius: BorderRadius.circular(8),
       color: parseColor(productColor),
     ),
-    child: 
-    Column(
+    child: Column(
       children: [
         Expanded(
           flex: 1,

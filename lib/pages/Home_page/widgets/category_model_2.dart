@@ -37,7 +37,7 @@ class CategoryModel2 extends StatelessWidget {
                 return Container(
                   color: parseColor(bgcolor),
                   width: double.infinity,
-                  height: 350,
+                  height: 360,
                   padding: const EdgeInsets.symmetric(horizontal: 10),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
@@ -73,7 +73,8 @@ class CategoryModel2 extends StatelessWidget {
                                 imageurl: state.subCategories[index].imageUrl);
                           },
                         ),
-                      )
+                      ),
+                      const SizedBox(height: 10),
                     ],
                   ),
                 );

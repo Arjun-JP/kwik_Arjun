@@ -24,22 +24,21 @@ class CategoryModel7 extends StatelessWidget {
   final String seeAllButtontext;
   final bool flashSaleBanner;
 
-  const CategoryModel7({
-    super.key,
-    required this.bgcolor,
-    required this.titleColor,
-    required this.prodoductbgcolor,
-    required this.productTextColor,
-    required this.mrpcolor,
-    required this.sellingpricecolor,
-    required this.cartbuttontextcolor,
-    required this.offerTextcolor,
-    required this.offerBGcolor,
-    required this.seeAllButtonBG,
-    required this.seeAllButtontext,
-    required this.subcategoryid,
-    required this.flashSaleBanner
-  });
+  const CategoryModel7(
+      {super.key,
+      required this.bgcolor,
+      required this.titleColor,
+      required this.prodoductbgcolor,
+      required this.productTextColor,
+      required this.mrpcolor,
+      required this.sellingpricecolor,
+      required this.cartbuttontextcolor,
+      required this.offerTextcolor,
+      required this.offerBGcolor,
+      required this.seeAllButtonBG,
+      required this.seeAllButtontext,
+      required this.subcategoryid,
+      required this.flashSaleBanner});
 
   @override
   Widget build(BuildContext context) {
@@ -108,8 +107,8 @@ class CategoryModel7 extends StatelessWidget {
             height: 48,
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
-                color: const Color(0xFFEEF3F2)),
-            child: const Row(
+                color: parseColor(seeAllButtonBG)),
+            child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Expanded(
@@ -117,7 +116,8 @@ class CategoryModel7 extends StatelessWidget {
                   child: Align(
                     alignment: Alignment.centerRight,
                     child: Text('See all products',
-                        style: TextStyle(color: Colors.black, fontSize: 18)),
+                        style: TextStyle(
+                            color: parseColor(seeAllButtontext), fontSize: 18)),
                   ),
                 ),
                 Expanded(
@@ -126,7 +126,8 @@ class CategoryModel7 extends StatelessWidget {
                     alignment: Alignment.centerRight,
                     child: Padding(
                       padding: EdgeInsets.only(right: 14.0),
-                      child: Icon(Icons.arrow_forward),
+                      child: Icon(Icons.arrow_forward,
+                          color: parseColor(seeAllButtontext)),
                     ),
                   ),
                 )

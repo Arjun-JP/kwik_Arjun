@@ -15,16 +15,26 @@ class CategoryModel11 extends StatelessWidget {
   final String? seeContainColor;
   final String description;
   final String brandIcon;
+  final double percentDisplayPosition;
+  final bool titleTopDisplayPosition;
+  final String descriptionTextColor;
+  final String percentBgColor;
+  
 
-  const CategoryModel11(
-      {super.key,
-      required this.categoryId,
-      required this.bgcolor,
-      required this.titleColor,
-      this.seeContainColor,
-      required this.description,
-      required this.brandIcon,
-      required this.subcatColor});
+  const CategoryModel11({
+    super.key,
+    required this.categoryId,
+    required this.bgcolor,
+    required this.titleColor,
+    this.seeContainColor,
+    required this.description,
+    required this.brandIcon,
+    required this.subcatColor,
+    required this.percentDisplayPosition,
+    required this.titleTopDisplayPosition,
+    required this.descriptionTextColor,
+    required this.percentBgColor,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -47,26 +57,42 @@ class CategoryModel11 extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const SizedBox(height: 15),
                       Row(
                         children: [
                           Expanded(
                             flex: 5,
                             child: Row(
                               children: [
-                                Text(
-                                  state.category
-                                      .name, // Display main category name
-                                  style: TextStyle(
-                                      color: parseColor(titleColor),
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold),
+                                Expanded(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        state.category
+                                            .name, // Display main category name
+                                        style: TextStyle(
+                                            color: parseColor(titleColor),
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      Text(
+                                        description,
+                                        style: TextStyle(
+                                            color: parseColor(
+                                                descriptionTextColor),
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ],
                             ),
                           ),
                           Expanded(
-                              flex: 1,
+                              flex: 2,
                               child: Image.network(
                                 brandIcon,
                               ))
@@ -152,6 +178,17 @@ class CategoryModel11 extends StatelessWidget {
       required String imageurl}) {
     return Column(
       children: [
+        if (titleTopDisplayPosition)
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10.0),
+            child: Text(
+              name,
+              style: const TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ),
         Stack(
           children: [
             Container(
@@ -163,13 +200,14 @@ class CategoryModel11 extends StatelessWidget {
                   image: DecorationImage(
                       image: NetworkImage(imageurl), fit: BoxFit.fill)),
             ),
+
             Positioned(
-              top: 30,
+              top: percentDisplayPosition,
               child: Container(
                 padding:
                     const EdgeInsets.symmetric(vertical: 1, horizontal: 10),
                 decoration: BoxDecoration(
-                    color: parseColor(seeContainColor) ?? Colors.amber,
+                    color: parseColor(percentBgColor),
                     borderRadius: const BorderRadius.only(
                         topRight: Radius.circular(10),
                         bottomRight: Radius.circular(10))),
@@ -197,14 +235,15 @@ class CategoryModel11 extends StatelessWidget {
             // ),
           ],
         ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10.0),
-          child: Text(
-            name,
-            maxLines: 2,
-            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+        if (!titleTopDisplayPosition)
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10.0),
+            child: Text(
+              name,
+              maxLines: 2,
+              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+            ),
           ),
-        ),
       ],
     );
   }

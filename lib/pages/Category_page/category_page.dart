@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:go_router/go_router.dart';
 import 'package:kwik/bloc/category_model1_bloc/category_model1_bloc.dart';
 import 'package:kwik/bloc/category_model2_bloc/category_model2_bloc.dart';
 
@@ -21,12 +20,11 @@ import 'package:kwik/pages/Home_page/widgets/categories_page_4.dart';
 import 'package:kwik/pages/Home_page/widgets/category_model_10.dart';
 import 'package:kwik/pages/Home_page/widgets/category_model_11.dart';
 import 'package:kwik/pages/Home_page/widgets/category_model_2.dart';
-import 'package:kwik/pages/Home_page/widgets/category_model_3.dart';
 
 import 'package:kwik/pages/Home_page/widgets/category_model_5.dart';
+import 'package:kwik/pages/Home_page/widgets/category_model_7.dart';
 
 import 'package:kwik/pages/Home_page/widgets/category_model_8.dart';
-import 'package:kwik/pages/Home_page/widgets/category_model_9.dart';
 import 'package:kwik/pages/Home_page/widgets/catergories_page_1.dart';
 import 'package:kwik/pages/Home_page/widgets/descriptive_widget.dart';
 
@@ -115,6 +113,7 @@ class _CategoryPageState extends State<CategoryPage> {
                   ),
                   'order': "1"
                 },
+
                 {
                   'template': CatergoriesPage1(
                     categoryId: uiData["template7"]["category_ref"],
@@ -128,6 +127,10 @@ class _CategoryPageState extends State<CategoryPage> {
                 },
                 {
                   'template': CategoryModel11(
+                    descriptionTextColor: '',
+                    percentBgColor: 'B8E1FF',
+                    percentDisplayPosition: 30,
+                    titleTopDisplayPosition: false,
                     categoryId: uiData["template7"]["category_ref"],
                     bgcolor: "D5E9FF",
                     titleColor: uiData["template7"]["title_color"],
@@ -214,19 +217,59 @@ class _CategoryPageState extends State<CategoryPage> {
                   ),
                   'order': "8"
                 },
-
+                {
+                  'template': CategoriesPage3(
+                    productColor: "EBDFD7",
+                    saleBanner:
+                        "https://firebasestorage.googleapis.com/v0/b/kwikgroceries-8a11e.firebasestorage.app/o/image%2027.png?alt=media&token=2cad63df-ba3d-41be-a8f8-fc54af8ae1d1",
+                    maincategories: List<String>.from(
+                        uiData["template4"]["main_sub_category"]),
+                    secondarycategories: List<String>.from(
+                        uiData["template4"]["secondary_sub_category"]),
+                    categoryId: uiData["template4"]["category_ref"],
+                    bgcolor: "916E55",
+                    titleColor: "ffffff",
+                    subcatColor: "000000",
+                  ),
+                  'order': "9"
+                },
+                {
+                  'template': CategoryModel7(
+                    flashSaleBanner: true,
+                    subcategoryid: uiData["template10"]["category_ref"],
+                    titleColor: uiData["template10"]["title_color"],
+                    bgcolor: uiData["template10"]["background_color"],
+                    cartbuttontextcolor: uiData["template10"]
+                        ["cartbuttontextcolor"],
+                    mrpcolor: uiData["template10"]["mrpcolor"],
+                    offerBGcolor: uiData["template10"]["offerBGcolor"],
+                    offerTextcolor: uiData["template10"]["offerTextcolor"],
+                    prodoductbgcolor: uiData["template10"]["prodoductbgcolor"],
+                    productTextColor: uiData["template10"]["productTextColor"],
+                    sellingpricecolor: uiData["template10"]
+                        ["sellingpricecolor"],
+                    seeAllButtonBG: uiData["template10"]["seeAllButtonBG"],
+                    seeAllButtontext: uiData["template10"]["seeAllButtontext"],
+                  ),
+                  'order': "10"
+                },
                 {
                   'template': CategoryModel11(
+                    percentBgColor: 'FFFA76',
+                    descriptionTextColor: "727272",
+                    percentDisplayPosition: 70,
+                    titleTopDisplayPosition: true,
                     brandIcon:
                         "https://firebasestorage.googleapis.com/v0/b/kwikgroceries-8a11e.firebasestorage.app/o/image%2023.png?alt=media&token=9925215f-e0eb-4a12-8431-281cea504c44",
                     categoryId: uiData["template7"]["category_ref"],
-                    bgcolor: "D5E9FF",
-                    titleColor: uiData["template7"]["title_color"],
+                    bgcolor: "FEEBC8",
+                    titleColor: "E23338",
                     subcatColor: uiData["template7"]["subcat_color"],
                     description:
                         'Taste the Authenticity with Amul – India\'s Favorite Dairy Brand',
+                    seeContainColor: "E23338",
                   ),
-                  'order': "9"
+                  'order': "11"
                 },
                 {
                   'template': CategoriesPage4(
@@ -236,10 +279,9 @@ class _CategoryPageState extends State<CategoryPage> {
                         uiData["template3"]["main_sub_category"]),
                     titleColor: "1E7098",
                     bgcolor: "DDEDFC",
-                    categoryName: 'WINTER COLLECTIONS',
                     offerPercent: "85%",
                   ),
-                  'order': "10"
+                  'order': "12"
                 },
 
                 {

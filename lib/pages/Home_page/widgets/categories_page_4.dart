@@ -9,7 +9,7 @@ import 'package:kwik/repositories/category_model1_repository.dart';
 class CategoriesPage4 extends StatelessWidget {
   final String bgcolor;
   final String productColor;
-  final String categoryName;
+  
   final String offerPercent;
   final String titleColor;
   final String categoryId;
@@ -18,7 +18,7 @@ class CategoriesPage4 extends StatelessWidget {
     super.key,
     required this.bgcolor,
     required this.productColor,
-    required this.categoryName,
+ 
     required this.offerPercent,
     required this.titleColor,
     required this.maincategories,

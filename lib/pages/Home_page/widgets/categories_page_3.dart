@@ -4,6 +4,7 @@ import 'package:kwik/bloc/category_model1_bloc/category_model1_bloc.dart';
 import 'package:kwik/bloc/category_model1_bloc/category_model1_event.dart';
 import 'package:kwik/bloc/category_model1_bloc/category_model1_state.dart';
 import 'package:kwik/constants/colors.dart';
+import 'package:kwik/models/subcategory_model.dart';
 import 'package:kwik/repositories/category_model1_repository.dart';
 
 class CategoriesPage3 extends StatelessWidget {
@@ -11,6 +12,8 @@ class CategoriesPage3 extends StatelessWidget {
   final String saleBanner;
   final String bgcolor;
   final String titleColor;
+  final String productColor;
+
   final String subcatColor;
   final List<String> maincategories;
   final List<String> secondarycategories;
@@ -24,6 +27,7 @@ class CategoriesPage3 extends StatelessWidget {
     required this.maincategories,
     required this.secondarycategories,
     required this.saleBanner,
+    required this.productColor,
   });
 
   @override
@@ -50,12 +54,15 @@ class CategoriesPage3 extends StatelessWidget {
                 return Container(
                   color: parseColor(bgcolor),
                   width: double.infinity,
+                  height: 574,
                   padding: const EdgeInsets.symmetric(horizontal: 10),
                   child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    spacing: 10,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      const SizedBox(height: 15),
+                      SizedBox(
+                        height: 8,
+                      ),
                       Text(
                         state.category.name, // Display main category name
                         style: TextStyle(
@@ -63,7 +70,7 @@ class CategoriesPage3 extends StatelessWidget {
                             fontSize: 18,
                             fontWeight: FontWeight.bold),
                       ),
-                      Image.network(saleBanner),
+                      Image.network(saleBanner, height: 102),
                       GridView.builder(
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
@@ -71,73 +78,21 @@ class CategoriesPage3 extends StatelessWidget {
                             const SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 2,
                           childAspectRatio: 0.8,
-                          crossAxisSpacing: 20,
-                          mainAxisSpacing: 50,
+                          crossAxisSpacing: 50,
+                          mainAxisSpacing: 10,
                         ),
-                        itemCount: 4,
+                        itemCount: filteredSubCategories.length,
                         itemBuilder: (context, index) {
                           final subCategory = filteredSubCategories[index];
                           return mainsubcategoryItem(
-                            name: subCategory.name,
-                            bgcolor: state.category.color,
-                            textcolor: subcatColor,
-                            imageurl: subCategory.imageUrl,
-                          );
+                              name: subCategory.name,
+                              bgcolor: state.category.color,
+                              textcolor: subcatColor,
+                              imageurl: subCategory.imageUrl,
+                              productColor: productColor,
+                              subcategory: filteredSecondarySubCategories);
                         },
                       ),
-                      SizedBox(
-                        width: MediaQuery.of(context).size.width,
-                        child: Column(
-                          children: [
-                            SizedBox(
-                              width: MediaQuery.of(context).size.width,
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: List.generate(
-                                    filteredSubCategories.length, (index) {
-                                  final subCategory =
-                                      filteredSubCategories[index];
-                                  return Expanded(
-                                    flex: 1,
-                                    child: mainsubcategoryItem(
-                                      name: subCategory.name,
-                                      bgcolor: state.category.color,
-                                      textcolor: subcatColor,
-                                      imageurl: subCategory.imageUrl,
-                                    ),
-                                  );
-                                }),
-                              ),
-                            ),
-                            const SizedBox(height: 10),
-                            SizedBox(
-                              width: MediaQuery.of(context).size.width,
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: List.generate(
-                                    filteredSecondarySubCategories.length,
-                                    (index) {
-                                  final subCategory =
-                                      filteredSecondarySubCategories[index];
-                                  return Expanded(
-                                    child: subcategoryItem(
-                                      name: subCategory.name,
-                                      bgcolor: state.category.color,
-                                      textcolor: subcatColor,
-                                      imageurl: subCategory.imageUrl,
-                                    ),
-                                  );
-                                }),
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                      const SizedBox(height: 10)
                     ],
                   ),
                 );
@@ -151,49 +106,61 @@ class CategoriesPage3 extends StatelessWidget {
       ),
     );
   }
+}
 
-  Widget mainsubcategoryItem(
-      {required String name,
-      required String bgcolor,
-      required String textcolor,
-      required String imageurl}) {
-    return Column(
-      mainAxisSize: MainAxisSize.max,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Container(
-          margin: const EdgeInsets.all(10),
-          decoration: BoxDecoration(
-              color: parseColor(bgcolor),
-              borderRadius: BorderRadius.circular(8)),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(top: 10, bottom: 10),
-                child: Container(
-                  height: 98,
-                  width: 100,
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8),
-                      color: parseColor(bgcolor),
-                      image: DecorationImage(
-                          image: NetworkImage(imageurl), fit: BoxFit.fill)),
-                ),
-              ),
-            ],
-          ),
+Widget mainsubcategoryItem({
+  required String name,
+  required String bgcolor,
+  required String textcolor,
+  required String imageurl,
+  required String productColor,
+  required List<SubCategoryModel> subcategory,
+}) {
+  return Container(
+    height: 195,
+    width: 154,
+    padding: const EdgeInsets.all(8),
+    decoration: BoxDecoration(
+      color: parseColor(productColor),
+      borderRadius: BorderRadius.circular(8),
+    ),
+    child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      GridView.builder(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          crossAxisSpacing: 2,
+          mainAxisSpacing: 2,
+          childAspectRatio: 1,
         ),
-        Text(
-          name,
-          textAlign: TextAlign.center,
-          maxLines: 2,
-          style: TextStyle(fontSize: 16, color: parseColor(textcolor)),
-        )
-      ],
-    );
-  }
+        itemCount: subcategory.length,
+        itemBuilder: (context, index) {
+          final subCategory = subcategory[index];
+          return subcategoryItem(
+            name: subCategory.name,
+            bgcolor: bgcolor,
+            textcolor: textcolor,
+            imageurl: subCategory.imageUrl,
+          );
+        },
+      ),
+      Text(
+        name,
+        style: TextStyle(
+            fontSize: 14,
+            color: parseColor(textcolor),
+            fontWeight: FontWeight.bold),
+      ),
+      Text(
+        '${subcategory.length} products',
+        style: const TextStyle(
+          fontSize: 14,
+          color: AppColors.kgreyColorlite,
+        ),
+      ),
+    ]),
+  );
 }
 
 Widget subcategoryItem(
@@ -201,25 +168,13 @@ Widget subcategoryItem(
     required String bgcolor,
     required String textcolor,
     required String imageurl}) {
-  return Column(
-    mainAxisSize: MainAxisSize.max,
-    crossAxisAlignment: CrossAxisAlignment.center,
-    children: [
-      Container(
-        height: 80,
-        width: 80,
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(8),
-            color: parseColor(bgcolor),
-            image: DecorationImage(
-                image: NetworkImage(imageurl), fit: BoxFit.fill)),
-      ),
-      Text(
-        name,
-        textAlign: TextAlign.center,
-        maxLines: 2,
-        style: TextStyle(fontSize: 16, color: parseColor(textcolor)),
-      )
-    ],
+  return Container(
+    height: 64,
+    width: 70,
+    decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(8),
+        color: parseColor(bgcolor),
+        image:
+            DecorationImage(image: NetworkImage(imageurl), fit: BoxFit.fill)),
   );
 }

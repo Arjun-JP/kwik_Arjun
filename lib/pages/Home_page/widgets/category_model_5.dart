@@ -46,129 +46,133 @@ class CategoryModel5 extends StatelessWidget {
               subCategoryIds:
                   maincategories, // Dispatch event to fetch category and products
             )),
-      child: Container(
-        color: parseColor(bgcolor),
-        width: double.infinity,
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Expanded(
-                  flex: 8,
-                  child: Text(
-                    categoryName,
-                    style: TextStyle(
-                      color: parseColor(titleColor),
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
+      child: Padding(
+        padding: const EdgeInsets.only(top: 10.0, bottom: 10.0),
+        child: Container(
+          color: parseColor(bgcolor),
+          width: double.infinity,
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    flex: 8,
+                    child: Text(
+                      categoryName,
+                      style: TextStyle(
+                        color: parseColor(titleColor),
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
-                ),
-                Expanded(
-                    flex: 2,
-                    child: Align(
-                        alignment: Alignment.centerRight,
-                        child: Image.network(brandImage, height: 60)))
-              ],
-            ),
-            const SizedBox(height: 10),
-            BlocBuilder<CategoryBloc5, CategoryState>(
-              builder: (context, state) {
-                if (state is SubCategoriesLoading) {
-                  return const Center(child: CircularProgressIndicator());
-                } else if (state is CategoryErrorState) {
-                  return Center(child: Text(state.message));
-                } else if (state is CategoryLoadedState) {
-                  return Column(
-                    children: [
-                      state.subCategories.isNotEmpty
-                          ? SizedBox(
-                              height: 128,
-                              width: MediaQuery.of(context).size.width,
-                              child: ListView.builder(
-                                scrollDirection: Axis.horizontal,
-                                itemCount: state.subCategories.length,
-                                itemBuilder: (context, index) {
-                                  return InkWell(
-                                    onTap: () {
-                                      context.read<CategoryBloc5>().add(
-                                          UpdateSelectedCategoryEvent(
-                                              selectedCategoryId: state
-                                                  .subCategories[index].id));
-                                    },
-                                    child: subcategoryItem(
-                                        name: state.subCategories[index].name,
-                                        bgcolor: "ffffff",
-                                        textcolor: "FFFFFF",
-                                        imageurl:
-                                            state.subCategories[index].imageUrl,
-                                        context: context,
-                                        subcatId: state.subCategories[index].id,
-                                        selectedId: state.selectedCategoryId),
-                                  );
-                                },
-                              ),
-                            )
-                          : const SizedBox(),
-                      const SizedBox(height: 5),
-                      state.products.isNotEmpty
-                          ? StaggeredGrid.count(
-                              crossAxisCount: 3,
-                              mainAxisSpacing: 8,
-                              crossAxisSpacing: 8,
-                              children: List.generate(
-                                  state.products
-                                              .where((product) =>
-                                                  product.subCategoryRef.id ==
-                                                  state.selectedCategoryId)
-                                              .toList()
-                                              .length <=
-                                          6
-                                      ? state.products
+                  Expanded(
+                      flex: 2,
+                      child: Align(
+                          alignment: Alignment.centerRight,
+                          child: Image.network(brandImage, height: 60)))
+                ],
+              ),
+              const SizedBox(height: 10),
+              BlocBuilder<CategoryBloc5, CategoryState>(
+                builder: (context, state) {
+                  if (state is SubCategoriesLoading) {
+                    return const Center(child: CircularProgressIndicator());
+                  } else if (state is CategoryErrorState) {
+                    return Center(child: Text(state.message));
+                  } else if (state is CategoryLoadedState) {
+                    return Column(
+                      children: [
+                        state.subCategories.isNotEmpty
+                            ? SizedBox(
+                                height: 128,
+                                width: MediaQuery.of(context).size.width,
+                                child: ListView.builder(
+                                  scrollDirection: Axis.horizontal,
+                                  itemCount: state.subCategories.length,
+                                  itemBuilder: (context, index) {
+                                    return InkWell(
+                                      onTap: () {
+                                        context.read<CategoryBloc5>().add(
+                                            UpdateSelectedCategoryEvent(
+                                                selectedCategoryId: state
+                                                    .subCategories[index].id));
+                                      },
+                                      child: subcategoryItem(
+                                          name: state.subCategories[index].name,
+                                          bgcolor: "ffffff",
+                                          textcolor: "FFFFFF",
+                                          imageurl: state
+                                              .subCategories[index].imageUrl,
+                                          context: context,
+                                          subcatId:
+                                              state.subCategories[index].id,
+                                          selectedId: state.selectedCategoryId),
+                                    );
+                                  },
+                                ),
+                              )
+                            : const SizedBox(),
+                        const SizedBox(height: 5),
+                        state.products.isNotEmpty
+                            ? StaggeredGrid.count(
+                                crossAxisCount: 3,
+                                mainAxisSpacing: 8,
+                                crossAxisSpacing: 8,
+                                children: List.generate(
+                                    state.products
+                                                .where((product) =>
+                                                    product.subCategoryRef.id ==
+                                                    state.selectedCategoryId)
+                                                .toList()
+                                                .length <=
+                                            6
+                                        ? state.products
+                                            .where((product) =>
+                                                product.subCategoryRef.id ==
+                                                state.selectedCategoryId)
+                                            .toList()
+                                            .length
+                                        : 6, (index) {
+                                  return StaggeredGridTile.extent(
+                                    crossAxisCellCount: 1,
+                                    mainAxisExtent: 216,
+                                    child: productItem(
+                                      bgcolor: "FFFFFF",
+                                      imageurl: state.products
                                           .where((product) =>
                                               product.subCategoryRef.id ==
                                               state.selectedCategoryId)
-                                          .toList()
-                                          .length
-                                      : 6, (index) {
-                                return StaggeredGridTile.extent(
-                                  crossAxisCellCount: 1,
-                                  mainAxisExtent: 216,
-                                  child: productItem(
-                                    bgcolor: "FFFFFF",
-                                    imageurl: state.products
-                                        .where((product) =>
-                                            product.subCategoryRef.id ==
-                                            state.selectedCategoryId)
-                                        .toList()[index]
-                                        .productImages
-                                        .first,
-                                    mrpColor: "FFFFFF",
-                                    name: state.products
-                                        .where((product) =>
-                                            product.subCategoryRef.id ==
-                                            state.selectedCategoryId)
-                                        .toList()[index]
-                                        .productName,
-                                    price: 85,
-                                    productcolor: "670000",
-                                    sellingpricecolor: "00000",
-                                  ),
-                                );
-                              }),
-                            )
-                          : const SizedBox(
-                              child: Text("No data"),
-                            ),
-                    ],
-                  );
-                }
-                return const Center(child: Text('No Data Available'));
-              },
-            ),
-          ],
+                                          .toList()[index]
+                                          .productImages
+                                          .first,
+                                      mrpColor: "FFFFFF",
+                                      name: state.products
+                                          .where((product) =>
+                                              product.subCategoryRef.id ==
+                                              state.selectedCategoryId)
+                                          .toList()[index]
+                                          .productName,
+                                      price: 85,
+                                      productcolor: "670000",
+                                      sellingpricecolor: "00000",
+                                    ),
+                                  );
+                                }),
+                              )
+                            : const SizedBox(
+                                child: Text("No data"),
+                              ),
+                      ],
+                    );
+                  }
+                  return const Center(child: Text('No Data Available'));
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );
