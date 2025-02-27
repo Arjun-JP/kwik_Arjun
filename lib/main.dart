@@ -66,6 +66,20 @@ void main() async {
   await Hive.openBox('productsBoxcatmodel9');
   await Hive.openBox('product_cache_category_model10');
 
+  await Hive.openBox('categoryPagemodel1Cache');
+  await Hive.openBox('subCategoryPagemodel1Cache');
+  await Hive.openBox('categoryPagemodel2Cache');
+  await Hive.openBox('subCategoryPagemodel2Cache');
+  await Hive.openBox('categoryPagemodel3Cache');
+  await Hive.openBox('subCategoryPagemodel3Cache');
+  await Hive.openBox('subCategoriesBoxCatPage');
+  await Hive.openBox('productsBoxCatPage');
+  await Hive.openBox('categorymodel8Cache');
+  await Hive.openBox('subCategorymodel8Cache');
+  await Hive.openBox('categoryPagemodel10Cache');
+
+  await Hive.openBox('subCategoryPagemodel10Cache');
+
   // await Hive.openBox('subcategories_CatM5');
 
   SystemChrome.setPreferredOrientations([

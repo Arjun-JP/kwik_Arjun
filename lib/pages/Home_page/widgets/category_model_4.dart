@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:kwik/constants/colors.dart';
+import 'package:kwik/pages/Home_page/widgets/sale_banner_ribbonclip.dart';
 
 import '../../../bloc/category_model_4_bloc/category_model_4_bloc.dart';
 import '../../../bloc/category_model_4_bloc/category_model_4_event.dart';
@@ -15,6 +16,11 @@ class CategoryModel4 extends StatelessWidget {
   final String productColor;
   final String sellingpricecolor;
   final String mrpColor;
+  final bool flashSaleBanner;
+  final String flashBgColor;
+  final String flashTextColor;
+  final String seeAllButtonBG;
+  final String seeAllButtontext;
 
   const CategoryModel4({
     super.key,
@@ -24,6 +30,11 @@ class CategoryModel4 extends StatelessWidget {
     required this.productColor,
     required this.sellingpricecolor,
     required this.mrpColor,
+    required this.flashSaleBanner,
+    required this.flashBgColor,
+    required this.flashTextColor,
+    required this.seeAllButtonBG,
+    required this.seeAllButtontext,
   });
 
   @override
@@ -49,34 +60,47 @@ class CategoryModel4 extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Text(
-                            state.products.first.subCategoryRef
-                                .name, // Display section title
-                            style: TextStyle(
-                                color: parseColor(titleColor),
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold),
-                          ),
-                          Row(
-                            children: [
-                              Text(
-                                "See All ", // Display section title
-                                style: TextStyle(
-                                    color: parseColor(productColor),
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.bold),
+                      flashSaleBanner
+                          ? Center(
+                              child: ClipPath(
+                                clipper: RibbonClipper(),
+                                child: Container(
+                                  width: 300,
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 16, vertical: 8),
+                                  color: parseColor(flashBgColor),
+                                  child: Text.rich(
+                                    TextSpan(
+                                      text: "SAVE BIG! ",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 16,
+                                          color: parseColor(flashTextColor)),
+                                      children: [
+                                        TextSpan(
+                                          text: "MIN ORDER ₹999",
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.normal,
+                                              color: Colors.green),
+                                        ),
+                                      ],
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
                               ),
-                              Icon(
-                                Icons.arrow_right_alt_outlined,
-                                color: parseColor(productColor),
-                              )
-                            ],
-                          ),
-                        ],
+                            )
+                          : SizedBox.shrink(),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Text(
+                        state.products.first.subCategoryRef
+                            .name, // Display section title
+                        style: TextStyle(
+                            color: parseColor(titleColor),
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold),
                       ),
                       const SizedBox(height: 10),
                       SizedBox(
@@ -100,7 +124,41 @@ class CategoryModel4 extends StatelessWidget {
                             );
                           },
                         ),
-                      )
+                      ),
+                      const SizedBox(height: 10),
+                      Container(
+                        width: MediaQuery.of(context).size.width,
+                        height: 48,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            color: parseColor(seeAllButtonBG)),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Expanded(
+                              flex: 5,
+                              child: Align(
+                                alignment: Alignment.centerRight,
+                                child: Text('See all products',
+                                    style: TextStyle(
+                                        color: parseColor(seeAllButtontext),
+                                        fontSize: 18)),
+                              ),
+                            ),
+                            Expanded(
+                              flex: 2,
+                              child: Align(
+                                alignment: Alignment.centerRight,
+                                child: Padding(
+                                  padding: const EdgeInsets.only(right: 14.0),
+                                  child: Icon(Icons.arrow_forward,
+                                      color: parseColor(seeAllButtontext)),
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
                     ],
                   ),
                 );

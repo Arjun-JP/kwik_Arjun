@@ -13,9 +13,9 @@ import 'package:kwik/bloc/home_Ui_bloc/home_Ui_Event.dart';
 import 'package:kwik/bloc/home_Ui_bloc/home_Ui_State.dart';
 import 'package:kwik/bloc/navbar_bloc/navbar_bloc.dart';
 import 'package:kwik/pages/Home_page/widgets/banner_model.dart';
-import 'package:kwik/pages/Home_page/widgets/categories_page_2.dart';
-import 'package:kwik/pages/Home_page/widgets/categories_page_3.dart';
-import 'package:kwik/pages/Home_page/widgets/categories_page_4.dart';
+import 'package:kwik/pages/Home_page/widgets/Categories%20Page%20Widgets/categories_page_model4.dart';
+import 'package:kwik/pages/Home_page/widgets/Categories%20Page%20Widgets/categories_page_model8.dart';
+import 'package:kwik/pages/Home_page/widgets/Categories%20Page%20Widgets/categories_page_model10.dart';
 
 import 'package:kwik/pages/Home_page/widgets/category_model_10.dart';
 import 'package:kwik/pages/Home_page/widgets/category_model_11.dart';
@@ -27,7 +27,7 @@ import 'package:kwik/pages/Home_page/widgets/category_model_7.dart';
 
 import 'package:kwik/pages/Home_page/widgets/category_model_8.dart';
 import 'package:kwik/pages/Home_page/widgets/category_model_9.dart';
-import 'package:kwik/pages/Home_page/widgets/catergories_page_1.dart';
+import 'package:kwik/pages/Home_page/widgets/Categories%20Page%20Widgets/categories_page_model2.dart';
 import 'package:kwik/pages/Home_page/widgets/descriptive_widget.dart';
 import 'package:kwik/pages/Home_page/widgets/super_saver_categories_1.dart';
 
@@ -117,7 +117,10 @@ class _OfferPageState extends State<OfferPage> {
                   'order': "1"
                 },
                 {
-                  'template': CatergoriesPage1(
+                  'template': CategoriesPageModel2(
+                          seeAllButtonBG: "EDDDE4",
+                    seeAllButtontext: "841F4A",
+                      vegOrNonIcon: 'assets/images/vegicon.png',
                     categoryId: uiData["template7"]["category_ref"],
                     bgcolor: "FFFFFF",
                     titleColor: uiData["template7"]["title_color"],
@@ -129,7 +132,7 @@ class _OfferPageState extends State<OfferPage> {
                 },
                 {
                   'template': CategoryModel7(
-                    flashSaleBanner: true,
+                   
                     subcategoryid: uiData["template10"]["category_ref"],
                     titleColor: uiData["template10"]["title_color"],
                     bgcolor: uiData["template10"]["background_color"],
@@ -207,6 +210,11 @@ class _OfferPageState extends State<OfferPage> {
                 },
                 {
                   'template': CategoryModel4(
+                    seeAllButtonBG: "D5E2C9",
+                    seeAllButtontext: "35AB4E",
+                    flashBgColor: "FFFA76",
+                    flashTextColor: "00AE11",
+                    flashSaleBanner: true,
                     mrpColor: uiData["template6"]["mrp_color"],
                     sellingpricecolor: uiData["template6"]
                         ["selling_price_color"],

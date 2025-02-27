@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kwik/constants/colors.dart';
-import '../../../bloc/category_model_4_bloc/category_model_4_bloc.dart';
-import '../../../bloc/category_model_4_bloc/category_model_4_event.dart';
-import '../../../bloc/category_model_4_bloc/category_model_4_state.dart';
-import '../../../repositories/sub_category_product_repository.dart';
 
-class CategoriesPage2 extends StatelessWidget {
+import '../../../../bloc/Categories Page Bloc/categories_page_model4/categories_page_model4_bloc.dart';
+import '../../../../repositories/sub_category_product_repository.dart';
+
+class CategoriesPageModel4 extends StatelessWidget {
   final String subCategoryId;
   final String titleColor;
   final String productColor;
@@ -16,7 +15,7 @@ class CategoriesPage2 extends StatelessWidget {
   final String sellPriceBgColor;
   final String bgColor;
 
-  const CategoriesPage2({
+  const CategoriesPageModel4({
     super.key,
     required this.subCategoryId,
     required this.titleColor,
@@ -32,13 +31,13 @@ class CategoriesPage2 extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) =>
-          CategoryModel4Bloc(repository: SubcategoryProductRepository())
-            ..add(FetchSubCategoryProducts(subCategoryId)),
-      child: BlocBuilder<CategoryModel4Bloc, CategoryModel4State>(
+          CategoriesPageModel4Bloc(repository: SubcategoryProductRepository())
+            ..add(FetchSubCategoryProducts4(subCategoryId)),
+      child: BlocBuilder<CategoriesPageModel4Bloc, CategoriesPageModel4State>(
         builder: (context, state) {
-          if (state is CategoryModel4Loading) {
+          if (state is CategoriesPageModel4Loading) {
             return const Center(child: CircularProgressIndicator());
-          } else if (state is CategoryModel4Loaded) {
+          } else if (state is CategoriesPageModel4Loaded) {
             return Padding(
               padding: const EdgeInsets.only(top: 10.0, bottom: 10.0),
               child: Container(
@@ -89,10 +88,17 @@ class CategoriesPage2 extends StatelessWidget {
                       ),
                       itemCount: 6,
                       itemBuilder: (context, index) {
+                        final product = state.products[index];
+
+                        final variation = product.variations.isNotEmpty
+                            ? product.variations.first
+                            : null;
                         return productItem(
                             imageurl: state.products[index].productImages.first,
-                            price: "₹30",
-                            mrp: "MRP ₹48",
+                            price: variation != null
+                                ? "₹${variation.buyingPrice}"
+                                : "₹0",
+                            mrp: variation != null ? "₹${variation.mrp}" : "₹0",
                             productColor: productColor,
                             mrpBgColor: mrpBgColor,
                             mrpTextColor: mrpTextColor,
@@ -105,7 +111,7 @@ class CategoriesPage2 extends StatelessWidget {
                 ),
               ),
             );
-          } else if (state is CategoryModel4Error) {
+          } else if (state is CategoriesPageModel4Error) {
             return Center(child: Text(state.message));
           }
           return const SizedBox();

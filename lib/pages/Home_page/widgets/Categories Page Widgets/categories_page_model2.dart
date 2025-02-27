@@ -1,24 +1,25 @@
 import 'package:flutter/material.dart';
+
 import 'package:kwik/constants/colors.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:kwik/bloc/category_model2_bloc/category_model2_event.dart';
-import 'package:kwik/bloc/category_model2_bloc/category_model2_state.dart';
 
 import 'package:kwik/repositories/category_model2_repository.dart';
 
-import '../../../bloc/category_model2_bloc/category_model2_bloc.dart';
+import '../../../../bloc/Categories Page Bloc/categories_page_model2/categories_page_model2_bloc.dart';
 
-class CatergoriesPage1 extends StatelessWidget {
+class CategoriesPageModel2 extends StatelessWidget {
   final String categoryId;
   final String bgcolor;
   final String subcatcolor1;
   final String subcatcolor2;
   final String titleColor;
   final String priceColor;
-  final String? vegOrNonIcon;
+  final String vegOrNonIcon;
+  final String seeAllButtonBG;
+  final String seeAllButtontext;
 
-  const CatergoriesPage1(
+  const CategoriesPageModel2(
       {super.key,
       required this.categoryId,
       required this.bgcolor,
@@ -26,21 +27,24 @@ class CatergoriesPage1 extends StatelessWidget {
       required this.subcatcolor2,
       required this.titleColor,
       required this.priceColor,
-      this.vegOrNonIcon});
+      required this.vegOrNonIcon,
+      required this.seeAllButtonBG,
+      required this.seeAllButtontext});
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => CategoryBlocModel2(
+      create: (context) => CategoriesPageModel2Bloc(
           categoryRepositoryModel2: CategoryRepositoryModel2())
-        ..add(FetchCategoryDetails(categoryId)),
+        ..add(FetchCategoryDetailsModel2(categoryId)),
       child: Builder(
         builder: (context) {
-          return BlocBuilder<CategoryBlocModel2, CategoryState>(
+          return BlocBuilder<CategoriesPageModel2Bloc,
+              CategoriesPageModel2State>(
             builder: (context, state) {
-              if (state is CategoryLoading) {
+              if (state is CategoriesPageModel2Loading) {
                 return const Center(child: CircularProgressIndicator());
-              } else if (state is CategoryLoaded) {
+              } else if (state is CategoriesPageModel2Loaded) {
                 return Container(
                   color: parseColor(bgcolor),
                   width: double.infinity,
@@ -122,7 +126,7 @@ class CatergoriesPage1 extends StatelessWidget {
                     ],
                   ),
                 );
-              } else if (state is CategoryError) {
+              } else if (state is CategoriesPageModel2Error) {
                 return Center(child: Text(state.message));
               }
               return const SizedBox();
@@ -160,7 +164,7 @@ class CatergoriesPage1 extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Image.asset(
-                'assets/images/vegicon.png',
+                vegOrNonIcon,
                 height: 20,
                 width: 20,
               ),

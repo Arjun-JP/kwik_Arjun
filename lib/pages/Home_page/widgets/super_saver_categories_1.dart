@@ -81,26 +81,28 @@ class SuperSaverCategories1 extends StatelessWidget {
                       gridDelegate:
                           const SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 3,
-                        childAspectRatio: 0.55,
+                        childAspectRatio: 0.5,
                         crossAxisSpacing: 20,
                         mainAxisSpacing: 50,
                       ),
                       itemCount: 6,
                       itemBuilder: (context, index) {
                         return productItem(
-                            imageurl: state.products[index].productImages.first,
-                            price: "₹30",
-                            mrp: "MRP ₹48",
-                            productColor: productColor,
-                            mrpBgColor: mrpBgColor,
-                            mrpTextColor: mrpTextColor,
-                            sellPriceBgColor: sellPriceBgColor,
-                            sellTextColor: sellTextColor,
-                            offerbgcolor: offerbgcolor,
-                            offertextcolor: offertextcolor,
-                            addButtonColor: addButtonColor,
-                            ratingBgColor: ratingBgColor,
-                            ratingTextColor: ratingTextColor);
+                          imageurl: state.products[index].productImages.first,
+                          price: "₹30",
+                          mrp: "MRP ₹48",
+                          productColor: productColor,
+                          mrpBgColor: mrpBgColor,
+                          mrpTextColor: mrpTextColor,
+                          sellPriceBgColor: sellPriceBgColor,
+                          sellTextColor: sellTextColor,
+                          offerbgcolor: offerbgcolor,
+                          offertextcolor: offertextcolor,
+                          addButtonColor: addButtonColor,
+                          ratingBgColor: ratingBgColor,
+                          ratingTextColor: ratingTextColor,
+                          title: state.products[index].productName,
+                        );
                       },
                     ),
                     const SizedBox(height: 10),
@@ -132,19 +134,21 @@ Widget productItem({
   required String addButtonColor,
   required String ratingBgColor,
   required String ratingTextColor,
+  required String title,
 }) {
   return Stack(children: [
     Container(
-      padding: EdgeInsets.only(top: 5, bottom: 5),
+      padding: const EdgeInsets.only(top: 5, bottom: 5),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(8),
         color: parseColor(productColor),
       ),
       child: Column(
         children: [
-          Expanded(
-            flex: 1,
-            child: Image.network(imageurl, fit: BoxFit.cover),
+          Image.network(
+            imageurl,
+            fit: BoxFit.cover,
+            height: 80,
           ),
           Container(
             padding: EdgeInsets.all(5),
@@ -197,6 +201,22 @@ Widget productItem({
                   ),
                 ),
               ],
+            ),
+          ),
+          Container(
+            color: parseColor('ffffff'),
+            width: double.infinity,
+            height: 40,
+            child: Text(
+              title,
+              textAlign: TextAlign.left,
+              maxLines: 2,
+              overflow: TextOverflow.visible,
+              softWrap: true,
+              style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                  color: parseColor('000000')),
             ),
           ),
           Container(
@@ -260,7 +280,7 @@ Widget productItem({
       ),
     ),
     Positioned(
-      top: 70,
+      top: 50,
       right: 8,
       child: Container(
         height: 35,

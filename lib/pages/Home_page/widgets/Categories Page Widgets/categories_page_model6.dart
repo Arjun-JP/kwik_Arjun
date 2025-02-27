@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../bloc/category_model_8_bloc/category_model_8_bloc.dart';
-import '../../../bloc/category_model_8_bloc/category_model_8_event.dart';
-import '../../../bloc/category_model_8_bloc/category_model_8_state.dart';
-import '../../../repositories/category_model_8_repo.dart';
+import 'package:kwik/constants/colors.dart';
+import 'package:kwik/repositories/category_model_8_repo.dart';
 
-class CategoryModel8 extends StatefulWidget {
+import '../../../../bloc/Categories Page Bloc/categories_page_model6/categories_page_model6_bloc.dart';
+
+class CategoriesPageModel6 extends StatefulWidget {
   final String title;
   final String bgColor;
   final List<String> categories;
@@ -14,8 +14,10 @@ class CategoryModel8 extends StatefulWidget {
   final String categoryBG;
   final String iconBGcolor;
   final String iconcolor;
+  final String seeAllButtonBG;
+  final String seeAllButtontext;
 
-  const CategoryModel8(
+  const CategoriesPageModel6(
       {super.key,
       required this.title,
       required this.bgColor,
@@ -25,25 +27,25 @@ class CategoryModel8 extends StatefulWidget {
       required this.categoryBG,
       required this.iconBGcolor,
       required this.iconcolor,
-
-      });
+      required this.seeAllButtonBG,
+      required this.seeAllButtontext});
 
   @override
-  State<CategoryModel8> createState() => _CategoryModel8State();
+  State<CategoriesPageModel6> createState() => _CategoriesPageModel6State();
 }
 
-class _CategoryModel8State extends State<CategoryModel8> {
+class _CategoriesPageModel6State extends State<CategoriesPageModel6> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) =>
-          CategoryModel8Bloc(categoryRepository: Categorymodel8Repository())
-            ..add(FetchCategoriesmodel8()),
-      child: BlocBuilder<CategoryModel8Bloc, CategoryBloc8State>(
+      create: (context) => CategoriesPageModel6Bloc(
+          categoryRepository: Categorymodel8Repository())
+        ..add(FetchCategoriesmodel8()),
+      child: BlocBuilder<CategoriesPageModel6Bloc, CategoriesPageModel6State>(
         builder: (context, state) {
-          if (state is Categorymode8Loading) {
+          if (state is CategoriesPageModel6Loading) {
             return const Center(child: CircularProgressIndicator());
-          } else if (state is Categorymode8Loaded) {
+          } else if (state is CategoriesPageModel6Loaded) {
             print(state.categories.length);
             return Container(
               color: parseColor(widget.bgColor),
@@ -169,12 +171,44 @@ class _CategoryModel8State extends State<CategoryModel8> {
                       }).toList(),
                     ),
                     const SizedBox(height: 20),
-                  
+                    Container(
+                      width: MediaQuery.of(context).size.width,
+                      height: 48,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: parseColor(widget.seeAllButtonBG)),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Expanded(
+                            flex: 5,
+                            child: Align(
+                              alignment: Alignment.centerRight,
+                              child: Text('See all products',
+                                  style: TextStyle(
+                                      color:
+                                          parseColor(widget.seeAllButtontext),
+                                      fontSize: 18)),
+                            ),
+                          ),
+                          const Expanded(
+                            flex: 2,
+                            child: Align(
+                              alignment: Alignment.centerRight,
+                              child: Padding(
+                                padding: EdgeInsets.only(right: 14.0),
+                                child: Icon(Icons.arrow_forward),
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                    )
                   ],
                 ),
               ),
             );
-          } else if (state is Categorymode8Error) {
+          } else if (state is CategoriesPageModel6Error) {
             return Center(child: Text("Error: ${state.message}"));
           }
           return const Center(child: Text("No data available"));
@@ -182,33 +216,4 @@ class _CategoryModel8State extends State<CategoryModel8> {
       ),
     );
   }
-}
-
-// Function to parse hex color correctly
-
-Color parseColor(String? hexColor) {
-  if (hexColor == null || hexColor.isEmpty) {
-    return const Color(0xFFADD8E6); // Default pastel blue
-  }
-
-  hexColor = hexColor.replaceAll("#", ""); // Remove # if present
-
-  // If the input is 6 characters long (RGB), add "FF" for full opacity
-  if (hexColor.length == 6) {
-    hexColor = "FF$hexColor";
-  }
-  // If the input is not 8 characters (AARRGGBB), return default pastel color
-  else if (hexColor.length != 8) {
-    return const Color(0xFFADD8E6);
-  }
-
-  try {
-    return Color(int.parse("0x$hexColor")); // Ensure correct 0xAARRGGBB format
-  } catch (e) {
-    return const Color(0xFFADD8E6); // Default pastel blue on error
-  }
-}
-
-String colorToHex(Color color) {
-  return '#${color.value.toRadixString(16).padLeft(8, '0').toUpperCase()}';
 }

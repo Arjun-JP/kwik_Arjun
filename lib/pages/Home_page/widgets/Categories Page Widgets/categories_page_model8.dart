@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:kwik/bloc/category_model1_bloc/category_model1_bloc.dart';
-import 'package:kwik/bloc/category_model1_bloc/category_model1_event.dart';
-import 'package:kwik/bloc/category_model1_bloc/category_model1_state.dart';
+
 import 'package:kwik/constants/colors.dart';
 import 'package:kwik/models/subcategory_model.dart';
 import 'package:kwik/repositories/category_model1_repository.dart';
 
-class CategoriesPage3 extends StatelessWidget {
+import '../../../../bloc/Categories Page Bloc/categories_page_model8/categories_page_model8_bloc.dart';
+
+class CategoriesPageModel8 extends StatelessWidget {
   final String categoryId;
   final String saleBanner;
   final String bgcolor;
@@ -18,7 +18,7 @@ class CategoriesPage3 extends StatelessWidget {
   final List<String> maincategories;
   final List<String> secondarycategories;
 
-  const CategoriesPage3({
+  const CategoriesPageModel8({
     super.key,
     required this.categoryId,
     required this.bgcolor,
@@ -33,12 +33,13 @@ class CategoriesPage3 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => CategoryBlocModel1(
+      create: (context) => CategoriesPageModel8Bloc(
           categoryRepositoryModel1: CategoryRepositoryModel1())
         ..add(FetchCategoryDetails(categoryId)),
       child: Builder(
         builder: (context) {
-          return BlocBuilder<CategoryBlocModel1, CategoryState>(
+          return BlocBuilder<CategoriesPageModel8Bloc,
+              CategoriesPageModel8State>(
             builder: (context, state) {
               if (state is CategoryLoading) {
                 return const Center(child: CircularProgressIndicator());

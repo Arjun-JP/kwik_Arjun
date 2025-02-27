@@ -1,20 +1,16 @@
-import 'package:equatable/equatable.dart';
+part of 'categories_page_model5_bloc.dart';
 
-import '../../models/product_model.dart';
-import '../../models/subcategory_model.dart';
-
-abstract class CategoryState extends Equatable {
-  const CategoryState();
-
+sealed class CategoriesPageModel5State extends Equatable {
+  const CategoriesPageModel5State();
+  
   @override
   List<Object> get props => [];
 }
 
-class SubCategoriesInitial extends CategoryState {}
+final class CategoriesPageModel5Initial extends CategoriesPageModel5State {}
+class SubCategoriesLoading extends CategoriesPageModel5State {}
 
-class SubCategoriesLoading extends CategoryState {}
-
-class CategoryLoadedState extends CategoryState {
+class CategoryLoadedState extends CategoriesPageModel5State {
   final List<SubCategoryModel> subCategories;
   final List<ProductModel> products;
   final String selectedCategoryId;
@@ -38,7 +34,7 @@ class CategoryLoadedState extends CategoryState {
   }
 }
 
-class SubCategoriesError extends CategoryState {
+class SubCategoriesError extends CategoriesPageModel5State {
   final String message;
 
   const SubCategoriesError(this.message);
@@ -47,9 +43,9 @@ class SubCategoriesError extends CategoryState {
   List<Object> get props => [message];
 }
 
-class ProductsLoading extends CategoryState {}
+class ProductsLoading extends CategoriesPageModel5State {}
 
-class ProductsLoaded extends CategoryState {
+class ProductsLoaded extends CategoriesPageModel5State {
   final List<ProductModel> products;
 
   const ProductsLoaded(this.products);
@@ -58,7 +54,7 @@ class ProductsLoaded extends CategoryState {
   List<Object> get props => [products];
 }
 
-class ProductsError extends CategoryState {
+class ProductsError extends CategoriesPageModel5State {
   final String message;
 
   const ProductsError(this.message);
@@ -67,9 +63,9 @@ class ProductsError extends CategoryState {
   List<Object> get props => [message];
 }
 
-class CacheCleared extends CategoryState {}
+class CacheCleared extends CategoriesPageModel5State {}
 
-class CategoryErrorState extends CategoryState {
+class CategoryErrorState extends CategoriesPageModel5State {
   final String message;
   const CategoryErrorState({required this.message});
 }

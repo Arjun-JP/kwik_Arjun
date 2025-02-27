@@ -168,6 +168,11 @@ class _HomePageState extends State<HomePage> {
                 },
                 {
                   'template': CategoryModel4(
+                    seeAllButtonBG: "D5E2C9",
+                    seeAllButtontext: "35AB4E",
+                    flashBgColor: "",
+                    flashTextColor: "",
+                    flashSaleBanner: false,
                     mrpColor: uiData["template6"]["mrp_color"],
                     sellingpricecolor: uiData["template6"]
                         ["selling_price_color"],
@@ -221,7 +226,7 @@ class _HomePageState extends State<HomePage> {
                 },
                 {
                   'template': CategoryModel7(
-                    flashSaleBanner: false,
+                   
                     subcategoryid: uiData["template10"]["category_ref"],
                     titleColor: uiData["template10"]["title_color"],
                     bgcolor: uiData["template10"]["background_color"],
@@ -241,7 +246,7 @@ class _HomePageState extends State<HomePage> {
                 },
                 {
                   'template': CategoryModel8(
-                    seeAllProducts: false,
+                
                     bgColor: uiData["template11"]["background_color"],
                     categoryBG: uiData["template11"]["subcategorybg"],
                     iconBGcolor: uiData["template11"]["icon_bg_color"],
@@ -296,7 +301,7 @@ class _HomePageState extends State<HomePage> {
                 },
                 {
                   'template': CategoryModel11(
-                         percentBgColor:'B8E1FF',
+                    percentBgColor: 'B8E1FF',
                     descriptionTextColor: '',
                     percentDisplayPosition: 30,
                     titleTopDisplayPosition: false,

@@ -1,40 +1,36 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:kwik/bloc/category_model1_bloc/category_model1_bloc.dart';
-import 'package:kwik/bloc/category_model2_bloc/category_model2_bloc.dart';
 
-import 'package:kwik/bloc/category_model_5__Bloc/category_model5__bloc.dart';
-import 'package:kwik/bloc/category_model_5__Bloc/category_model5__event.dart';
-
-import 'package:kwik/bloc/category_model_9_bloc/category_model_9_bloc.dart';
 import 'package:kwik/bloc/home_Ui_bloc/home_Ui_Bloc.dart';
-import 'package:kwik/bloc/home_Ui_bloc/home_Ui_Event.dart';
+
 import 'package:kwik/bloc/home_Ui_bloc/home_Ui_State.dart';
 import 'package:kwik/bloc/navbar_bloc/navbar_bloc.dart';
+
 import 'package:kwik/pages/Home_page/widgets/banner_model.dart';
-import 'package:kwik/pages/Home_page/widgets/categories_page_2.dart';
-import 'package:kwik/pages/Home_page/widgets/categories_page_3.dart';
-import 'package:kwik/pages/Home_page/widgets/categories_page_4.dart';
 
-import 'package:kwik/pages/Home_page/widgets/category_model_10.dart';
-import 'package:kwik/pages/Home_page/widgets/category_model_11.dart';
-import 'package:kwik/pages/Home_page/widgets/category_model_2.dart';
-
-import 'package:kwik/pages/Home_page/widgets/category_model_5.dart';
-import 'package:kwik/pages/Home_page/widgets/category_model_7.dart';
-
-import 'package:kwik/pages/Home_page/widgets/category_model_8.dart';
-import 'package:kwik/pages/Home_page/widgets/catergories_page_1.dart';
 import 'package:kwik/pages/Home_page/widgets/descriptive_widget.dart';
 
 import 'package:kwik/widgets/navbar/navbar.dart';
-import '../../bloc/category_model1_bloc/category_model1_event.dart';
-import '../../bloc/category_model2_bloc/category_model2_event.dart';
+import '../../bloc/Categories Page Bloc/categories_page_model1/categories_page_model1_bloc.dart';
+import '../../bloc/Categories Page Bloc/categories_page_model2/categories_page_model2_bloc.dart';
+import '../../bloc/Categories Page Bloc/categories_page_model3/categories_page_model3_bloc.dart';
+import '../../bloc/Categories Page Bloc/categories_page_model4/categories_page_model4_bloc.dart';
 
-import '../../bloc/category_model_9_bloc/category_model_9_event.dart';
 import '../../bloc/navbar_bloc/navbar_event.dart';
 import '../../constants/colors.dart';
+
+import '../Home_page/widgets/Categories Page Widgets/categories_page_model1.dart';
+
+import '../Home_page/widgets/Categories Page Widgets/categories_page_model2.dart';
+import '../Home_page/widgets/Categories Page Widgets/categories_page_model3.dart';
+import '../Home_page/widgets/Categories Page Widgets/categories_page_model4.dart';
+import '../Home_page/widgets/Categories Page Widgets/categories_page_model5.dart';
+import '../Home_page/widgets/Categories Page Widgets/categories_page_model6.dart';
+import '../Home_page/widgets/Categories Page Widgets/categories_page_model7.dart';
+import '../Home_page/widgets/Categories Page Widgets/categories_page_model8.dart';
+import '../Home_page/widgets/Categories Page Widgets/categories_page_model9.dart';
+import '../Home_page/widgets/Categories Page Widgets/categories_page_model10.dart';
 
 class CategoryPage extends StatefulWidget {
   const CategoryPage({super.key});
@@ -45,21 +41,26 @@ class CategoryPage extends StatefulWidget {
 
 class _CategoryPageState extends State<CategoryPage> {
   Future<void> _onRefresh() async {
-    context.read<HomeUiBloc>().add(ClearUiCacheEvent());
-    BlocProvider.of<CategoryBlocModel1>(context).add(ClearCache());
-    BlocProvider.of<CategoryBlocModel2>(context).add(ClearCacheCM2());
+    // context.read<HomeUiBloc>().add(ClearUiCacheEvent());
+    BlocProvider.of<CategoriesPageModel1Bloc>(context)
+        .add(ClearCacheCatPage1());
 
-    BlocProvider.of<CategoryBloc5>(context).add(ClearCacheEventCM5());
+    BlocProvider.of<CategoriesPageModel2Bloc>(context)
+        .add(ClearCacheCatPage2());
 
-    BlocProvider.of<CategoryBloc9>(context).add(ClearCacheEventCM9());
+    BlocProvider.of<CategoriesPageModel3Bloc>(context)
+        .add(ClearCacheCatPage3());
 
-    context.read<HomeUiBloc>().add(FetchUiDataEvent());
+    BlocProvider.of<CategoriesPageModel4Bloc>(context)
+        .add(Clearsubcatproduct1Cache4());
+
+    // context.read<HomeUiBloc>().add(FetchUiDataEvent());
   }
 
   @override
   void initState() {
     super.initState();
-    context.read<HomeUiBloc>().add(FetchUiDataEvent());
+    // context.read<HomeUiBloc>().add(FetchUiDataEvent());
   }
 
   @override
@@ -105,7 +106,7 @@ class _CategoryPageState extends State<CategoryPage> {
               print(uiData["template11"]["subcategories"]);
               final templates = [
                 {
-                  'template': CategoryModel2(
+                  'template': CategoriesPageModel1(
                     categoryId: uiData["template7"]["category_ref"],
                     bgcolor: "FFFFFF",
                     titleColor: uiData["template7"]["title_color"],
@@ -115,18 +116,21 @@ class _CategoryPageState extends State<CategoryPage> {
                 },
 
                 {
-                  'template': CatergoriesPage1(
+                  'template': CategoriesPageModel2(
                     categoryId: uiData["template7"]["category_ref"],
                     bgcolor: "FFFFFF",
                     titleColor: uiData["template7"]["title_color"],
                     priceColor: "841F4A",
                     subcatcolor1: "EDDDE4",
                     subcatcolor2: "FFFFFF",
+                    vegOrNonIcon: 'assets/images/vegicon.png',
+                    seeAllButtonBG: "EDDDE4",
+                    seeAllButtontext: "841F4A",
                   ),
                   'order': "2"
                 },
                 {
-                  'template': CategoryModel11(
+                  'template': CategoriesPageModel3(
                     descriptionTextColor: '',
                     percentBgColor: 'B8E1FF',
                     percentDisplayPosition: 30,
@@ -136,13 +140,15 @@ class _CategoryPageState extends State<CategoryPage> {
                     titleColor: uiData["template7"]["title_color"],
                     subcatColor: uiData["template7"]["subcat_color"],
                     description: '',
+                    seeAllButtonBG: "B8E1FF",
+                    seeAllButtontext: "005EA2",
                     brandIcon:
                         "https://firebasestorage.googleapis.com/v0/b/kwikgroceries-8a11e.firebasestorage.app/o/bxs_offer.png?alt=media&token=f6cd9a07-d6f5-4f40-84cb-4748769a0ed9",
                   ),
                   'order': "3"
                 },
                 {
-                  'template': CategoriesPage2(
+                  'template': CategoriesPageModel4(
                     subCategoryId: uiData["template6"]["sub_category_ref"],
                     bgColor: "FFFFF3",
                     productColor: "FFE8DE",
@@ -155,7 +161,7 @@ class _CategoryPageState extends State<CategoryPage> {
                   'order': "4"
                 },
                 {
-                  'template': CategoryModel5(
+                  'template': CategoriesPageModel5(
                     maincategories: List<String>.from(
                         uiData["template8"]["sub_categories"]),
                     categoryId: uiData["template8"]["category_ref"],
@@ -173,8 +179,7 @@ class _CategoryPageState extends State<CategoryPage> {
                   'order': "5"
                 },
                 {
-                  'template': CategoryModel8(
-                    seeAllProducts: true,
+                  'template': CategoriesPageModel6(
                     bgColor: uiData["template11"]["background_color"],
                     categoryBG: uiData["template11"]["subcategorybg"],
                     iconBGcolor: uiData["template11"]["icon_bg_color"],
@@ -184,11 +189,13 @@ class _CategoryPageState extends State<CategoryPage> {
                     titlecolor: uiData["template11"]["title_color"],
                     categorytitlecolor: uiData["template11"]
                         ["subcat_title_color"],
+                    seeAllButtonBG: "FFFFFF",
+                    seeAllButtontext: "619B8A",
                   ),
                   'order': "6"
                 },
                 {
-                  'template': CategoryModel10(
+                  'template': CategoriesPageModel7(
                     title: uiData["template13"]["title"],
                     titleColor: uiData["template13"]["titleColor"],
                     bgcolor: uiData["template13"]["background_color"],
@@ -218,7 +225,7 @@ class _CategoryPageState extends State<CategoryPage> {
                   'order': "8"
                 },
                 {
-                  'template': CategoriesPage3(
+                  'template': CategoriesPageModel8(
                     productColor: "EBDFD7",
                     saleBanner:
                         "https://firebasestorage.googleapis.com/v0/b/kwikgroceries-8a11e.firebasestorage.app/o/image%2027.png?alt=media&token=2cad63df-ba3d-41be-a8f8-fc54af8ae1d1",
@@ -234,8 +241,9 @@ class _CategoryPageState extends State<CategoryPage> {
                   'order': "9"
                 },
                 {
-                  'template': CategoryModel7(
-                    flashSaleBanner: true,
+                  'template': CategoriesPageModel9(
+                    flashBgColor: 'AFE569',
+                    flashTextColor: '7B009A',
                     subcategoryid: uiData["template10"]["category_ref"],
                     titleColor: uiData["template10"]["title_color"],
                     bgcolor: uiData["template10"]["background_color"],
@@ -254,7 +262,7 @@ class _CategoryPageState extends State<CategoryPage> {
                   'order': "10"
                 },
                 {
-                  'template': CategoryModel11(
+                  'template': CategoriesPageModel3(
                     percentBgColor: 'FFFA76',
                     descriptionTextColor: "727272",
                     percentDisplayPosition: 70,
@@ -267,12 +275,13 @@ class _CategoryPageState extends State<CategoryPage> {
                     subcatColor: uiData["template7"]["subcat_color"],
                     description:
                         'Taste the Authenticity with Amul – India\'s Favorite Dairy Brand',
-                    seeContainColor: "E23338",
+                    seeAllButtonBG: "E23338",
+                    seeAllButtontext: "ffffff",
                   ),
                   'order': "11"
                 },
                 {
-                  'template': CategoriesPage4(
+                  'template': CategoriesPageModel10(
                     productColor: "F1F7FE",
                     categoryId: uiData["template3"]["category_ref"],
                     maincategories: List<String>.from(
