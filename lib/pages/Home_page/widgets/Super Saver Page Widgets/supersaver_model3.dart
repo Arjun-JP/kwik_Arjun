@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:kwik/bloc/category_model_10_bloc/category_model_10_event.dart';
+import 'package:kwik/bloc/category_model_10_bloc/category_model_10_state.dart';
 import 'package:kwik/constants/colors.dart';
 import 'package:kwik/models/product_model.dart';
 import 'package:kwik/pages/Home_page/widgets/category_model_10.dart';
 import 'package:kwik/repositories/category_model_10_repo.dart';
 
-import '../../../../bloc/Categories Page Bloc/categories_page_model7/categories_page_model7_bloc.dart';
+import '../../../../bloc/category_model_10_bloc/category_model_10_bloc.dart';
 
-class CategoriesPageModel7 extends StatelessWidget {
-  final String bgcolor;
+class SupersaverModel3 extends StatelessWidget {
+    final String bgcolor;
   final String titleColor;
   final String prodoductbgcolor;
   final String productTextColor;
@@ -20,8 +22,7 @@ class CategoriesPageModel7 extends StatelessWidget {
   final String seeAllButtontext;
   final String title;
   final String image;
-  const CategoriesPageModel7({
-    super.key,
+  const SupersaverModel3({super.key,
     required this.bgcolor,
     required this.titleColor,
     required this.prodoductbgcolor,
@@ -33,23 +34,22 @@ class CategoriesPageModel7 extends StatelessWidget {
     required this.seeAllButtontext,
     required this.crosscolor,
     required this.title,
-    required this.image,
-  });
+    required this.image,});
 
-  @override
+ @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) =>
-          CategoriesPageModel7Bloc(repository: CategoryModel10Repo())
+          CategoryModel10Bloc(repository: CategoryModel10Repo())
             ..add(FetchSubCategoryProducts(
                 subCategoryId: '6780ff720bfef51d79df1a06')),
-      child: BlocBuilder<CategoriesPageModel7Bloc, CategoriesPageModel7State>(
+      child: BlocBuilder<CategoryModel10Bloc, CategoryModel10State>(
         builder: (context, state) {
-          if (state is CategoriesPageModel7Loading) {
+          if (state is CategoryModel10Loading) {
             return const Center(child: CircularProgressIndicator());
-          } else if (state is CategoriesPageModel7Loaded) {
+          } else if (state is CategoryModel10Loaded) {
             return _buildCategoryModel10(state.products, context);
-          } else if (state is CategoriesPageModel7Error) {
+          } else if (state is CategoryModel10Error) {
             return Center(child: Text('Error: ${state.message}'));
           }
           return const Center(child: Text('No data available'));
@@ -148,3 +148,4 @@ class CategoriesPageModel7 extends StatelessWidget {
     );
   }
 }
+

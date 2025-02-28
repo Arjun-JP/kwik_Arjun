@@ -19,7 +19,6 @@ class CategoryModel11 extends StatelessWidget {
   final bool titleTopDisplayPosition;
   final String descriptionTextColor;
   final String percentBgColor;
-  
 
   const CategoryModel11({
     super.key,
@@ -118,7 +117,11 @@ class CategoryModel11 extends StatelessWidget {
                                 name: state.subCategories[index].name,
                                 bgcolor: state.category.color,
                                 textcolor: subcatColor,
-                                imageurl: state.subCategories[index].imageUrl);
+                                imageurl: state.subCategories[index].imageUrl,
+                                titleTopDisplayPosition:
+                                    titleTopDisplayPosition,
+                                percentBgColor: percentBgColor,
+                                percentDisplayPosition: percentDisplayPosition);
                           },
                         ),
                       ),
@@ -170,81 +173,82 @@ class CategoryModel11 extends StatelessWidget {
       ),
     );
   }
+}
 
-  Widget subcategoryItem(
-      {required String name,
-      required String bgcolor,
-      required String textcolor,
-      required String imageurl}) {
-    return Column(
-      children: [
-        if (titleTopDisplayPosition)
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10.0),
-            child: Text(
-              name,
-              style: const TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w500,
-              ),
+Widget subcategoryItem({
+  required String name,
+  required String bgcolor,
+  required String textcolor,
+  required String imageurl,
+  required bool titleTopDisplayPosition,
+  required double percentDisplayPosition,
+  required String percentBgColor,
+}) {
+  return Column(
+    children: [
+      if (titleTopDisplayPosition)
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10.0),
+          child: Text(
+            name,
+            style: const TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
             ),
           ),
-        Stack(
-          children: [
-            Container(
-              height: 120,
-              width: 100,
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8),
-                  color: parseColor(bgcolor),
-                  image: DecorationImage(
-                      image: NetworkImage(imageurl), fit: BoxFit.fill)),
-            ),
-
-            Positioned(
-              top: percentDisplayPosition,
-              child: Container(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 1, horizontal: 10),
-                decoration: BoxDecoration(
-                    color: parseColor(percentBgColor),
-                    borderRadius: const BorderRadius.only(
-                        topRight: Radius.circular(10),
-                        bottomRight: Radius.circular(10))),
-                child: const Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Upto",
-                      style:
-                          TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
-                    ),
-                    Text(
-                      "20% OFF",
-                      style:
-                          TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            // Text(
-            //   name,
-            //   style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
-            // ),
-          ],
         ),
-        if (!titleTopDisplayPosition)
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10.0),
-            child: Text(
-              name,
-              maxLines: 2,
-              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+      Stack(
+        children: [
+          Container(
+            height: 120,
+            width: 100,
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(8),
+                color: parseColor(bgcolor),
+                image: DecorationImage(
+                    image: NetworkImage(imageurl), fit: BoxFit.fill)),
+          ),
+
+          Positioned(
+            top: percentDisplayPosition,
+            child: Container(
+              padding: const EdgeInsets.symmetric(vertical: 1, horizontal: 10),
+              decoration: BoxDecoration(
+                  color: parseColor(percentBgColor),
+                  borderRadius: const BorderRadius.only(
+                      topRight: Radius.circular(10),
+                      bottomRight: Radius.circular(10))),
+              child: const Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Upto",
+                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
+                  ),
+                  Text(
+                    "20% OFF",
+                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
+                  ),
+                ],
+              ),
             ),
           ),
-      ],
-    );
-  }
+          // Text(
+          //   name,
+          //   style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+          // ),
+        ],
+      ),
+      if (!titleTopDisplayPosition)
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10.0),
+          child: Text(
+            name,
+            maxLines: 2,
+            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+          ),
+        ),
+    ],
+  );
 }

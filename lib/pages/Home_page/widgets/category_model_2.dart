@@ -88,7 +88,7 @@ class CategoryModel2 extends StatelessWidget {
       ),
     );
   }
-
+}
   Widget subcategoryItem(
       {required String name,
       required String bgcolor,
@@ -115,4 +115,4 @@ class CategoryModel2 extends StatelessWidget {
       ],
     );
   }
-}
+

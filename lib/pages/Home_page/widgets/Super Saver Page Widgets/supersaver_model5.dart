@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import '../../../bloc/category_model_9_bloc/category_model_9_bloc.dart';
-import '../../../bloc/category_model_9_bloc/category_model_9_event.dart';
-import '../../../bloc/category_model_9_bloc/category_model_9_state.dart';
-import '../../../constants/colors.dart';
-import '../../../repositories/category_model9_repo.dart';
+import 'package:kwik/constants/colors.dart';
+import 'package:kwik/pages/Home_page/widgets/category_model_9.dart';
+import 'package:kwik/repositories/category_model9_repo.dart';
 
-class CategoryModel9 extends StatelessWidget {
+import '../../../../bloc/Super Saver Page Bloc/supersaver_model5_bloc/supersaver_model5_bloc.dart';
+
+class SupersaverModel5 extends StatelessWidget {
   final String categoryId;
   final String bgcolor;
   final String titleColor;
@@ -24,8 +24,7 @@ class CategoryModel9 extends StatelessWidget {
   final String unitTextcolor;
   final String seeAllButtonBG;
   final String seeAllButtontext;
-
-  const CategoryModel9({
+  const SupersaverModel5({
     super.key,
     required this.categoryId,
     required this.bgcolor,
@@ -49,8 +48,8 @@ class CategoryModel9 extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) =>
-          CategoryBloc9(categoryRepository: Categorymodel9Repository())
-            ..add(FetchCategoryAndProductsEvent(
+          SupersaverModel5Bloc(categoryRepository: Categorymodel9Repository())
+            ..add(FetchCategoryAndProductsSS5Event(
               subCategoryIds:
                   maincategories, // Dispatch event to fetch category and products
             )),
@@ -70,13 +69,13 @@ class CategoryModel9 extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 10),
-            BlocBuilder<CategoryBloc9, CategoryModel9State>(
+            BlocBuilder<SupersaverModel5Bloc, SupersaverModel5State>(
               builder: (context, state) {
-                if (state is SubCategoriesLoading) {
+                if (state is SupersaverModel5Loading) {
                   return const Center(child: CircularProgressIndicator());
                 } else if (state is CategoryErrorState) {
                   return Center(child: Text(state.message));
-                } else if (state is CategoryLoadedState) {
+                } else if (state is SupersaverModel5LoadedState) {
                   return Column(
                     children: [
                       state.products.isNotEmpty
@@ -163,140 +162,4 @@ class CategoryModel9 extends StatelessWidget {
       ),
     );
   }
-}
-
-Widget productItem({
-  required String name,
-  required double price,
-  required String imageurl,
-  required String productcolor,
-  required String sellingpricecolor,
-  required String mrpColor,
-  required String offertextcolor,
-  required String offerBGcolor,
-  required String productBgColor,
-  required String sellingPriceColor,
-  required String buttontextcolor,
-  required String unitbgcolor,
-  required String unitTextcolor,
-  required String seeAllButtonBG,
-  required String seeAllButtontext,
-}) {
-  return SizedBox(
-    width: 132,
-    child: Stack(
-      clipBehavior: Clip.none, // Allows elements to overflow
-      children: [
-        Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
-            // color: const Color.fromARGB(255, 233, 255, 234),
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            spacing: 5,
-            children: [
-              Container(
-                height: 110,
-                decoration: BoxDecoration(
-                  color: parseColor(productcolor),
-                  borderRadius: BorderRadius.circular(12),
-                  image: DecorationImage(
-                    image: NetworkImage(imageurl),
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ),
-              Align(
-                alignment: Alignment.topLeft,
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Container(
-                      margin: const EdgeInsets.only(left: 5),
-                      decoration: BoxDecoration(
-                          color: parseColor(unitbgcolor),
-                          borderRadius: BorderRadius.circular(5)),
-                      child: Padding(
-                        padding: const EdgeInsets.all(5.0),
-                        child: Text(
-                          "100 g",
-                          style: TextStyle(
-                              fontSize: 12, color: parseColor(unitTextcolor)),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(
-                width: 120,
-                child: Text(
-                  "Lay’s American Style Cream & Onion Potato C..",
-                  textAlign: TextAlign.left,
-                  maxLines: 3,
-                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
-                ),
-              ),
-            ],
-          ),
-        ),
-        Positioned(
-          top: 10,
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 1),
-            decoration: BoxDecoration(
-                borderRadius: const BorderRadius.only(
-                    topRight: Radius.circular(10),
-                    bottomRight: Radius.circular(10)),
-                color: parseColor(offerBGcolor)),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Center(
-                  child: Text("Upto",
-                      style: TextStyle(
-                          fontSize: 10,
-                          color: parseColor(offertextcolor),
-                          fontWeight: FontWeight.w500)),
-                ),
-                Column(
-                  children: [
-                    Text("20% OFF",
-                        style: TextStyle(
-                            fontSize: 10, color: parseColor(offertextcolor))),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ),
-        Positioned(
-          top: 85,
-          right: -10,
-          child: Container(
-            height: 35,
-            padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 15),
-            decoration: BoxDecoration(
-              color: (parseColor(seeAllButtonBG)),
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: parseColor(buttontextcolor)),
-            ),
-            child: Center(
-              child: Text(
-                "Add",
-                style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w800,
-                  color: parseColor(seeAllButtontext),
-                ),
-              ),
-            ),
-          ),
-        ),
-      ],
-    ),
-  );
 }

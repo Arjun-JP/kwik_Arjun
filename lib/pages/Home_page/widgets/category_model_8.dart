@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:kwik/constants/colors.dart';
 import '../../../bloc/category_model_8_bloc/category_model_8_bloc.dart';
 import '../../../bloc/category_model_8_bloc/category_model_8_event.dart';
 import '../../../bloc/category_model_8_bloc/category_model_8_state.dart';
@@ -184,31 +185,3 @@ class _CategoryModel8State extends State<CategoryModel8> {
   }
 }
 
-// Function to parse hex color correctly
-
-Color parseColor(String? hexColor) {
-  if (hexColor == null || hexColor.isEmpty) {
-    return const Color(0xFFADD8E6); // Default pastel blue
-  }
-
-  hexColor = hexColor.replaceAll("#", ""); // Remove # if present
-
-  // If the input is 6 characters long (RGB), add "FF" for full opacity
-  if (hexColor.length == 6) {
-    hexColor = "FF$hexColor";
-  }
-  // If the input is not 8 characters (AARRGGBB), return default pastel color
-  else if (hexColor.length != 8) {
-    return const Color(0xFFADD8E6);
-  }
-
-  try {
-    return Color(int.parse("0x$hexColor")); // Ensure correct 0xAARRGGBB format
-  } catch (e) {
-    return const Color(0xFFADD8E6); // Default pastel blue on error
-  }
-}
-
-String colorToHex(Color color) {
-  return '#${color.value.toRadixString(16).padLeft(8, '0').toUpperCase()}';
-}

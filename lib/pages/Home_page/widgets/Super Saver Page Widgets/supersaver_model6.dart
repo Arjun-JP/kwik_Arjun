@@ -1,26 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import 'package:kwik/constants/colors.dart';
+import 'package:kwik/pages/Home_page/widgets/category_model_4.dart';
+import 'package:kwik/pages/Home_page/widgets/sale_banner_ribbonclip.dart';
+import 'package:kwik/repositories/sub_category_product_repository.dart';
 
+import '../../../../bloc/Super Saver Page Bloc/supersaver_model6_bloc/supersaver_model6_bloc.dart';
 
-import '../../../bloc/category_model_4_bloc/category_model_4_bloc.dart';
-import '../../../bloc/category_model_4_bloc/category_model_4_event.dart';
-import '../../../bloc/category_model_4_bloc/category_model_4_state.dart';
-import '../../../repositories/sub_category_product_repository.dart';
-
-class CategoryModel4 extends StatelessWidget {
+class SupersaverModel6 extends StatelessWidget {
   final String subCategoryId;
   final String bgcolor;
   final String titleColor;
   final String productColor;
   final String sellingpricecolor;
   final String mrpColor;
-
   final String seeAllButtonBG;
   final String seeAllButtontext;
-
-  const CategoryModel4({
+  final String flashTextColor;
+  final String flashBgColor;
+  const SupersaverModel6({
     super.key,
     required this.subCategoryId,
     required this.bgcolor,
@@ -30,21 +28,23 @@ class CategoryModel4 extends StatelessWidget {
     required this.mrpColor,
     required this.seeAllButtonBG,
     required this.seeAllButtontext,
+    required this.flashTextColor,
+    required this.flashBgColor,
   });
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) =>
-          CategoryModel4Bloc(repository: SubcategoryProductRepository())
-            ..add(FetchSubCategoryProducts(subCategoryId)),
+          SupersaverModel6Bloc(repository: SubcategoryProductRepository())
+            ..add(FetchSubCategoryProductsSS6(subCategoryId)),
       child: Builder(
         builder: (context) {
-          return BlocBuilder<CategoryModel4Bloc, CategoryModel4State>(
+          return BlocBuilder<SupersaverModel6Bloc, SupersaverModel6State>(
             builder: (context, state) {
-              if (state is CategoryModel4Loading) {
+              if (state is SupersaverModel6Loading) {
                 return const Center(child: CircularProgressIndicator());
-              } else if (state is CategoryModel4Loaded) {
+              } else if (state is SupersaverModel6Loaded) {
                 print(state.products.length);
                 return Container(
                   color: parseColor(bgcolor),
@@ -55,6 +55,36 @@ class CategoryModel4 extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      Center(
+                        child: ClipPath(
+                          clipper: RibbonClipper(),
+                          child: Container(
+                            width: 300,
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 16, vertical: 8),
+                            color: parseColor(flashBgColor),
+                            child: Text.rich(
+                              TextSpan(
+                                text: "SAVE BIG! ",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
+                                    color: parseColor(flashTextColor)),
+                                children: const [
+                                  TextSpan(
+                                    text: "MIN ORDER ₹999",
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.normal,
+                                        color: Colors.green),
+                                  ),
+                                ],
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 10),
                       Text(
                         state.products.first.subCategoryRef
                             .name, // Display section title
@@ -123,7 +153,7 @@ class CategoryModel4 extends StatelessWidget {
                     ],
                   ),
                 );
-              } else if (state is CategoryModel4Error) {
+              } else if (state is SupersaverModel6Error) {
                 return Center(child: Text(state.message));
               }
               return const SizedBox();
@@ -134,111 +164,3 @@ class CategoryModel4 extends StatelessWidget {
     );
   }
 }
-  Widget productItem(
-      {required String name,
-      required double price,
-      required String imageurl,
-      required String bgcolor,
-      required String productcolor,
-      required String sellingpricecolor,
-      required String mrpColor}) {
-    return Padding(
-      padding: const EdgeInsets.only(right: 10),
-      child: SizedBox(
-        width: 132,
-        height: 221,
-        child: Stack(
-          children: [
-            Container(
-              width: 132,
-              height: 221,
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
-                  color: lightenColor(parseColor(bgcolor), .6)),
-              child: Column(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Container(
-                    margin: const EdgeInsets.only(top: 49),
-                    height: 80,
-                    width: 80,
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(100),
-                        image: DecorationImage(
-                            image: NetworkImage(imageurl), fit: BoxFit.cover)),
-                  ),
-                  SizedBox(
-                    width: 120,
-                    child: Text(
-                      name,
-                      textAlign: TextAlign.center,
-                      maxLines: 2,
-                      style: const TextStyle(
-                        fontSize: 16,
-                      ),
-                    ),
-                  ),
-                  Container(
-                    height: 35,
-                    width: 121,
-                    margin: const EdgeInsets.only(bottom: 5),
-                    decoration: BoxDecoration(
-                      color: lightenColor(parseColor(productcolor), .8),
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: parseColor(productcolor)),
-                    ),
-                    child: Center(
-                      child: Text(
-                        "Add to Cart",
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: parseColor(productcolor),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Container(
-              height: 42,
-              width: 132,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12),
-                color: parseColor(productcolor),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text("₹85",
-                      style: TextStyle(
-                          fontSize: 24,
-                          color: parseColor(sellingpricecolor),
-                          fontWeight: FontWeight.w800)),
-                  const SizedBox(width: 10),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Text(
-                        "MRP",
-                        style: TextStyle(
-                            fontSize: 12, color: parseColor(mrpColor)),
-                      ),
-                      Text("₹85",
-                          style: TextStyle(
-                              fontSize: 12, color: parseColor(mrpColor))),
-                    ],
-                  )
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-

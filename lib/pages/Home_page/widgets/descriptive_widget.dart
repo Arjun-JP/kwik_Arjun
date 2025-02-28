@@ -16,8 +16,8 @@ class DescriptiveWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding:  EdgeInsets.all(30),
-      height: 290,
+      padding: EdgeInsets.all(20),
+      height: 250,
       width: double.infinity,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -26,8 +26,8 @@ class DescriptiveWidget extends StatelessWidget {
           Text(
             info,
             style: TextStyle(
-                fontSize: 30,
-                fontWeight: FontWeight.bold,
+                fontSize: 20,
+                fontWeight: FontWeight.w600,
                 color: parseColor(textColor)),
           ),
           Align(
@@ -40,8 +40,8 @@ class DescriptiveWidget extends StatelessWidget {
           Text(
             title,
             style: TextStyle(
-                fontSize: 30,
-                fontWeight: FontWeight.bold,
+                fontSize: 20,
+                fontWeight: FontWeight.w600,
                 color: parseColor(textColor)),
           )
         ],

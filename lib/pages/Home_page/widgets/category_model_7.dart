@@ -5,7 +5,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kwik/bloc/category_model_7_bloc/category_model_7_event.dart';
 import 'package:kwik/constants/colors.dart';
 import 'package:kwik/models/product_model.dart';
-import 'package:kwik/pages/Home_page/widgets/sale_banner_ribbonclip.dart';
 import '../../../bloc/category_model_7_bloc/category_model_7_bloc.dart';
 import '../../../bloc/category_model_7_bloc/category_model_7_state.dart';
 import '../../../repositories/sub_category_product_repository.dart';
@@ -23,6 +22,7 @@ class CategoryModel7 extends StatelessWidget {
   final String offerBGcolor;
   final String seeAllButtonBG;
   final String seeAllButtontext;
+ 
 
 
   const CategoryModel7(
@@ -39,6 +39,7 @@ class CategoryModel7 extends StatelessWidget {
       required this.seeAllButtonBG,
       required this.seeAllButtontext,
       required this.subcategoryid,
+
     
       });
 

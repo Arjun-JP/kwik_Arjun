@@ -5,6 +5,7 @@ import 'package:kwik/constants/colors.dart';
 import 'package:kwik/repositories/category_model2_repository.dart';
 
 import '../../../../bloc/Categories Page Bloc/categories_page_model3/categories_page_model3_bloc.dart';
+import '../category_model_11.dart';
 
 class CategoriesPageModel3 extends StatelessWidget {
   final String categoryId;
@@ -118,7 +119,11 @@ class CategoriesPageModel3 extends StatelessWidget {
                                 name: state.subCategories[index].name,
                                 bgcolor: state.category.color,
                                 textcolor: subcatColor,
-                                imageurl: state.subCategories[index].imageUrl);
+                                imageurl: state.subCategories[index].imageUrl,
+                                titleTopDisplayPosition:
+                                    titleTopDisplayPosition,
+                                percentBgColor: percentBgColor,
+                                percentDisplayPosition: percentDisplayPosition);
                           },
                         ),
                       ),
@@ -168,83 +173,6 @@ class CategoriesPageModel3 extends StatelessWidget {
           );
         },
       ),
-    );
-  }
-
-  Widget subcategoryItem(
-      {required String name,
-      required String bgcolor,
-      required String textcolor,
-      required String imageurl}) {
-    return Column(
-      children: [
-        if (titleTopDisplayPosition)
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10.0),
-            child: Text(
-              name,
-              style: const TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-          ),
-        Stack(
-          children: [
-            Container(
-              height: 120,
-              width: 100,
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8),
-                  color: parseColor(bgcolor),
-                  image: DecorationImage(
-                      image: NetworkImage(imageurl), fit: BoxFit.fill)),
-            ),
-
-            Positioned(
-              top: percentDisplayPosition,
-              child: Container(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 1, horizontal: 10),
-                decoration: BoxDecoration(
-                    color: parseColor(percentBgColor),
-                    borderRadius: const BorderRadius.only(
-                        topRight: Radius.circular(10),
-                        bottomRight: Radius.circular(10))),
-                child: const Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Upto",
-                      style:
-                          TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
-                    ),
-                    Text(
-                      "20% OFF",
-                      style:
-                          TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            // Text(
-            //   name,
-            //   style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
-            // ),
-          ],
-        ),
-        if (!titleTopDisplayPosition)
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10.0),
-            child: Text(
-              name,
-              maxLines: 2,
-              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
-            ),
-          ),
-      ],
     );
   }
 }

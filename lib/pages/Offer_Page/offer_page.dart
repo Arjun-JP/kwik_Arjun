@@ -12,24 +12,13 @@ import 'package:kwik/bloc/home_Ui_bloc/home_Ui_Bloc.dart';
 import 'package:kwik/bloc/home_Ui_bloc/home_Ui_Event.dart';
 import 'package:kwik/bloc/home_Ui_bloc/home_Ui_State.dart';
 import 'package:kwik/bloc/navbar_bloc/navbar_bloc.dart';
+import 'package:kwik/pages/Home_page/widgets/Super%20Saver%20Page%20Widgets/supersaver_model1.dart';
 import 'package:kwik/pages/Home_page/widgets/banner_model.dart';
-import 'package:kwik/pages/Home_page/widgets/Categories%20Page%20Widgets/categories_page_model4.dart';
-import 'package:kwik/pages/Home_page/widgets/Categories%20Page%20Widgets/categories_page_model8.dart';
-import 'package:kwik/pages/Home_page/widgets/Categories%20Page%20Widgets/categories_page_model10.dart';
 
-import 'package:kwik/pages/Home_page/widgets/category_model_10.dart';
-import 'package:kwik/pages/Home_page/widgets/category_model_11.dart';
-import 'package:kwik/pages/Home_page/widgets/category_model_2.dart';
 import 'package:kwik/pages/Home_page/widgets/category_model_4.dart';
 
-import 'package:kwik/pages/Home_page/widgets/category_model_5.dart';
-import 'package:kwik/pages/Home_page/widgets/category_model_7.dart';
-
-import 'package:kwik/pages/Home_page/widgets/category_model_8.dart';
-import 'package:kwik/pages/Home_page/widgets/category_model_9.dart';
-import 'package:kwik/pages/Home_page/widgets/Categories%20Page%20Widgets/categories_page_model2.dart';
 import 'package:kwik/pages/Home_page/widgets/descriptive_widget.dart';
-import 'package:kwik/pages/Home_page/widgets/super_saver_categories_1.dart';
+import 'package:kwik/pages/Home_page/widgets/Super%20Saver%20Page%20Widgets/supersaver_model4.dart';
 
 import 'package:kwik/widgets/navbar/navbar.dart';
 import '../../bloc/category_model1_bloc/category_model1_event.dart';
@@ -38,6 +27,10 @@ import '../../bloc/category_model2_bloc/category_model2_event.dart';
 import '../../bloc/category_model_9_bloc/category_model_9_event.dart';
 import '../../bloc/navbar_bloc/navbar_event.dart';
 import '../../constants/colors.dart';
+import '../Home_page/widgets/Super Saver Page Widgets/supersaver_model2.dart';
+import '../Home_page/widgets/Super Saver Page Widgets/supersaver_model3.dart';
+import '../Home_page/widgets/Super Saver Page Widgets/supersaver_model5.dart';
+import '../Home_page/widgets/Super Saver Page Widgets/supersaver_model6.dart';
 
 class OfferPage extends StatefulWidget {
   const OfferPage({super.key});
@@ -117,10 +110,10 @@ class _OfferPageState extends State<OfferPage> {
                   'order': "1"
                 },
                 {
-                  'template': CategoriesPageModel2(
-                          seeAllButtonBG: "EDDDE4",
+                  'template': SupersaverModel1(
+                    seeAllButtonBG: "EDDDE4",
                     seeAllButtontext: "841F4A",
-                      vegOrNonIcon: 'assets/images/vegicon.png',
+                    vegOrNonIcon: 'assets/images/vegicon.png',
                     categoryId: uiData["template7"]["category_ref"],
                     bgcolor: "FFFFFF",
                     titleColor: uiData["template7"]["title_color"],
@@ -131,8 +124,7 @@ class _OfferPageState extends State<OfferPage> {
                   'order': "2"
                 },
                 {
-                  'template': CategoryModel7(
-                   
+                  'template': SupersaverModel2(
                     subcategoryid: uiData["template10"]["category_ref"],
                     titleColor: uiData["template10"]["title_color"],
                     bgcolor: uiData["template10"]["background_color"],
@@ -151,7 +143,7 @@ class _OfferPageState extends State<OfferPage> {
                   'order': "3"
                 },
                 {
-                  'template': CategoryModel10(
+                  'template': SupersaverModel3(
                     title: uiData["template13"]["title"],
                     titleColor: uiData["template13"]["titleColor"],
                     bgcolor: uiData["template13"]["background_color"],
@@ -170,7 +162,7 @@ class _OfferPageState extends State<OfferPage> {
                   'order': "4"
                 },
                 {
-                  'template': SuperSaverCategories1(
+                  'template': SupersaverModel4(
                     addButtonColor: "2B5692",
                     offertextcolor: uiData["template9"]["offer_text_color"],
                     offerbgcolor: uiData["template9"]["offer_bg_color"],
@@ -184,20 +176,22 @@ class _OfferPageState extends State<OfferPage> {
                     sellPriceBgColor: "FF3B30",
                     ratingTextColor: 'ffffff',
                     ratingBgColor: "00AE11",
+                    seeAllButtonBG: "FFD8C6",
+                    seeAllButtontext: "B00000",
                   ),
                   'order': "5"
                 },
                 {
-                  'template': CategoryModel9(
+                  'template': SupersaverModel5(
                     maincategories: List<String>.from(
                         uiData["template12"]["maincategories"]),
                     categoryId: uiData["template12"]["categoryId"],
-                    bgcolor: uiData["template12"]["bgcolor"],
-                    titleColor: uiData["template12"]["titleColor"],
+                    bgcolor: "35AB4E",
+                    titleColor: "ffffff",
                     subcatColor: uiData["template12"]["offerBGcolor"],
                     offerBGcolor: uiData["template12"]["offerBGcolor"],
                     mrpColor: uiData["template12"]["mrpColor"],
-                    productBgColor: uiData["template12"]["productBgColor"],
+                    productBgColor: "EEF3F2",
                     sellingPriceColor: uiData["template12"]
                         ["sellingPriceColor"],
                     buttontextcolor: uiData["template12"]["buttontextcolor"],
@@ -205,16 +199,17 @@ class _OfferPageState extends State<OfferPage> {
                     title: uiData["template12"]["title"],
                     unitTextcolor: uiData["template12"]["unitTextcolor"],
                     unitbgcolor: uiData["template12"]["unitbgcolor"],
+                    seeAllButtonBG: "D5E2C9",
+                    seeAllButtontext: "00AE11",
                   ),
                   'order': "6"
                 },
                 {
-                  'template': CategoryModel4(
-                    seeAllButtonBG: "D5E2C9",
-                    seeAllButtontext: "35AB4E",
+                  'template': SupersaverModel6(
                     flashBgColor: "FFFA76",
                     flashTextColor: "00AE11",
-                    flashSaleBanner: true,
+                    seeAllButtonBG: "D5E2C9",
+                    seeAllButtontext: "35AB4E",
                     mrpColor: uiData["template6"]["mrp_color"],
                     sellingpricecolor: uiData["template6"]
                         ["selling_price_color"],

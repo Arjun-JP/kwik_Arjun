@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kwik/bloc/category_model1_bloc/category_model1_event.dart';
 
 import 'package:kwik/constants/colors.dart';
+import 'package:kwik/pages/Home_page/widgets/category_model_2.dart';
 import 'package:kwik/repositories/category_model2_repository.dart';
 
 import '../../../../bloc/Categories Page Bloc/categories_page_model1/categories_page_model1_bloc.dart';
@@ -88,33 +89,4 @@ class CategoriesPageModel1 extends StatelessWidget {
       ),
     );
   }
-
-  Widget subcategoryItem(
-      {required String name,
-      required String bgcolor,
-      required String textcolor,
-      required String imageurl}) {
-    return Column(
-      mainAxisSize: MainAxisSize.max,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Container(
-          height: 98,
-          width: 100,
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(8),
-              color: parseColor(bgcolor),
-              image: DecorationImage(
-                  image: NetworkImage(imageurl), fit: BoxFit.fill)),
-        ),
-        Text(
-          name,
-          textAlign: TextAlign.center,
-          style: TextStyle(fontSize: 16, color: parseColor(textcolor)),
-        )
-      ],
-    );
-  }
-
-  void add(ClearCache clearCache) {}
 }

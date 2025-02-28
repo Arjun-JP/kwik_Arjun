@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kwik/constants/colors.dart';
-import '../../../bloc/category_model_4_bloc/category_model_4_bloc.dart';
-import '../../../bloc/category_model_4_bloc/category_model_4_event.dart';
-import '../../../bloc/category_model_4_bloc/category_model_4_state.dart';
-import '../../../repositories/sub_category_product_repository.dart';
 
-class SuperSaverCategories1 extends StatelessWidget {
+import '../../../../bloc/Super Saver Page Bloc/supersaver_model4_bloc/supersaver_model4_bloc.dart';
+import '../../../../repositories/sub_category_product_repository.dart';
+
+class SupersaverModel4 extends StatelessWidget {
   final String subCategoryId;
   final String titleColor;
   final String productColor;
@@ -20,7 +19,10 @@ class SuperSaverCategories1 extends StatelessWidget {
   final String addButtonColor;
   final String ratingBgColor;
   final String ratingTextColor;
-  const SuperSaverCategories1(
+
+  final String seeAllButtonBG;
+  final String seeAllButtontext;
+  const SupersaverModel4(
       {super.key,
       required this.subCategoryId,
       required this.titleColor,
@@ -34,23 +36,24 @@ class SuperSaverCategories1 extends StatelessWidget {
       required this.addButtonColor,
       required this.offertextcolor,
       required this.ratingBgColor,
+      required this.seeAllButtonBG,
+      required this.seeAllButtontext,
       required this.ratingTextColor});
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) =>
-          CategoryModel4Bloc(repository: SubcategoryProductRepository())
-            ..add(FetchSubCategoryProducts(subCategoryId)),
-      child: BlocBuilder<CategoryModel4Bloc, CategoryModel4State>(
+          SupersaverModel4Bloc(repository: SubcategoryProductRepository())
+            ..add(FetchSubCategoryProductsSS4(subCategoryId)),
+      child: BlocBuilder<SupersaverModel4Bloc, SupersaverModel4State>(
         builder: (context, state) {
-          if (state is CategoryModel4Loading) {
+          if (state is SupersaverModel4Loading) {
             return const Center(child: CircularProgressIndicator());
-          } else if (state is CategoryModel4Loaded) {
+          } else if (state is SupersaverModel4Loaded) {
             return Padding(
               padding: const EdgeInsets.only(top: 10.0, bottom: 10.0),
               child: Container(
-                height: 806,
                 color: parseColor(bgColor),
                 padding:
                     const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
@@ -105,12 +108,46 @@ class SuperSaverCategories1 extends StatelessWidget {
                         );
                       },
                     ),
-                    const SizedBox(height: 10),
+                    const SizedBox(height: 20),
+                    Container(
+                      width: MediaQuery.of(context).size.width,
+                      height: 48,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: parseColor(seeAllButtonBG),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Expanded(
+                            flex: 5,
+                            child: Align(
+                              alignment: Alignment.centerRight,
+                              child: Text('See all products',
+                                  style: TextStyle(
+                                      color: parseColor(seeAllButtontext),
+                                      fontSize: 18)),
+                            ),
+                          ),
+                          Expanded(
+                            flex: 2,
+                            child: Align(
+                              alignment: Alignment.centerRight,
+                              child: Padding(
+                                padding: const EdgeInsets.only(right: 14.0),
+                                child: Icon(Icons.arrow_forward,
+                                    color: parseColor(seeAllButtontext)),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ],
                 ),
               ),
             );
-          } else if (state is CategoryModel4Error) {
+          } else if (state is SupersaverModel4Error) {
             return Center(child: Text(state.message));
           }
           return const SizedBox();

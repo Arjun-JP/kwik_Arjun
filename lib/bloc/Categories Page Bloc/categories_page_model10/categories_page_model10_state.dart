@@ -8,6 +8,7 @@ sealed class CategoriesPageModel10State extends Equatable {
 }
 
 final class CategoriesPageModel10Initial extends CategoriesPageModel10State {}
+
 class CategoriesPageModel10Loading extends CategoriesPageModel10State {}
 
 class CategoriesPageModel10Loaded extends CategoriesPageModel10State {
