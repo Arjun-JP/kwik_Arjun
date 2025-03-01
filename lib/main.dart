@@ -22,6 +22,7 @@ import 'package:kwik/models/Hiveadapter/category_model_adapter.dart';
 import 'package:kwik/models/Hiveadapter/review_model_adapter.dart';
 import 'package:kwik/models/Hiveadapter/stock_model_adapter.dart';
 import 'package:kwik/repositories/banner_repository.dart';
+import 'package:kwik/repositories/categories_page_ui_repository.dart';
 import 'package:kwik/repositories/category_model1_repository.dart';
 import 'package:kwik/repositories/category_model_6_repo.dart';
 import 'package:kwik/repositories/category_model_8_repo.dart';
@@ -30,6 +31,15 @@ import 'package:kwik/repositories/home_Ui_repository.dart';
 import 'package:kwik/repositories/home_category_repository.dart';
 import 'package:kwik/repositories/sub_category_product_repository.dart';
 import 'package:kwik/routes/routes.dart';
+import 'bloc/Categories Page Bloc/categories_UI_bloc/categories_ui_bloc.dart';
+import 'bloc/Categories Page Bloc/categories_page_model1/categories_page_model1_bloc.dart';
+import 'bloc/Categories Page Bloc/categories_page_model2/categories_page_model2_bloc.dart';
+import 'bloc/Categories Page Bloc/categories_page_model3/categories_page_model3_bloc.dart';
+import 'bloc/Categories Page Bloc/categories_page_model4/categories_page_model4_bloc.dart';
+import 'bloc/Categories Page Bloc/categories_page_model5/categories_page_model5_bloc.dart';
+import 'bloc/Categories Page Bloc/categories_page_model6/categories_page_model6_bloc.dart';
+import 'bloc/Categories Page Bloc/categories_page_model7/categories_page_model7_bloc.dart';
+import 'bloc/Categories Page Bloc/categories_page_model8/categories_page_model8_bloc.dart';
 import 'bloc/category_model_10_bloc/category_model_10_bloc.dart';
 import 'bloc/category_model_4_bloc/category_model_4_bloc.dart';
 import 'bloc/category_model_7_bloc/category_model_7_bloc.dart';
@@ -109,11 +119,14 @@ class _MyAppState extends State<MyApp> {
         ),
         BlocProvider<HomeUiBloc>(
             create: (_) => HomeUiBloc(uiRepository: HomeUiRepository())),
+
         BlocProvider<CategoryBloc>(
             create: (_) =>
                 CategoryBloc(categoryRepository: CategoryRepository())),
+
         BlocProvider<BannerBloc>(
             create: (_) => BannerBloc(bannerepository: BannerRepository())),
+
         BlocProvider<CategoryBlocModel1>(
             create: (_) => CategoryBlocModel1(
                 categoryRepositoryModel1: CategoryRepositoryModel1())),
@@ -143,6 +156,37 @@ class _MyAppState extends State<MyApp> {
         BlocProvider<CategoryModel10Bloc>(
             create: (_) =>
                 CategoryModel10Bloc(repository: CategoryModel10Repo())),
+        BlocProvider<CategoriesUiBloc>(
+            create: (_) => CategoriesUiBloc(
+                catUiRepository: CategoriesPageUiRepository())),
+
+//for categories page
+
+        BlocProvider<CategoriesPageModel1Bloc>(
+            create: (_) => CategoriesPageModel1Bloc(
+                categoryRepositoryModel2: CategoryRepositoryModel2())),
+        BlocProvider<CategoriesPageModel2Bloc>(
+            create: (_) => CategoriesPageModel2Bloc(
+                categoryRepositoryModel2: CategoryRepositoryModel2())),
+        BlocProvider<CategoriesPageModel3Bloc>(
+            create: (_) => CategoriesPageModel3Bloc(
+                categoryRepositoryModel2: CategoryRepositoryModel2())),
+        BlocProvider<CategoriesPageModel4Bloc>(
+            create: (_) => CategoriesPageModel4Bloc(
+                repository: SubcategoryProductRepository())),
+
+        BlocProvider<CategoriesPageModel5Bloc>(
+            create: (_) => CategoriesPageModel5Bloc(
+                categoryRepository: Categorymodel5Repository())),
+
+        BlocProvider<CategoriesPageModel6Bloc>(
+            create: (_) => CategoriesPageModel6Bloc(
+                categoryRepository: Categorymodel8Repository())
+              ..add(FetchCategoriesmodel6())),
+
+        BlocProvider<CategoriesPageModel7Bloc>(
+            create: (_) =>
+                CategoriesPageModel7Bloc(repository: CategoryModel10Repo())),
       ],
       child: MaterialApp.router(
         routerConfig: _router,

@@ -7,4 +7,4 @@ sealed class CategoriesPageModel6Event extends Equatable {
   List<Object> get props => [];
 }
 
-class FetchCategoriesmodel8 extends CategoriesPageModel6Event {}
+class FetchCategoriesmodel6 extends CategoriesPageModel6Event {}

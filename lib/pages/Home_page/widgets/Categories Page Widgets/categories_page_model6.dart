@@ -40,7 +40,7 @@ class _CategoriesPageModel6State extends State<CategoriesPageModel6> {
     return BlocProvider(
       create: (context) => CategoriesPageModel6Bloc(
           categoryRepository: Categorymodel8Repository())
-        ..add(FetchCategoriesmodel8()),
+        ..add(FetchCategoriesmodel6()),
       child: BlocBuilder<CategoriesPageModel6Bloc, CategoriesPageModel6State>(
         builder: (context, state) {
           if (state is CategoriesPageModel6Loading) {

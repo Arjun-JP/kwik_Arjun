@@ -2,9 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-import 'package:kwik/bloc/home_Ui_bloc/home_Ui_Bloc.dart';
-
-import 'package:kwik/bloc/home_Ui_bloc/home_Ui_State.dart';
 import 'package:kwik/bloc/navbar_bloc/navbar_bloc.dart';
 
 import 'package:kwik/pages/Home_page/widgets/banner_model.dart';
@@ -12,6 +9,7 @@ import 'package:kwik/pages/Home_page/widgets/banner_model.dart';
 import 'package:kwik/pages/Home_page/widgets/descriptive_widget.dart';
 
 import 'package:kwik/widgets/navbar/navbar.dart';
+import '../../bloc/Categories Page Bloc/categories_UI_bloc/categories_ui_bloc.dart';
 import '../../bloc/Categories Page Bloc/categories_page_model1/categories_page_model1_bloc.dart';
 import '../../bloc/Categories Page Bloc/categories_page_model2/categories_page_model2_bloc.dart';
 import '../../bloc/Categories Page Bloc/categories_page_model3/categories_page_model3_bloc.dart';
@@ -41,7 +39,7 @@ class CategoryPage extends StatefulWidget {
 
 class _CategoryPageState extends State<CategoryPage> {
   Future<void> _onRefresh() async {
-    // context.read<HomeUiBloc>().add(ClearUiCacheEvent());
+    context.read<CategoriesUiBloc>().add(ClearCatUiCacheEvent());
     BlocProvider.of<CategoriesPageModel1Bloc>(context)
         .add(ClearCacheCatPage1());
 
@@ -54,13 +52,13 @@ class _CategoryPageState extends State<CategoryPage> {
     BlocProvider.of<CategoriesPageModel4Bloc>(context)
         .add(Clearsubcatproduct1Cache4());
 
-    // context.read<HomeUiBloc>().add(FetchUiDataEvent());
+    context.read<CategoriesUiBloc>().add(FetchCatUiDataEvent());
   }
 
   @override
   void initState() {
     super.initState();
-    // context.read<HomeUiBloc>().add(FetchUiDataEvent());
+    context.read<CategoriesUiBloc>().add(FetchCatUiDataEvent());
   }
 
   @override
@@ -91,11 +89,11 @@ class _CategoryPageState extends State<CategoryPage> {
       },
       child: Scaffold(
         backgroundColor: const Color(0xFFFFFFFF),
-        body: BlocBuilder<HomeUiBloc, HomeUiState>(
+        body: BlocBuilder<CategoriesUiBloc, CategoriesUiState>(
           builder: (context, state) {
-            if (state is UiLoading) {
+            if (state is CatUiLoading) {
               return const Center(child: CircularProgressIndicator());
-            } else if (state is UiLoaded) {
+            } else if (state is CatUiLoaded) {
               final uiData = state.uiData;
 
               final categoryRef =
@@ -349,12 +347,13 @@ class _CategoryPageState extends State<CategoryPage> {
                           expandedHeight: 80,
                           flexibleSpace: FlexibleSpaceBar(
                             background: Container(
-                              decoration: const BoxDecoration(
+                              decoration: BoxDecoration(
                                 gradient: LinearGradient(
                                   colors: [
-                                    Color(0xFFFFFFFF),
-                                    Color(0xFFFFFFFF)
+                                    const Color(0xFFFFD8C6),
+                                    const Color(0xFFFFFFFF).withOpacity(0.0),
                                   ],
+                                  stops: const [0.01, 2],
                                   begin: Alignment.topCenter,
                                   end: Alignment.bottomCenter,
                                 ),
@@ -387,7 +386,7 @@ class _CategoryPageState extends State<CategoryPage> {
                   ),
                 ),
               );
-            } else if (state is UiError) {
+            } else if (state is CatUiError) {
               return Center(
                 child: Text('Error: ${state.message}'),
               );
