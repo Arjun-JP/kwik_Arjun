@@ -17,6 +17,7 @@ import 'package:kwik/bloc/navbar_bloc/navbar_bloc.dart';
 import 'package:kwik/pages/Home_page/widgets/banner_model.dart';
 import 'package:kwik/pages/Home_page/widgets/category_model_10.dart';
 import 'package:kwik/pages/Home_page/widgets/category_model_11.dart';
+import 'package:kwik/pages/Home_page/widgets/category_model_12.dart';
 import 'package:kwik/pages/Home_page/widgets/category_model_2.dart';
 import 'package:kwik/pages/Home_page/widgets/category_model_3.dart';
 import 'package:kwik/pages/Home_page/widgets/category_model_4.dart';
@@ -113,6 +114,7 @@ class _HomePageState extends State<HomePage> {
               final templates = [
                 {
                   'template': CategoryModel1(
+                    title: uiData["categorylist"]["title"],
                     bgColor: uiData["categorylist"]["background_color"],
                     categories: categoryRef,
                     titlecolor: uiData["categorylist"]["title_color"],
@@ -128,6 +130,30 @@ class _HomePageState extends State<HomePage> {
                     height: 200,
                   ),
                   'order': uiData["template2"]["ui_order_number"]
+                },
+                {
+                  'template': CategoryModel12(
+                    topimage: uiData["template12"]["top_image"],
+                    seeAllButtonBG: "D5E2C9",
+                    seeAllButtontext: "00AE11",
+                    maincategories: List<String>.from(
+                        uiData["template12"]["maincategories"]),
+                    categoryId: uiData["template12"]["categoryId"],
+                    bgcolor: uiData["template12"]["bgcolor"],
+                    titleColor: uiData["template12"]["titleColor"],
+                    subcatColor: uiData["template12"]["offerBGcolor"],
+                    offerBGcolor: uiData["template12"]["offerBGcolor"],
+                    mrpColor: uiData["template12"]["mrpColor"],
+                    productBgColor: uiData["template12"]["productBgColor"],
+                    sellingPriceColor: uiData["template12"]
+                        ["sellingPriceColor"],
+                    buttontextcolor: uiData["template12"]["buttontextcolor"],
+                    offerTextcolor: uiData["template12"]["offerTextcolor"],
+                    title: uiData["template12"]["title"],
+                    unitTextcolor: uiData["template12"]["unitTextcolor"],
+                    unitbgcolor: uiData["template12"]["unitbgcolor"],
+                  ),
+                  'order': " 1"
                 },
                 {
                   'template': CategoryModel3(
@@ -223,8 +249,6 @@ class _HomePageState extends State<HomePage> {
                 },
                 {
                   'template': CategoryModel7(
-                
-                      
                     subcategoryid: uiData["template10"]["category_ref"],
                     titleColor: uiData["template10"]["title_color"],
                     bgcolor: uiData["template10"]["background_color"],

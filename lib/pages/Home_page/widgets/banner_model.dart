@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:carousel_slider/carousel_slider.dart';
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 import '../../../bloc/banner_bloc/banner_bloc.dart';
 import '../../../bloc/banner_bloc/banner_event.dart';
@@ -27,8 +29,8 @@ class BannerModel1 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => BannerBloc(bannerepository: BannerRepository())
-        ..add(FetchBanners()), // Dispatch the event to fetch banners
+      create: (context) =>
+          BannerBloc(bannerepository: BannerRepository())..add(FetchBanners()),
       child: Builder(
         builder: (context) {
           return BlocBuilder<BannerBloc, BannerState>(
@@ -36,7 +38,6 @@ class BannerModel1 extends StatelessWidget {
               if (state is BannerLoading) {
                 return const Center(child: CircularProgressIndicator());
               } else if (state is BannerLoaded) {
-                // Filter banners to only include those with banner_id == 1
                 final filteredBanners = state.banners
                     .where((banner) => banner.bannerId == bannerId)
                     .toList();
@@ -44,39 +45,54 @@ class BannerModel1 extends StatelessWidget {
                 if (filteredBanners.isEmpty) {
                   return const SizedBox();
                 }
+
                 return Container(
-                  color: parseColor(
-                      bgColor), // Optional: Apply background color to container
+                  color: parseColor(bgColor),
                   child: Padding(
                     padding: EdgeInsets.all(padding),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                    child: Stack(
                       children: [
-                        // Carousel Section
-                        SizedBox(
-                          height: height, // Height of the carousel
-                          child: PageView.builder(
-                            itemCount: filteredBanners.length,
-                            itemBuilder: (context, index) {
-                              final banner = filteredBanners[index];
-                              return Padding(
-                                padding:
-                                    EdgeInsets.symmetric(horizontal: padding),
-                                child: Container(
-                                  width: double.infinity,
-                                  height: 100,
-                                  decoration: BoxDecoration(
-                                    borderRadius:
-                                        BorderRadius.circular(borderradious),
-                                    // color: parseColor(bgColor), // Optional background color
-                                    image: DecorationImage(
-                                      image: NetworkImage(banner.bannerImage),
-                                      fit: BoxFit.fill,
-                                    ),
+                        CarouselSlider.builder(
+                          itemCount: filteredBanners.length,
+                          options: CarouselOptions(
+                            height: height,
+                            autoPlay: true,
+                            autoPlayInterval: const Duration(seconds: 3),
+                            enlargeCenterPage: true,
+                            viewportFraction: 1.0,
+                            onPageChanged: (index, reason) {},
+                          ),
+                          itemBuilder: (context, index, realIndex) {
+                            final banner = filteredBanners[index];
+                            return ClipRRect(
+                              borderRadius:
+                                  BorderRadius.circular(borderradious),
+                              child: Container(
+                                width: double.infinity,
+                                decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                    image: NetworkImage(banner.bannerImage),
+                                    fit: BoxFit.fill,
                                   ),
                                 ),
-                              );
-                            },
+                              ),
+                            );
+                          },
+                        ),
+                        Positioned(
+                          bottom: 10,
+                          left: 0,
+                          right: 0,
+                          child: Center(
+                            child: SmoothPageIndicator(
+                              controller: PageController(),
+                              count: filteredBanners.length,
+                              effect: const ExpandingDotsEffect(
+                                activeDotColor: Colors.white,
+                                dotHeight: 6,
+                                dotWidth: 6,
+                              ),
+                            ),
                           ),
                         ),
                       ],
@@ -95,26 +111,19 @@ class BannerModel1 extends StatelessWidget {
   }
 }
 
-// Function to parse hex color correctly (optional)
 Color parseColor(String? hexColor) {
   if (hexColor == null || hexColor.isEmpty) {
-    return const Color(0xFFADD8E6); // Default pastel blue
-  }
-
-  hexColor = hexColor.replaceAll("#", ""); // Remove # if present
-
-  // If the input is 6 characters long (RGB), add "FF" for full opacity
-  if (hexColor.length == 6) {
-    hexColor = "FF$hexColor";
-  }
-  // If the input is not 8 characters (AARRGGBB), return default pastel color
-  else if (hexColor.length != 8) {
     return const Color(0xFFADD8E6);
   }
-
+  hexColor = hexColor.replaceAll("#", "");
+  if (hexColor.length == 6) {
+    hexColor = "FF$hexColor";
+  } else if (hexColor.length != 8) {
+    return const Color(0xFFADD8E6);
+  }
   try {
-    return Color(int.parse("0x$hexColor")); // Ensure correct 0xAARRGGBB format
+    return Color(int.parse("0x$hexColor"));
   } catch (e) {
-    return const Color(0xFFADD8E6); // Default pastel blue on error
+    return const Color(0xFFADD8E6);
   }
 }
