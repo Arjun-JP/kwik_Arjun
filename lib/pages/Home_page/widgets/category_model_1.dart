@@ -12,12 +12,14 @@ class CategoryModel1 extends StatefulWidget {
   final List<String> categories;
   final String titlecolor;
   final String textcolor;
+  final String title;
   const CategoryModel1({
     super.key,
     required this.bgColor,
     required this.categories,
     required this.titlecolor,
     required this.textcolor,
+    required this.title,
   });
 
   @override
@@ -45,7 +47,7 @@ class _CategoryModel1State extends State<CategoryModel1> {
                   children: [
                     const SizedBox(height: 7),
                     Text(
-                      "Top Categories For You",
+                      widget.title,
                       style: TextStyle(
                           color: parseColor(widget.titlecolor),
                           fontSize: 18,
@@ -117,4 +119,3 @@ class _CategoryModel1State extends State<CategoryModel1> {
 }
 
 // Function to parse hex color correctly
-
