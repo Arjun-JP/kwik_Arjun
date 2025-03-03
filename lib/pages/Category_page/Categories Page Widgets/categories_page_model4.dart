@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kwik/constants/colors.dart';
 
-import '../../../../bloc/Categories Page Bloc/categories_page_model4/categories_page_model4_bloc.dart';
-import '../../../../repositories/sub_category_product_repository.dart';
+import '../../../bloc/Categories Page Bloc/categories_page_model4/categories_page_model4_bloc.dart';
+import '../../../repositories/sub_category_product_repository.dart';
 
 class CategoriesPageModel4 extends StatelessWidget {
   final String subCategoryId;

@@ -5,7 +5,7 @@ import 'package:kwik/models/product_model.dart';
 import 'package:kwik/pages/Home_page/widgets/category_model_10.dart';
 import 'package:kwik/repositories/category_model_10_repo.dart';
 
-import '../../../../bloc/Categories Page Bloc/categories_page_model7/categories_page_model7_bloc.dart';
+import '../../../bloc/Categories Page Bloc/categories_page_model7/categories_page_model7_bloc.dart';
 
 class CategoriesPageModel7 extends StatelessWidget {
   final String bgcolor;

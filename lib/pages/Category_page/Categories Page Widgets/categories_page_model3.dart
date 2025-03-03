@@ -4,8 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kwik/constants/colors.dart';
 import 'package:kwik/repositories/category_model2_repository.dart';
 
-import '../../../../bloc/Categories Page Bloc/categories_page_model3/categories_page_model3_bloc.dart';
-import '../category_model_11.dart';
+import '../../../bloc/Categories Page Bloc/categories_page_model3/categories_page_model3_bloc.dart';
+import '../../Home_page/widgets/category_model_11.dart';
 
 class CategoriesPageModel3 extends StatelessWidget {
   final String categoryId;

@@ -6,7 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:kwik/repositories/category_model2_repository.dart';
 
-import '../../../../bloc/Categories Page Bloc/categories_page_model2/categories_page_model2_bloc.dart';
+import '../../../bloc/Categories Page Bloc/categories_page_model2/categories_page_model2_bloc.dart';
 
 class CategoriesPageModel2 extends StatelessWidget {
   final String categoryId;

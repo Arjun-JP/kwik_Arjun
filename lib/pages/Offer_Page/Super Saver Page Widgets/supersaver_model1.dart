@@ -3,8 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kwik/constants/colors.dart';
 import 'package:kwik/repositories/category_model2_repository.dart';
 
-import '../../../../bloc/Super Saver Page Bloc/supersaver_model1_bloc/supersaver_model1_bloc.dart';
-import '../Categories Page Widgets/categories_page_model2.dart';
+import '../../../bloc/Super Saver Page Bloc/supersaver_model1_bloc/supersaver_model1_bloc.dart';
+import '../../Category_page/Categories Page Widgets/categories_page_model2.dart';
 
 class SupersaverModel1 extends StatelessWidget {
   final String categoryId;
