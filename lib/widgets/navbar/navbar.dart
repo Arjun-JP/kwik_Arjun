@@ -117,11 +117,10 @@ class Navbar extends StatelessWidget {
                   height: 26,
                 )
               : Container(
-                  decoration: const BoxDecoration(
-                      image: DecorationImage(
-                          image: AssetImage("assets/images/supersaver.png"))),
-                  width: 50,
-                  height: 50,
+                  decoration: const BoxDecoration(),
+                  width: 60,
+                  height: 60,
+                  child: Image.asset("assets/images/supersaver.svg"),
                 ),
           const SizedBox(height: 5),
           index != 2
