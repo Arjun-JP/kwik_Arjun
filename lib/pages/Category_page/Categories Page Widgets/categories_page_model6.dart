@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kwik/constants/colors.dart';
 import 'package:kwik/repositories/category_model_8_repo.dart';
 
-import '../../../../bloc/Categories Page Bloc/categories_page_model6/categories_page_model6_bloc.dart';
+import '../../../bloc/Categories Page Bloc/categories_page_model6/categories_page_model6_bloc.dart';
 
 class CategoriesPageModel6 extends StatefulWidget {
   final String title;

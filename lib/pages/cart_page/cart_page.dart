@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kwik/widgets/products_3.dart';
 
 import '../../widgets/navbar/navbar.dart';
 
@@ -13,10 +14,14 @@ class _CartPageState extends State<CartPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        width: double.infinity,
-        height: double.infinity,
-        color: Colors.greenAccent,
+      body: Center(
+        child: Products3(
+          image: 'assets/images/image2.jpeg',
+          title: 'Watermelon Kiran',
+          quantity: "1 Pc",
+          mrp: "100",
+          buyingPrice: "50",
+        ),
       ),
       bottomNavigationBar: const Navbar(),
     );

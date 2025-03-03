@@ -5,7 +5,7 @@ import 'package:kwik/constants/colors.dart';
 import 'package:kwik/pages/Home_page/widgets/category_model_9.dart';
 import 'package:kwik/repositories/category_model9_repo.dart';
 
-import '../../../../bloc/Super Saver Page Bloc/supersaver_model5_bloc/supersaver_model5_bloc.dart';
+import '../../../bloc/Super Saver Page Bloc/supersaver_model5_bloc/supersaver_model5_bloc.dart';
 
 class SupersaverModel5 extends StatelessWidget {
   final String categoryId;

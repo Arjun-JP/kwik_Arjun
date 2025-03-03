@@ -18,17 +18,17 @@ import '../../bloc/Categories Page Bloc/categories_page_model4/categories_page_m
 import '../../bloc/navbar_bloc/navbar_event.dart';
 import '../../constants/colors.dart';
 
-import '../Home_page/widgets/Categories Page Widgets/categories_page_model1.dart';
+import 'Categories Page Widgets/categories_page_model1.dart';
 
-import '../Home_page/widgets/Categories Page Widgets/categories_page_model2.dart';
-import '../Home_page/widgets/Categories Page Widgets/categories_page_model3.dart';
-import '../Home_page/widgets/Categories Page Widgets/categories_page_model4.dart';
-import '../Home_page/widgets/Categories Page Widgets/categories_page_model5.dart';
-import '../Home_page/widgets/Categories Page Widgets/categories_page_model6.dart';
-import '../Home_page/widgets/Categories Page Widgets/categories_page_model7.dart';
-import '../Home_page/widgets/Categories Page Widgets/categories_page_model8.dart';
-import '../Home_page/widgets/Categories Page Widgets/categories_page_model9.dart';
-import '../Home_page/widgets/Categories Page Widgets/categories_page_model10.dart';
+import 'Categories Page Widgets/categories_page_model2.dart';
+import 'Categories Page Widgets/categories_page_model3.dart';
+import 'Categories Page Widgets/categories_page_model4.dart';
+import 'Categories Page Widgets/categories_page_model5.dart';
+import 'Categories Page Widgets/categories_page_model6.dart';
+import 'Categories Page Widgets/categories_page_model7.dart';
+import 'Categories Page Widgets/categories_page_model8.dart';
+import 'Categories Page Widgets/categories_page_model9.dart';
+import 'Categories Page Widgets/categories_page_model10.dart';
 
 class CategoryPage extends StatefulWidget {
   const CategoryPage({super.key});

@@ -12,11 +12,11 @@ import 'package:kwik/bloc/home_Ui_bloc/home_Ui_Bloc.dart';
 import 'package:kwik/bloc/home_Ui_bloc/home_Ui_Event.dart';
 import 'package:kwik/bloc/home_Ui_bloc/home_Ui_State.dart';
 import 'package:kwik/bloc/navbar_bloc/navbar_bloc.dart';
-import 'package:kwik/pages/Home_page/widgets/Super%20Saver%20Page%20Widgets/supersaver_model1.dart';
+import 'package:kwik/pages/Offer_Page/Super%20Saver%20Page%20Widgets/supersaver_model1.dart';
 import 'package:kwik/pages/Home_page/widgets/banner_model.dart';
 
 import 'package:kwik/pages/Home_page/widgets/descriptive_widget.dart';
-import 'package:kwik/pages/Home_page/widgets/Super%20Saver%20Page%20Widgets/supersaver_model4.dart';
+import 'package:kwik/pages/Offer_Page/Super%20Saver%20Page%20Widgets/supersaver_model4.dart';
 
 import 'package:kwik/widgets/navbar/navbar.dart';
 import '../../bloc/category_model1_bloc/category_model1_event.dart';
@@ -25,10 +25,10 @@ import '../../bloc/category_model2_bloc/category_model2_event.dart';
 import '../../bloc/category_model_9_bloc/category_model_9_event.dart';
 import '../../bloc/navbar_bloc/navbar_event.dart';
 import '../../constants/colors.dart';
-import '../Home_page/widgets/Super Saver Page Widgets/supersaver_model2.dart';
-import '../Home_page/widgets/Super Saver Page Widgets/supersaver_model3.dart';
-import '../Home_page/widgets/Super Saver Page Widgets/supersaver_model5.dart';
-import '../Home_page/widgets/Super Saver Page Widgets/supersaver_model6.dart';
+import 'Super Saver Page Widgets/supersaver_model2.dart';
+import 'Super Saver Page Widgets/supersaver_model3.dart';
+import 'Super Saver Page Widgets/supersaver_model5.dart';
+import 'Super Saver Page Widgets/supersaver_model6.dart';
 
 class OfferPage extends StatefulWidget {
   const OfferPage({super.key});

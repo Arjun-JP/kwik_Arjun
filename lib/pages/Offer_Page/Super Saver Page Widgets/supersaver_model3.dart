@@ -7,7 +7,7 @@ import 'package:kwik/models/product_model.dart';
 import 'package:kwik/pages/Home_page/widgets/category_model_10.dart';
 import 'package:kwik/repositories/category_model_10_repo.dart';
 
-import '../../../../bloc/category_model_10_bloc/category_model_10_bloc.dart';
+import '../../../bloc/category_model_10_bloc/category_model_10_bloc.dart';
 
 class SupersaverModel3 extends StatelessWidget {
     final String bgcolor;

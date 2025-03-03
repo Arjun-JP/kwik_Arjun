@@ -5,7 +5,7 @@ import 'package:kwik/pages/Home_page/widgets/category_model_4.dart';
 import 'package:kwik/pages/Home_page/widgets/sale_banner_ribbonclip.dart';
 import 'package:kwik/repositories/sub_category_product_repository.dart';
 
-import '../../../../bloc/Super Saver Page Bloc/supersaver_model6_bloc/supersaver_model6_bloc.dart';
+import '../../../bloc/Super Saver Page Bloc/supersaver_model6_bloc/supersaver_model6_bloc.dart';
 
 class SupersaverModel6 extends StatelessWidget {
   final String subCategoryId;

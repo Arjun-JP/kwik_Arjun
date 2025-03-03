@@ -6,7 +6,7 @@ import 'package:kwik/constants/colors.dart';
 import 'package:kwik/pages/Home_page/widgets/category_model_2.dart';
 import 'package:kwik/repositories/category_model2_repository.dart';
 
-import '../../../../bloc/Categories Page Bloc/categories_page_model1/categories_page_model1_bloc.dart';
+import '../../../bloc/Categories Page Bloc/categories_page_model1/categories_page_model1_bloc.dart';
 
 class CategoriesPageModel1 extends StatelessWidget {
   final String categoryId;

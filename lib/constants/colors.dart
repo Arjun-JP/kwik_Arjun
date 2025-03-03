@@ -27,6 +27,9 @@ class AppColors {
   static const kgreyColor = Color(0xff838383);
   static const kgreyColorlite = Color(0xffC8C3C3);
 
+
+  static const offerBadgeColor=Color(0xffFFFA76);
+  static const addToCartBorder = Color(0xffE23338);
   static const korangeColor = Color(0xffFC5B00);
 
   static const buttonColorOrange = Color(0xffFC5B00);

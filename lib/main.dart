@@ -187,6 +187,10 @@ class _MyAppState extends State<MyApp> {
         BlocProvider<CategoriesPageModel7Bloc>(
             create: (_) =>
                 CategoriesPageModel7Bloc(repository: CategoryModel10Repo())),
+
+
+
+               
       ],
       child: MaterialApp.router(
         routerConfig: _router,
