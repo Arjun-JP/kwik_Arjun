@@ -48,18 +48,8 @@ class Navbar extends StatelessWidget {
                       1,
                       "Categories",
                       "assets/images/category_selected.svg",
-                      "assets/images/cart_unselected.svg",
+                      "assets/images/category_unselected.svg",
                       "/category"),
-                ),
-                Expanded(
-                  flex: 1,
-                  child: _buildNavItem(
-                      context,
-                      2,
-                      "Offers",
-                      "assets/images/offer_selected.svg",
-                      "assets/images/offer_unselected.svg",
-                      "/offer"),
                 ),
                 Expanded(
                   flex: 1,
@@ -75,12 +65,23 @@ class Navbar extends StatelessWidget {
                   flex: 1,
                   child: _buildNavItem(
                       context,
-                      4,
-                      "Profile",
-                      "assets/images/profile_unselected.svg",
-                      "assets/images/profile_unselected.svg",
-                      "/profile"),
+                      2,
+                      "Offers",
+                      "assets/images/supersaver.png",
+                      "assets/images/supersaver.png",
+                      "/offer"),
                 ),
+
+                // Expanded(
+                //   flex: 1,
+                //   child: _buildNavItem(
+                //       context,
+                //       4,
+                //       "Profile",
+                //       "assets/images/profile_unselected.svg",
+                //       "assets/images/profile_unselected.svg",
+                //       "/profile"),
+                // ),
               ],
             ),
           ),
@@ -106,28 +107,39 @@ class Navbar extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          SvgPicture.asset(
-            index == context.watch<NavbarBloc>().state.selectedIndex
-                ? assetPathselected
-                : assetpathunselected,
-            fit: BoxFit.contain,
-            width: 26,
-            height: 26,
-          ),
-          const SizedBox(height: 5),
-          Text(
-            label,
-            style: TextStyle(
-              color: index == context.watch<NavbarBloc>().state.selectedIndex
-                  ? AppColors.buttonColorOrange
-                  : AppColors.textColorblack,
-              fontSize: 14,
-              fontWeight:
+          index != 2
+              ? SvgPicture.asset(
                   index == context.watch<NavbarBloc>().state.selectedIndex
-                      ? FontWeight.bold
-                      : FontWeight.normal,
-            ),
-          ),
+                      ? assetPathselected
+                      : assetpathunselected,
+                  fit: BoxFit.contain,
+                  width: 26,
+                  height: 26,
+                )
+              : Container(
+                  decoration: const BoxDecoration(
+                      image: DecorationImage(
+                          image: AssetImage("assets/images/supersaver.png"))),
+                  width: 50,
+                  height: 50,
+                ),
+          const SizedBox(height: 5),
+          index != 2
+              ? Text(
+                  label,
+                  style: TextStyle(
+                    color:
+                        index == context.watch<NavbarBloc>().state.selectedIndex
+                            ? AppColors.buttonColorOrange
+                            : AppColors.textColorblack,
+                    fontSize: 14,
+                    fontWeight:
+                        index == context.watch<NavbarBloc>().state.selectedIndex
+                            ? FontWeight.bold
+                            : FontWeight.normal,
+                  ),
+                )
+              : SizedBox(),
         ],
       ),
     );
