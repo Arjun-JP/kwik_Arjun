@@ -7,11 +7,11 @@ class AppColors {
 
   static const textColorDimGrey = Color(0xffC8C3C3);
   static const textColorSettings = Color(0xff5923C4);
-  static const dotColorSelected = Color(0xffFC5B00);
-  static const dotColorUnSelected = Color(0xffD2D6D9);
+  static const dotColorSelected = Color(0xffFF592E);
+  static const dotColorUnSelected = Color(0xffC8CAD1);
   static const buttonwhite = Color.fromARGB(255, 255, 255, 255);
 
-  static const backgroundColorWhite = Colors.white;
+  static const backgroundColorWhite = Color(0xffFAFAFA);
 
   static const primaryColor = Color(0xff000000);
 
@@ -27,10 +27,9 @@ class AppColors {
   static const kgreyColor = Color(0xff838383);
   static const kgreyColorlite = Color(0xffC8C3C3);
 
-
-  static const offerBadgeColor=Color(0xffFFFA76);
+  static const offerBadgeColor = Color(0xffFFFA76);
   static const addToCartBorder = Color(0xffE23338);
-  static const korangeColor = Color(0xffFC5B00);
+  static const korangeColor = Color(0xffFF9B2E);
 
   static const buttonColorOrange = Color(0xffFC5B00);
 }
