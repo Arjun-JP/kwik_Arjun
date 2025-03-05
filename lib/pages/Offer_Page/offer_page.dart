@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:kwik/bloc/category_model1_bloc/category_model1_bloc.dart';
-import 'package:kwik/bloc/category_model2_bloc/category_model2_bloc.dart';
+import 'package:kwik/bloc/category_model_1_bloc/category_model1_bloc.dart';
+import 'package:kwik/bloc/category_model_2_bloc/category_model2_bloc.dart';
 
 import 'package:kwik/bloc/category_model_5__Bloc/category_model5__bloc.dart';
 import 'package:kwik/bloc/category_model_5__Bloc/category_model5__event.dart';
@@ -19,8 +19,8 @@ import 'package:kwik/pages/Home_page/widgets/descriptive_widget.dart';
 import 'package:kwik/pages/Offer_Page/Super%20Saver%20Page%20Widgets/supersaver_model4.dart';
 
 import 'package:kwik/widgets/navbar/navbar.dart';
-import '../../bloc/category_model1_bloc/category_model1_event.dart';
-import '../../bloc/category_model2_bloc/category_model2_event.dart';
+import '../../bloc/category_model_1_bloc/category_model1_event.dart';
+import '../../bloc/category_model_2_bloc/category_model2_event.dart';
 
 import '../../bloc/category_model_9_bloc/category_model_9_event.dart';
 import '../../bloc/navbar_bloc/navbar_event.dart';

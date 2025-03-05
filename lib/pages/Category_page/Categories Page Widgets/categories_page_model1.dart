@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:kwik/bloc/category_model1_bloc/category_model1_event.dart';
+import 'package:kwik/bloc/category_model_1_bloc/category_model1_event.dart';
 
 import 'package:kwik/constants/colors.dart';
 import 'package:kwik/pages/Home_page/widgets/category_model_2.dart';
@@ -23,6 +23,7 @@ class CategoriesPageModel1 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return BlocProvider(
       create: (context) => CategoriesPageModel1Bloc(
           categoryRepositoryModel2: CategoryRepositoryModel2())
@@ -71,11 +72,11 @@ class CategoriesPageModel1 extends StatelessWidget {
                                 name: state.subCategories[index].name,
                                 bgcolor: state.category.color,
                                 textcolor: subcatColor,
-                                imageurl: state.subCategories[index].imageUrl);
+                                imageurl: state.subCategories[index].imageUrl,
+                                theme: theme);
                           },
                         ),
                       ),
-                      const SizedBox(height: 10),
                     ],
                   ),
                 );

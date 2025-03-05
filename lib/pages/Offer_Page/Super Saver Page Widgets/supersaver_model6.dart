@@ -104,15 +104,15 @@ class SupersaverModel6 extends StatelessWidget {
                               : 5,
                           itemBuilder: (context, index) {
                             return productItem(
-                              mrpColor: mrpColor,
-                              sellingpricecolor: sellingpricecolor,
-                              productcolor: productColor,
-                              name: state.products[index].productName,
-                              price: 200,
-                              bgcolor: state.products.first.categoryRef.color,
-                              imageurl:
-                                  state.products[index].productImages.first,
-                            );
+                                mrpColor: mrpColor,
+                                sellingpricecolor: sellingpricecolor,
+                                productcolor: productColor,
+                                name: state.products[index].productName,
+                                price: 200,
+                                bgcolor: state.products.first.categoryRef.color,
+                                imageurl:
+                                    state.products[index].productImages.first,
+                                context: context);
                           },
                         ),
                       ),

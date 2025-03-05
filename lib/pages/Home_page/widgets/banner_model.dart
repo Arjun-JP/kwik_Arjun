@@ -8,12 +8,14 @@ import '../../../bloc/banner_bloc/banner_event.dart';
 import '../../../bloc/banner_bloc/banner_state.dart';
 import '../../../repositories/banner_repository.dart';
 
-class BannerModel1 extends StatelessWidget {
+class BannerModel1 extends StatefulWidget {
   final String bgColor;
   final String titlecolor;
   final double height;
   final int bannerId;
-  final double padding;
+  final double verticalpadding;
+  final double horizontalpadding;
+  final double viewportFraction;
   final double borderradious;
 
   const BannerModel1({
@@ -22,9 +24,20 @@ class BannerModel1 extends StatelessWidget {
     required this.titlecolor,
     required this.height,
     required this.bannerId,
-    this.padding = 8,
-    this.borderradious = 15,
+    this.verticalpadding = 0,
+    this.borderradious = 0,
+    this.viewportFraction = 1.0,
+    this.horizontalpadding = 0,
   });
+
+  @override
+  State<BannerModel1> createState() => _BannerModel1State();
+}
+
+class _BannerModel1State extends State<BannerModel1> {
+  final CarouselSliderController _carouselController =
+      CarouselSliderController();
+  int currentIndex = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +52,7 @@ class BannerModel1 extends StatelessWidget {
                 return const Center(child: CircularProgressIndicator());
               } else if (state is BannerLoaded) {
                 final filteredBanners = state.banners
-                    .where((banner) => banner.bannerId == bannerId)
+                    .where((banner) => banner.bannerId == widget.bannerId)
                     .toList();
 
                 if (filteredBanners.isEmpty) {
@@ -47,26 +60,34 @@ class BannerModel1 extends StatelessWidget {
                 }
 
                 return Container(
-                  color: parseColor(bgColor),
+                  color: parseColor(widget.bgColor),
                   child: Padding(
-                    padding: EdgeInsets.all(padding),
+                    padding: EdgeInsets.symmetric(
+                        horizontal: widget.horizontalpadding,
+                        vertical: widget.verticalpadding),
                     child: Stack(
                       children: [
                         CarouselSlider.builder(
+                          carouselController:
+                              _carouselController, // Sync Controller
                           itemCount: filteredBanners.length,
                           options: CarouselOptions(
-                            height: height,
+                            height: widget.height,
                             autoPlay: true,
                             autoPlayInterval: const Duration(seconds: 3),
                             enlargeCenterPage: true,
-                            viewportFraction: 1.0,
-                            onPageChanged: (index, reason) {},
+                            viewportFraction: widget.viewportFraction,
+                            onPageChanged: (index, reason) {
+                              setState(() {
+                                currentIndex = index;
+                              });
+                            },
                           ),
                           itemBuilder: (context, index, realIndex) {
                             final banner = filteredBanners[index];
                             return ClipRRect(
                               borderRadius:
-                                  BorderRadius.circular(borderradious),
+                                  BorderRadius.circular(widget.borderradious),
                               child: Container(
                                 width: double.infinity,
                                 decoration: BoxDecoration(
@@ -84,14 +105,17 @@ class BannerModel1 extends StatelessWidget {
                           left: 0,
                           right: 0,
                           child: Center(
-                            child: SmoothPageIndicator(
-                              controller: PageController(),
+                            child: AnimatedSmoothIndicator(
+                              activeIndex: currentIndex, // Update active index
                               count: filteredBanners.length,
                               effect: const ExpandingDotsEffect(
                                 activeDotColor: Colors.white,
                                 dotHeight: 6,
                                 dotWidth: 6,
                               ),
+                              onDotClicked: (index) {
+                                _carouselController.animateToPage(index);
+                              },
                             ),
                           ),
                         ),

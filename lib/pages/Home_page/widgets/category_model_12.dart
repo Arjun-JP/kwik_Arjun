@@ -1,21 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import '../../../bloc/category_model_9_bloc/category_model_9_bloc.dart';
-import '../../../bloc/category_model_9_bloc/category_model_9_event.dart';
-import '../../../bloc/category_model_9_bloc/category_model_9_state.dart';
+import 'package:kwik/bloc/category_model_12_bloc/category_model_12_event.dart';
+import 'package:kwik/bloc/category_model_12_bloc/category_model_12_satte.dart';
+import 'package:kwik/repositories/category_model_12_repo.dart';
+
+import '../../../bloc/category_model_12_bloc/category_model_12_bloc.dart';
 import '../../../constants/colors.dart';
 import '../../../repositories/category_model9_repo.dart';
 
 class CategoryModel12 extends StatelessWidget {
   final String categoryId;
   final String bgcolor;
-  final String titleColor;
+
   final String subcatColor;
-  final String title;
+
   final List<String> maincategories;
   final String offerTextcolor;
-  final String offerBGcolor;
+
   final String productBgColor;
   final String mrpColor;
   final String sellingPriceColor;
@@ -30,11 +32,8 @@ class CategoryModel12 extends StatelessWidget {
     super.key,
     required this.categoryId,
     required this.bgcolor,
-    required this.titleColor,
     required this.subcatColor,
-    required this.title,
     required this.maincategories,
-    required this.offerBGcolor,
     required this.productBgColor,
     required this.mrpColor,
     required this.sellingPriceColor,
@@ -51,7 +50,7 @@ class CategoryModel12 extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) =>
-          CategoryBloc9(categoryRepository: Categorymodel9Repository())
+          CategoryBloc12(categoryRepository: Categorymodel12Repository())
             ..add(FetchCategoryAndProductsEvent(
               subCategoryIds:
                   maincategories, // Dispatch event to fetch category and products
@@ -70,7 +69,7 @@ class CategoryModel12 extends StatelessWidget {
               width: MediaQuery.of(context).size.width,
             ),
             const SizedBox(height: 10),
-            BlocBuilder<CategoryBloc9, CategoryModel9State>(
+            BlocBuilder<CategoryBloc12, CategoryModel12State>(
               builder: (context, state) {
                 if (state is SubCategoriesLoading) {
                   return const Center(child: CircularProgressIndicator());
@@ -89,10 +88,11 @@ class CategoryModel12 extends StatelessWidget {
                                       ? state.products.length
                                       : 6, (index) {
                                 return StaggeredGridTile.extent(
-                                  crossAxisCellCount: 1,
-                                  mainAxisExtent: 255,
-                                  child: productItem(
+                                    crossAxisCellCount: 1,
+                                    mainAxisExtent: 255,
+                                    child: productItem(
                                       // bgcolor: "FFFFFF",
+                                      context: context,
                                       imageurl: state
                                           .products[index].productImages.first,
                                       mrpColor: mrpColor,
@@ -102,14 +102,13 @@ class CategoryModel12 extends StatelessWidget {
                                       productcolor: productBgColor,
                                       sellingpricecolor: sellingPriceColor,
                                       buttontextcolor: buttontextcolor,
-                                      offerBGcolor: offerBGcolor,
                                       productBgColor: productBgColor,
                                       sellingPriceColor: sellingPriceColor,
                                       unitTextcolor: unitTextcolor,
                                       unitbgcolor: unitbgcolor,
                                       seeAllButtonBG: seeAllButtonBG,
-                                      seeAllButtontext: seeAllButtontext),
-                                );
+                                      seeAllButtontext: seeAllButtontext,
+                                    ));
                               }),
                             )
                           : const SizedBox(
@@ -121,13 +120,13 @@ class CategoryModel12 extends StatelessWidget {
                 return const Center(child: Text('No Data Available'));
               },
             ),
-            const SizedBox(height: 10),
+            const SizedBox(height: 20),
             Container(
               width: MediaQuery.of(context).size.width,
               height: 48,
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
-                  color: const Color.fromARGB(255, 246, 191, 187)),
+                  color: lightenColor(parseColor("E23338"), .8)),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -172,7 +171,6 @@ Widget productItem({
   required String sellingpricecolor,
   required String mrpColor,
   required String offertextcolor,
-  required String offerBGcolor,
   required String productBgColor,
   required String sellingPriceColor,
   required String buttontextcolor,
@@ -180,7 +178,9 @@ Widget productItem({
   required String unitTextcolor,
   required String seeAllButtonBG,
   required String seeAllButtontext,
+  required BuildContext context,
 }) {
+  final theme = Theme.of(context);
   return SizedBox(
     child: Stack(
       children: [
@@ -199,13 +199,11 @@ Widget productItem({
                   color: parseColor("F9F9F9"),
                   borderRadius: BorderRadius.circular(5),
                 ),
-                child: Padding(
-                  padding: const EdgeInsets.all(12.0),
-                  child: Container(
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8),
-                        image: DecorationImage(image: NetworkImage(imageurl))),
-                  ),
+                child: Container(
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      image: DecorationImage(
+                          image: NetworkImage(imageurl), fit: BoxFit.fill)),
                 ),
               ),
               Align(
@@ -216,35 +214,40 @@ Widget productItem({
                   children: [
                     Text(
                       "100 g",
-                      style: TextStyle(
-                          fontSize: 12, color: parseColor(unitTextcolor)),
+                      style: theme.textTheme.bodyMedium!.copyWith(
+                          color: parseColor(unitTextcolor),
+                          fontWeight: FontWeight.w600),
                     ),
                   ],
                 ),
               ),
-              const SizedBox(
+              SizedBox(
                 width: 120,
                 child: Text(
                   "Lays Water ChipsSalt N Pepper Fl...",
                   textAlign: TextAlign.left,
                   maxLines: 2,
-                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+                  style: theme.textTheme.bodyMedium!.copyWith(
+                      color: parseColor(unitTextcolor),
+                      fontWeight: FontWeight.w600),
                 ),
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Column(
+                  Column(
                     children: [
                       Text(
                         "₹ 45",
-                        style: TextStyle(
-                            decoration: TextDecoration.lineThrough,
-                            fontSize: 12),
+                        style: theme.textTheme.bodyMedium!.copyWith(
+                            color: parseColor(unitTextcolor),
+                            decoration: TextDecoration.lineThrough),
                       ),
                       Text(
                         "₹ 85",
-                        style: TextStyle(fontSize: 12),
+                        style: theme.textTheme.bodyMedium!.copyWith(
+                            color: parseColor(unitTextcolor),
+                            fontWeight: FontWeight.w600),
                       )
                     ],
                   ),
@@ -261,11 +264,10 @@ Widget productItem({
                           padding: const EdgeInsets.all(0)),
                       child: Text(
                         'Add',
-                        style: TextStyle(
-                          color: parseColor("#E23338"),
-                          fontWeight: FontWeight.w800,
-                          fontSize: 13,
-                        ),
+                        style: theme.textTheme.bodyMedium!.copyWith(
+                            color: parseColor("E23338"),
+                            fontFamily: "Inter",
+                            fontWeight: FontWeight.w900),
                       ),
                     ),
                   ),
@@ -274,36 +276,62 @@ Widget productItem({
             ],
           ),
         ),
-        Container(
-          width: 40,
-          height: 55,
-          decoration: const BoxDecoration(
-            image: DecorationImage(
-                image: AssetImage(
-                  "assets/images/offer_bg.png",
-                ),
-                fit: BoxFit.fill),
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Text(
-                "30%",
-                style: TextStyle(
-                    color: parseColor("233D4D"),
-                    fontSize: 12,
-                    fontWeight: FontWeight.w800),
-              ),
-              Text("OFF",
-                  style: TextStyle(
+        ClipPath(
+          clipper: ZigZagClipper(),
+          child: Container(
+            width: 40,
+            height: 50,
+            color: Colors.orange,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(
+                  "30%",
+                  style: theme.textTheme.bodyMedium!.copyWith(
                       color: parseColor("233D4D"),
-                      fontSize: 12,
-                      fontWeight: FontWeight.w500))
-            ],
+                      fontFamily: "Inter",
+                      fontWeight: FontWeight.w900),
+                ),
+                Text(
+                  "OFF",
+                  style: theme.textTheme.bodyMedium!.copyWith(
+                    color: parseColor("233D4D"),
+                    fontFamily: "Inter",
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ],
     ),
   );
+}
+
+class ZigZagClipper extends CustomClipper<Path> {
+  @override
+  Path getClip(Size size) {
+    Path path = Path();
+    path.lineTo(0, size.height - 10);
+
+    double x = 0;
+    double y = size.height - 10;
+    double step = size.width / 10;
+
+    for (int i = 0; i < 10; i++) {
+      x += step;
+      y = (i % 2 == 0) ? size.height : size.height - 10;
+      path.lineTo(x, y);
+    }
+
+    path.lineTo(size.width, size.height - 10);
+    path.lineTo(size.width, 0);
+    path.close();
+
+    return path;
+  }
+
+  @override
+  bool shouldReclip(ZigZagClipper oldClipper) => false;
 }
