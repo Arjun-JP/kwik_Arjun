@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
-
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:kwik/constants/colors.dart';
+import 'package:kwik/bloc/category_model_5__Bloc/category_model5__bloc.dart';
+import 'package:kwik/bloc/category_model_5__Bloc/category_model5__state.dart';
 
-import 'package:kwik/repositories/category_subcategory_product_repo.dart';
+import '../../../bloc/category_model_5__Bloc/category_model5__event.dart';
+import '../../../constants/colors.dart';
+import '../../../repositories/category_subcategory_product_repo.dart';
 
-import '../../../bloc/Categories Page Bloc/categories_page_model5/categories_page_model5_bloc.dart';
-import '../../Home_page/widgets/category_model_13.dart';
-
-class CategoriesPageModel5 extends StatelessWidget {
+class CategoryModel13 extends StatelessWidget {
   final String categoryId;
   final String bgcolor;
   final String titleColor;
@@ -21,7 +20,8 @@ class CategoriesPageModel5 extends StatelessWidget {
   final String productBgColor;
   final String mrpColor;
   final String sellingPriceColor;
-  const CategoriesPageModel5({
+
+  const CategoryModel13({
     super.key,
     required this.categoryId,
     required this.bgcolor,
@@ -38,15 +38,14 @@ class CategoriesPageModel5 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     return BlocProvider(
-      create: (_) => CategoriesPageModel5Bloc(
-          categoryRepository: Categorymodel5Repository())
-        ..add(FetchCategoryAndProductsEvent(
-          categoryId: categoryId,
-          subCategoryIds:
-              maincategories, // Dispatch event to fetch category and products
-        )),
+      create: (_) =>
+          CategoryBloc5(categoryRepository: Categorymodel5Repository())
+            ..add(FetchCategoryAndProductsEvent(
+              categoryId: categoryId,
+              subCategoryIds:
+                  maincategories, // Dispatch event to fetch category and products
+            )),
       child: Padding(
         padding: const EdgeInsets.only(top: 10.0, bottom: 10.0),
         child: Container(
@@ -77,7 +76,7 @@ class CategoriesPageModel5 extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 10),
-              BlocBuilder<CategoriesPageModel5Bloc, CategoriesPageModel5State>(
+              BlocBuilder<CategoryBloc5, CategoryState>(
                 builder: (context, state) {
                   if (state is SubCategoriesLoading) {
                     return const Center(child: CircularProgressIndicator());
@@ -96,9 +95,8 @@ class CategoriesPageModel5 extends StatelessWidget {
                                   itemBuilder: (context, index) {
                                     return InkWell(
                                       onTap: () {
-                                        context
-                                            .read<CategoriesPageModel5Bloc>()
-                                            .add(UpdateSelectedCategoryEvent(
+                                        context.read<CategoryBloc5>().add(
+                                            UpdateSelectedCategoryEvent(
                                                 selectedCategoryId: state
                                                     .subCategories[index].id));
                                       },
@@ -111,7 +109,6 @@ class CategoriesPageModel5 extends StatelessWidget {
                                           context: context,
                                           subcatId:
                                               state.subCategories[index].id,
-                                          // theme: theme,
                                           selectedId: state.selectedCategoryId),
                                     );
                                   },
@@ -180,4 +177,164 @@ class CategoriesPageModel5 extends StatelessWidget {
       ),
     );
   }
+}
+
+Widget subcategoryItem(
+    {required String name,
+    required String bgcolor,
+    required String textcolor,
+    required String imageurl,
+    required String selectedId,
+    required String subcatId,
+    required BuildContext context}) {
+  return SizedBox(
+    width: 117,
+    child: Column(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Column(
+          children: [
+            Container(
+              height: 80,
+              width: 80,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(8),
+                color: parseColor(bgcolor),
+                image: DecorationImage(
+                  image: NetworkImage(imageurl),
+                  fit: BoxFit.fill,
+                ),
+              ),
+            ),
+            const SizedBox(height: 5),
+            Text(
+              name,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight:
+                    subcatId == selectedId ? FontWeight.w800 : FontWeight.w500,
+                color: parseColor(textcolor),
+              ),
+            ),
+          ],
+        ),
+        Container(
+          margin: const EdgeInsets.only(bottom: 3),
+          width: 100,
+          height: 5,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(8),
+            color: subcatId == selectedId ? Colors.white : Colors.transparent,
+          ),
+        )
+      ],
+    ),
+  );
+}
+
+Widget productItem({
+  required String name,
+  required double price,
+  required String imageurl,
+  required String bgcolor,
+  required String productcolor,
+  required String sellingpricecolor,
+  required String mrpColor,
+}) {
+  return SizedBox(
+    width: 132,
+    height: 216,
+    child: Stack(
+      children: [
+        Container(
+          height: 216,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            color: lightenColor(parseColor(bgcolor), .6),
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Container(
+                margin: const EdgeInsets.only(top: 50),
+                height: 80,
+                width: 80,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(100),
+                  image: DecorationImage(
+                    image: NetworkImage(imageurl),
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+              SizedBox(
+                width: 120,
+                child: Text(
+                  name,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(fontSize: 16),
+                ),
+              ),
+              Container(
+                height: 35,
+                margin: const EdgeInsets.only(bottom: 5, left: 5, right: 5),
+                decoration: BoxDecoration(
+                  color: lightenColor(parseColor(productcolor), .8),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Center(
+                  child: Text(
+                    "Add to Cart",
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w800,
+                      color: parseColor(productcolor),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        Container(
+          height: 42,
+          width: 132,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            color: parseColor(productcolor),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Expanded(
+                flex: 3,
+                child: Center(
+                  child: Text("₹$price",
+                      style: TextStyle(
+                          fontSize: 20,
+                          color: parseColor(sellingpricecolor),
+                          fontWeight: FontWeight.w800)),
+                ),
+              ),
+              Expanded(
+                flex: 2,
+                child: Column(
+                  children: [
+                    Text("MRP",
+                        style: TextStyle(
+                            fontSize: 12, color: parseColor(mrpColor))),
+                    Text("₹$price",
+                        style: TextStyle(
+                            fontSize: 12, color: parseColor(mrpColor))),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    ),
+  );
 }

@@ -217,7 +217,6 @@ class _CategoryPageState extends State<CategoryPage> {
                     bgColor: uiData["template5"]["background_color"],
                     bannerId: 3,
                     height: 300,
-                    padding: 0,
                     borderradious: 0,
                   ),
                   'order': "8"

@@ -29,6 +29,7 @@ class CategoryModel1 extends StatefulWidget {
 class _CategoryModel1State extends State<CategoryModel1> {
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return BlocProvider(
       create: (context) =>
           CategoryBloc(categoryRepository: CategoryRepository())
@@ -48,10 +49,8 @@ class _CategoryModel1State extends State<CategoryModel1> {
                     const SizedBox(height: 7),
                     Text(
                       widget.title,
-                      style: TextStyle(
-                          color: parseColor(widget.titlecolor),
-                          fontSize: 18,
-                          fontWeight: FontWeight.w800),
+                      style: theme.textTheme.titleLarge!
+                          .copyWith(fontWeight: FontWeight.w600),
                     ),
                     const SizedBox(height: 10),
                     SingleChildScrollView(
@@ -90,9 +89,13 @@ class _CategoryModel1State extends State<CategoryModel1> {
                                       maxLines: 2,
                                       overflow: TextOverflow.ellipsis,
                                       textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                          fontSize: 16,
-                                          color: parseColor(widget.textcolor)),
+                                      style: theme.textTheme.bodyMedium!
+                                          .copyWith(
+                                              color:
+                                                  parseColor(widget.textcolor)),
+                                      // style: TextStyle(
+                                      //     fontSize: 16,
+                                      //     color: parseColor(widget.textcolor)),
                                     ),
                                   ],
                                 ),

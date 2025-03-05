@@ -2,20 +2,21 @@ import 'dart:convert';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:kwik/bloc/category_model1_bloc/category_model1_event.dart';
-import 'package:kwik/bloc/category_model1_bloc/category_model1_state.dart';
+import 'package:kwik/bloc/category_model_2_bloc/category_model2_event.dart';
+import 'package:kwik/bloc/category_model_2_bloc/category_model2_state.dart';
+
 import 'package:kwik/models/category_model.dart';
+import 'package:kwik/repositories/category_model2_repository.dart';
 
 import '../../models/subcategory_model.dart';
-import '../../repositories/category_model1_repository.dart';
 
-class CategoryBlocModel1 extends Bloc<CategoryEvent, CategoryState> {
-  final CategoryRepositoryModel1 categoryRepositoryModel1;
+class CategoryBlocModel2 extends Bloc<CategoryEvent, CategoryState> {
+  final CategoryRepositoryModel2 categoryRepositoryModel2;
 
-  CategoryBlocModel1({required this.categoryRepositoryModel1})
+  CategoryBlocModel2({required this.categoryRepositoryModel2})
       : super(CategoryInitial()) {
     on<FetchCategoryDetails>(_onFetchCategoryDetails);
-    on<ClearCache>(_onClearCache);
+    on<ClearCacheCM2>(_onClearCache);
   }
 
   void _onFetchCategoryDetails(
@@ -24,8 +25,8 @@ class CategoryBlocModel1 extends Bloc<CategoryEvent, CategoryState> {
       emit(CategoryLoading());
 
       // Open boxes for cache
-      var categoryBox = await Hive.openBox('categorymodel1Cache');
-      var subCategoryBox = await Hive.openBox('subCategorymodel1Cache');
+      var categoryBox = await Hive.openBox('categorymodel2Cache');
+      var subCategoryBox = await Hive.openBox('subCategorymodel2Cache');
 
       Category? cachedCategory;
       List<SubCategoryModel>? cachedSubCategories;
@@ -49,10 +50,10 @@ class CategoryBlocModel1 extends Bloc<CategoryEvent, CategoryState> {
             category: cachedCategory, subCategories: cachedSubCategories));
       } else {
         // If not in cache, fetch from API
-        final category = await categoryRepositoryModel1
+        final category = await categoryRepositoryModel2
             .fetchCategoryDetails(event.categoryId);
         final subCategories =
-            await categoryRepositoryModel1.fetchSubCategories(event.categoryId);
+            await categoryRepositoryModel2.fetchSubCategories(event.categoryId);
 
         // Cache the results
         categoryBox.put(event.categoryId, jsonEncode(category.toJson()));
@@ -66,11 +67,11 @@ class CategoryBlocModel1 extends Bloc<CategoryEvent, CategoryState> {
     }
   }
 
-  void _onClearCache(ClearCache event, Emitter<CategoryState> emit) async {
+  void _onClearCache(ClearCacheCM2 event, Emitter<CategoryState> emit) async {
     try {
       // Open cache boxes
-      var categoryBox = await Hive.openBox('categorymodel1Cache');
-      var subCategoryBox = await Hive.openBox('subCategorymodel1Cache');
+      var categoryBox = await Hive.openBox('categorymodel2Cache');
+      var subCategoryBox = await Hive.openBox('subCategorymodel2Cache');
 
       // Clear the cache
       await categoryBox.clear();

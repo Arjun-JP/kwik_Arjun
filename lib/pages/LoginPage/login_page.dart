@@ -4,11 +4,13 @@ import 'package:go_router/go_router.dart';
 import 'package:kwik/bloc/Auth_bloc/auth_bloc.dart';
 import 'package:kwik/bloc/Auth_bloc/auth_event.dart';
 import 'package:kwik/bloc/Auth_bloc/auth_state.dart';
-import 'package:kwik/bloc/category_model1_bloc/category_model1_bloc.dart';
-import 'package:kwik/bloc/category_model1_bloc/category_model1_event.dart';
-import 'package:kwik/bloc/category_model2_bloc/category_model2_bloc.dart';
-import 'package:kwik/bloc/category_model2_bloc/category_model2_event.dart';
+import 'package:kwik/bloc/category_model_1_bloc/category_model1_bloc.dart';
+import 'package:kwik/bloc/category_model_1_bloc/category_model1_event.dart';
+import 'package:kwik/bloc/category_model_2_bloc/category_model2_bloc.dart';
+import 'package:kwik/bloc/category_model_2_bloc/category_model2_event.dart';
 import 'package:kwik/bloc/category_model_10_bloc/category_model_10_event.dart';
+import 'package:kwik/bloc/category_model_12_bloc/category_model_12_bloc.dart';
+import 'package:kwik/bloc/category_model_12_bloc/category_model_12_event.dart';
 import 'package:kwik/bloc/category_model_4_bloc/category_model_4_bloc.dart';
 import 'package:kwik/bloc/category_model_4_bloc/category_model_4_event.dart';
 import 'package:kwik/bloc/category_model_5__Bloc/category_model5__bloc.dart';
@@ -21,6 +23,8 @@ import 'package:kwik/constants/colors.dart';
 import 'package:kwik/widgets/kiwi_button.dart';
 
 import '../../bloc/category_model_10_bloc/category_model_10_bloc.dart';
+import '../../bloc/category_model_14_bloc/category_model_14_bloc.dart';
+import '../../bloc/category_model_14_bloc/category_model_14_event.dart';
 import '../../bloc/category_model_7_bloc/category_model_7_bloc.dart';
 import '../../bloc/category_model_7_bloc/category_model_7_event.dart';
 import '../../bloc/category_model_9_bloc/category_model_9_bloc.dart';
@@ -161,6 +165,10 @@ class _LoginPageState extends State<LoginPage> {
                                   .add(ClearCacheEventCM9());
                               BlocProvider.of<CategoryModel10Bloc>(context)
                                   .add(Clearsubcatproduct10Cache());
+                              BlocProvider.of<CategoryBloc12>(context)
+                                  .add(ClearCacheEventCM12());
+                              // BlocProvider.of<CategoryBloc14>(context)
+                              //     .add(ClearCacheEventCM14());
                               context
                                   .read<HomeUiBloc>()
                                   .add(FetchUiDataEvent());

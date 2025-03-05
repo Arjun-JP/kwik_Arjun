@@ -7,8 +7,10 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:kwik/bloc/Auth_bloc/auth_bloc.dart';
 import 'package:kwik/bloc/banner_bloc/banner_bloc.dart';
 import 'package:kwik/bloc/category_bloc/category_bloc.dart';
-import 'package:kwik/bloc/category_model1_bloc/category_model1_bloc.dart';
-import 'package:kwik/bloc/category_model2_bloc/category_model2_bloc.dart';
+import 'package:kwik/bloc/category_model_14_bloc/category_model_14_bloc.dart';
+import 'package:kwik/bloc/category_model_1_bloc/category_model1_bloc.dart';
+import 'package:kwik/bloc/category_model_2_bloc/category_model2_bloc.dart';
+import 'package:kwik/bloc/category_model_12_bloc/category_model_12_bloc.dart';
 import 'package:kwik/bloc/category_model_5__Bloc/category_model5__bloc.dart';
 import 'package:kwik/bloc/category_model_6_bloc/category_model_6_bloc.dart';
 import 'package:kwik/bloc/category_model_8_bloc/category_model_8_bloc.dart';
@@ -24,6 +26,7 @@ import 'package:kwik/models/Hiveadapter/stock_model_adapter.dart';
 import 'package:kwik/repositories/banner_repository.dart';
 import 'package:kwik/repositories/categories_page_ui_repository.dart';
 import 'package:kwik/repositories/category_model1_repository.dart';
+import 'package:kwik/repositories/category_model_12_repo.dart';
 import 'package:kwik/repositories/category_model_6_repo.dart';
 import 'package:kwik/repositories/category_model_8_repo.dart';
 import 'package:kwik/repositories/category_subcategory_product_repo.dart';
@@ -74,8 +77,8 @@ void main() async {
   await Hive.openBox('subCategoriesBox'); // Open boxes before usage
   await Hive.openBox('productsBox');
   await Hive.openBox('productsBoxcatmodel9');
+  await Hive.openBox('productsBoxcatmodel12');
   await Hive.openBox('product_cache_category_model10');
-
   await Hive.openBox('categoryPagemodel1Cache');
   await Hive.openBox('subCategoryPagemodel1Cache');
   await Hive.openBox('categoryPagemodel2Cache');
@@ -87,7 +90,8 @@ void main() async {
   await Hive.openBox('categorymodel8Cache');
   await Hive.openBox('subCategorymodel8Cache');
   await Hive.openBox('categoryPagemodel10Cache');
-
+  await Hive.openBox('subCategoriesBoxCM14');
+  await Hive.openBox('productsBoxCM14');
   await Hive.openBox('subCategoryPagemodel10Cache');
   await Hive.openBox('product_cache_category_ss2');
   await Hive.openBox('product_cache_SS5');
@@ -159,6 +163,13 @@ class _MyAppState extends State<MyApp> {
         BlocProvider<CategoriesUiBloc>(
             create: (_) => CategoriesUiBloc(
                 catUiRepository: CategoriesPageUiRepository())),
+        BlocProvider<CategoryBloc12>(
+          create: (_) =>
+              CategoryBloc12(categoryRepository: Categorymodel12Repository()),
+          child: BlocProvider<CategoryBloc14>(
+              create: (_) => CategoryBloc14(
+                  categoryRepository: Categorymodel5Repository())),
+        ),
 
 //for categories page
 
@@ -185,12 +196,9 @@ class _MyAppState extends State<MyApp> {
               ..add(FetchCategoriesmodel6())),
 
         BlocProvider<CategoriesPageModel7Bloc>(
-            create: (_) =>
-                CategoriesPageModel7Bloc(repository: CategoryModel10Repo())),
-
-
-
-               
+          create: (_) =>
+              CategoriesPageModel7Bloc(repository: CategoryModel10Repo()),
+        ),
       ],
       child: MaterialApp.router(
         routerConfig: _router,

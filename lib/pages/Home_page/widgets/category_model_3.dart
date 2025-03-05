@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:kwik/bloc/category_model1_bloc/category_model1_bloc.dart';
-import 'package:kwik/bloc/category_model1_bloc/category_model1_event.dart';
-import 'package:kwik/bloc/category_model1_bloc/category_model1_state.dart';
+import 'package:kwik/bloc/category_model_1_bloc/category_model1_bloc.dart';
+import 'package:kwik/bloc/category_model_1_bloc/category_model1_event.dart';
+import 'package:kwik/bloc/category_model_1_bloc/category_model1_state.dart';
 import 'package:kwik/constants/colors.dart';
 import 'package:kwik/repositories/category_model1_repository.dart';
 
@@ -25,6 +25,7 @@ class CategoryModel3 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return BlocProvider(
       create: (context) => CategoryBlocModel1(
           categoryRepositoryModel1: CategoryRepositoryModel1())
@@ -54,11 +55,10 @@ class CategoryModel3 extends StatelessWidget {
                     children: [
                       const SizedBox(height: 15),
                       Text(
-                        state.category.name, // Display main category name
-                        style: TextStyle(
-                            color: parseColor(titleColor),
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold),
+                        state.category.name,
+                        style: theme.textTheme.titleLarge!.copyWith(
+                            fontWeight: FontWeight.w600,
+                            color: parseColor(titleColor)),
                       ),
                       SizedBox(
                         width: MediaQuery.of(context).size.width,
@@ -81,6 +81,7 @@ class CategoryModel3 extends StatelessWidget {
                                       bgcolor: state.category.color,
                                       textcolor: subcatColor,
                                       imageurl: subCategory.imageUrl,
+                                      theme: theme,
                                     ),
                                   );
                                 }),
@@ -104,6 +105,7 @@ class CategoryModel3 extends StatelessWidget {
                                       bgcolor: state.category.color,
                                       textcolor: subcatColor,
                                       imageurl: subCategory.imageUrl,
+                                      theme: theme,
                                     ),
                                   );
                                 }),
@@ -131,6 +133,7 @@ class CategoryModel3 extends StatelessWidget {
       {required String name,
       required String bgcolor,
       required String textcolor,
+      required ThemeData theme,
       required String imageurl}) {
     return Column(
       mainAxisSize: MainAxisSize.max,
@@ -160,12 +163,11 @@ class CategoryModel3 extends StatelessWidget {
             ],
           ),
         ),
-        Text(
-          name,
-          textAlign: TextAlign.center,
-          maxLines: 2,
-          style: TextStyle(fontSize: 16, color: parseColor(textcolor)),
-        )
+        Text(name,
+            textAlign: TextAlign.center,
+            maxLines: 2,
+            style: theme.textTheme.bodyMedium!.copyWith(
+                fontWeight: FontWeight.w600, color: parseColor(textcolor)))
       ],
     );
   }
@@ -175,6 +177,7 @@ Widget subcategoryItem(
     {required String name,
     required String bgcolor,
     required String textcolor,
+    required ThemeData theme,
     required String imageurl}) {
   return Column(
     mainAxisSize: MainAxisSize.max,
@@ -193,7 +196,8 @@ Widget subcategoryItem(
         name,
         textAlign: TextAlign.center,
         maxLines: 2,
-        style: TextStyle(fontSize: 16, color: parseColor(textcolor)),
+        style: theme.textTheme.bodyMedium!.copyWith(
+            fontWeight: FontWeight.w600, color: parseColor(textcolor)),
       )
     ],
   );

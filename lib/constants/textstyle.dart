@@ -2,21 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:kwik/constants/colors.dart';
 import 'package:kwik/modules/scaler_module.dart';
 
-
 // Custom TextStyle method
-TextStyle getTextStyle({
-  required ScalerModule scaler,
-  required double fontSize,
-  required FontWeight weight,
-  required Color color,
-  double? letterSpacing,
-}) {
+TextStyle getTextStyle(
+    {required ScalerModule scaler,
+    required double fontSize,
+    required FontWeight weight,
+    required Color color,
+    double? letterSpacing,
+    fontFamily = 'Montserrat'}) {
   return TextStyle(
     fontSize: scaler.scaleFontSize(fontSize),
     fontWeight: weight,
     color: color,
     letterSpacing: letterSpacing,
-    fontFamily: 'SF-Pro-Rounded',
+    fontFamily: fontFamily,
   );
 }
 
@@ -56,7 +55,7 @@ ThemeData appTheme(BuildContext context) {
       headlineLarge: getTextStyle(
           scaler: scaler,
           fontSize: 32,
-          weight: FontWeight.w800,
+          weight: FontWeight.w700,
           color: AppColors.textColorblack),
       headlineMedium: getTextStyle(
           scaler: scaler,
@@ -71,7 +70,7 @@ ThemeData appTheme(BuildContext context) {
       titleLarge: getTextStyle(
           scaler: scaler,
           fontSize: 22,
-          weight: FontWeight.w600,
+          weight: FontWeight.w800,
           color: AppColors.textColorblack),
       titleMedium: getTextStyle(
           scaler: scaler,
@@ -93,9 +92,9 @@ ThemeData appTheme(BuildContext context) {
           color: AppColors.textColorblack),
       bodyMedium: getTextStyle(
           scaler: scaler,
-          fontSize: 20,
+          fontSize: 14,
           letterSpacing: 0.25,
-          weight: FontWeight.w400,
+          weight: FontWeight.w500,
           color: AppColors.textColorblack),
       bodySmall: getTextStyle(
           scaler: scaler,

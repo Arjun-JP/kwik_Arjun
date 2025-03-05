@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:kwik/bloc/category_model1_bloc/category_model1_bloc.dart';
-import 'package:kwik/bloc/category_model1_bloc/category_model1_event.dart';
-import 'package:kwik/bloc/category_model1_bloc/category_model1_state.dart';
+import 'package:kwik/bloc/category_model_1_bloc/category_model1_bloc.dart';
+import 'package:kwik/bloc/category_model_1_bloc/category_model1_event.dart';
+import 'package:kwik/bloc/category_model_1_bloc/category_model1_state.dart';
 import 'package:kwik/constants/colors.dart';
 import 'package:kwik/repositories/category_model1_repository.dart';
 
 class CategoriesPageModel10 extends StatelessWidget {
   final String bgcolor;
   final String productColor;
-  
+
   final String offerPercent;
   final String titleColor;
   final String categoryId;
@@ -18,7 +18,6 @@ class CategoriesPageModel10 extends StatelessWidget {
     super.key,
     required this.bgcolor,
     required this.productColor,
- 
     required this.offerPercent,
     required this.titleColor,
     required this.maincategories,
