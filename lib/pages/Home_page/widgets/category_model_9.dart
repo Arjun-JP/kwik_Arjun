@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import '../../../bloc/category_model_9_bloc/category_model_9_bloc.dart';
-import '../../../bloc/category_model_9_bloc/category_model_9_event.dart';
-import '../../../bloc/category_model_9_bloc/category_model_9_state.dart';
+import 'package:kwik/widgets/produc_model_1.dart';
+import '../../../bloc/home_page_bloc/category_model_9_bloc/category_model_9_bloc.dart';
+import '../../../bloc/home_page_bloc/category_model_9_bloc/category_model_9_event.dart';
+import '../../../bloc/home_page_bloc/category_model_9_bloc/category_model_9_state.dart';
 import '../../../constants/colors.dart';
 import '../../../repositories/category_model9_repo.dart';
 
@@ -47,6 +48,7 @@ class CategoryModel9 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return BlocProvider(
       create: (_) =>
           CategoryBloc9(categoryRepository: Categorymodel9Repository())
@@ -90,7 +92,7 @@ class CategoryModel9 extends StatelessWidget {
                                       : 6, (index) {
                                 return StaggeredGridTile.extent(
                                   crossAxisCellCount: 1,
-                                  mainAxisExtent: 205,
+                                  mainAxisExtent: 240,
                                   child: productItem(
                                       // bgcolor: "FFFFFF",
                                       imageurl: state
@@ -108,7 +110,8 @@ class CategoryModel9 extends StatelessWidget {
                                       unitTextcolor: unitTextcolor,
                                       unitbgcolor: unitbgcolor,
                                       seeAllButtonBG: seeAllButtonBG,
-                                      seeAllButtontext: seeAllButtontext),
+                                      seeAllButtontext: seeAllButtontext,
+                                      theme: theme),
                                 );
                               }),
                             )
@@ -181,9 +184,9 @@ Widget productItem({
   required String unitTextcolor,
   required String seeAllButtonBG,
   required String seeAllButtontext,
+  required ThemeData theme,
 }) {
   return SizedBox(
-    width: 132,
     child: Stack(
       clipBehavior: Clip.none, // Allows elements to overflow
       children: [
@@ -197,7 +200,7 @@ Widget productItem({
             spacing: 5,
             children: [
               Container(
-                height: 110,
+                height: 150,
                 decoration: BoxDecoration(
                   color: parseColor(productcolor),
                   borderRadius: BorderRadius.circular(12),
@@ -242,39 +245,40 @@ Widget productItem({
             ],
           ),
         ),
-        Positioned(
-          top: 10,
+        ClipPath(
+          clipper: ZigZagClipper(),
           child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 1),
-            decoration: BoxDecoration(
-                borderRadius: const BorderRadius.only(
-                    topRight: Radius.circular(10),
-                    bottomRight: Radius.circular(10)),
-                color: parseColor(offerBGcolor)),
+            width: 40,
+            height: 50,
+            decoration: const BoxDecoration(
+                color: Colors.orange,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(10),
+                )),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Center(
-                  child: Text("Upto",
-                      style: TextStyle(
-                          fontSize: 10,
-                          color: parseColor(offertextcolor),
-                          fontWeight: FontWeight.w500)),
+                Text(
+                  "30%",
+                  style: theme.textTheme.bodyMedium!.copyWith(
+                      color: parseColor("233D4D"),
+                      fontFamily: "Inter",
+                      fontWeight: FontWeight.w900),
                 ),
-                Column(
-                  children: [
-                    Text("20% OFF",
-                        style: TextStyle(
-                            fontSize: 10, color: parseColor(offertextcolor))),
-                  ],
+                Text(
+                  "OFF",
+                  style: theme.textTheme.bodyMedium!.copyWith(
+                    color: parseColor("233D4D"),
+                    fontFamily: "Inter",
+                  ),
                 ),
               ],
             ),
           ),
         ),
         Positioned(
-          top: 85,
+          top: 125,
           right: -10,
           child: Container(
             height: 35,

@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:kwik/bloc/category_model_1_bloc/category_model1_bloc.dart';
-import 'package:kwik/bloc/category_model_2_bloc/category_model2_bloc.dart';
+import 'package:kwik/bloc/home_page_bloc/category_model_1_bloc/category_model1_bloc.dart';
+import 'package:kwik/bloc/home_page_bloc/category_model_2_bloc/category_model2_bloc.dart';
 
-import 'package:kwik/bloc/category_model_5__Bloc/category_model5__bloc.dart';
-import 'package:kwik/bloc/category_model_5__Bloc/category_model5__event.dart';
+import 'package:kwik/bloc/home_page_bloc/category_model_5__Bloc/category_model5__bloc.dart';
+import 'package:kwik/bloc/home_page_bloc/category_model_5__Bloc/category_model5__event.dart';
 
-import 'package:kwik/bloc/category_model_9_bloc/category_model_9_bloc.dart';
+import 'package:kwik/bloc/home_page_bloc/category_model_9_bloc/category_model_9_bloc.dart';
 import 'package:kwik/bloc/home_Ui_bloc/home_Ui_Bloc.dart';
 import 'package:kwik/bloc/home_Ui_bloc/home_Ui_Event.dart';
 import 'package:kwik/bloc/home_Ui_bloc/home_Ui_State.dart';
@@ -19,10 +19,10 @@ import 'package:kwik/pages/Home_page/widgets/descriptive_widget.dart';
 import 'package:kwik/pages/Offer_Page/Super%20Saver%20Page%20Widgets/supersaver_model4.dart';
 
 import 'package:kwik/widgets/navbar/navbar.dart';
-import '../../bloc/category_model_1_bloc/category_model1_event.dart';
-import '../../bloc/category_model_2_bloc/category_model2_event.dart';
+import '../../bloc/home_page_bloc/category_model_1_bloc/category_model1_event.dart';
+import '../../bloc/home_page_bloc/category_model_2_bloc/category_model2_event.dart';
 
-import '../../bloc/category_model_9_bloc/category_model_9_event.dart';
+import '../../bloc/home_page_bloc/category_model_9_bloc/category_model_9_event.dart';
 import '../../bloc/navbar_bloc/navbar_event.dart';
 import '../../constants/colors.dart';
 import 'Super Saver Page Widgets/supersaver_model2.dart';
@@ -95,8 +95,7 @@ class _OfferPageState extends State<OfferPage> {
                   List<String>.from(uiData["categorylist"]["category_ref"]);
               final categorymodel8Categories =
                   List<String>.from(uiData["template11"]["subcategories"]);
-              print(categorymodel8Categories);
-              print(uiData["template11"]["subcategories"]);
+
               final templates = [
                 {
                   'template': BannerModel1(
@@ -222,8 +221,8 @@ class _OfferPageState extends State<OfferPage> {
                 {
                   'template': const DescriptiveWidget(
                     textColor: '989898',
-                    info: 'Delivery\nAlways on Your Time',
-                    title: "Kwik Delivery",
+                    info: 'Delivery',
+                    title: "Always on Your Time",
                     logo:
                         "assets/images/Screenshot 2025-01-31 at 6.20.37 PM.jpeg",
                   ),

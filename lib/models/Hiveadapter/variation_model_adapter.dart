@@ -15,11 +15,17 @@ class VariationModelAdapter extends TypeAdapter<VariationModel> {
     final sellingPrice = reader.readDouble();
 
     // Read the list of StockModel objects
-    final stock = (reader.readList().cast<StockModel>()) ?? [];
+    final stock = reader.readList().cast<StockModel>();
 
     // Read DateTime as int (milliseconds since epoch)
     final createdTimeMillis = reader.readInt();
     final createdTime = DateTime.fromMillisecondsSinceEpoch(createdTimeMillis);
+
+    // Read highlight list
+    final highlight = reader.readList().cast<Map<String, dynamic>>();
+
+    // Read info list
+    final info = reader.readList().cast<Map<String, dynamic>>();
 
     return VariationModel(
       qty: qty,
@@ -29,6 +35,8 @@ class VariationModelAdapter extends TypeAdapter<VariationModel> {
       sellingPrice: sellingPrice,
       stock: stock,
       createdTime: createdTime,
+      highlight: highlight,
+      info: info,
     );
   }
 
@@ -45,5 +53,11 @@ class VariationModelAdapter extends TypeAdapter<VariationModel> {
 
     // Write DateTime as int (milliseconds since epoch)
     writer.writeInt(obj.createdTime.millisecondsSinceEpoch);
+
+    // Write highlight list
+    writer.writeList(obj.highlight);
+
+    // Write info list
+    writer.writeList(obj.info);
   }
 }

@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:kwik/bloc/category_model_14_bloc/category_model_14_state.dart';
+import 'package:kwik/bloc/home_page_bloc/category_model_14_bloc/category_model_14_state.dart';
 import 'package:kwik/pages/Home_page/widgets/category_model_12.dart';
-import '../../../bloc/category_model_14_bloc/category_model_14_bloc.dart';
-import '../../../bloc/category_model_14_bloc/category_model_14_event.dart';
+import 'package:kwik/widgets/produc_model_1.dart';
+import '../../../bloc/home_page_bloc/category_model_14_bloc/category_model_14_bloc.dart';
+import '../../../bloc/home_page_bloc/category_model_14_bloc/category_model_14_event.dart';
 import '../../../constants/colors.dart';
 import '../../../repositories/category_subcategory_product_repo.dart';
 
@@ -143,7 +144,7 @@ class CategoryModel14 extends StatelessWidget {
                                         return StaggeredGridTile.extent(
                                           crossAxisCellCount: 1,
                                           mainAxisExtent: 266,
-                                          child: productItem(
+                                          child: ProductItem(
                                             buttontextcolor: "E23338",
                                             context: context,
                                             offertextcolor: "FFFFFF",

@@ -17,25 +17,21 @@ class DescriptiveWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.all(20),
-      height: 250,
       width: double.infinity,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          Image.asset(
+            logo,
+            height: 80,
+          ),
           Text(
             info,
             style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.w600,
+                fontSize: 70,
+                fontWeight: FontWeight.w800,
                 color: parseColor(textColor)),
-          ),
-          Align(
-            alignment: Alignment.centerRight,
-            child: Image.asset(
-              logo,
-              height: 80,
-            ),
           ),
           Text(
             title,
@@ -43,7 +39,15 @@ class DescriptiveWidget extends StatelessWidget {
                 fontSize: 20,
                 fontWeight: FontWeight.w600,
                 color: parseColor(textColor)),
-          )
+          ),
+          Text(
+            "Kwik Grocery",
+            style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.w600,
+                color: parseColor(textColor)),
+          ),
+          const SizedBox(height: 100)
         ],
       ),
     );

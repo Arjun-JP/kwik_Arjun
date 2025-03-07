@@ -26,6 +26,12 @@ class VariationModel {
   @HiveField(6)
   final DateTime createdTime;
 
+  @HiveField(7)
+  final List<Map<String, dynamic>> highlight;
+
+  @HiveField(8)
+  final List<Map<String, dynamic>> info;
+
   VariationModel({
     required this.qty,
     required this.unit,
@@ -34,6 +40,8 @@ class VariationModel {
     required this.sellingPrice,
     required this.stock,
     required this.createdTime,
+    required this.highlight,
+    required this.info,
   });
 
   factory VariationModel.fromJson(Map<String, dynamic> json) {
@@ -49,6 +57,8 @@ class VariationModel {
           [],
       createdTime: DateTime.parse(
           json['created_time'] ?? DateTime.now().toIso8601String()),
+      highlight: List<Map<String, dynamic>>.from(json['highlight'] ?? []),
+      info: List<Map<String, dynamic>>.from(json['info'] ?? []),
     );
   }
 
@@ -61,6 +71,8 @@ class VariationModel {
       'selling_price': sellingPrice,
       'stock': stock.map((e) => e.toJson()).toList(),
       'created_time': createdTime.toIso8601String(),
+      'highlight': highlight,
+      'info': info,
     };
   }
 }

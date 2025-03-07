@@ -2,9 +2,9 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kwik/constants/colors.dart';
-import '../../../bloc/category_model_4_bloc/category_model_4_bloc.dart';
-import '../../../bloc/category_model_4_bloc/category_model_4_event.dart';
-import '../../../bloc/category_model_4_bloc/category_model_4_state.dart';
+import '../../../bloc/home_page_bloc/category_model_4_bloc/category_model_4_bloc.dart';
+import '../../../bloc/home_page_bloc/category_model_4_bloc/category_model_4_event.dart';
+import '../../../bloc/home_page_bloc/category_model_4_bloc/category_model_4_state.dart';
 import '../../../repositories/sub_category_product_repository.dart';
 
 class CategoryModel4 extends StatelessWidget {
@@ -43,7 +43,6 @@ class CategoryModel4 extends StatelessWidget {
               if (state is CategoryModel4Loading) {
                 return const Center(child: CircularProgressIndicator());
               } else if (state is CategoryModel4Loaded) {
-                print(state.products.length);
                 return Container(
                   color: parseColor(bgcolor),
                   width: double.infinity,

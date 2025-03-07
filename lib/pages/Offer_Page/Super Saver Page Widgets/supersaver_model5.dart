@@ -46,6 +46,7 @@ class SupersaverModel5 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return BlocProvider(
       create: (_) =>
           SupersaverModel5Bloc(categoryRepository: Categorymodel9Repository())
@@ -107,7 +108,8 @@ class SupersaverModel5 extends StatelessWidget {
                                       unitTextcolor: unitTextcolor,
                                       unitbgcolor: unitbgcolor,
                                       seeAllButtonBG: seeAllButtonBG,
-                                      seeAllButtontext: seeAllButtontext),
+                                      seeAllButtontext: seeAllButtontext,
+                                      theme: theme),
                                 );
                               }),
                             )

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:kwik/bloc/category_model_1_bloc/category_model1_event.dart';
+import 'package:kwik/bloc/home_page_bloc/category_model_1_bloc/category_model1_event.dart';
 
 import 'package:kwik/constants/colors.dart';
 import 'package:kwik/pages/Home_page/widgets/category_model_2.dart';
