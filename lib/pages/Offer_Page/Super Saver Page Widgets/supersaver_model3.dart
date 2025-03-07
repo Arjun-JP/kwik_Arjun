@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:kwik/bloc/category_model_10_bloc/category_model_10_event.dart';
-import 'package:kwik/bloc/category_model_10_bloc/category_model_10_state.dart';
+import 'package:kwik/bloc/home_page_bloc/category_model_10_bloc/category_model_10_event.dart';
+import 'package:kwik/bloc/home_page_bloc/category_model_10_bloc/category_model_10_state.dart';
 import 'package:kwik/constants/colors.dart';
 import 'package:kwik/models/product_model.dart';
 import 'package:kwik/pages/Home_page/widgets/category_model_10.dart';
 import 'package:kwik/repositories/category_model_10_repo.dart';
 
-import '../../../bloc/category_model_10_bloc/category_model_10_bloc.dart';
+import '../../../bloc/home_page_bloc/category_model_10_bloc/category_model_10_bloc.dart';
 
 class SupersaverModel3 extends StatelessWidget {
-    final String bgcolor;
+  final String bgcolor;
   final String titleColor;
   final String prodoductbgcolor;
   final String productTextColor;
@@ -22,7 +22,8 @@ class SupersaverModel3 extends StatelessWidget {
   final String seeAllButtontext;
   final String title;
   final String image;
-  const SupersaverModel3({super.key,
+  const SupersaverModel3({
+    super.key,
     required this.bgcolor,
     required this.titleColor,
     required this.prodoductbgcolor,
@@ -34,9 +35,10 @@ class SupersaverModel3 extends StatelessWidget {
     required this.seeAllButtontext,
     required this.crosscolor,
     required this.title,
-    required this.image,});
+    required this.image,
+  });
 
- @override
+  @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) =>
@@ -148,4 +150,3 @@ class SupersaverModel3 extends StatelessWidget {
     );
   }
 }
-

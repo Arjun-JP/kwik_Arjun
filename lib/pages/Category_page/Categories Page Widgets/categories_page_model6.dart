@@ -46,7 +46,6 @@ class _CategoriesPageModel6State extends State<CategoriesPageModel6> {
           if (state is CategoriesPageModel6Loading) {
             return const Center(child: CircularProgressIndicator());
           } else if (state is CategoriesPageModel6Loaded) {
-            print(state.categories.length);
             return Container(
               color: parseColor(widget.bgColor),
               child: Padding(

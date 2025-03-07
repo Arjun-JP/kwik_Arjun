@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:kwik/bloc/category_model_2_bloc/category_model2_event.dart';
-import 'package:kwik/bloc/category_model_2_bloc/category_model2_state.dart';
+import 'package:kwik/bloc/home_page_bloc/category_model_2_bloc/category_model2_event.dart';
+import 'package:kwik/bloc/home_page_bloc/category_model_2_bloc/category_model2_state.dart';
 import 'package:kwik/constants/colors.dart';
 import 'package:kwik/repositories/category_model2_repository.dart';
 
-import '../../../bloc/category_model_2_bloc/category_model2_bloc.dart';
+import '../../../bloc/home_page_bloc/category_model_2_bloc/category_model2_bloc.dart';
 
 class CategoryModel2 extends StatelessWidget {
   final String categoryId;

@@ -2,11 +2,11 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:kwik/bloc/category_model_7_bloc/category_model_7_event.dart';
+import 'package:kwik/bloc/home_page_bloc/category_model_7_bloc/category_model_7_event.dart';
 import 'package:kwik/constants/colors.dart';
 import 'package:kwik/models/product_model.dart';
-import '../../../bloc/category_model_7_bloc/category_model_7_bloc.dart';
-import '../../../bloc/category_model_7_bloc/category_model_7_state.dart';
+import '../../../bloc/home_page_bloc/category_model_7_bloc/category_model_7_bloc.dart';
+import '../../../bloc/home_page_bloc/category_model_7_bloc/category_model_7_state.dart';
 import '../../../repositories/sub_category_product_repository.dart';
 
 class CategoryModel7 extends StatelessWidget {
@@ -22,26 +22,22 @@ class CategoryModel7 extends StatelessWidget {
   final String offerBGcolor;
   final String seeAllButtonBG;
   final String seeAllButtontext;
- 
 
-
-  const CategoryModel7(
-      {super.key,
-      required this.bgcolor,
-      required this.titleColor,
-      required this.prodoductbgcolor,
-      required this.productTextColor,
-      required this.mrpcolor,
-      required this.sellingpricecolor,
-      required this.cartbuttontextcolor,
-      required this.offerTextcolor,
-      required this.offerBGcolor,
-      required this.seeAllButtonBG,
-      required this.seeAllButtontext,
-      required this.subcategoryid,
-
-    
-      });
+  const CategoryModel7({
+    super.key,
+    required this.bgcolor,
+    required this.titleColor,
+    required this.prodoductbgcolor,
+    required this.productTextColor,
+    required this.mrpcolor,
+    required this.sellingpricecolor,
+    required this.cartbuttontextcolor,
+    required this.offerTextcolor,
+    required this.offerBGcolor,
+    required this.seeAllButtonBG,
+    required this.seeAllButtontext,
+    required this.subcategoryid,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -83,8 +79,6 @@ class CategoryModel7 extends StatelessWidget {
                 fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 10),
-         
-       
           const SizedBox(height: 10),
           SizedBox(
             height: 243,
@@ -303,7 +297,6 @@ Widget productsWidget(
     ),
   );
 }
-
 
 class SmoothWavyCircleClipper extends CustomClipper<Path> {
   final int waveCount;

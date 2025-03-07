@@ -6,15 +6,17 @@ import 'package:go_router/go_router.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:kwik/bloc/Auth_bloc/auth_bloc.dart';
 import 'package:kwik/bloc/banner_bloc/banner_bloc.dart';
-import 'package:kwik/bloc/category_bloc/category_bloc.dart';
-import 'package:kwik/bloc/category_model_14_bloc/category_model_14_bloc.dart';
-import 'package:kwik/bloc/category_model_1_bloc/category_model1_bloc.dart';
-import 'package:kwik/bloc/category_model_2_bloc/category_model2_bloc.dart';
-import 'package:kwik/bloc/category_model_12_bloc/category_model_12_bloc.dart';
-import 'package:kwik/bloc/category_model_5__Bloc/category_model5__bloc.dart';
-import 'package:kwik/bloc/category_model_6_bloc/category_model_6_bloc.dart';
-import 'package:kwik/bloc/category_model_8_bloc/category_model_8_bloc.dart';
-import 'package:kwik/bloc/category_model_9_bloc/category_model_9_bloc.dart';
+import 'package:kwik/bloc/home_page_bloc/category_bloc/category_bloc.dart';
+import 'package:kwik/bloc/home_page_bloc/category_model_13_bloc/category_model_13_bloc.dart';
+import 'package:kwik/bloc/home_page_bloc/category_model_14_bloc/category_model_14_bloc.dart';
+import 'package:kwik/bloc/home_page_bloc/category_model_16_bloc/category_model_16_bloc.dart';
+import 'package:kwik/bloc/home_page_bloc/category_model_1_bloc/category_model1_bloc.dart';
+import 'package:kwik/bloc/home_page_bloc/category_model_2_bloc/category_model2_bloc.dart';
+import 'package:kwik/bloc/home_page_bloc/category_model_12_bloc/category_model_12_bloc.dart';
+import 'package:kwik/bloc/home_page_bloc/category_model_5__Bloc/category_model5__bloc.dart';
+import 'package:kwik/bloc/home_page_bloc/category_model_6_bloc/category_model_6_bloc.dart';
+import 'package:kwik/bloc/home_page_bloc/category_model_8_bloc/category_model_8_bloc.dart';
+import 'package:kwik/bloc/home_page_bloc/category_model_9_bloc/category_model_9_bloc.dart';
 import 'package:kwik/bloc/home_Ui_bloc/home_Ui_Bloc.dart';
 import 'package:kwik/bloc/navbar_bloc/navbar_bloc.dart';
 import 'package:kwik/constants/textstyle.dart';
@@ -27,6 +29,7 @@ import 'package:kwik/repositories/banner_repository.dart';
 import 'package:kwik/repositories/categories_page_ui_repository.dart';
 import 'package:kwik/repositories/category_model1_repository.dart';
 import 'package:kwik/repositories/category_model_12_repo.dart';
+import 'package:kwik/repositories/category_model_13_repo.dart';
 import 'package:kwik/repositories/category_model_6_repo.dart';
 import 'package:kwik/repositories/category_model_8_repo.dart';
 import 'package:kwik/repositories/category_subcategory_product_repo.dart';
@@ -43,16 +46,16 @@ import 'bloc/Categories Page Bloc/categories_page_model5/categories_page_model5_
 import 'bloc/Categories Page Bloc/categories_page_model6/categories_page_model6_bloc.dart';
 import 'bloc/Categories Page Bloc/categories_page_model7/categories_page_model7_bloc.dart';
 import 'bloc/Categories Page Bloc/categories_page_model8/categories_page_model8_bloc.dart';
-import 'bloc/category_model_10_bloc/category_model_10_bloc.dart';
-import 'bloc/category_model_4_bloc/category_model_4_bloc.dart';
-import 'bloc/category_model_7_bloc/category_model_7_bloc.dart';
-import 'bloc/category_model_8_bloc/category_model_8_event.dart';
+import 'bloc/home_page_bloc/category_model_10_bloc/category_model_10_bloc.dart';
+import 'bloc/home_page_bloc/category_model_15_bloc/category_model_15_bloc.dart';
+import 'bloc/home_page_bloc/category_model_4_bloc/category_model_4_bloc.dart';
+import 'bloc/home_page_bloc/category_model_7_bloc/category_model_7_bloc.dart';
+import 'bloc/home_page_bloc/category_model_8_bloc/category_model_8_event.dart';
 import 'models/Hiveadapter/banner_model_adapter.dart';
 import 'models/Hiveadapter/product_model_adapter.dart';
 import 'models/Hiveadapter/subcategory_model_adapter.dart';
 import 'models/Hiveadapter/variation_model_adapter.dart';
 import 'models/Hiveadapter/warehouse_model_adapter.dart';
-// import 'models/subcategory_model.dart' as subcategory;
 import 'repositories/category_model2_repository.dart';
 import 'repositories/category_model9_repo.dart';
 import 'repositories/category_model_10_repo.dart';
@@ -95,6 +98,9 @@ void main() async {
   await Hive.openBox('subCategoryPagemodel10Cache');
   await Hive.openBox('product_cache_category_ss2');
   await Hive.openBox('product_cache_SS5');
+  await Hive.openBox('productsBoxcatmodel15');
+  await Hive.openBox('categorymodel16Cache');
+  await Hive.openBox('subCategorymodel16Cache');
   // await Hive.openBox('subcategories_CatM5');
 
   SystemChrome.setPreferredOrientations([
@@ -166,11 +172,20 @@ class _MyAppState extends State<MyApp> {
         BlocProvider<CategoryBloc12>(
           create: (_) =>
               CategoryBloc12(categoryRepository: Categorymodel12Repository()),
-          child: BlocProvider<CategoryBloc14>(
-              create: (_) => CategoryBloc14(
-                  categoryRepository: Categorymodel5Repository())),
         ),
+        BlocProvider<CategoryBloc13>(
+            create: (_) => CategoryBloc13(
+                categoryRepository: Categorymodel13Repository())),
 
+        BlocProvider<CategoryBloc14>(
+            create: (_) =>
+                CategoryBloc14(categoryRepository: Categorymodel5Repository())),
+        BlocProvider<CategoryBloc15>(
+            create: (_) => CategoryBloc15(
+                categoryRepository: Categorymodel12Repository())),
+        BlocProvider<CategoryBlocModel16>(
+            create: (_) => CategoryBlocModel16(
+                categoryRepositoryModel2: CategoryRepositoryModel2())),
 //for categories page
 
         BlocProvider<CategoriesPageModel1Bloc>(

@@ -4,31 +4,33 @@ import 'package:go_router/go_router.dart';
 import 'package:kwik/bloc/Auth_bloc/auth_bloc.dart';
 import 'package:kwik/bloc/Auth_bloc/auth_event.dart';
 import 'package:kwik/bloc/Auth_bloc/auth_state.dart';
-import 'package:kwik/bloc/category_model_1_bloc/category_model1_bloc.dart';
-import 'package:kwik/bloc/category_model_1_bloc/category_model1_event.dart';
-import 'package:kwik/bloc/category_model_2_bloc/category_model2_bloc.dart';
-import 'package:kwik/bloc/category_model_2_bloc/category_model2_event.dart';
-import 'package:kwik/bloc/category_model_10_bloc/category_model_10_event.dart';
-import 'package:kwik/bloc/category_model_12_bloc/category_model_12_bloc.dart';
-import 'package:kwik/bloc/category_model_12_bloc/category_model_12_event.dart';
-import 'package:kwik/bloc/category_model_4_bloc/category_model_4_bloc.dart';
-import 'package:kwik/bloc/category_model_4_bloc/category_model_4_event.dart';
-import 'package:kwik/bloc/category_model_5__Bloc/category_model5__bloc.dart';
-import 'package:kwik/bloc/category_model_5__Bloc/category_model5__event.dart';
-import 'package:kwik/bloc/category_model_6_bloc/category_model_6_bloc.dart';
-import 'package:kwik/bloc/category_model_6_bloc/category_model_6_event.dart';
+import 'package:kwik/bloc/home_page_bloc/category_model_13_bloc/category_model_13_bloc.dart';
+import 'package:kwik/bloc/home_page_bloc/category_model_13_bloc/category_model_13_event.dart';
+import 'package:kwik/bloc/home_page_bloc/category_model_1_bloc/category_model1_bloc.dart';
+import 'package:kwik/bloc/home_page_bloc/category_model_1_bloc/category_model1_event.dart';
+import 'package:kwik/bloc/home_page_bloc/category_model_2_bloc/category_model2_bloc.dart';
+import 'package:kwik/bloc/home_page_bloc/category_model_2_bloc/category_model2_event.dart';
+import 'package:kwik/bloc/home_page_bloc/category_model_10_bloc/category_model_10_event.dart';
+import 'package:kwik/bloc/home_page_bloc/category_model_12_bloc/category_model_12_bloc.dart';
+import 'package:kwik/bloc/home_page_bloc/category_model_12_bloc/category_model_12_event.dart';
+import 'package:kwik/bloc/home_page_bloc/category_model_4_bloc/category_model_4_bloc.dart';
+import 'package:kwik/bloc/home_page_bloc/category_model_4_bloc/category_model_4_event.dart';
+import 'package:kwik/bloc/home_page_bloc/category_model_5__Bloc/category_model5__bloc.dart';
+import 'package:kwik/bloc/home_page_bloc/category_model_5__Bloc/category_model5__event.dart';
+import 'package:kwik/bloc/home_page_bloc/category_model_6_bloc/category_model_6_bloc.dart';
+import 'package:kwik/bloc/home_page_bloc/category_model_6_bloc/category_model_6_event.dart';
 import 'package:kwik/bloc/home_Ui_bloc/home_Ui_Bloc.dart';
 import 'package:kwik/bloc/home_Ui_bloc/home_Ui_Event.dart';
 import 'package:kwik/constants/colors.dart';
 import 'package:kwik/widgets/kiwi_button.dart';
 
-import '../../bloc/category_model_10_bloc/category_model_10_bloc.dart';
-import '../../bloc/category_model_14_bloc/category_model_14_bloc.dart';
-import '../../bloc/category_model_14_bloc/category_model_14_event.dart';
-import '../../bloc/category_model_7_bloc/category_model_7_bloc.dart';
-import '../../bloc/category_model_7_bloc/category_model_7_event.dart';
-import '../../bloc/category_model_9_bloc/category_model_9_bloc.dart';
-import '../../bloc/category_model_9_bloc/category_model_9_event.dart';
+import '../../bloc/home_page_bloc/category_model_10_bloc/category_model_10_bloc.dart';
+import '../../bloc/home_page_bloc/category_model_14_bloc/category_model_14_bloc.dart';
+import '../../bloc/home_page_bloc/category_model_14_bloc/category_model_14_event.dart';
+import '../../bloc/home_page_bloc/category_model_7_bloc/category_model_7_bloc.dart';
+import '../../bloc/home_page_bloc/category_model_7_bloc/category_model_7_event.dart';
+import '../../bloc/home_page_bloc/category_model_9_bloc/category_model_9_bloc.dart';
+import '../../bloc/home_page_bloc/category_model_9_bloc/category_model_9_event.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -167,8 +169,10 @@ class _LoginPageState extends State<LoginPage> {
                                   .add(Clearsubcatproduct10Cache());
                               BlocProvider.of<CategoryBloc12>(context)
                                   .add(ClearCacheEventCM12());
-                              // BlocProvider.of<CategoryBloc14>(context)
-                              //     .add(ClearCacheEventCM14());
+                              BlocProvider.of<CategoryBloc13>(context)
+                                  .add(ClearCacheEventCM13());
+                              BlocProvider.of<CategoryBloc14>(context)
+                                  .add(ClearCacheEventCM14());
                               context
                                   .read<HomeUiBloc>()
                                   .add(FetchUiDataEvent());

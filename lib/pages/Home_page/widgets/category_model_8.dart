@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kwik/constants/colors.dart';
-import '../../../bloc/category_model_8_bloc/category_model_8_bloc.dart';
-import '../../../bloc/category_model_8_bloc/category_model_8_event.dart';
-import '../../../bloc/category_model_8_bloc/category_model_8_state.dart';
+import '../../../bloc/home_page_bloc/category_model_8_bloc/category_model_8_bloc.dart';
+import '../../../bloc/home_page_bloc/category_model_8_bloc/category_model_8_event.dart';
+import '../../../bloc/home_page_bloc/category_model_8_bloc/category_model_8_state.dart';
 import '../../../repositories/category_model_8_repo.dart';
 
 class CategoryModel8 extends StatefulWidget {
@@ -16,18 +16,17 @@ class CategoryModel8 extends StatefulWidget {
   final String iconBGcolor;
   final String iconcolor;
 
-  const CategoryModel8(
-      {super.key,
-      required this.title,
-      required this.bgColor,
-      required this.categories,
-      required this.titlecolor,
-      required this.categorytitlecolor,
-      required this.categoryBG,
-      required this.iconBGcolor,
-      required this.iconcolor,
-
-      });
+  const CategoryModel8({
+    super.key,
+    required this.title,
+    required this.bgColor,
+    required this.categories,
+    required this.titlecolor,
+    required this.categorytitlecolor,
+    required this.categoryBG,
+    required this.iconBGcolor,
+    required this.iconcolor,
+  });
 
   @override
   State<CategoryModel8> createState() => _CategoryModel8State();
@@ -45,7 +44,6 @@ class _CategoryModel8State extends State<CategoryModel8> {
           if (state is Categorymode8Loading) {
             return const Center(child: CircularProgressIndicator());
           } else if (state is Categorymode8Loaded) {
-            print(state.categories.length);
             return Container(
               color: parseColor(widget.bgColor),
               child: Padding(
@@ -170,7 +168,6 @@ class _CategoryModel8State extends State<CategoryModel8> {
                       }).toList(),
                     ),
                     const SizedBox(height: 20),
-                  
                   ],
                 ),
               ),
@@ -184,4 +181,3 @@ class _CategoryModel8State extends State<CategoryModel8> {
     );
   }
 }
-

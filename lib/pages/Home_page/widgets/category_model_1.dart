@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kwik/constants/colors.dart';
 
-import '../../../bloc/category_bloc/category_bloc.dart';
-import '../../../bloc/category_bloc/category_event.dart';
-import '../../../bloc/category_bloc/category_state.dart';
+import '../../../bloc/home_page_bloc/category_bloc/category_bloc.dart';
+import '../../../bloc/home_page_bloc/category_bloc/category_event.dart';
+import '../../../bloc/home_page_bloc/category_bloc/category_state.dart';
 import '../../../repositories/home_category_repository.dart';
 
 class CategoryModel1 extends StatefulWidget {

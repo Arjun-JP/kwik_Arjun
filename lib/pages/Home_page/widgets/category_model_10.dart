@@ -1,15 +1,12 @@
-
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:kwik/constants/colors.dart';
 import 'package:kwik/models/product_model.dart';
-import '../../../bloc/category_model_10_bloc/category_model_10_bloc.dart';
-import '../../../bloc/category_model_10_bloc/category_model_10_event.dart';
-import '../../../bloc/category_model_10_bloc/category_model_10_state.dart';
+import '../../../bloc/home_page_bloc/category_model_10_bloc/category_model_10_bloc.dart';
+import '../../../bloc/home_page_bloc/category_model_10_bloc/category_model_10_event.dart';
+import '../../../bloc/home_page_bloc/category_model_10_bloc/category_model_10_state.dart';
 import '../../../repositories/category_model_10_repo.dart';
-
 
 class CategoryModel10 extends StatelessWidget {
   final String bgcolor;

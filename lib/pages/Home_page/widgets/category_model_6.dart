@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:kwik/bloc/category_model_6_bloc/category_model_6_event.dart';
-import 'package:kwik/bloc/category_model_6_bloc/category_model_6_state.dart';
+import 'package:kwik/bloc/home_page_bloc/category_model_6_bloc/category_model_6_event.dart';
+import 'package:kwik/bloc/home_page_bloc/category_model_6_bloc/category_model_6_state.dart';
 import 'package:kwik/constants/colors.dart';
 import 'package:kwik/repositories/category_model_6_repo.dart';
-import '../../../bloc/category_model_6_bloc/category_model_6_bloc.dart';
+import '../../../bloc/home_page_bloc/category_model_6_bloc/category_model_6_bloc.dart';
 
 class CategoryModel6 extends StatelessWidget {
   final String bgcolor;
@@ -111,10 +111,10 @@ Widget subcategoryItem(
     crossAxisAlignment: CrossAxisAlignment.center,
     children: [
       Padding(
-        padding: const EdgeInsets.only(right: 5.0),
+        padding: const EdgeInsets.only(right: 15.0),
         child: SizedBox(
           height: 170,
-          width: 150,
+          width: 140,
           child: Stack(
             children: [
               Container(
@@ -122,10 +122,10 @@ Widget subcategoryItem(
                 width: 150,
                 decoration: BoxDecoration(
                   borderRadius: const BorderRadius.only(
-                      topLeft: Radius.circular(10),
-                      topRight: Radius.circular(10),
-                      bottomLeft: Radius.circular(80),
-                      bottomRight: Radius.circular(80)),
+                      topLeft: Radius.circular(25),
+                      topRight: Radius.circular(25),
+                      bottomLeft: Radius.circular(25),
+                      bottomRight: Radius.circular(25)),
                   color: parseColor(bgcolor),
                   image: DecorationImage(
                     image: NetworkImage(imageurl),

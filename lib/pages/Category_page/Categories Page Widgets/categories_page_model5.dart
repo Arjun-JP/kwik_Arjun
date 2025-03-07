@@ -5,6 +5,7 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:kwik/constants/colors.dart';
 
 import 'package:kwik/repositories/category_subcategory_product_repo.dart';
+import 'package:kwik/widgets/produc_model_1.dart';
 
 import '../../../bloc/Categories Page Bloc/categories_page_model5/categories_page_model5_bloc.dart';
 import '../../Home_page/widgets/category_model_13.dart';
@@ -142,8 +143,16 @@ class CategoriesPageModel5 extends StatelessWidget {
                                   return StaggeredGridTile.extent(
                                     crossAxisCellCount: 1,
                                     mainAxisExtent: 216,
-                                    child: productItem(
-                                      bgcolor: "FFFFFF",
+                                    child: ProductItem(
+                                      buttontextcolor: "000000",
+                                      context: context,
+                                      offertextcolor: "FFFFFF",
+                                      productBgColor: "FFFFFF",
+                                      seeAllButtonBG: "FFFFFF",
+                                      seeAllButtontext: "000000",
+                                      sellingPriceColor: "000000",
+                                      unitTextcolor: "000000",
+                                      unitbgcolor: "FFFFFF",
                                       imageurl: state.products
                                           .where((product) =>
                                               product.subCategoryRef.id ==

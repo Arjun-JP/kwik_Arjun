@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:kwik/bloc/category_model_5__Bloc/category_model5__bloc.dart';
-import 'package:kwik/bloc/category_model_5__Bloc/category_model5__state.dart';
-import 'package:kwik/pages/Home_page/widgets/category_model_12.dart';
-import '../../../bloc/category_model_5__Bloc/category_model5__event.dart';
+import 'package:kwik/bloc/home_page_bloc/category_model_5__Bloc/category_model5__bloc.dart';
+import 'package:kwik/bloc/home_page_bloc/category_model_5__Bloc/category_model5__state.dart';
+import 'package:kwik/widgets/produc_model_1.dart';
+import '../../../bloc/home_page_bloc/category_model_5__Bloc/category_model5__event.dart';
 import '../../../constants/colors.dart';
 import '../../../repositories/category_subcategory_product_repo.dart';
 
@@ -136,7 +136,7 @@ class CategoryModel5 extends StatelessWidget {
                                 return StaggeredGridTile.extent(
                                   crossAxisCellCount: 1,
                                   mainAxisExtent: 266,
-                                  child: productItem(
+                                  child: ProductItem(
                                     buttontextcolor: "E23338",
                                     context: context,
                                     offertextcolor: "FFFFFF",
@@ -237,109 +237,3 @@ Widget subcategoryItem(
     ),
   );
 }
-
-// Widget productItem({
-//   required String name,
-//   required double price,
-//   required String imageurl,
-//   required String bgcolor,
-//   required String productcolor,
-//   required String sellingpricecolor,
-//   required String mrpColor,
-// }) {
-//   return SizedBox(
-//     width: 132,
-//     height: 216,
-//     child: Stack(
-//       children: [
-//         Container(
-//           height: 216,
-//           decoration: BoxDecoration(
-//             borderRadius: BorderRadius.circular(12),
-//             color: lightenColor(parseColor(bgcolor), .6),
-//           ),
-//           child: Column(
-//             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//             children: [
-//               Container(
-//                 margin: const EdgeInsets.only(top: 50),
-//                 height: 80,
-//                 width: 80,
-//                 decoration: BoxDecoration(
-//                   borderRadius: BorderRadius.circular(100),
-//                   image: DecorationImage(
-//                     image: NetworkImage(imageurl),
-//                     fit: BoxFit.cover,
-//                   ),
-//                 ),
-//               ),
-//               SizedBox(
-//                 width: 120,
-//                 child: Text(
-//                   name,
-//                   textAlign: TextAlign.center,
-//                   style: const TextStyle(fontSize: 16),
-//                 ),
-//               ),
-//               Container(
-//                 height: 35,
-//                 margin: const EdgeInsets.only(bottom: 5, left: 5, right: 5),
-//                 decoration: BoxDecoration(
-//                   color: lightenColor(parseColor(productcolor), .8),
-//                   borderRadius: BorderRadius.circular(12),
-//                 ),
-//                 child: Center(
-//                   child: Text(
-//                     "Add to Cart",
-//                     style: TextStyle(
-//                       fontSize: 12,
-//                       fontWeight: FontWeight.w800,
-//                       color: parseColor(productcolor),
-//                     ),
-//                   ),
-//                 ),
-//               ),
-//             ],
-//           ),
-//         ),
-//         Container(
-//           height: 42,
-//           width: 132,
-//           decoration: BoxDecoration(
-//             borderRadius: BorderRadius.circular(12),
-//             color: parseColor(productcolor),
-//           ),
-//           child: Row(
-//             mainAxisAlignment: MainAxisAlignment.center,
-//             crossAxisAlignment: CrossAxisAlignment.center,
-//             children: [
-//               Expanded(
-//                 flex: 3,
-//                 child: Center(
-//                   child: Text("₹$price",
-//                       style: TextStyle(
-//                           fontSize: 20,
-//                           color: parseColor(sellingpricecolor),
-//                           fontWeight: FontWeight.w800)),
-//                 ),
-//               ),
-//               Expanded(
-//                 flex: 2,
-//                 child: Column(
-//                   children: [
-//                     Text("MRP",
-//                         style: TextStyle(
-//                             fontSize: 12, color: parseColor(mrpColor))),
-//                     Text("₹$price",
-//                         style: TextStyle(
-//                             fontSize: 12, color: parseColor(mrpColor))),
-//                   ],
-//                 ),
-//               ),
-//             ],
-//           ),
-//         ),
-//       ],
-//     ),
-//   );
-// }

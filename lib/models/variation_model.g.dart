@@ -24,13 +24,19 @@ class VariationModelAdapter extends TypeAdapter<VariationModel> {
       sellingPrice: fields[4] as double,
       stock: (fields[5] as List).cast<StockModel>(),
       createdTime: fields[6] as DateTime,
+      highlight: (fields[7] as List)
+          .map((dynamic e) => (e as Map).cast<String, dynamic>())
+          .toList(),
+      info: (fields[8] as List)
+          .map((dynamic e) => (e as Map).cast<String, dynamic>())
+          .toList(),
     );
   }
 
   @override
   void write(BinaryWriter writer, VariationModel obj) {
     writer
-      ..writeByte(7)
+      ..writeByte(9)
       ..writeByte(0)
       ..write(obj.qty)
       ..writeByte(1)
@@ -44,7 +50,11 @@ class VariationModelAdapter extends TypeAdapter<VariationModel> {
       ..writeByte(5)
       ..write(obj.stock)
       ..writeByte(6)
-      ..write(obj.createdTime);
+      ..write(obj.createdTime)
+      ..writeByte(7)
+      ..write(obj.highlight)
+      ..writeByte(8)
+      ..write(obj.info);
   }
 
   @override
