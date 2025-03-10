@@ -1,9 +1,9 @@
-
 import 'dart:convert';
 import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
+
 class CategoriesPageUiRepository {
-   static const String _baseUrl = 'https://kwik-backend.vercel.app';
+  static const String _baseUrl = 'https://kwik-backend.vercel.app';
   static const String _cacheKey = 'cat_ui_cache';
 
   Future<Map<String, dynamic>> fetchUiData({bool forceRefresh = false}) async {
@@ -18,15 +18,17 @@ class CategoriesPageUiRepository {
     var box = await Hive.openBox('cat_ui_cache_box');
 
     // Return cached data if it exists and no force refresh
-    if (!forceRefresh && box.containsKey(_cacheKey)) {
-      return json.decode(box.get(_cacheKey));
-    }
+    // if (!forceRefresh && box.containsKey(_cacheKey)) {
+    //   print("getting cached data");
+    //   return json.decode(box.get(_cacheKey));
+    // }
 
     // Fetch from API
-    final response =
-        await http.get(Uri.parse('$_baseUrl/ui/getui'), headers: headers);
-
+    final response = await http.get(Uri.parse('$_baseUrl/categoryui/getui'),
+        headers: headers);
+    print(response.statusCode);
     if (response.statusCode == 200) {
+      print(response.body);
       final data = json.decode(response.body);
 
       // Cache the data

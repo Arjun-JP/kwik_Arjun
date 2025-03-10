@@ -40,7 +40,6 @@ class Categorymodel13Repository {
   /// Fetch all products for the selected subcategories (POST request)
   Future<List<ProductModel>> fetchProductsFromSubCategories(
       List<String> subCategoryIds) async {
-    print("in");
     final url = Uri.parse('$baseUrl/product/products-by-subcategories');
 
     try {
@@ -51,17 +50,13 @@ class Categorymodel13Repository {
       );
 
       if (response.statusCode == 200) {
-        print("success");
         Map<String, dynamic> bodydata = json.decode(response.body);
 
         if (bodydata.containsKey("data") && bodydata["data"] is List) {
           List<dynamic> data = bodydata["data"];
-          print("parsing");
-          print(
-              data.map((json) => ProductModel.fromJson(json)).toList().length);
+
           return data.map((json) => ProductModel.fromJson(json)).toList();
         } else {
-          print("faild");
           return []; // Return an empty list if "data" is missing or not a list.
         }
       } else {

@@ -49,17 +49,16 @@ class CategoriesPageModel8Bloc
             category: cachedCategory, subCategories: cachedSubCategories));
       } else {
         // If not in cache, fetch from API
-        final category = await categoryRepositoryModel1
-            .fetchCategoryDetails(event.categoryId);
+        final category = await categoryRepositoryModel1.fetchCategoryDetails();
         final subCategories =
             await categoryRepositoryModel1.fetchSubCategories(event.categoryId);
 
-        // Cache the results
-        categoryBox.put(event.categoryId, jsonEncode(category.toJson()));
-        subCategoryBox.put(event.categoryId,
-            jsonEncode(subCategories.map((e) => e.toJson()).toList()));
+        // // Cache the results
+        // categoryBox.put(event.categoryId, jsonEncode(category.toJson()));
+        // subCategoryBox.put(event.categoryId,
+        //     jsonEncode(subCategories.map((e) => e.toJson()).toList()));
 
-        emit(CategoryLoaded(category: category, subCategories: subCategories));
+        // emit(CategoryLoaded(category: category, subCategories: subCategories));
       }
     } catch (e) {
       emit(CategoryError("Failed to load category details"));

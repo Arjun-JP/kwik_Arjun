@@ -6,12 +6,10 @@ abstract class CategoryModelEvent extends Equatable {
 }
 
 class FetchCategoryDetails extends CategoryModelEvent {
-  final String categoryId;
-
-  FetchCategoryDetails(this.categoryId);
+  FetchCategoryDetails();
 
   @override
-  List<Object> get props => [categoryId];
+  List<Object> get props => [];
 }
 
-class ClearCache extends CategoryModelEvent {}
+class ClearCacheCM extends CategoryModelEvent {}

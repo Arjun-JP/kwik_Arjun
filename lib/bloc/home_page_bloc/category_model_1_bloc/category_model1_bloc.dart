@@ -5,12 +5,13 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:kwik/bloc/home_page_bloc/category_model_1_bloc/category_model1_event.dart';
 import 'package:kwik/bloc/home_page_bloc/category_model_1_bloc/category_model1_state.dart';
 import 'package:kwik/models/category_model.dart';
+import 'package:kwik/repositories/category_model_3_repo_home.dart';
 
 import '../../../models/subcategory_model.dart';
 import '../../../repositories/category_model1_repository.dart';
 
 class CategoryBlocModel1 extends Bloc<CategoryEvent, CategoryState> {
-  final CategoryRepositoryModel1 categoryRepositoryModel1;
+  final CategoryRepositoryModel3Home categoryRepositoryModel1;
 
   CategoryBlocModel1({required this.categoryRepositoryModel1})
       : super(CategoryInitial()) {

@@ -5,10 +5,11 @@ import 'package:kwik/models/subcategory_model.dart';
 
 import '../models/category_model.dart';
 
-class CategoryRepositoryModel1 {
+class CategoryRepositoryModel3Home {
   final String baseUrl =
       "https://kwik-backend.vercel.app"; // Replace with your API
-  Future<List<Category>> fetchCategoryDetails() async {
+
+  Future<Category> fetchCategoryDetails(String categoryId) async {
     try {
       const String apiKey = 'arjun';
       const String apiSecret = 'digi9';
@@ -19,15 +20,11 @@ class CategoryRepositoryModel1 {
       };
 
       final response = await http
-          .get(Uri.parse('$baseUrl/category/allcategories'), headers: headers);
+          .get(Uri.parse('$baseUrl/category/$categoryId'), headers: headers);
 
       if (response.statusCode == 200) {
-        List<dynamic> jsonList =
-            jsonDecode(response.body); // Decode the response as a List
-        List<Category> categories = jsonList
-            .map((json) => Category.fromJson(json))
-            .toList(); // Convert to List<Category>
-        return categories;
+        var category = Category.fromJson(jsonDecode(response.body));
+        return category;
       } else {
         throw Exception("Failed to fetch category details");
       }
@@ -46,7 +43,7 @@ class CategoryRepositoryModel1 {
         'api_Secret': apiSecret,
       };
       final response = await http.get(
-          Uri.parse('$baseUrl/subcategory/allsubcategories'),
+          Uri.parse('$baseUrl/subcategory/allsubcategories/$categoryId'),
           headers: headers);
 
       if (response.statusCode == 200) {

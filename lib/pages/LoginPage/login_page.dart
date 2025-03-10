@@ -4,6 +4,8 @@ import 'package:go_router/go_router.dart';
 import 'package:kwik/bloc/Auth_bloc/auth_bloc.dart';
 import 'package:kwik/bloc/Auth_bloc/auth_event.dart';
 import 'package:kwik/bloc/Auth_bloc/auth_state.dart';
+import 'package:kwik/bloc/Categories%20Page%20Bloc/category_model_bloc/category_model_bloc.dart';
+import 'package:kwik/bloc/Categories%20Page%20Bloc/category_model_bloc/category_model_event.dart';
 import 'package:kwik/bloc/home_page_bloc/category_model_13_bloc/category_model_13_bloc.dart';
 import 'package:kwik/bloc/home_page_bloc/category_model_13_bloc/category_model_13_event.dart';
 import 'package:kwik/bloc/home_page_bloc/category_model_1_bloc/category_model1_bloc.dart';
@@ -24,6 +26,8 @@ import 'package:kwik/bloc/home_Ui_bloc/home_Ui_Event.dart';
 import 'package:kwik/constants/colors.dart';
 import 'package:kwik/widgets/kiwi_button.dart';
 
+import '../../bloc/Categories Page Bloc/categories_page_model1/categories_page_model1_bloc.dart'
+    show CategoriesPageModel1Bloc, ClearCacheCatPage1;
 import '../../bloc/home_page_bloc/category_model_10_bloc/category_model_10_bloc.dart';
 import '../../bloc/home_page_bloc/category_model_14_bloc/category_model_14_bloc.dart';
 import '../../bloc/home_page_bloc/category_model_14_bloc/category_model_14_event.dart';
@@ -173,6 +177,10 @@ class _LoginPageState extends State<LoginPage> {
                                   .add(ClearCacheEventCM13());
                               BlocProvider.of<CategoryBloc14>(context)
                                   .add(ClearCacheEventCM14());
+                              BlocProvider.of<CategoriesPageModel1Bloc>(context)
+                                  .add(ClearCacheCatPage1());
+                              BlocProvider.of<CategoryBlocModel>(context)
+                                  .add(ClearCacheCM());
                               context
                                   .read<HomeUiBloc>()
                                   .add(FetchUiDataEvent());
