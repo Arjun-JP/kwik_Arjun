@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:kwik/bloc/Categories%20Page%20Bloc/category_model_bloc/category_model_event.dart';
@@ -14,7 +13,7 @@ class CategoryBlocModel extends Bloc<CategoryModelEvent, CategoryModelState> {
   CategoryBlocModel({required this.categoryRepositoryModel1})
       : super(CategoryInitial()) {
     on<FetchCategoryDetails>(_onFetchCategoryDetails);
-    on<ClearCache>(_onClearCache);
+    on<ClearCacheCM>(_onClearCache);
   }
 
   void _onFetchCategoryDetails(
@@ -23,53 +22,57 @@ class CategoryBlocModel extends Bloc<CategoryModelEvent, CategoryModelState> {
       emit(CategoryLoading());
 
       // Open boxes for cache
-      var categoryBox = await Hive.openBox('categorymodel1Cache');
-      var subCategoryBox = await Hive.openBox('subCategorymodel1Cache');
+      var categoryBox = await Hive.openBox('All_category_box');
+      var subCategoryBox = await Hive.openBox('all_subcategory_box');
 
-      Category? cachedCategory;
+      List<Category>? cachedCategories;
       List<SubCategoryModel>? cachedSubCategories;
 
       // Check cache first
-      if (categoryBox.containsKey(event.categoryId)) {
-        cachedCategory =
-            Category.fromJson(jsonDecode(categoryBox.get(event.categoryId)));
+      if (categoryBox.containsKey("All_category_box")) {
+        List<dynamic> cachedList =
+            jsonDecode(categoryBox.get("All_category_box"));
+        cachedCategories = cachedList.map((e) => Category.fromJson(e)).toList();
       }
 
-      if (subCategoryBox.containsKey(event.categoryId)) {
+      if (subCategoryBox.containsKey("all_subcategory_box")) {
         List<dynamic> cachedList =
-            jsonDecode(subCategoryBox.get(event.categoryId));
+            jsonDecode(subCategoryBox.get("all_subcategory_box"));
         cachedSubCategories =
             cachedList.map((e) => SubCategoryModel.fromJson(e)).toList();
       }
 
-      if (cachedCategory != null && cachedSubCategories != null) {
-        // If both category and subcategories are in cache, emit the loaded state
+      if (cachedCategories != null && cachedSubCategories != null) {
+        // If both categories and subcategories are in cache, emit the loaded state
         emit(CategoryLoaded(
-            category: cachedCategory, subCategories: cachedSubCategories));
+            category: cachedCategories, subCategories: cachedSubCategories));
       } else {
         // If not in cache, fetch from API
-        final category = await categoryRepositoryModel1
-            .fetchCategoryDetails(event.categoryId);
-        final subCategories =
-            await categoryRepositoryModel1.fetchSubCategories(event.categoryId);
+        final categories =
+            await categoryRepositoryModel1.fetchCategoryDetails();
+        final subCategories = await categoryRepositoryModel1
+            .fetchSubCategories("All_category_box");
 
         // Cache the results
-        categoryBox.put(event.categoryId, jsonEncode(category.toJson()));
-        subCategoryBox.put(event.categoryId,
+        categoryBox.put("All_category_box",
+            jsonEncode(categories.map((e) => e.toJson()).toList()));
+        subCategoryBox.put("all_subcategory_box",
             jsonEncode(subCategories.map((e) => e.toJson()).toList()));
 
-        emit(CategoryLoaded(category: category, subCategories: subCategories));
+        emit(
+            CategoryLoaded(category: categories, subCategories: subCategories));
       }
     } catch (e) {
       emit(CategoryError("Failed to load category details"));
     }
   }
 
-  void _onClearCache(ClearCache event, Emitter<CategoryModelState> emit) async {
+  void _onClearCache(
+      ClearCacheCM event, Emitter<CategoryModelState> emit) async {
     try {
       // Open cache boxes
-      var categoryBox = await Hive.openBox('categorymodel1Cache');
-      var subCategoryBox = await Hive.openBox('subCategorymodel1Cache');
+      var categoryBox = await Hive.openBox('All_category_box');
+      var subCategoryBox = await Hive.openBox('all_subcategory_box');
 
       // Clear the cache
       await categoryBox.clear();

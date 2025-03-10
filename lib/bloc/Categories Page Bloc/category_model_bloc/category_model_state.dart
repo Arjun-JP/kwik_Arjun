@@ -13,7 +13,7 @@ class CategoryInitial extends CategoryModelState {}
 class CategoryLoading extends CategoryModelState {}
 
 class CategoryLoaded extends CategoryModelState {
-  final Category category;
+  final List<Category> category;
   final List<SubCategoryModel> subCategories;
 
   CategoryLoaded({required this.category, required this.subCategories});

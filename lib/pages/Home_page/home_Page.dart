@@ -21,7 +21,6 @@ import 'package:kwik/bloc/home_Ui_bloc/home_Ui_State.dart';
 import 'package:kwik/bloc/navbar_bloc/navbar_bloc.dart';
 import 'package:kwik/pages/Home_page/widgets/banner_model.dart';
 import 'package:kwik/pages/Home_page/widgets/category_model_10.dart';
-import 'package:kwik/pages/Home_page/widgets/category_model_11.dart';
 import 'package:kwik/pages/Home_page/widgets/category_model_12.dart';
 import 'package:kwik/pages/Home_page/widgets/category_model_13.dart';
 import 'package:kwik/pages/Home_page/widgets/category_model_14.dart';
@@ -30,8 +29,6 @@ import 'package:kwik/pages/Home_page/widgets/category_model_16.dart';
 import 'package:kwik/pages/Home_page/widgets/category_model_2.dart';
 import 'package:kwik/pages/Home_page/widgets/category_model_3.dart';
 import 'package:kwik/pages/Home_page/widgets/category_model_4.dart';
-import 'package:kwik/pages/Home_page/widgets/category_model_7.dart';
-import 'package:kwik/pages/Home_page/widgets/category_model_8.dart';
 import 'package:kwik/pages/Home_page/widgets/category_model_9.dart';
 import 'package:kwik/pages/Home_page/widgets/descriptive_widget.dart';
 import 'package:kwik/widgets/navbar/navbar.dart';
@@ -277,42 +274,42 @@ class _HomePageState extends State<HomePage> {
                     ),
                     'order': uiData["template9"]["ui_order_number"]
                   },
-                  {
-                    'template': CategoryModel7(
-                      subcategoryid: uiData["template10"]["category_ref"],
-                      titleColor: uiData["template10"]["title_color"],
-                      bgcolor: uiData["template10"]["background_color"],
-                      cartbuttontextcolor: uiData["template10"]
-                          ["cartbuttontextcolor"],
-                      mrpcolor: uiData["template10"]["mrpcolor"],
-                      offerBGcolor: uiData["template10"]["offerBGcolor"],
-                      offerTextcolor: uiData["template10"]["offerTextcolor"],
-                      prodoductbgcolor: uiData["template10"]
-                          ["prodoductbgcolor"],
-                      productTextColor: uiData["template10"]
-                          ["productTextColor"],
-                      sellingpricecolor: uiData["template10"]
-                          ["sellingpricecolor"],
-                      seeAllButtonBG: uiData["template10"]["seeAllButtonBG"],
-                      seeAllButtontext: uiData["template10"]
-                          ["seeAllButtontext"],
-                    ),
-                    'order': uiData["template10"]["ui_order_number"]
-                  },
-                  {
-                    'template': CategoryModel8(
-                      bgColor: uiData["template11"]["background_color"],
-                      categoryBG: uiData["template11"]["subcategorybg"],
-                      iconBGcolor: uiData["template11"]["icon_bg_color"],
-                      iconcolor: uiData["template11"]["icon_color"],
-                      title: uiData["template11"]["title"],
-                      categories: categorymodel8Categories,
-                      titlecolor: uiData["template11"]["title_color"],
-                      categorytitlecolor: uiData["template11"]
-                          ["subcat_title_color"],
-                    ),
-                    'order': uiData["template11"]["ui_order_number"]
-                  },
+                  // {
+                  //   'template': CategoryModel7(
+                  //     subcategoryid: uiData["template10"]["category_ref"],
+                  //     titleColor: uiData["template10"]["title_color"],
+                  //     bgcolor: uiData["template10"]["background_color"],
+                  //     cartbuttontextcolor: uiData["template10"]
+                  //         ["cartbuttontextcolor"],
+                  //     mrpcolor: uiData["template10"]["mrpcolor"],
+                  //     offerBGcolor: uiData["template10"]["offerBGcolor"],
+                  //     offerTextcolor: uiData["template10"]["offerTextcolor"],
+                  //     prodoductbgcolor: uiData["template10"]
+                  //         ["prodoductbgcolor"],
+                  //     productTextColor: uiData["template10"]
+                  //         ["productTextColor"],
+                  //     sellingpricecolor: uiData["template10"]
+                  //         ["sellingpricecolor"],
+                  //     seeAllButtonBG: uiData["template10"]["seeAllButtonBG"],
+                  //     seeAllButtontext: uiData["template10"]
+                  //         ["seeAllButtontext"],
+                  //   ),
+                  //   'order': uiData["template10"]["ui_order_number"]
+                  // },
+                  // {
+                  //   'template': CategoryModel8(
+                  //     bgColor: uiData["template11"]["background_color"],
+                  //     categoryBG: uiData["template11"]["subcategorybg"],
+                  //     iconBGcolor: uiData["template11"]["icon_bg_color"],
+                  //     iconcolor: uiData["template11"]["icon_color"],
+                  //     title: uiData["template11"]["title"],
+                  //     categories: categorymodel8Categories,
+                  //     titlecolor: uiData["template11"]["title_color"],
+                  //     categorytitlecolor: uiData["template11"]
+                  //         ["subcat_title_color"],
+                  //   ),
+                  //   'order': uiData["template11"]["ui_order_number"]
+                  // },
                   {
                     'template': CategoryModel9(
                       seeAllButtonBG: "D5E2C9",
@@ -358,23 +355,23 @@ class _HomePageState extends State<HomePage> {
                     ),
                     'order': uiData["template13"]["ui_order_number"]
                   },
-                  {
-                    'template': CategoryModel11(
-                      percentBgColor: 'B8E1FF',
-                      descriptionTextColor: '',
-                      percentDisplayPosition: 30,
-                      titleTopDisplayPosition: false,
-                      description: "",
-                      categoryId: uiData["template7"]["category_ref"],
-                      bgcolor: "D5E9FF",
-                      titleColor: uiData["template7"]["title_color"],
-                      subcatColor: uiData["template7"]["subcat_color"],
-                      seeContainColor: "B8E1FF",
-                      brandIcon:
-                          "https://firebasestorage.googleapis.com/v0/b/kwikgroceries-8a11e.firebasestorage.app/o/bxs_offer.png?alt=media&token=f6cd9a07-d6f5-4f40-84cb-4748769a0ed9",
-                    ),
-                    'order': uiData["template14"]["ui_order_number"]
-                  },
+                  // {
+                  //   'template': CategoryModel11(
+                  //     percentBgColor: 'B8E1FF',
+                  //     descriptionTextColor: '',
+                  //     percentDisplayPosition: 30,
+                  //     titleTopDisplayPosition: false,
+                  //     description: "",
+                  //     categoryId: uiData["template7"]["category_ref"],
+                  //     bgcolor: "D5E9FF",
+                  //     titleColor: uiData["template7"]["title_color"],
+                  //     subcatColor: uiData["template7"]["subcat_color"],
+                  //     seeContainColor: "B8E1FF",
+                  //     brandIcon:
+                  //         "https://firebasestorage.googleapis.com/v0/b/kwikgroceries-8a11e.firebasestorage.app/o/bxs_offer.png?alt=media&token=f6cd9a07-d6f5-4f40-84cb-4748769a0ed9",
+                  //   ),
+                  //   'order': uiData["template14"]["ui_order_number"]
+                  // },
                   {
                     'template': CategoryModel12(
                       topimage: uiData["template14"]["top_image"],

@@ -2,35 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
-
+import 'package:kwik/bloc/Categories%20Page%20Bloc/category_model_bloc/category_model_bloc.dart';
 import 'package:kwik/bloc/navbar_bloc/navbar_bloc.dart';
 import 'package:kwik/pages/Category_page/Categories%20Page%20Widgets/category_model.dart';
-
-import 'package:kwik/pages/Home_page/widgets/banner_model.dart';
-
 import 'package:kwik/pages/Home_page/widgets/descriptive_widget.dart';
-
 import 'package:kwik/widgets/navbar/navbar.dart';
 import '../../bloc/Categories Page Bloc/categories_UI_bloc/categories_ui_bloc.dart';
 import '../../bloc/Categories Page Bloc/categories_page_model1/categories_page_model1_bloc.dart';
-import '../../bloc/Categories Page Bloc/categories_page_model2/categories_page_model2_bloc.dart';
-import '../../bloc/Categories Page Bloc/categories_page_model3/categories_page_model3_bloc.dart';
-import '../../bloc/Categories Page Bloc/categories_page_model4/categories_page_model4_bloc.dart';
-
+import 'package:kwik/bloc/Categories%20Page%20Bloc/category_model_bloc/category_model_event.dart';
 import '../../bloc/navbar_bloc/navbar_event.dart';
 import '../../constants/colors.dart';
-
-import 'Categories Page Widgets/categories_page_model1.dart';
-
-import 'Categories Page Widgets/categories_page_model2.dart';
-import 'Categories Page Widgets/categories_page_model3.dart';
-import 'Categories Page Widgets/categories_page_model4.dart';
-import 'Categories Page Widgets/categories_page_model5.dart';
-import 'Categories Page Widgets/categories_page_model6.dart';
-import 'Categories Page Widgets/categories_page_model7.dart';
-import 'Categories Page Widgets/categories_page_model8.dart';
-import 'Categories Page Widgets/categories_page_model9.dart';
-import 'Categories Page Widgets/categories_page_model10.dart';
 
 class CategoryPage extends StatefulWidget {
   const CategoryPage({super.key});
@@ -44,16 +25,7 @@ class _CategoryPageState extends State<CategoryPage> {
     context.read<CategoriesUiBloc>().add(ClearCatUiCacheEvent());
     BlocProvider.of<CategoriesPageModel1Bloc>(context)
         .add(ClearCacheCatPage1());
-
-    BlocProvider.of<CategoriesPageModel2Bloc>(context)
-        .add(ClearCacheCatPage2());
-
-    BlocProvider.of<CategoriesPageModel3Bloc>(context)
-        .add(ClearCacheCatPage3());
-
-    BlocProvider.of<CategoriesPageModel4Bloc>(context)
-        .add(Clearsubcatproduct1Cache4());
-
+    BlocProvider.of<CategoryBlocModel>(context).add(ClearCacheCM());
     context.read<CategoriesUiBloc>().add(FetchCatUiDataEvent());
   }
 
@@ -119,310 +91,54 @@ class _CategoryPageState extends State<CategoryPage> {
               } else if (state is CatUiLoaded) {
                 final uiData = state.uiData;
 
-                final categoryRef =
-                    List<String>.from(uiData["categorylist"]["category_ref"]);
-                final categorymodel8Categories =
-                    List<String>.from(uiData["template11"]["subcategories"]);
-
                 final templates = [
-                  // {
-                  //   'template': CategoriesPageModel1(
-                  //     categoryId: uiData["template7"]["category_ref"],
-                  //     bgcolor: "FFFFFF",
-                  //     titleColor: uiData["template7"]["title_color"],
-                  //     subcatColor: uiData["template7"]["subcat_color"],
-                  //   ),
-                  //   'order': "1"
-                  // },
-
                   {
                     'template': CategoryModel(
                       maincategories: List<String>.from(
-                          uiData["template4"]["main_sub_category"]),
+                          uiData["template1"]["main_categories"]),
                       secondarycategories: List<String>.from(
-                          uiData["template4"]["secondary_sub_category"]),
-                      categoryId: uiData["template4"]["category_ref"],
-                      bgcolor: uiData["template4"]["background_color"],
-                      titleColor: uiData["template4"]["title_color"],
-                      subcatColor: uiData["template4"]["subcat_color"],
+                          uiData["template1"]["Sub_categories"]),
+                      categoryId: uiData["template1"]["category"],
+                      bgcolor:
+                          uiData["template1"]["background_color"] ?? "FFFFFF",
+                      titleColor:
+                          uiData["template1"]["title_color"] ?? "FFFFFF",
+                      subcatColor: uiData["template1"]
+                              ["subcategory_title_color"] ??
+                          "FFFFFF",
+                      showcategory: uiData["template1"]["show_Category"],
                     ),
-                    'order': uiData["template4"]["ui_order_number"]
+                    'order': uiData["template1"]["ui_order_number"]
                   },
                   {
                     'template': CategoryModel(
                       maincategories: List<String>.from(
-                          uiData["template4"]["main_sub_category"]),
+                          uiData["template2"]["main_categories"]),
                       secondarycategories: List<String>.from(
-                          uiData["template4"]["secondary_sub_category"]),
-                      categoryId: uiData["template4"]["category_ref"],
-                      bgcolor: uiData["template4"]["background_color"],
-                      titleColor: uiData["template4"]["title_color"],
-                      subcatColor: uiData["template4"]["subcat_color"],
+                          uiData["template2"]["Sub_categories"]),
+                      categoryId: uiData["template2"]["category"],
+                      bgcolor:
+                          uiData["template2"]["background_color"] ?? "FFFFFF",
+                      titleColor:
+                          uiData["template2"]["title_color"] ?? "FFFFFF",
+                      subcatColor: uiData["template2"]
+                              ["subcategory_title_color"] ??
+                          "FFFFFF",
+                      showcategory: uiData["template2"]["show_Category"],
                     ),
-                    'order': uiData["template4"]["ui_order_number"]
+                    'order': uiData["template2"]["ui_order_number"]
                   },
                   {
-                    'template': CategoryModel(
-                      maincategories: List<String>.from(
-                          uiData["template4"]["main_sub_category"]),
-                      secondarycategories: List<String>.from(
-                          uiData["template4"]["secondary_sub_category"]),
-                      categoryId: uiData["template4"]["category_ref"],
-                      bgcolor: uiData["template4"]["background_color"],
-                      titleColor: uiData["template4"]["title_color"],
-                      subcatColor: uiData["template4"]["subcat_color"],
+                    'template': const DescriptiveWidget(
+                      textColor: '989898',
+                      info: 'Delivery',
+                      title: "Always on Your Time",
+                      logo:
+                          "assets/images/Screenshot 2025-01-31 at 6.20.37 PM.jpeg",
                     ),
-                    'order': uiData["template4"]["ui_order_number"]
+                    'order': "88888"
                   },
-                  {
-                    'template': CategoryModel(
-                      maincategories: List<String>.from(
-                          uiData["template4"]["main_sub_category"]),
-                      secondarycategories: List<String>.from(
-                          uiData["template4"]["secondary_sub_category"]),
-                      categoryId: uiData["template4"]["category_ref"],
-                      bgcolor: uiData["template4"]["background_color"],
-                      titleColor: uiData["template4"]["title_color"],
-                      subcatColor: uiData["template4"]["subcat_color"],
-                    ),
-                    'order': uiData["template4"]["ui_order_number"]
-                  },
-                  {
-                    'template': CategoryModel(
-                      maincategories: List<String>.from(
-                          uiData["template4"]["main_sub_category"]),
-                      secondarycategories: List<String>.from(
-                          uiData["template4"]["secondary_sub_category"]),
-                      categoryId: uiData["template4"]["category_ref"],
-                      bgcolor: uiData["template4"]["background_color"],
-                      titleColor: uiData["template4"]["title_color"],
-                      subcatColor: uiData["template4"]["subcat_color"],
-                    ),
-                    'order': uiData["template4"]["ui_order_number"]
-                  },
-                  {
-                    'template': CategoryModel(
-                      maincategories: List<String>.from(
-                          uiData["template4"]["main_sub_category"]),
-                      secondarycategories: List<String>.from(
-                          uiData["template4"]["secondary_sub_category"]),
-                      categoryId: uiData["template4"]["category_ref"],
-                      bgcolor: uiData["template4"]["background_color"],
-                      titleColor: uiData["template4"]["title_color"],
-                      subcatColor: uiData["template4"]["subcat_color"],
-                    ),
-                    'order': uiData["template4"]["ui_order_number"]
-                  },
-                  {
-                    'template': CategoryModel(
-                      maincategories: List<String>.from(
-                          uiData["template4"]["main_sub_category"]),
-                      secondarycategories: List<String>.from(
-                          uiData["template4"]["secondary_sub_category"]),
-                      categoryId: uiData["template4"]["category_ref"],
-                      bgcolor: uiData["template4"]["background_color"],
-                      titleColor: uiData["template4"]["title_color"],
-                      subcatColor: uiData["template4"]["subcat_color"],
-                    ),
-                    'order': uiData["template4"]["ui_order_number"]
-                  },
-                  // {
-                  //   'template': CategoriesPageModel3(
-                  //     descriptionTextColor: '',
-                  //     percentBgColor: 'B8E1FF',
-                  //     percentDisplayPosition: 30,
-                  //     titleTopDisplayPosition: false,
-                  //     categoryId: uiData["template7"]["category_ref"],
-                  //     bgcolor: "D5E9FF",
-                  //     titleColor: uiData["template7"]["title_color"],
-                  //     subcatColor: uiData["template7"]["subcat_color"],
-                  //     description: '',
-                  //     seeAllButtonBG: "B8E1FF",
-                  //     seeAllButtontext: "005EA2",
-                  //     brandIcon:
-                  //         "https://firebasestorage.googleapis.com/v0/b/kwikgroceries-8a11e.firebasestorage.app/o/bxs_offer.png?alt=media&token=f6cd9a07-d6f5-4f40-84cb-4748769a0ed9",
-                  //   ),
-                  //   'order': "3"
-                  // },
-                  // {
-                  //   'template': CategoriesPageModel4(
-                  //     subCategoryId: uiData["template6"]["sub_category_ref"],
-                  //     bgColor: "FFFFF3",
-                  //     productColor: "FFE8DE",
-                  //     titleColor: "FF3B30",
-                  //     mrpBgColor: "FFFA76",
-                  //     sellTextColor: "FFFFFF",
-                  //     mrpTextColor: "000000",
-                  //     sellPriceBgColor: "FF3B30",
-                  //   ),
-                  //   'order': "4"
-                  // },
-                  // {
-                  //   'template': CategoriesPageModel5(
-                  //     maincategories: List<String>.from(
-                  //         uiData["template8"]["sub_categories"]),
-                  //     categoryId: uiData["template8"]["category_ref"],
-                  //     bgcolor: uiData["template8"]["background_color"],
-                  //     titleColor: uiData["template8"]["title_color"],
-                  //     subcatColor: uiData["template8"]["subcat_color"],
-                  //     offerBGcolor: uiData["template8"]["offer_bg_color"],
-                  //     mrpColor: uiData["template8"]["mrp_color"],
-                  //     productBgColor: uiData["template8"]
-                  //         ["product_background_color"],
-                  //     sellingPriceColor: uiData["template8"]["saleprice_color"],
-                  //     categoryName: uiData["template8"]["category_name"],
-                  //     brandImage: uiData["template8"]["brand_image"],
-                  //   ),
-                  //   'order': "5"
-                  // },
-                  // {
-                  //   'template': CategoriesPageModel6(
-                  //     bgColor: uiData["template11"]["background_color"],
-                  //     categoryBG: uiData["template11"]["subcategorybg"],
-                  //     iconBGcolor: uiData["template11"]["icon_bg_color"],
-                  //     iconcolor: uiData["template11"]["icon_color"],
-                  //     title: uiData["template11"]["title"],
-                  //     categories: categorymodel8Categories,
-                  //     titlecolor: uiData["template11"]["title_color"],
-                  //     categorytitlecolor: uiData["template11"]
-                  //         ["subcat_title_color"],
-                  //     seeAllButtonBG: "FFFFFF",
-                  //     seeAllButtontext: "619B8A",
-                  //   ),
-                  //   'order': "6"
-                  // },
-                  // {
-                  //   'template': CategoriesPageModel7(
-                  //     title: uiData["template13"]["title"],
-                  //     titleColor: uiData["template13"]["titleColor"],
-                  //     bgcolor: uiData["template13"]["background_color"],
-                  //     image: uiData["template13"]["image"],
-                  //     cartbuttontextcolor: uiData["template13"]
-                  //         ["cartbuttontextcolor"],
-                  //     mrpcolor: uiData["template13"]["mrpcolor"],
-                  //     crosscolor: uiData["template13"]["crosscolor"],
-                  //     prodoductbgcolor: uiData["template13"]["prodoductbgcolor"],
-                  //     productTextColor: uiData["template13"]["productTextColor"],
-                  //     sellingpricecolor: uiData["template13"]
-                  //         ["sellingpricecolor"],
-                  //     seeAllButtonBG: uiData["template13"]["seeAllButtonBG"],
-                  //     seeAllButtontext: uiData["template13"]["seeAllButtontext"],
-                  //   ),
-                  //   'order': "7"
-                  // },
-                  // {
-                  //   'template': BannerModel1(
-                  //     titlecolor: uiData["template5"]["title_color"],
-                  //     bgColor: uiData["template5"]["background_color"],
-                  //     bannerId: 3,
-                  //     height: 300,
-                  //     borderradious: 0,
-                  //   ),
-                  //   'order': "8"
-                  // },
-                  // {
-                  //   'template': CategoriesPageModel8(
-                  //     productColor: "EBDFD7",
-                  //     saleBanner:
-                  //         "https://firebasestorage.googleapis.com/v0/b/kwikgroceries-8a11e.firebasestorage.app/o/image%2027.png?alt=media&token=2cad63df-ba3d-41be-a8f8-fc54af8ae1d1",
-                  //     maincategories: List<String>.from(
-                  //         uiData["template4"]["main_sub_category"]),
-                  //     secondarycategories: List<String>.from(
-                  //         uiData["template4"]["secondary_sub_category"]),
-                  //     categoryId: uiData["template4"]["category_ref"],
-                  //     bgcolor: "916E55",
-                  //     titleColor: "ffffff",
-                  //     subcatColor: "000000",
-                  //   ),
-                  //   'order': "9"
-                  // },
-                  // {
-                  //   'template': CategoriesPageModel9(
-                  //     flashBgColor: 'AFE569',
-                  //     flashTextColor: '7B009A',
-                  //     subcategoryid: uiData["template10"]["category_ref"],
-                  //     titleColor: uiData["template10"]["title_color"],
-                  //     bgcolor: uiData["template10"]["background_color"],
-                  //     cartbuttontextcolor: uiData["template10"]
-                  //         ["cartbuttontextcolor"],
-                  //     mrpcolor: uiData["template10"]["mrpcolor"],
-                  //     offerBGcolor: uiData["template10"]["offerBGcolor"],
-                  //     offerTextcolor: uiData["template10"]["offerTextcolor"],
-                  //     prodoductbgcolor: uiData["template10"]["prodoductbgcolor"],
-                  //     productTextColor: uiData["template10"]["productTextColor"],
-                  //     sellingpricecolor: uiData["template10"]
-                  //         ["sellingpricecolor"],
-                  //     seeAllButtonBG: uiData["template10"]["seeAllButtonBG"],
-                  //     seeAllButtontext: uiData["template10"]["seeAllButtontext"],
-                  //   ),
-                  //   'order': "10"
-                  // },
-                  // {
-                  //   'template': CategoriesPageModel3(
-                  //     percentBgColor: 'FFFA76',
-                  //     descriptionTextColor: "727272",
-                  //     percentDisplayPosition: 70,
-                  //     titleTopDisplayPosition: true,
-                  //     brandIcon:
-                  //         "https://firebasestorage.googleapis.com/v0/b/kwikgroceries-8a11e.firebasestorage.app/o/image%2023.png?alt=media&token=9925215f-e0eb-4a12-8431-281cea504c44",
-                  //     categoryId: uiData["template7"]["category_ref"],
-                  //     bgcolor: "FEEBC8",
-                  //     titleColor: "E23338",
-                  //     subcatColor: uiData["template7"]["subcat_color"],
-                  //     description:
-                  //         'Taste the Authenticity with Amul – India\'s Favorite Dairy Brand',
-                  //     seeAllButtonBG: "E23338",
-                  //     seeAllButtontext: "ffffff",
-                  //   ),
-                  //   'order': "11"
-                  // },
-                  // {
-                  //   'template': CategoriesPageModel10(
-                  //     productColor: "F1F7FE",
-                  //     categoryId: uiData["template3"]["category_ref"],
-                  //     maincategories: List<String>.from(
-                  //         uiData["template3"]["main_sub_category"]),
-                  //     titleColor: "1E7098",
-                  //     bgcolor: "DDEDFC",
-                  //     offerPercent: "85%",
-                  //   ),
-                  //   'order': "12"
-                  // },
-
-                  // {
-                  //   'template': const DescriptiveWidget(
-                  //     textColor: '989898',
-                  //     info: 'Delivery',
-                  //     title: "Always on Your Time",
-                  //     logo:
-                  //         "assets/images/Screenshot 2025-01-31 at 6.20.37 PM.jpeg",
-                  //   ),
-                  //   'order': uiData["template12"]["ui_order_number"]
-                  // }
-
-                  // {
-                  //   'template': CategoryModel9(
-                  //     maincategories: List<String>.from(
-                  //         uiData["template12"]["maincategories"]),
-                  //     categoryId: uiData["template12"]["categoryId"],
-                  //     bgcolor: uiData["template12"]["bgcolor"],
-                  //     titleColor: uiData["template12"]["titleColor"],
-                  //     subcatColor: uiData["template12"]["offerBGcolor"],
-                  //     offerBGcolor: uiData["template12"]["offerBGcolor"],
-                  //     mrpColor: uiData["template12"]["mrpColor"],
-                  //     productBgColor: uiData["template12"]["productBgColor"],
-                  //     sellingPriceColor: uiData["template12"]
-                  //         ["sellingPriceColor"],
-                  //     buttontextcolor: uiData["template12"]["buttontextcolor"],
-                  //     offerTextcolor: uiData["template12"]["offerTextcolor"],
-                  //     title: uiData["template12"]["title"],
-                  //     unitTextcolor: uiData["template12"]["unitTextcolor"],
-                  //     unitbgcolor: uiData["template12"]["unitbgcolor"],
-                  //   ),
-                  //   'order': uiData["template12"]["ui_order_number"]
-                  // },
-
-                  //  {'template': const SizedBox(height: 40), 'order': "500"}
+                  {'template': const SizedBox(height: 40), 'order': "500"}
                 ];
 
                 templates.sort((a, b) =>

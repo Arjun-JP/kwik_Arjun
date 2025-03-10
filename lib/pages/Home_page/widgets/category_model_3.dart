@@ -4,7 +4,7 @@ import 'package:kwik/bloc/home_page_bloc/category_model_1_bloc/category_model1_b
 import 'package:kwik/bloc/home_page_bloc/category_model_1_bloc/category_model1_event.dart';
 import 'package:kwik/bloc/home_page_bloc/category_model_1_bloc/category_model1_state.dart';
 import 'package:kwik/constants/colors.dart';
-import 'package:kwik/repositories/category_model1_repository.dart';
+import 'package:kwik/repositories/category_model_3_repo_home.dart';
 
 class CategoryModel3 extends StatelessWidget {
   final String categoryId;
@@ -28,7 +28,7 @@ class CategoryModel3 extends StatelessWidget {
     final theme = Theme.of(context);
     return BlocProvider(
       create: (context) => CategoryBlocModel1(
-          categoryRepositoryModel1: CategoryRepositoryModel1())
+          categoryRepositoryModel1: CategoryRepositoryModel3Home())
         ..add(FetchCategoryDetails(categoryId)),
       child: Builder(
         builder: (context) {
