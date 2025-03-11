@@ -17,6 +17,7 @@ class Navbar extends StatelessWidget {
       builder: (context, state) {
         return Container(
           decoration: const BoxDecoration(
+            color: Colors.white,
             border: Border(
               top: BorderSide(
                 color: AppColors.buttonColorOrange, // Border color

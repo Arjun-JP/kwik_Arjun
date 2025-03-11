@@ -1,0 +1,16 @@
+<svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+<mask id="mask0_16303_13398" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="0" y="0" width="26" height="26">
+<path d="M25.25 25.25V0.75H0.75V25.25H25.25Z" fill="white" stroke="white" stroke-width="1.5"/>
+</mask>
+<g mask="url(#mask0_16303_13398)">
+<path d="M11.5273 6.34759V9.49602C11.5273 12.0201 13.5735 14.0663 16.0977 14.0663C18.6218 14.0663 20.668 12.0201 20.668 9.49602V6.34759H11.5273Z" stroke="#233D4D" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M25.2383 6.34766H11.0195" stroke="#233D4D" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M16.0977 0.761719C13.2931 0.761719 11.0195 3.03525 11.0195 5.83984V6.34766H21.1758V5.83984C21.1758 3.03525 18.9023 0.761719 16.0977 0.761719Z" stroke="#233D4D" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M13.8125 13.4548V16.25C13.8125 17.5121 14.8356 18.5352 16.0977 18.5352C17.3597 18.5352 18.3828 17.5121 18.3828 16.25V13.4548" stroke="#233D4D" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M11.0195 25.2383H0.761719V20.1602H11.0195V25.2383Z" stroke="#233D4D" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M11.0195 20.1602H0.761719L2.28516 17.1133H9.49609L11.0195 20.1602Z" stroke="#233D4D" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M8.85681 17.1133C9.7268 16.4145 10.8316 15.9961 12.0343 15.9961H13.8116" stroke="#233D4D" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M18.3828 15.9961H20.1602C22.9648 15.9961 25.2383 18.2696 25.2383 21.0742V25.2383H11.0195" stroke="#233D4D" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M19.8047 21.3281H21.8359" stroke="#233D4D" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+</svg>

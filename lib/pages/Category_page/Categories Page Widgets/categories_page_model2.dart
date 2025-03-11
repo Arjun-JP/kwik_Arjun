@@ -143,9 +143,6 @@ class CategoriesPageModel2 extends StatelessWidget {
   }
 }
 
-
-
-
 Widget subcategoryItem(
     {required String name,
     required String bgcolor,

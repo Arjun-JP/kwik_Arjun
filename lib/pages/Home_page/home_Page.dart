@@ -82,6 +82,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    ThemeData theme = Theme.of(context);
     return NotificationListener<ScrollNotification>(
       onNotification: (scrollNotification) {
         if (scrollNotification is ScrollUpdateNotification) {
@@ -490,9 +491,9 @@ class _HomePageState extends State<HomePage> {
                         slivers: [
                           SliverAppBar(
                             pinned: false,
-                            expandedHeight: 80,
-                            backgroundColor: Color(0xFFfecc6c),
-                            foregroundColor: Color(0xFFfecc6c),
+                            expandedHeight: 93,
+                            backgroundColor: const Color(0xFFfecc6c),
+                            foregroundColor: const Color(0xFFfecc6c),
                             flexibleSpace: FlexibleSpaceBar(
                               background: Container(
                                 decoration: const BoxDecoration(
@@ -505,29 +506,63 @@ class _HomePageState extends State<HomePage> {
                                     end: Alignment.bottomCenter,
                                   ),
                                 ),
-                                child: const Padding(
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: 16.0, vertical: 10.0),
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 16.0, vertical: 2.0),
                                   child: Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     mainAxisAlignment: MainAxisAlignment.end,
                                     children: [
-                                      Text(
-                                        "Hi, Arjun ",
-                                        style: TextStyle(
-                                          fontSize: 24,
-                                          fontWeight: FontWeight.bold,
-                                          color: AppColors.textColorblack,
+                                      Container(
+                                        decoration: BoxDecoration(
+                                            color: const Color(0xFFCC9320),
+                                            borderRadius:
+                                                BorderRadius.circular(20)),
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 10, vertical: 5),
+                                        child: Text(
+                                          "Less then",
+                                          style: theme.textTheme.bodyMedium!
+                                              .copyWith(
+                                                  fontSize: 10,
+                                                  fontWeight: FontWeight.bold,
+                                                  color:
+                                                      AppColors.textColorWhite),
                                         ),
                                       ),
-                                      Text(
-                                        "Find your favorite content",
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                          color:
-                                              Color.fromARGB(179, 92, 92, 92),
-                                        ),
+                                      Row(
+                                        children: [
+                                          Text("30 min delivery",
+                                              style: theme.textTheme.titleLarge!
+                                                  .copyWith(
+                                                      fontSize: 24,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color: AppColors
+                                                          .textColorblack)),
+                                          IconButton(
+                                              onPressed: () {},
+                                              icon: SvgPicture.asset(
+                                                "assets/images/appbar_arrow.svg",
+                                                width: 30,
+                                                height: 30,
+                                              ))
+                                        ],
+                                      ),
+                                      Row(
+                                        children: [
+                                          SvgPicture.asset(
+                                              "assets/images/addresshome_icon.svg"),
+                                          Text(
+                                              " J236, Kadampukur village, Newtown...",
+                                              maxLines: 1,
+                                              style: theme.textTheme.bodyMedium!
+                                                  .copyWith(
+                                                      fontSize: 12,
+                                                      color: AppColors
+                                                          .textColorblack)),
+                                        ],
                                       ),
                                     ],
                                   ),
@@ -590,7 +625,7 @@ class _SearchBarDelegate extends SliverPersistentHeaderDelegate {
     return SafeArea(
       child: Container(
         height: 80,
-        color: Color(0xFFfecc6c),
+        color: const Color(0xFFfecc6c),
         padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
         child: TextField(
           decoration: InputDecoration(
