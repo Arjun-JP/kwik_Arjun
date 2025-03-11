@@ -5,16 +5,17 @@ import 'package:equatable/equatable.dart';
 import 'package:hive/hive.dart';
 import 'package:kwik/models/category_model.dart';
 import 'package:kwik/models/subcategory_model.dart';
-import 'package:kwik/repositories/category_model2_repository.dart';
+import 'package:kwik/repositories/offerzone_cat1_repo.dart';
 
 part 'supersaver_model1_event.dart';
 part 'supersaver_model1_state.dart';
 
 class SupersaverModel1BlocBloc
     extends Bloc<SupersaverModel1BlocEvent, SupersaverModel1BlocState> {
-  final CategoryRepositoryModel2 categoryRepositoryModel2;
-  SupersaverModel1BlocBloc({required this.categoryRepositoryModel2})
-      : super(SupersaverModel1BlocInitial()) {
+  final OfferzoneCat1Repo offerzoneCat1Repo;
+  SupersaverModel1BlocBloc({
+    required this.offerzoneCat1Repo,
+  }) : super(SupersaverModel1BlocInitial()) {
     on<FetchCategoryDetailsSuperSave1>(_onFetchCategoryDetails);
     on<ClearCacheSuperSave1>(_onClearCache);
   }
@@ -49,10 +50,10 @@ class SupersaverModel1BlocBloc
             category: cachedCategory, subCategories: cachedSubCategories));
       } else {
         // If not in cache, fetch from API
-        final category = await categoryRepositoryModel2
-            .fetchCategoryDetails(event.categoryId);
+        final category =
+            await offerzoneCat1Repo.fetchCategoryDetails(event.categoryId);
         final subCategories =
-            await categoryRepositoryModel2.fetchSubCategories(event.categoryId);
+            await offerzoneCat1Repo.fetchSubCategories(event.categoryId);
 
         // Cache the results
         categoryBox.put(event.categoryId, jsonEncode(category.toJson()));
