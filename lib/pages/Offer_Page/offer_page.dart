@@ -127,6 +127,7 @@ class _OfferPageState extends State<OfferPage> {
                       bannerId: 1,
                       height: 200,
                       borderradious: 0,
+                      showbanner: uiData["template2"]["show_Category"],
                     ),
                     'order': "1"
                   },
@@ -232,24 +233,8 @@ class _OfferPageState extends State<OfferPage> {
                     'order': "6"
                   },
                   {
-                    'template': SupersaverModel6(
-                      flashBgColor: "FFFA76",
-                      flashTextColor: "00AE11",
-                      seeAllButtonBG: "D5E2C9",
-                      seeAllButtontext: "35AB4E",
-                      mrpColor: uiData["template6"]["mrp_color"],
-                      sellingpricecolor: uiData["template6"]
-                          ["selling_price_color"],
-                      subCategoryId: uiData["template6"]["sub_category_ref"],
-                      bgcolor: uiData["template6"]["background_color"],
-                      titleColor: uiData["template6"]["title_color"],
-                      productColor: uiData["template6"]["subcat_color"],
-                    ),
-                    'order': "7"
-                  },
-
-                  {
                     'template': const DescriptiveWidget(
+                      showcategory: true,
                       textColor: '989898',
                       info: 'Delivery',
                       title: "Always on Your Time",
@@ -258,30 +243,6 @@ class _OfferPageState extends State<OfferPage> {
                     ),
                     'order': uiData["template12"]["ui_order_number"]
                   }
-
-                  // {
-                  //   'template': CategoryModel9(
-                  //     maincategories: List<String>.from(
-                  //         uiData["template12"]["maincategories"]),
-                  //     categoryId: uiData["template12"]["categoryId"],
-                  //     bgcolor: uiData["template12"]["bgcolor"],
-                  //     titleColor: uiData["template12"]["titleColor"],
-                  //     subcatColor: uiData["template12"]["offerBGcolor"],
-                  //     offerBGcolor: uiData["template12"]["offerBGcolor"],
-                  //     mrpColor: uiData["template12"]["mrpColor"],
-                  //     productBgColor: uiData["template12"]["productBgColor"],
-                  //     sellingPriceColor: uiData["template12"]
-                  //         ["sellingPriceColor"],
-                  //     buttontextcolor: uiData["template12"]["buttontextcolor"],
-                  //     offerTextcolor: uiData["template12"]["offerTextcolor"],
-                  //     title: uiData["template12"]["title"],
-                  //     unitTextcolor: uiData["template12"]["unitTextcolor"],
-                  //     unitbgcolor: uiData["template12"]["unitbgcolor"],
-                  //   ),
-                  //   'order': uiData["template12"]["ui_order_number"]
-                  // },
-
-                  //  {'template': const SizedBox(height: 40), 'order': "500"}
                 ];
 
                 templates.sort((a, b) =>
@@ -479,3 +440,50 @@ class _SearchBarDelegate extends SliverPersistentHeaderDelegate {
   bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) =>
       false;
 }
+
+
+
+
+
+/// removed widgets
+
+
+// {
+                  //   'template': SupersaverModel6(
+                  //     flashBgColor: "FFFA76",
+                  //     flashTextColor: "00AE11",
+                  //     seeAllButtonBG: "D5E2C9",
+                  //     seeAllButtontext: "35AB4E",
+                  //     mrpColor: uiData["template6"]["mrp_color"],
+                  //     sellingpricecolor: uiData["template6"]
+                  //         ["selling_price_color"],
+                  //     subCategoryId: uiData["template6"]["sub_category_ref"],
+                  //     bgcolor: uiData["template6"]["background_color"],
+                  //     titleColor: uiData["template6"]["title_color"],
+                  //     productColor: uiData["template6"]["subcat_color"],
+                  //   ),
+                  //   'order': "7"
+                  // },
+                  // {
+                  //   'template': CategoryModel9(
+                  //     maincategories: List<String>.from(
+                  //         uiData["template12"]["maincategories"]),
+                  //     categoryId: uiData["template12"]["categoryId"],
+                  //     bgcolor: uiData["template12"]["bgcolor"],
+                  //     titleColor: uiData["template12"]["titleColor"],
+                  //     subcatColor: uiData["template12"]["offerBGcolor"],
+                  //     offerBGcolor: uiData["template12"]["offerBGcolor"],
+                  //     mrpColor: uiData["template12"]["mrpColor"],
+                  //     productBgColor: uiData["template12"]["productBgColor"],
+                  //     sellingPriceColor: uiData["template12"]
+                  //         ["sellingPriceColor"],
+                  //     buttontextcolor: uiData["template12"]["buttontextcolor"],
+                  //     offerTextcolor: uiData["template12"]["offerTextcolor"],
+                  //     title: uiData["template12"]["title"],
+                  //     unitTextcolor: uiData["template12"]["unitTextcolor"],
+                  //     unitbgcolor: uiData["template12"]["unitbgcolor"],
+                  //   ),
+                  //   'order': uiData["template12"]["ui_order_number"]
+                  // },
+
+                  //  {'template': const SizedBox(height: 40), 'order': "500"}

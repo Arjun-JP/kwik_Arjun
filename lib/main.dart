@@ -7,6 +7,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:kwik/bloc/Auth_bloc/auth_bloc.dart';
 import 'package:kwik/bloc/Categories%20Page%20Bloc/category_model_bloc/category_model_bloc.dart';
 import 'package:kwik/bloc/banner_bloc/banner_bloc.dart';
+import 'package:kwik/bloc/category_landing_page_bloc/category_landing_page_bloc.dart';
 import 'package:kwik/bloc/home_page_bloc/category_bloc/category_bloc.dart';
 import 'package:kwik/bloc/home_page_bloc/category_model_13_bloc/category_model_13_bloc.dart';
 import 'package:kwik/bloc/home_page_bloc/category_model_14_bloc/category_model_14_bloc.dart';
@@ -28,6 +29,7 @@ import 'package:kwik/models/Hiveadapter/review_model_adapter.dart';
 import 'package:kwik/models/Hiveadapter/stock_model_adapter.dart';
 import 'package:kwik/repositories/banner_repository.dart';
 import 'package:kwik/repositories/categories_page_ui_repository.dart';
+import 'package:kwik/repositories/category_landing_page_repo.dart';
 import 'package:kwik/repositories/category_model1_repository.dart';
 import 'package:kwik/repositories/category_model_12_repo.dart';
 import 'package:kwik/repositories/category_model_13_repo.dart';
@@ -106,6 +108,8 @@ void main() async {
   // await Hive.openBox('subcategories_CatM5');
   await Hive.openBox('All_category_box');
   await Hive.openBox('all_subcategory_box');
+  await Hive.openBox('subCategoriesBoxcategorylanding');
+  await Hive.openBox('productsBoxcategorylanding');
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
@@ -221,6 +225,12 @@ class _MyAppState extends State<MyApp> {
         BlocProvider<CategoryBlocModel>(
           create: (_) => CategoryBlocModel(
               categoryRepositoryModel1: CategoryRepositoryModel1()),
+        ),
+
+        // categorylanding page bloc
+        BlocProvider<CategoryLandingpageBloc>(
+          create: (_) => CategoryLandingpageBloc(
+              categoryRepository: CategoryLandingPageRepo()),
         ),
       ],
       child: MaterialApp.router(

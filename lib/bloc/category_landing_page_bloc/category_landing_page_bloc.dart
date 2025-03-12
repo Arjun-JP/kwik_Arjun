@@ -1,22 +1,24 @@
 import 'package:bloc/bloc.dart';
 import 'package:hive/hive.dart';
-import 'package:kwik/bloc/home_page_bloc/category_model_5__Bloc/category_model5__event.dart';
-import 'package:kwik/bloc/home_page_bloc/category_model_5__Bloc/category_model5__state.dart';
-import '../../../repositories/category_subcategory_product_repo.dart';
+import 'package:kwik/bloc/category_landing_page_bloc/category_landing_page__state.dart';
+import 'package:kwik/bloc/category_landing_page_bloc/category_landing_page_event.dart';
+import 'package:kwik/repositories/category_landing_page_repo.dart';
 
-class CategoryBloc5 extends Bloc<CategoryEvent, CategoryState> {
-  final Categorymodel5Repository categoryRepository;
+class CategoryLandingpageBloc
+    extends Bloc<CategoryLandingpageEvent, CategorylandingpageState> {
+  final CategoryLandingPageRepo categoryRepository;
   late Box _cachedSubCategoriesBox;
   late Box _cachedProductsBox;
   bool _isHiveInitialized =
       false; // Flag to ensure Hive is initialized only once
 
-  CategoryBloc5({required this.categoryRepository})
+  CategoryLandingpageBloc({required this.categoryRepository})
       : super(SubCategoriesInitial()) {
-    on<FetchCategoryAndProductsEvent>(_onFetchCategoryAndProducts);
-    on<ClearCacheEventCM5>(_onClearCache);
+    on<FetchCategoryAndProductsEventcategorylandiongpage>(
+        _onFetchCategoryAndProducts);
+    on<ClearCacheEventCLP>(_onClearCache);
     _initializeHive();
-    on<UpdateSelectedCategoryEvent>((event, emit) {
+    on<UpdateSelectedCategoryLandingpageEvent>((event, emit) {
       final currentState = state;
       if (currentState is CategoryLoadedState) {
         emit(currentState.copyWith(
@@ -27,14 +29,16 @@ class CategoryBloc5 extends Bloc<CategoryEvent, CategoryState> {
 
   Future<void> _initializeHive() async {
     if (!_isHiveInitialized) {
-      _cachedSubCategoriesBox = await Hive.openBox('subCategoriesBox');
-      _cachedProductsBox = await Hive.openBox('productsBox');
+      _cachedSubCategoriesBox =
+          await Hive.openBox('subCategoriesBoxcategorylanding');
+      _cachedProductsBox = await Hive.openBox('productsBoxcategorylanding');
       _isHiveInitialized = true;
     }
   }
 
   Future<void> _onFetchCategoryAndProducts(
-      FetchCategoryAndProductsEvent event, Emitter<CategoryState> emit) async {
+      FetchCategoryAndProductsEventcategorylandiongpage event,
+      Emitter<CategorylandingpageState> emit) async {
     await _initializeHive(); // Ensure Hive is initialized before accessing boxes
     emit(SubCategoriesLoading());
 
@@ -52,6 +56,7 @@ class CategoryBloc5 extends Bloc<CategoryEvent, CategoryState> {
           subCategories: subCategories
               .where((subCategory) =>
                   event.subCategoryIds.contains(subCategory.id))
+              .toSet()
               .toList(),
           products: products,
           selectedCategoryId: subCategories.first.id));
@@ -61,13 +66,13 @@ class CategoryBloc5 extends Bloc<CategoryEvent, CategoryState> {
   }
 
   Future<void> _onClearCache(
-      ClearCacheEventCM5 event, Emitter<CategoryState> emit) async {
+      ClearCacheEventCLP event, Emitter<CategorylandingpageState> emit) async {
     await _initializeHive(); // Ensure Hive is initialized before clearing cache
 
     try {
       await _cachedSubCategoriesBox.clear();
       await _cachedProductsBox.clear();
-      emit(CacheCleared());
+      emit(CacheClearedCLP());
     } catch (e) {
       emit(CategoryErrorState(message: 'Failed to clear cache: $e'));
     }

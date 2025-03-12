@@ -4,6 +4,7 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:kwik/constants/colors.dart';
 import 'package:kwik/pages/Home_page/widgets/category_model_9.dart';
 import 'package:kwik/repositories/category_model9_repo.dart';
+import 'package:kwik/widgets/produc_model_1.dart';
 
 import '../../../bloc/Super Saver Page Bloc/supersaver_model5_bloc/supersaver_model5_bloc.dart';
 
@@ -55,7 +56,7 @@ class SupersaverModel5 extends StatelessWidget {
                   maincategories, // Dispatch event to fetch category and products
             )),
       child: Container(
-        color: parseColor(bgcolor),
+        color: lightenColor(parseColor(bgcolor), .8),
         width: double.infinity,
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
         child: Column(
@@ -90,26 +91,25 @@ class SupersaverModel5 extends StatelessWidget {
                                       : 6, (index) {
                                 return StaggeredGridTile.extent(
                                   crossAxisCellCount: 1,
-                                  mainAxisExtent: 205,
-                                  child: productItem(
-                                      // bgcolor: "FFFFFF",
-                                      imageurl: state
-                                          .products[index].productImages.first,
-                                      mrpColor: mrpColor,
-                                      name: state.products[index].productName,
-                                      price: 85,
-                                      offertextcolor: offerTextcolor,
-                                      productcolor: productBgColor,
-                                      sellingpricecolor: sellingPriceColor,
-                                      buttontextcolor: buttontextcolor,
-                                      offerBGcolor: offerBGcolor,
-                                      productBgColor: productBgColor,
-                                      sellingPriceColor: sellingPriceColor,
-                                      unitTextcolor: unitTextcolor,
-                                      unitbgcolor: unitbgcolor,
-                                      seeAllButtonBG: seeAllButtonBG,
-                                      seeAllButtontext: seeAllButtontext,
-                                      theme: theme),
+                                  mainAxisExtent: 255,
+                                  child: ProductItem(
+                                    // bgcolor: "FFFFFF",
+                                    product: state.products[index],
+                                    imageurl: state
+                                        .products[index].productImages.first,
+                                    mrpColor: mrpColor,
+                                    name: state.products[index].productName,
+                                    price: 85,
+                                    offertextcolor: offerTextcolor,
+                                    buttonBgColor: productBgColor,
+                                    sellingpricecolor: sellingPriceColor,
+                                    buttontextcolor: buttontextcolor,
+                                    context: context,
+                                    productBgColor: productBgColor,
+                                    sellingPriceColor: sellingPriceColor,
+                                    unitTextcolor: unitTextcolor,
+                                    offerbgcolor: unitbgcolor,
+                                  ),
                                 );
                               }),
                             )

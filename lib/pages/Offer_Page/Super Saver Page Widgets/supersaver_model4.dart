@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:kwik/constants/colors.dart';
+import 'package:kwik/widgets/produc_model_1.dart';
 
 import '../../../bloc/Super Saver Page Bloc/supersaver_model4_bloc/supersaver_model4_bloc.dart';
 import '../../../repositories/sub_category_product_repository.dart';
@@ -51,100 +53,92 @@ class SupersaverModel4 extends StatelessWidget {
           if (state is SupersaverModel4Loading) {
             return const Center(child: CircularProgressIndicator());
           } else if (state is SupersaverModel4Loaded) {
-            return Padding(
-              padding: const EdgeInsets.only(top: 10.0, bottom: 10.0),
-              child: Container(
-                color: parseColor(bgColor),
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Text(
-                      "SUPER SAVER",
-                      style: TextStyle(
-                        color: parseColor(titleColor),
-                        fontSize: 25,
-                        fontWeight: FontWeight.bold,
-                      ),
+            return Container(
+              color: parseColor(bgColor),
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(
+                    "SUPER SAVER",
+                    style: TextStyle(
+                      color: parseColor(titleColor),
+                      fontSize: 25,
+                      fontWeight: FontWeight.bold,
                     ),
-                    const SizedBox(height: 10),
-                    Text(
-                      "SPECIAL TODAY OFFER",
-                      style: TextStyle(
-                        color: parseColor(titleColor),
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
-                      ),
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    "SPECIAL TODAY OFFER",
+                    style: TextStyle(
+                      color: parseColor(titleColor),
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
                     ),
-                    const SizedBox(height: 30),
-                    GridView.builder(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 3,
-                        childAspectRatio: 0.5,
-                        crossAxisSpacing: 20,
-                        mainAxisSpacing: 50,
-                      ),
-                      itemCount: 6,
-                      itemBuilder: (context, index) {
-                        return productItem(
+                  ),
+                  const SizedBox(height: 30),
+                  StaggeredGrid.count(
+                    crossAxisCount: 3,
+                    mainAxisSpacing: 18,
+                    crossAxisSpacing: 12,
+                    children: List.generate(
+                      state.products.length > 6 ? 6 : state.products.length,
+                      (index) {
+                        return ProductItem(
+                          product: state.products[index],
                           imageurl: state.products[index].productImages.first,
-                          price: "₹30",
-                          mrp: "MRP ₹48",
-                          productColor: productColor,
-                          mrpBgColor: mrpBgColor,
-                          mrpTextColor: mrpTextColor,
-                          sellPriceBgColor: sellPriceBgColor,
-                          sellTextColor: sellTextColor,
-                          offerbgcolor: offerbgcolor,
-                          offertextcolor: offertextcolor,
-                          addButtonColor: addButtonColor,
-                          ratingBgColor: ratingBgColor,
-                          ratingTextColor: ratingTextColor,
-                          title: state.products[index].productName,
+                          buttontextcolor: ratingBgColor,
+                          context: context,
+                          mrpColor: mrpTextColor,
+                          name: state.products[index].productName,
+                          productBgColor: mrpBgColor,
+                          buttonBgColor: productColor,
+                          offerbgcolor: ratingBgColor,
+                          sellingPriceColor: sellTextColor,
+                          sellingpricecolor: sellPriceBgColor,
+                          unitTextcolor: offertextcolor,
+                          offertextcolor: "000000",
+                          price: 278,
                         );
                       },
                     ),
-                    const SizedBox(height: 20),
-                    Container(
-                      width: MediaQuery.of(context).size.width,
-                      height: 48,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: parseColor(seeAllButtonBG),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Expanded(
-                            flex: 5,
-                            child: Align(
-                              alignment: Alignment.centerRight,
-                              child: Text('See all products',
-                                  style: TextStyle(
-                                      color: parseColor(seeAllButtontext),
-                                      fontSize: 18)),
-                            ),
-                          ),
-                          Expanded(
-                            flex: 2,
-                            child: Align(
-                              alignment: Alignment.centerRight,
-                              child: Padding(
-                                padding: const EdgeInsets.only(right: 14.0),
-                                child: Icon(Icons.arrow_forward,
-                                    color: parseColor(seeAllButtontext)),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
+                  ),
+                  const SizedBox(height: 20),
+                  Container(
+                    width: MediaQuery.of(context).size.width,
+                    height: 48,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: parseColor(seeAllButtonBG),
                     ),
-                  ],
-                ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Expanded(
+                          flex: 5,
+                          child: Align(
+                            alignment: Alignment.centerRight,
+                            child: Text('See all products',
+                                style: TextStyle(
+                                    color: parseColor(seeAllButtontext),
+                                    fontSize: 18)),
+                          ),
+                        ),
+                        Expanded(
+                          flex: 2,
+                          child: Align(
+                            alignment: Alignment.centerRight,
+                            child: Padding(
+                              padding: const EdgeInsets.only(right: 14.0),
+                              child: Icon(Icons.arrow_forward,
+                                  color: parseColor(seeAllButtontext)),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
             );
           } else if (state is SupersaverModel4Error) {

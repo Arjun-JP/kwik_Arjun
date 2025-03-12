@@ -17,6 +17,7 @@ class CategoryModel4 extends StatelessWidget {
 
   final String seeAllButtonBG;
   final String seeAllButtontext;
+  final bool showcategory;
 
   const CategoryModel4({
     super.key,
@@ -28,133 +29,137 @@ class CategoryModel4 extends StatelessWidget {
     required this.mrpColor,
     required this.seeAllButtonBG,
     required this.seeAllButtontext,
+    required this.showcategory,
   });
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) =>
-          CategoryModel4Bloc(repository: SubcategoryProductRepository())
-            ..add(FetchSubCategoryProducts(subCategoryId)),
-      child: Builder(
-        builder: (context) {
-          return BlocBuilder<CategoryModel4Bloc, CategoryModel4State>(
-            builder: (context, state) {
-              if (state is CategoryModel4Loading) {
-                return const Center(child: CircularProgressIndicator());
-              } else if (state is CategoryModel4Loaded) {
-                return Container(
-                  color: parseColor(bgcolor),
-                  width: double.infinity,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                state.products.first.subCategoryRef
-                                    .name, // Display section title
-                                style: TextStyle(
-                                    color: parseColor("2C8E55"),
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w900),
+    return showcategory
+        ? BlocProvider(
+            create: (context) =>
+                CategoryModel4Bloc(repository: SubcategoryProductRepository())
+                  ..add(FetchSubCategoryProducts(subCategoryId)),
+            child: Builder(
+              builder: (context) {
+                return BlocBuilder<CategoryModel4Bloc, CategoryModel4State>(
+                  builder: (context, state) {
+                    if (state is CategoryModel4Loading) {
+                      return const Center(child: CircularProgressIndicator());
+                    } else if (state is CategoryModel4Loaded) {
+                      return Container(
+                        color: parseColor(bgcolor),
+                        width: double.infinity,
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 10, vertical: 15),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      state.products.first.subCategoryRef
+                                          .name, // Display section title
+                                      style: TextStyle(
+                                          color: parseColor("2C8E55"),
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.w900),
+                                    ),
+                                    const SizedBox(height: 5),
+                                    Text(
+                                      "Starting at just ₹102/kg", // Display section title
+                                      style: TextStyle(
+                                          color: parseColor(titleColor),
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w600),
+                                    ),
+                                  ],
+                                ),
+                                Text(
+                                  "See All >", // Display section title
+                                  style: TextStyle(
+                                      color: parseColor("233D4D"),
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w600),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 5),
+                            SizedBox(
+                              height: 360,
+                              width: MediaQuery.of(context).size.width,
+                              child: ListView.builder(
+                                scrollDirection: Axis.horizontal,
+                                itemCount: state.products.length <= 5
+                                    ? state.products.length
+                                    : 5,
+                                itemBuilder: (context, index) {
+                                  return productItem(
+                                      mrpColor: mrpColor,
+                                      sellingpricecolor: sellingpricecolor,
+                                      productcolor: productColor,
+                                      name: state.products[index].productName,
+                                      price: 200,
+                                      bgcolor: state
+                                          .products.first.categoryRef.color,
+                                      imageurl: state
+                                          .products[index].productImages.first,
+                                      context: context);
+                                },
                               ),
-                              const SizedBox(height: 5),
-                              Text(
-                                "Starting at just ₹102/kg", // Display section title
-                                style: TextStyle(
-                                    color: parseColor(titleColor),
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w600),
-                              ),
-                            ],
-                          ),
-                          Text(
-                            "See All >", // Display section title
-                            style: TextStyle(
-                                color: parseColor("233D4D"),
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 5),
-                      SizedBox(
-                        height: 360,
-                        width: MediaQuery.of(context).size.width,
-                        child: ListView.builder(
-                          scrollDirection: Axis.horizontal,
-                          itemCount: state.products.length <= 5
-                              ? state.products.length
-                              : 5,
-                          itemBuilder: (context, index) {
-                            return productItem(
-                                mrpColor: mrpColor,
-                                sellingpricecolor: sellingpricecolor,
-                                productcolor: productColor,
-                                name: state.products[index].productName,
-                                price: 200,
-                                bgcolor: state.products.first.categoryRef.color,
-                                imageurl:
-                                    state.products[index].productImages.first,
-                                context: context);
-                          },
+                            ),
+                            const SizedBox(height: 10),
+                            // Container(
+                            //   width: MediaQuery.of(context).size.width,
+                            //   height: 48,
+                            //   decoration: BoxDecoration(
+                            //       borderRadius: BorderRadius.circular(10),
+                            //       color: lightenColor(parseColor("#E23338"), .8)),
+                            //   child: Row(
+                            //     mainAxisAlignment: MainAxisAlignment.center,
+                            //     children: [
+                            //       Expanded(
+                            //         flex: 5,
+                            //         child: Align(
+                            //           alignment: Alignment.centerRight,
+                            //           child: Text('See all products',
+                            //               style: TextStyle(
+                            //                   color: parseColor("E23338"),
+                            //                   fontSize: 18)),
+                            //         ),
+                            //       ),
+                            //       Expanded(
+                            //         flex: 2,
+                            //         child: Align(
+                            //           alignment: Alignment.centerRight,
+                            //           child: Padding(
+                            //             padding: const EdgeInsets.only(right: 14.0),
+                            //             child: Icon(Icons.arrow_forward,
+                            //                 color: parseColor("E23338")),
+                            //           ),
+                            //         ),
+                            //       )
+                            //     ],
+                            //   ),
+                            // ),
+                          ],
                         ),
-                      ),
-                      const SizedBox(height: 10),
-                      // Container(
-                      //   width: MediaQuery.of(context).size.width,
-                      //   height: 48,
-                      //   decoration: BoxDecoration(
-                      //       borderRadius: BorderRadius.circular(10),
-                      //       color: lightenColor(parseColor("#E23338"), .8)),
-                      //   child: Row(
-                      //     mainAxisAlignment: MainAxisAlignment.center,
-                      //     children: [
-                      //       Expanded(
-                      //         flex: 5,
-                      //         child: Align(
-                      //           alignment: Alignment.centerRight,
-                      //           child: Text('See all products',
-                      //               style: TextStyle(
-                      //                   color: parseColor("E23338"),
-                      //                   fontSize: 18)),
-                      //         ),
-                      //       ),
-                      //       Expanded(
-                      //         flex: 2,
-                      //         child: Align(
-                      //           alignment: Alignment.centerRight,
-                      //           child: Padding(
-                      //             padding: const EdgeInsets.only(right: 14.0),
-                      //             child: Icon(Icons.arrow_forward,
-                      //                 color: parseColor("E23338")),
-                      //           ),
-                      //         ),
-                      //       )
-                      //     ],
-                      //   ),
-                      // ),
-                    ],
-                  ),
+                      );
+                    } else if (state is CategoryModel4Error) {
+                      return Center(child: Text(state.message));
+                    }
+                    return const SizedBox();
+                  },
                 );
-              } else if (state is CategoryModel4Error) {
-                return Center(child: Text(state.message));
-              }
-              return const SizedBox();
-            },
-          );
-        },
-      ),
-    );
+              },
+            ),
+          )
+        : const SizedBox();
   }
 }
 

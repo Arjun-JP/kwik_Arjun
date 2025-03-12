@@ -144,15 +144,19 @@ class CategoriesPageModel5 extends StatelessWidget {
                                     crossAxisCellCount: 1,
                                     mainAxisExtent: 216,
                                     child: ProductItem(
+                                      product: state.products
+                                          .where((product) =>
+                                              product.subCategoryRef.id ==
+                                              state.selectedCategoryId)
+                                          .toList()[index],
                                       buttontextcolor: "000000",
                                       context: context,
                                       offertextcolor: "FFFFFF",
                                       productBgColor: "FFFFFF",
-                                      seeAllButtonBG: "FFFFFF",
-                                      seeAllButtontext: "000000",
+                                      buttonBgColor: "FFFFFF",
                                       sellingPriceColor: "000000",
                                       unitTextcolor: "000000",
-                                      unitbgcolor: "FFFFFF",
+                                      offerbgcolor: "FFFFFF",
                                       imageurl: state.products
                                           .where((product) =>
                                               product.subCategoryRef.id ==
@@ -168,7 +172,6 @@ class CategoriesPageModel5 extends StatelessWidget {
                                           .toList()[index]
                                           .productName,
                                       price: 85,
-                                      productcolor: "670000",
                                       sellingpricecolor: "00000",
                                     ),
                                   );

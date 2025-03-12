@@ -131,6 +131,7 @@ class _CategoryPageState extends State<CategoryPage> {
                   },
                   {
                     'template': const DescriptiveWidget(
+                      showcategory: true,
                       textColor: '989898',
                       info: 'Delivery',
                       title: "Always on Your Time",

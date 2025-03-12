@@ -21,6 +21,7 @@ class CategoryModel10 extends StatelessWidget {
   final String seeAllButtontext;
   final String title;
   final String image;
+  final bool showcategory;
   const CategoryModel10({
     super.key,
     required this.bgcolor,
@@ -35,28 +36,31 @@ class CategoryModel10 extends StatelessWidget {
     required this.crosscolor,
     required this.title,
     required this.image,
+    required this.showcategory,
   });
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) =>
-          CategoryModel10Bloc(repository: CategoryModel10Repo())
-            ..add(FetchSubCategoryProducts(
-                subCategoryId: '6780ff720bfef51d79df1a06')),
-      child: BlocBuilder<CategoryModel10Bloc, CategoryModel10State>(
-        builder: (context, state) {
-          if (state is CategoryModel10Loading) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (state is CategoryModel10Loaded) {
-            return _buildCategoryModel10(state.products, context);
-          } else if (state is CategoryModel10Error) {
-            return Center(child: Text('Error: ${state.message}'));
-          }
-          return const Center(child: Text('No data available'));
-        },
-      ),
-    );
+    return showcategory
+        ? BlocProvider(
+            create: (context) =>
+                CategoryModel10Bloc(repository: CategoryModel10Repo())
+                  ..add(FetchSubCategoryProducts(
+                      subCategoryId: '6780ff720bfef51d79df1a06')),
+            child: BlocBuilder<CategoryModel10Bloc, CategoryModel10State>(
+              builder: (context, state) {
+                if (state is CategoryModel10Loading) {
+                  return const Center(child: CircularProgressIndicator());
+                } else if (state is CategoryModel10Loaded) {
+                  return _buildCategoryModel10(state.products, context);
+                } else if (state is CategoryModel10Error) {
+                  return Center(child: Text('Error: ${state.message}'));
+                }
+                return const Center(child: Text('No data available'));
+              },
+            ),
+          )
+        : const SizedBox();
   }
 
   Widget _buildCategoryModel10(

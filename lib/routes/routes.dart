@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:kwik/models/category_model.dart';
+import 'package:kwik/models/product_model.dart';
 import 'package:kwik/pages/Category_page/category_page.dart';
 import 'package:kwik/pages/Home_page/home_Page.dart';
 import 'package:kwik/pages/LoginPage/login_page.dart';
@@ -8,6 +10,8 @@ import 'package:kwik/pages/OnboardingScreen/onboarding_screen.dart';
 import 'package:kwik/pages/OtpVerificationPage/otp_verification_page.dart';
 import 'package:kwik/pages/SplashScreen/splash_screen.dart';
 import 'package:kwik/pages/cart_page/cart_page.dart';
+import 'package:kwik/pages/category_landing_page/category_landing_page.dart';
+import 'package:kwik/pages/product_details_page/product_details_page.dart';
 import 'package:kwik/pages/profile/profile_page.dart';
 
 final GoRouter router = GoRouter(
@@ -78,5 +82,28 @@ final GoRouter router = GoRouter(
         );
       },
     ),
+    GoRoute(
+      path: '/productdetails',
+      builder: (BuildContext context, GoRouterState state) {
+        final product =
+            state.extra as ProductModel; // Get the product model from extra
+        return ProductDetailsPage(product: product);
+      },
+    ),
+    GoRoute(
+      path: '/categorylandingpage',
+      builder: (BuildContext context, GoRouterState state) {
+        final data = state.extra as Map<String, dynamic>;
+        final categoryModel = data['category'] as Category;
+        final subcategoryIDs =
+            data['subcategoryIDs'] as List<String>; // Corrected key name
+
+        return CategoryLandingPage(
+          category: categoryModel,
+          subcategoryIDs:
+              subcategoryIDs, // Ensure parameter name matches in the widget
+        );
+      },
+    )
   ],
 );

@@ -17,6 +17,7 @@ class BannerModel1 extends StatefulWidget {
   final double horizontalpadding;
   final double viewportFraction;
   final double borderradious;
+  final bool showbanner;
 
   const BannerModel1({
     super.key,
@@ -24,6 +25,7 @@ class BannerModel1 extends StatefulWidget {
     required this.titlecolor,
     required this.height,
     required this.bannerId,
+    required this.showbanner,
     this.verticalpadding = 0,
     this.borderradious = 0,
     this.viewportFraction = 1.0,
@@ -41,97 +43,101 @@ class _BannerModel1State extends State<BannerModel1> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) =>
-          BannerBloc(bannerepository: BannerRepository())..add(FetchBanners()),
-      child: Builder(
-        builder: (context) {
-          return BlocBuilder<BannerBloc, BannerState>(
-            builder: (context, state) {
-              if (state is BannerLoading) {
-                return const Center(child: CircularProgressIndicator());
-              } else if (state is BannerLoaded) {
-                final filteredBanners = state.banners
-                    .where((banner) => banner.bannerId == widget.bannerId)
-                    .toList();
+    return widget.showbanner
+        ? BlocProvider(
+            create: (context) => BannerBloc(bannerepository: BannerRepository())
+              ..add(FetchBanners()),
+            child: Builder(
+              builder: (context) {
+                return BlocBuilder<BannerBloc, BannerState>(
+                  builder: (context, state) {
+                    if (state is BannerLoading) {
+                      return const Center(child: CircularProgressIndicator());
+                    } else if (state is BannerLoaded) {
+                      final filteredBanners = state.banners
+                          .where((banner) => banner.bannerId == widget.bannerId)
+                          .toList();
 
-                if (filteredBanners.isEmpty) {
-                  return const SizedBox();
-                }
+                      if (filteredBanners.isEmpty) {
+                        return const SizedBox();
+                      }
 
-                return Container(
-                  color: parseColor(widget.bgColor),
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(
-                        horizontal: widget.horizontalpadding,
-                        vertical: widget.verticalpadding),
-                    child: Stack(
-                      children: [
-                        CarouselSlider.builder(
-                          carouselController:
-                              _carouselController, // Sync Controller
-                          itemCount: filteredBanners.length,
-                          options: CarouselOptions(
-                            height: widget.height,
-                            autoPlay: true,
-                            autoPlayInterval: const Duration(seconds: 3),
-                            enlargeCenterPage: true,
-                            viewportFraction: widget.viewportFraction,
-                            onPageChanged: (index, reason) {
-                              setState(() {
-                                currentIndex = index;
-                              });
-                            },
-                          ),
-                          itemBuilder: (context, index, realIndex) {
-                            final banner = filteredBanners[index];
-                            return ClipRRect(
-                              borderRadius:
-                                  BorderRadius.circular(widget.borderradious),
-                              child: Container(
-                                width: double.infinity,
-                                decoration: BoxDecoration(
-                                  image: DecorationImage(
-                                    image: NetworkImage(banner.bannerImage),
-                                    fit: BoxFit.fill,
+                      return Container(
+                        color: parseColor(widget.bgColor),
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: widget.horizontalpadding,
+                              vertical: widget.verticalpadding),
+                          child: Stack(
+                            children: [
+                              CarouselSlider.builder(
+                                carouselController:
+                                    _carouselController, // Sync Controller
+                                itemCount: filteredBanners.length,
+                                options: CarouselOptions(
+                                  height: widget.height,
+                                  autoPlay: true,
+                                  autoPlayInterval: const Duration(seconds: 3),
+                                  enlargeCenterPage: true,
+                                  viewportFraction: widget.viewportFraction,
+                                  onPageChanged: (index, reason) {
+                                    setState(() {
+                                      currentIndex = index;
+                                    });
+                                  },
+                                ),
+                                itemBuilder: (context, index, realIndex) {
+                                  final banner = filteredBanners[index];
+                                  return ClipRRect(
+                                    borderRadius: BorderRadius.circular(
+                                        widget.borderradious),
+                                    child: Container(
+                                      width: double.infinity,
+                                      decoration: BoxDecoration(
+                                        image: DecorationImage(
+                                          image:
+                                              NetworkImage(banner.bannerImage),
+                                          fit: BoxFit.fill,
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                              Positioned(
+                                bottom: 10,
+                                left: 0,
+                                right: 0,
+                                child: Center(
+                                  child: AnimatedSmoothIndicator(
+                                    activeIndex:
+                                        currentIndex, // Update active index
+                                    count: filteredBanners.length,
+                                    effect: const ExpandingDotsEffect(
+                                      activeDotColor: Colors.white,
+                                      dotHeight: 6,
+                                      dotWidth: 6,
+                                    ),
+                                    onDotClicked: (index) {
+                                      _carouselController.animateToPage(index);
+                                    },
                                   ),
                                 ),
                               ),
-                            );
-                          },
-                        ),
-                        Positioned(
-                          bottom: 10,
-                          left: 0,
-                          right: 0,
-                          child: Center(
-                            child: AnimatedSmoothIndicator(
-                              activeIndex: currentIndex, // Update active index
-                              count: filteredBanners.length,
-                              effect: const ExpandingDotsEffect(
-                                activeDotColor: Colors.white,
-                                dotHeight: 6,
-                                dotWidth: 6,
-                              ),
-                              onDotClicked: (index) {
-                                _carouselController.animateToPage(index);
-                              },
-                            ),
+                            ],
                           ),
                         ),
-                      ],
-                    ),
-                  ),
+                      );
+                    } else if (state is BannerError) {
+                      return Center(child: Text("Error: ${state.message}"));
+                    }
+                    return const Center(child: Text("No data available"));
+                  },
                 );
-              } else if (state is BannerError) {
-                return Center(child: Text("Error: ${state.message}"));
-              }
-              return const Center(child: Text("No data available"));
-            },
-          );
-        },
-      ),
-    );
+              },
+            ),
+          )
+        : const SizedBox();
   }
 }
 

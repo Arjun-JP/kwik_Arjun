@@ -163,7 +163,7 @@ class CategoryModel extends StatelessWidget {
         Container(
           margin: const EdgeInsets.all(10),
           decoration: BoxDecoration(
-              color: parseColor(bgcolor),
+              color: lightenColor(parseColor(bgcolor), .9),
               borderRadius: BorderRadius.circular(8)),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -176,7 +176,7 @@ class CategoryModel extends StatelessWidget {
                   width: 100,
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(8),
-                      color: parseColor(bgcolor),
+                      color: lightenColor(parseColor(bgcolor), .9),
                       image: DecorationImage(
                           image: NetworkImage(imageurl), fit: BoxFit.fill)),
                 ),
@@ -209,7 +209,7 @@ Widget subcategoryItem(
         width: 75,
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(8),
-            color: parseColor(bgcolor),
+            color: lightenColor(parseColor(bgcolor), .9),
             image: DecorationImage(
                 image: NetworkImage(imageurl), fit: BoxFit.fill)),
       ),

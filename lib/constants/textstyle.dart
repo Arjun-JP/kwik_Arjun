@@ -74,9 +74,9 @@ ThemeData appTheme(BuildContext context) {
           color: AppColors.textColorblack),
       titleMedium: getTextStyle(
           scaler: scaler,
-          fontSize: 16,
+          fontSize: 22,
           letterSpacing: 0.15,
-          weight: FontWeight.w500,
+          weight: FontWeight.w600,
           color: AppColors.textColorblack),
       titleSmall: getTextStyle(
           scaler: scaler,

@@ -6,6 +6,8 @@ import 'package:kwik/bloc/Auth_bloc/auth_event.dart';
 import 'package:kwik/bloc/Auth_bloc/auth_state.dart';
 import 'package:kwik/bloc/Categories%20Page%20Bloc/category_model_bloc/category_model_bloc.dart';
 import 'package:kwik/bloc/Categories%20Page%20Bloc/category_model_bloc/category_model_event.dart';
+import 'package:kwik/bloc/category_landing_page_bloc/category_landing_page_bloc.dart';
+import 'package:kwik/bloc/category_landing_page_bloc/category_landing_page_event.dart';
 import 'package:kwik/bloc/home_page_bloc/category_model_13_bloc/category_model_13_bloc.dart';
 import 'package:kwik/bloc/home_page_bloc/category_model_13_bloc/category_model_13_event.dart';
 import 'package:kwik/bloc/home_page_bloc/category_model_1_bloc/category_model1_bloc.dart';
@@ -181,6 +183,8 @@ class _LoginPageState extends State<LoginPage> {
                                   .add(ClearCacheCatPage1());
                               BlocProvider.of<CategoryBlocModel>(context)
                                   .add(ClearCacheCM());
+                              BlocProvider.of<CategoryLandingpageBloc>(context)
+                                  .add(ClearCacheEventCLP());
                               context
                                   .read<HomeUiBloc>()
                                   .add(FetchUiDataEvent());
