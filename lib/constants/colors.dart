@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class AppColors {
   static const textColorWhite = Color.fromARGB(255, 255, 255, 255);
-  static const textColorblack = Color.fromARGB(255, 0, 0, 0);
+  static const textColorblack = Color(0xFF233D4D);
   static const textColorGrey = Color(0xff79868E);
 
   static const textColorDimGrey = Color(0xffC8C3C3);
@@ -13,9 +13,9 @@ class AppColors {
 
   static const backgroundColorWhite = Color(0xffFAFAFA);
 
-  static const primaryColor = Color(0xff000000);
+  static const primaryColor = Color(0xFF233D4D);
 
-  static final gradient1black = Color(0xff000000).withOpacity(0.0);
+  static final gradient1black = Color(0xFF233D4D).withOpacity(0.0);
 
   static final gradient2orange = Color(0xffFC5B00).withOpacity(0.2);
 
@@ -23,7 +23,7 @@ class AppColors {
 
   static const kwhiteColor = Colors.white;
   static const kpurple = Color(0xff612ACE);
-  static const kblackColor = Colors.black;
+  static const kblackColor = Color(0xFF233D4D);
   static const kgreyColor = Color(0xff838383);
   static const kgreyColorlite = Color(0xffC8C3C3);
 

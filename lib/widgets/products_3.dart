@@ -20,7 +20,6 @@ class Products3 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(10),
       height: 280,
       width: 140,
       decoration: BoxDecoration(

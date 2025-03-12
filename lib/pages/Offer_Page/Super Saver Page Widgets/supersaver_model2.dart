@@ -4,6 +4,7 @@ import 'package:kwik/constants/colors.dart';
 import 'package:kwik/models/product_model.dart';
 import 'package:kwik/pages/Home_page/widgets/category_model_7.dart';
 import 'package:kwik/repositories/sub_category_product_repository.dart';
+import 'package:kwik/widgets/produc_model_1.dart';
 
 import '../../../bloc/Super Saver Page Bloc/supersaver_model2_bloc/supersaver_model2_bloc.dart';
 
@@ -61,7 +62,7 @@ class SupersaverModel2 extends StatelessWidget {
       List<ProductModel> products, BuildContext context) {
     return Container(
       color: parseColor(bgcolor),
-      height: 380,
+      height: 390,
       width: double.infinity,
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
       child: Column(
@@ -78,23 +79,32 @@ class SupersaverModel2 extends StatelessWidget {
           const SizedBox(height: 10),
           const SizedBox(height: 10),
           SizedBox(
-            height: 243,
+            height: 253,
             width: MediaQuery.of(context).size.width,
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
               itemCount: products.length > 5 ? 5 : products.length,
               itemBuilder: (context, index) {
                 final product = products[index];
-                return productsWidget(
-                    bgColor: prodoductbgcolor,
+                return Padding(
+                  padding: const EdgeInsets.only(right: 15),
+                  child: ProductItem(
                     product: product,
-                    productBackgroundColor: prodoductbgcolor,
-                    producttextcolor: productTextColor,
-                    offerTextColor: offerTextcolor,
-                    offerBgColor: offerBGcolor,
+                    productBgColor: prodoductbgcolor,
+                    buttontextcolor: "000000",
+                    context: context,
+                    imageurl: product.productImages.first,
+                    name: product.productName,
+                    offertextcolor: "000000",
+                    price: 200,
+                    buttonBgColor: "FFFFFF",
+                    offerbgcolor: "FFFFFF",
+                    sellingpricecolor: "000000",
+                    unitTextcolor: "000000",
                     mrpColor: mrpcolor,
                     sellingPriceColor: sellingpricecolor,
-                    cartButtontextColor: cartbuttontextcolor);
+                  ),
+                );
               },
             ),
           ),

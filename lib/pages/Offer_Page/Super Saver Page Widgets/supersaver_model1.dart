@@ -185,9 +185,13 @@ class SupersaverModel1 extends StatelessWidget {
                 width: 15,
               ),
               const SizedBox(height: 5),
-              Text("Seeds &\nBerries",
-                  style: theme.textTheme.bodyMedium!
-                      .copyWith(color: parseColor(titleColor))),
+              SizedBox(
+                width: 90,
+                child: Text(name,
+                    maxLines: 2,
+                    style: theme.textTheme.bodyMedium!
+                        .copyWith(color: parseColor(titleColor))),
+              ),
               const SizedBox(height: 5),
               const Text(
                 "Starts at",

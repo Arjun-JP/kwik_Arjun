@@ -16,6 +16,7 @@ class CategoryModel6 extends StatelessWidget {
   final String catnamebgcolor;
   final String offertextcolor;
   final String offerbgcolor;
+  final bool showcategory;
 
   const CategoryModel6({
     super.key,
@@ -27,6 +28,7 @@ class CategoryModel6 extends StatelessWidget {
     required this.catnamebgcolor,
     required this.offertextcolor,
     required this.offerbgcolor,
+    required this.showcategory,
   });
 
   @override

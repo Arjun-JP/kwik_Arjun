@@ -12,6 +12,7 @@ class CategoryModel16 extends StatelessWidget {
   final String bgcolor;
   final String titleColor;
   final String subcatColor;
+  final bool showcategory;
 
   const CategoryModel16({
     super.key,
@@ -19,75 +20,80 @@ class CategoryModel16 extends StatelessWidget {
     required this.bgcolor,
     required this.titleColor,
     required this.subcatColor,
+    required this.showcategory,
   });
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return BlocProvider(
-      create: (context) => CategoryBlocModel16(
-          categoryRepositoryModel2: CategoryRepositoryModel2())
-        ..add(FetchCategoryDetails(categoryId)),
-      child: Builder(
-        builder: (context) {
-          return BlocBuilder<CategoryBlocModel16, CategoryModel16State>(
-            builder: (context, state) {
-              if (state is CategoryLoading) {
-                return const Center(child: CircularProgressIndicator());
-              } else if (state is CategoryLoaded) {
-                return Container(
-                  color: parseColor("FFF3C4"),
-                  width: double.infinity,
-                  height: 410,
-                  padding: const EdgeInsets.symmetric(horizontal: 10),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const SizedBox(height: 15),
-                      Text(state.category.name,
-                          style: theme.textTheme.titleLarge!.copyWith(
-                              fontWeight: FontWeight.w600,
-                              color: parseColor(titleColor))),
-                      const SizedBox(height: 12),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 5.0),
-                        child: SizedBox(
-                          height: 340,
-                          width: MediaQuery.of(context).size.width,
-                          child: GridView.builder(
-                            itemCount: state.subCategories.length,
-                            physics: const NeverScrollableScrollPhysics(),
-                            gridDelegate:
-                                const SliverGridDelegateWithFixedCrossAxisCount(
-                              childAspectRatio: .71,
-                              crossAxisCount: 3,
-                              mainAxisSpacing: 30,
-                              crossAxisSpacing: 25,
+    return showcategory
+        ? BlocProvider(
+            create: (context) => CategoryBlocModel16(
+                categoryRepositoryModel2: CategoryRepositoryModel2())
+              ..add(FetchCategoryDetails(categoryId)),
+            child: Builder(
+              builder: (context) {
+                return BlocBuilder<CategoryBlocModel16, CategoryModel16State>(
+                  builder: (context, state) {
+                    if (state is CategoryLoading) {
+                      return const Center(child: CircularProgressIndicator());
+                    } else if (state is CategoryLoaded) {
+                      return Container(
+                        color: parseColor("FFF3C4"),
+                        width: double.infinity,
+                        height: 410,
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const SizedBox(height: 15),
+                            Text(state.category.name,
+                                style: theme.textTheme.titleLarge!.copyWith(
+                                    fontWeight: FontWeight.w600,
+                                    color: parseColor(titleColor))),
+                            const SizedBox(height: 12),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 5.0),
+                              child: SizedBox(
+                                height: 340,
+                                width: MediaQuery.of(context).size.width,
+                                child: GridView.builder(
+                                  itemCount: state.subCategories.length,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  gridDelegate:
+                                      const SliverGridDelegateWithFixedCrossAxisCount(
+                                    childAspectRatio: .71,
+                                    crossAxisCount: 3,
+                                    mainAxisSpacing: 30,
+                                    crossAxisSpacing: 25,
+                                  ),
+                                  itemBuilder: (context, index) {
+                                    return subcategoryItem(
+                                        name: state.subCategories[index].name,
+                                        bgcolor: state.category.color,
+                                        textcolor: subcatColor,
+                                        imageurl:
+                                            state.subCategories[index].imageUrl,
+                                        theme: theme);
+                                  },
+                                ),
+                              ),
                             ),
-                            itemBuilder: (context, index) {
-                              return subcategoryItem(
-                                  name: state.subCategories[index].name,
-                                  bgcolor: state.category.color,
-                                  textcolor: subcatColor,
-                                  imageurl: state.subCategories[index].imageUrl,
-                                  theme: theme);
-                            },
-                          ),
+                          ],
                         ),
-                      ),
-                    ],
-                  ),
+                      );
+                    } else if (state is CategoryError) {
+                      return Center(child: Text(state.message));
+                    }
+                    return const SizedBox();
+                  },
                 );
-              } else if (state is CategoryError) {
-                return Center(child: Text(state.message));
-              }
-              return const SizedBox();
-            },
-          );
-        },
-      ),
-    );
+              },
+            ),
+          )
+        : const SizedBox();
   }
 }
 

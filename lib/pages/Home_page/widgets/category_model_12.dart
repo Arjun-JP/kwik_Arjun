@@ -28,6 +28,7 @@ class CategoryModel12 extends StatelessWidget {
   final String seeAllButtonBG;
   final String seeAllButtontext;
   final String topimage;
+  final bool showcategory;
 
   const CategoryModel12({
     super.key,
@@ -45,121 +46,129 @@ class CategoryModel12 extends StatelessWidget {
     required this.unitbgcolor,
     required this.unitTextcolor,
     required this.topimage,
+    required this.showcategory,
   });
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) =>
-          CategoryBloc12(categoryRepository: Categorymodel12Repository())
-            ..add(FetchCategoryAndProductsEvent(
-              subCategoryIds:
-                  maincategories, // Dispatch event to fetch category and products
-            )),
-      child: Container(
-        color: parseColor(bgcolor),
-        width: double.infinity,
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Image.network(
-              topimage,
-              fit: BoxFit.fill,
-              height: 200,
-              width: MediaQuery.of(context).size.width,
-            ),
-            const SizedBox(height: 10),
-            BlocBuilder<CategoryBloc12, CategoryModel12State>(
-              builder: (context, state) {
-                if (state is SubCategoriesLoading) {
-                  return const Center(child: CircularProgressIndicator());
-                } else if (state is CategoryErrorState) {
-                  return Center(child: Text(state.message));
-                } else if (state is CategoryLoadedState) {
-                  return Column(
-                    children: [
-                      state.products.isNotEmpty
-                          ? StaggeredGrid.count(
-                              crossAxisCount: 3,
-                              mainAxisSpacing: 10,
-                              crossAxisSpacing: 10,
-                              children: List.generate(
-                                  state.products.length <= 6
-                                      ? state.products.length
-                                      : 6, (index) {
-                                return StaggeredGridTile.extent(
-                                    crossAxisCellCount: 1,
-                                    mainAxisExtent: 255,
-                                    child: ProductItem(
-                                      // bgcolor: "FFFFFF",
-                                      context: context,
-                                      imageurl: state
-                                          .products[index].productImages.first,
-                                      mrpColor: mrpColor,
-                                      name: state.products[index].productName,
-                                      price: 85,
-                                      offertextcolor: offerTextcolor,
-                                      productcolor: productBgColor,
-                                      sellingpricecolor: sellingPriceColor,
-                                      buttontextcolor: buttontextcolor,
-                                      productBgColor: productBgColor,
-                                      sellingPriceColor: sellingPriceColor,
-                                      unitTextcolor: unitTextcolor,
-                                      unitbgcolor: unitbgcolor,
-                                      seeAllButtonBG: seeAllButtonBG,
-                                      seeAllButtontext: seeAllButtontext,
-                                    ));
-                              }),
-                            )
-                          : const SizedBox(
-                              child: Text("No data"),
-                            ),
-                    ],
-                  );
-                }
-                return const Center(child: Text('No Data Available'));
-              },
-            ),
-            const SizedBox(height: 20),
-            Container(
-              width: MediaQuery.of(context).size.width,
-              height: 48,
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: lightenColor(parseColor("E23338"), .8)),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+    return showcategory
+        ? BlocProvider(
+            create: (_) =>
+                CategoryBloc12(categoryRepository: Categorymodel12Repository())
+                  ..add(FetchCategoryAndProductsEvent(
+                    subCategoryIds:
+                        maincategories, // Dispatch event to fetch category and products
+                  )),
+            child: Container(
+              color: parseColor(bgcolor),
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Expanded(
-                    flex: 5,
-                    child: Align(
-                      alignment: Alignment.centerRight,
-                      child: Text('See all products',
-                          style: TextStyle(
-                              color: parseColor("#E23338"), fontSize: 18)),
+                  Image.network(
+                    topimage,
+                    fit: BoxFit.fill,
+                    height: 200,
+                    width: MediaQuery.of(context).size.width,
+                  ),
+                  const SizedBox(height: 10),
+                  BlocBuilder<CategoryBloc12, CategoryModel12State>(
+                    builder: (context, state) {
+                      if (state is SubCategoriesLoading) {
+                        return const Center(child: CircularProgressIndicator());
+                      } else if (state is CategoryErrorState) {
+                        return Center(child: Text(state.message));
+                      } else if (state is CategoryLoadedState) {
+                        return Column(
+                          children: [
+                            state.products.isNotEmpty
+                                ? StaggeredGrid.count(
+                                    crossAxisCount: 3,
+                                    mainAxisSpacing: 10,
+                                    crossAxisSpacing: 10,
+                                    children: List.generate(
+                                        state.products.length <= 6
+                                            ? state.products.length
+                                            : 6, (index) {
+                                      return StaggeredGridTile.extent(
+                                          crossAxisCellCount: 1,
+                                          mainAxisExtent: 255,
+                                          child: ProductItem(
+                                            product: state.products[index],
+                                            // bgcolor: "FFFFFF",
+                                            context: context,
+                                            imageurl: state.products[index]
+                                                .productImages.first,
+                                            mrpColor: mrpColor,
+                                            name: state
+                                                .products[index].productName,
+                                            price: 85,
+                                            offertextcolor: offerTextcolor,
+
+                                            sellingpricecolor:
+                                                sellingPriceColor,
+                                            buttontextcolor: buttontextcolor,
+                                            productBgColor: productBgColor,
+                                            sellingPriceColor:
+                                                sellingPriceColor,
+                                            unitTextcolor: unitTextcolor,
+
+                                            buttonBgColor: seeAllButtonBG,
+                                            offerbgcolor: "FFFFFF",
+                                          ));
+                                    }),
+                                  )
+                                : const SizedBox(
+                                    child: Text("No data"),
+                                  ),
+                          ],
+                        );
+                      }
+                      return const Center(child: Text('No Data Available'));
+                    },
+                  ),
+                  const SizedBox(height: 20),
+                  Container(
+                    width: MediaQuery.of(context).size.width,
+                    height: 48,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: lightenColor(parseColor("E23338"), .8)),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Expanded(
+                          flex: 5,
+                          child: Align(
+                            alignment: Alignment.centerRight,
+                            child: Text('See all products',
+                                style: TextStyle(
+                                    color: parseColor("#E23338"),
+                                    fontSize: 18)),
+                          ),
+                        ),
+                        Expanded(
+                          flex: 2,
+                          child: Align(
+                            alignment: Alignment.centerRight,
+                            child: Padding(
+                              padding: const EdgeInsets.only(right: 14.0),
+                              child: Icon(
+                                Icons.arrow_forward,
+                                color: parseColor("#E23338"),
+                              ),
+                            ),
+                          ),
+                        )
+                      ],
                     ),
                   ),
-                  Expanded(
-                    flex: 2,
-                    child: Align(
-                      alignment: Alignment.centerRight,
-                      child: Padding(
-                        padding: const EdgeInsets.only(right: 14.0),
-                        child: Icon(
-                          Icons.arrow_forward,
-                          color: parseColor("#E23338"),
-                        ),
-                      ),
-                    ),
-                  )
+                  const SizedBox(height: 10),
                 ],
               ),
             ),
-            const SizedBox(height: 10),
-          ],
-        ),
-      ),
-    );
+          )
+        : const SizedBox();
   }
 }

@@ -22,7 +22,6 @@ import 'package:kwik/bloc/navbar_bloc/navbar_bloc.dart';
 import 'package:kwik/pages/Home_page/widgets/banner_model.dart';
 import 'package:kwik/pages/Home_page/widgets/category_model_10.dart';
 import 'package:kwik/pages/Home_page/widgets/category_model_12.dart';
-import 'package:kwik/pages/Home_page/widgets/category_model_13.dart';
 import 'package:kwik/pages/Home_page/widgets/category_model_14.dart';
 import 'package:kwik/pages/Home_page/widgets/category_model_15.dart';
 import 'package:kwik/pages/Home_page/widgets/category_model_16.dart';
@@ -151,6 +150,7 @@ class _HomePageState extends State<HomePage> {
                       bannerId: 3,
                       height: 300,
                       borderradious: 0,
+                      showbanner: uiData["template5"]["show_Category"],
                     ),
                     'order': uiData["template5"]["ui_order_number"]
                   },
@@ -162,6 +162,7 @@ class _HomePageState extends State<HomePage> {
                       height: 100,
                       horizontalpadding: 10,
                       borderradious: 20,
+                      showbanner: uiData["template2"]["show_Category"],
                     ),
                     'order': uiData["template2"]["ui_order_number"]
                   },
@@ -174,6 +175,7 @@ class _HomePageState extends State<HomePage> {
                       viewportFraction: .8,
                       verticalpadding: 10,
                       borderradious: 20,
+                      showbanner: uiData["template5"]["show_Category"],
                     ),
                     'order': "9"
                   },
@@ -187,6 +189,7 @@ class _HomePageState extends State<HomePage> {
                       categories: categoryRef,
                       titlecolor: uiData["categorylist"]["title_color"],
                       textcolor: uiData["categorylist"]["subcategory_color"],
+                      showcategory: uiData["categorylist"]["show_Category"],
                     ),
                     'order': uiData["categorylist"]["ui_order_number"]
                   },
@@ -197,21 +200,9 @@ class _HomePageState extends State<HomePage> {
                       bgcolor: uiData["template7"]["background_color"],
                       titleColor: uiData["template7"]["title_color"],
                       subcatColor: uiData["template7"]["subcat_color"],
+                      showcategory: uiData["template7"]["show_Category"],
                     ),
                     'order': uiData["template7"]["ui_order_number"]
-                  },
-                  {
-                    'template': CategoryModel3(
-                      maincategories: List<String>.from(
-                          uiData["template4"]["main_sub_category"]),
-                      secondarycategories: List<String>.from(
-                          uiData["template4"]["secondary_sub_category"]),
-                      categoryId: uiData["template4"]["category_ref"],
-                      bgcolor: uiData["template4"]["background_color"],
-                      titleColor: uiData["template4"]["title_color"],
-                      subcatColor: uiData["template4"]["subcat_color"],
-                    ),
-                    'order': uiData["template4"]["ui_order_number"]
                   },
                   {
                     'template': CategoryModel3(
@@ -223,8 +214,23 @@ class _HomePageState extends State<HomePage> {
                       bgcolor: uiData["template3"]["background_color"],
                       titleColor: uiData["template3"]["title_color"],
                       subcatColor: uiData["template3"]["subcat_color"],
+                      showcategory: uiData["template3"]["show_Category"],
                     ),
                     'order': uiData["template3"]["ui_order_number"]
+                  },
+                  {
+                    'template': CategoryModel3(
+                      maincategories: List<String>.from(
+                          uiData["template4"]["main_sub_category"]),
+                      secondarycategories: List<String>.from(
+                          uiData["template4"]["secondary_sub_category"]),
+                      categoryId: uiData["template4"]["category_ref"],
+                      bgcolor: uiData["template4"]["background_color"],
+                      titleColor: uiData["template4"]["title_color"],
+                      subcatColor: uiData["template4"]["subcat_color"],
+                      showcategory: uiData["template4"]["show_Category"],
+                    ),
+                    'order': uiData["template4"]["ui_order_number"]
                   },
 
                   {
@@ -238,8 +244,9 @@ class _HomePageState extends State<HomePage> {
                       bgcolor: uiData["template6"]["background_color"],
                       titleColor: uiData["template6"]["title_color"],
                       productColor: uiData["template6"]["subcat_color"],
+                      showcategory: uiData["template6"]["show_Category"],
                     ),
-                    'order': "1"
+                    'order': uiData["template6"]["ui_order_number"]
                   },
 
                   {
@@ -257,6 +264,7 @@ class _HomePageState extends State<HomePage> {
                       sellingPriceColor: uiData["template8"]["saleprice_color"],
                       categoryName: uiData["template8"]["category_name"],
                       brandImage: uiData["template8"]["brand_image"],
+                      showcategory: uiData["template8"]["show_Category"],
                     ),
                     'order': uiData["template8"]["ui_order_number"]
                   },
@@ -272,45 +280,11 @@ class _HomePageState extends State<HomePage> {
                       offertextcolor: uiData["template9"]["offer_text_color"],
                       offerbgcolor: uiData["template9"]["offer_bg_color"],
                       catnamebgcolor: uiData["template9"]["subcatbg_color"],
+                      showcategory: uiData["template9"]["show_Category"],
                     ),
                     'order': uiData["template9"]["ui_order_number"]
                   },
-                  // {
-                  //   'template': CategoryModel7(
-                  //     subcategoryid: uiData["template10"]["category_ref"],
-                  //     titleColor: uiData["template10"]["title_color"],
-                  //     bgcolor: uiData["template10"]["background_color"],
-                  //     cartbuttontextcolor: uiData["template10"]
-                  //         ["cartbuttontextcolor"],
-                  //     mrpcolor: uiData["template10"]["mrpcolor"],
-                  //     offerBGcolor: uiData["template10"]["offerBGcolor"],
-                  //     offerTextcolor: uiData["template10"]["offerTextcolor"],
-                  //     prodoductbgcolor: uiData["template10"]
-                  //         ["prodoductbgcolor"],
-                  //     productTextColor: uiData["template10"]
-                  //         ["productTextColor"],
-                  //     sellingpricecolor: uiData["template10"]
-                  //         ["sellingpricecolor"],
-                  //     seeAllButtonBG: uiData["template10"]["seeAllButtonBG"],
-                  //     seeAllButtontext: uiData["template10"]
-                  //         ["seeAllButtontext"],
-                  //   ),
-                  //   'order': uiData["template10"]["ui_order_number"]
-                  // },
-                  // {
-                  //   'template': CategoryModel8(
-                  //     bgColor: uiData["template11"]["background_color"],
-                  //     categoryBG: uiData["template11"]["subcategorybg"],
-                  //     iconBGcolor: uiData["template11"]["icon_bg_color"],
-                  //     iconcolor: uiData["template11"]["icon_color"],
-                  //     title: uiData["template11"]["title"],
-                  //     categories: categorymodel8Categories,
-                  //     titlecolor: uiData["template11"]["title_color"],
-                  //     categorytitlecolor: uiData["template11"]
-                  //         ["subcat_title_color"],
-                  //   ),
-                  //   'order': uiData["template11"]["ui_order_number"]
-                  // },
+
                   {
                     'template': CategoryModel9(
                       seeAllButtonBG: "D5E2C9",
@@ -331,6 +305,7 @@ class _HomePageState extends State<HomePage> {
                       title: uiData["template12"]["title"],
                       unitTextcolor: uiData["template12"]["unitTextcolor"],
                       unitbgcolor: uiData["template12"]["unitbgcolor"],
+                      showcategory: uiData["template12"]["show_Category"],
                     ),
                     'order': uiData["template12"]["ui_order_number"]
                   },
@@ -353,26 +328,11 @@ class _HomePageState extends State<HomePage> {
                       seeAllButtonBG: uiData["template13"]["seeAllButtonBG"],
                       seeAllButtontext: uiData["template13"]
                           ["seeAllButtontext"],
+                      showcategory: uiData["template13"]["show_Category"],
                     ),
                     'order': uiData["template13"]["ui_order_number"]
                   },
-                  // {
-                  //   'template': CategoryModel11(
-                  //     percentBgColor: 'B8E1FF',
-                  //     descriptionTextColor: '',
-                  //     percentDisplayPosition: 30,
-                  //     titleTopDisplayPosition: false,
-                  //     description: "",
-                  //     categoryId: uiData["template7"]["category_ref"],
-                  //     bgcolor: "D5E9FF",
-                  //     titleColor: uiData["template7"]["title_color"],
-                  //     subcatColor: uiData["template7"]["subcat_color"],
-                  //     seeContainColor: "B8E1FF",
-                  //     brandIcon:
-                  //         "https://firebasestorage.googleapis.com/v0/b/kwikgroceries-8a11e.firebasestorage.app/o/bxs_offer.png?alt=media&token=f6cd9a07-d6f5-4f40-84cb-4748769a0ed9",
-                  //   ),
-                  //   'order': uiData["template14"]["ui_order_number"]
-                  // },
+
                   {
                     'template': CategoryModel12(
                       topimage: uiData["template14"]["top_image"],
@@ -391,28 +351,11 @@ class _HomePageState extends State<HomePage> {
                       offerTextcolor: uiData["template14"]["offerTextcolor"],
                       unitTextcolor: uiData["template14"]["unitTextcolor"],
                       unitbgcolor: uiData["template14"]["unitbgcolor"],
+                      showcategory: uiData["template14"]["show_Category"],
                     ),
-                    'order': " 1"
+                    'order': uiData["template14"]["ui_order_number"]
                   },
-                  {
-                    'template': CategoryModel13(
-                      maincategories: List<String>.from(
-                          uiData["template15"]["sub_categories"]),
-                      categoryId: uiData["template15"]["category_ref"],
-                      bgcolor: uiData["template15"]["bgcolor"],
-                      titleColor: uiData["template15"]["titleColor"],
-                      subcatColor: uiData["template15"]["subcat_color"],
-                      offerBGcolor: uiData["template15"]["offer_bg_color"],
-                      mrpColor: uiData["template15"]["mrp_color"],
-                      productBgColor: uiData["template15"]
-                          ["product_background_color"],
-                      sellingPriceColor: uiData["template15"]
-                          ["saleprice_color"],
-                      categoryName: uiData["template15"]["category_name"],
-                      brandImage: uiData["template15"]["brand_image"],
-                    ),
-                    'order': " 1"
-                  },
+
                   {
                     'template': CategoryModel14(
                       maincategories: List<String>.from(
@@ -429,7 +372,7 @@ class _HomePageState extends State<HomePage> {
                       categoryName: uiData["template8"]["category_name"],
                       brandImage: uiData["template8"]["brand_image"],
                     ),
-                    'order': "3"
+                    'order': uiData["template14"]["ui_order_number"]
                   },
                   {
                     'template': CategoryModel15(
@@ -449,8 +392,9 @@ class _HomePageState extends State<HomePage> {
                       offerTextcolor: uiData["template14"]["offerTextcolor"],
                       unitTextcolor: uiData["template14"]["unitTextcolor"],
                       unitbgcolor: uiData["template14"]["unitbgcolor"],
+                      showcategory: uiData["template14"]["show_Category"],
                     ),
-                    'order': "0"
+                    'order': uiData["template15"]["ui_order_number"]
                   },
                   {
                     'template': CategoryModel16(
@@ -458,8 +402,9 @@ class _HomePageState extends State<HomePage> {
                       bgcolor: uiData["template7"]["background_color"],
                       titleColor: uiData["template7"]["title_color"],
                       subcatColor: uiData["template7"]["subcat_color"],
+                      showcategory: uiData["template7"]["show_Category"],
                     ),
-                    'order': "0"
+                    'order': uiData["template16"]["ui_order_number"]
                   },
                   {
                     'template': const DescriptiveWidget(
@@ -468,6 +413,7 @@ class _HomePageState extends State<HomePage> {
                       title: "Always on Your Time",
                       logo:
                           "assets/images/Screenshot 2025-01-31 at 6.20.37 PM.jpeg",
+                      showcategory: true,
                     ),
                     'order': "88888"
                   },
@@ -668,3 +614,83 @@ class _SearchBarDelegate extends SliverPersistentHeaderDelegate {
   bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) =>
       false;
 }
+
+
+
+
+
+/// Removed home page widgets 
+
+
+ // {
+                  //   'template': CategoryModel13(
+                  //     maincategories: List<String>.from(
+                  //         uiData["template15"]["sub_categories"]),
+                  //     categoryId: uiData["template15"]["category_ref"],
+                  //     bgcolor: uiData["template15"]["bgcolor"],
+                  //     titleColor: uiData["template15"]["titleColor"],
+                  //     subcatColor: uiData["template15"]["subcat_color"],
+                  //     offerBGcolor: uiData["template15"]["offer_bg_color"],
+                  //     mrpColor: uiData["template15"]["mrp_color"],
+                  //     productBgColor: uiData["template15"]
+                  //         ["product_background_color"],
+                  //     sellingPriceColor: uiData["template15"]
+                  //         ["saleprice_color"],
+                  //     categoryName: uiData["template15"]["category_name"],
+                  //     brandImage: uiData["template15"]["brand_image"],
+                  //   ),
+                  //   'order': uiData["template15"]["ui_order_number"]
+                  // },
+                   // {
+                  //   'template': CategoryModel11(
+                  //     percentBgColor: 'B8E1FF',
+                  //     descriptionTextColor: '',
+                  //     percentDisplayPosition: 30,
+                  //     titleTopDisplayPosition: false,
+                  //     description: "",
+                  //     categoryId: uiData["template7"]["category_ref"],
+                  //     bgcolor: "D5E9FF",
+                  //     titleColor: uiData["template7"]["title_color"],
+                  //     subcatColor: uiData["template7"]["subcat_color"],
+                  //     seeContainColor: "B8E1FF",
+                  //     brandIcon:
+                  //         "https://firebasestorage.googleapis.com/v0/b/kwikgroceries-8a11e.firebasestorage.app/o/bxs_offer.png?alt=media&token=f6cd9a07-d6f5-4f40-84cb-4748769a0ed9",
+                  //   ),
+                  //   'order': uiData["template14"]["ui_order_number"]
+                  // },
+                   // {
+                  //   'template': CategoryModel7(
+                  //     subcategoryid: uiData["template10"]["category_ref"],
+                  //     titleColor: uiData["template10"]["title_color"],
+                  //     bgcolor: uiData["template10"]["background_color"],
+                  //     cartbuttontextcolor: uiData["template10"]
+                  //         ["cartbuttontextcolor"],
+                  //     mrpcolor: uiData["template10"]["mrpcolor"],
+                  //     offerBGcolor: uiData["template10"]["offerBGcolor"],
+                  //     offerTextcolor: uiData["template10"]["offerTextcolor"],
+                  //     prodoductbgcolor: uiData["template10"]
+                  //         ["prodoductbgcolor"],
+                  //     productTextColor: uiData["template10"]
+                  //         ["productTextColor"],
+                  //     sellingpricecolor: uiData["template10"]
+                  //         ["sellingpricecolor"],
+                  //     seeAllButtonBG: uiData["template10"]["seeAllButtonBG"],
+                  //     seeAllButtontext: uiData["template10"]
+                  //         ["seeAllButtontext"],
+                  //   ),
+                  //   'order': uiData["template10"]["ui_order_number"]
+                  // },
+                  // {
+                  //   'template': CategoryModel8(
+                  //     bgColor: uiData["template11"]["background_color"],
+                  //     categoryBG: uiData["template11"]["subcategorybg"],
+                  //     iconBGcolor: uiData["template11"]["icon_bg_color"],
+                  //     iconcolor: uiData["template11"]["icon_color"],
+                  //     title: uiData["template11"]["title"],
+                  //     categories: categorymodel8Categories,
+                  //     titlecolor: uiData["template11"]["title_color"],
+                  //     categorytitlecolor: uiData["template11"]
+                  //         ["subcat_title_color"],
+                  //   ),
+                  //   'order': uiData["template11"]["ui_order_number"]
+                  // },

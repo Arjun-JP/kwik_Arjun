@@ -1,71 +1,77 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:kwik/constants/colors.dart';
+import 'package:kwik/models/product_model.dart';
 
 class ProductItem extends StatelessWidget {
+  final ProductModel product;
   final String name;
   final double price;
   final String imageurl;
-  final String productcolor;
+
   final String sellingpricecolor;
   final String mrpColor;
   final String offertextcolor;
   final String productBgColor;
   final String sellingPriceColor;
   final String buttontextcolor;
-  final String unitbgcolor;
+  final String buttonBgColor;
+  final String offerbgcolor;
   final String unitTextcolor;
-  final String seeAllButtonBG;
-  final String seeAllButtontext;
+
   final BuildContext context;
   const ProductItem(
       {super.key,
       required this.name,
       required this.price,
       required this.imageurl,
-      required this.productcolor,
       required this.sellingpricecolor,
       required this.mrpColor,
       required this.offertextcolor,
       required this.productBgColor,
       required this.sellingPriceColor,
       required this.buttontextcolor,
-      required this.unitbgcolor,
       required this.unitTextcolor,
-      required this.seeAllButtonBG,
-      required this.seeAllButtontext,
-      required this.context});
+      required this.context,
+      required this.product,
+      required this.offerbgcolor,
+      required this.buttonBgColor});
 
   @override
   build(BuildContext context) {
     final theme = Theme.of(context);
-    return SizedBox(
-      child: Stack(
-        children: [
-          Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              // color: const Color.fromARGB(255, 233, 255, 234),
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              spacing: 5,
-              children: [
-                Container(
-                  height: 147,
-                  decoration: BoxDecoration(
-                    color: parseColor("F9F9F9"),
-                    borderRadius: BorderRadius.circular(5),
-                  ),
-                  child: Container(
+    return InkWell(
+      onTap: () => context.push('/productdetails', extra: product),
+      child: SizedBox(
+        child: Stack(
+          children: [
+            Container(
+              width: 120,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                // color: const Color.fromARGB(255, 233, 255, 234),
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                spacing: 4,
+                children: [
+                  Container(
+                    height: 147,
                     decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8),
-                        image: DecorationImage(
-                            image: NetworkImage(imageurl), fit: BoxFit.fill)),
+                      color: parseColor("F9F9F9"),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Container(
+                      width: 120,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          image: DecorationImage(
+                              image: NetworkImage(product.productImages[0]),
+                              fit: BoxFit.fill)),
+                    ),
                   ),
-                ),
-                Align(
-                  alignment: Alignment.topLeft,
-                  child: Row(
+                  Row(
                     mainAxisSize: MainAxisSize.min,
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
@@ -77,95 +83,97 @@ class ProductItem extends StatelessWidget {
                       ),
                     ],
                   ),
-                ),
-                SizedBox(
-                  width: 120,
-                  child: Text(
-                    "Lays Water ChipsSalt N Pepper Fl...",
-                    textAlign: TextAlign.left,
-                    maxLines: 2,
-                    style: theme.textTheme.bodyMedium!.copyWith(
-                        color: parseColor(unitTextcolor),
-                        fontWeight: FontWeight.w600),
-                  ),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Column(
-                      children: [
-                        Text(
-                          "₹ 45",
-                          style: theme.textTheme.bodyMedium!.copyWith(
-                              color: parseColor(unitTextcolor),
-                              decoration: TextDecoration.lineThrough),
-                        ),
-                        Text(
-                          "₹ 85",
-                          style: theme.textTheme.bodyMedium!.copyWith(
-                              color: parseColor(unitTextcolor),
-                              fontWeight: FontWeight.w600),
-                        )
-                      ],
+                  SizedBox(
+                    width: 120,
+                    child: Text(
+                      product.productName,
+                      textAlign: TextAlign.left,
+                      maxLines: 2,
+                      style: theme.textTheme.bodyMedium!.copyWith(
+                          color: parseColor(unitTextcolor),
+                          fontWeight: FontWeight.w600),
                     ),
-                    SizedBox(
-                      height: 30,
-                      child: ElevatedButton(
-                        onPressed: () {},
-                        style: ElevatedButton.styleFrom(
-                            backgroundColor: parseColor("#FFFFFF"),
-                            shape: RoundedRectangleBorder(
-                              side: BorderSide(color: parseColor("#E23338")),
-                              borderRadius: BorderRadius.circular(5),
-                            ),
-                            padding: const EdgeInsets.all(0)),
-                        child: Text(
-                          'Add',
-                          style: theme.textTheme.bodyMedium!.copyWith(
-                              color: parseColor("E23338"),
-                              fontFamily: "Inter",
-                              fontWeight: FontWeight.w900),
+                  ),
+                  const Spacer(),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Column(
+                        children: [
+                          Text(
+                            "₹ 45",
+                            style: theme.textTheme.bodyMedium!.copyWith(
+                                color: parseColor(mrpColor),
+                                decoration: TextDecoration.lineThrough),
+                          ),
+                          Text(
+                            "₹ 85",
+                            style: theme.textTheme.bodyMedium!.copyWith(
+                                color: parseColor(sellingPriceColor),
+                                fontWeight: FontWeight.w600),
+                          )
+                        ],
+                      ),
+                      SizedBox(
+                        height: 30,
+                        child: ElevatedButton(
+                          onPressed: () {},
+                          style: ElevatedButton.styleFrom(
+                              backgroundColor: parseColor(buttonBgColor),
+                              shape: RoundedRectangleBorder(
+                                side: BorderSide(
+                                    color: parseColor(buttontextcolor)),
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                              padding: const EdgeInsets.all(0)),
+                          child: Text(
+                            'Add',
+                            style: theme.textTheme.bodyMedium!.copyWith(
+                                color: parseColor(buttontextcolor),
+                                fontFamily: "Inter",
+                                fontWeight: FontWeight.w900),
+                          ),
                         ),
                       ),
-                    ),
-                  ],
-                )
-              ],
-            ),
-          ),
-          ClipPath(
-            clipper: ZigZagClipper(),
-            child: Container(
-              width: 40,
-              height: 50,
-              decoration: const BoxDecoration(
-                  color: Colors.orange,
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(10),
-                  )),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text(
-                    "30%",
-                    style: theme.textTheme.bodyMedium!.copyWith(
-                        color: parseColor("233D4D"),
-                        fontFamily: "Inter",
-                        fontWeight: FontWeight.w900),
-                  ),
-                  Text(
-                    "OFF",
-                    style: theme.textTheme.bodyMedium!.copyWith(
-                      color: parseColor("233D4D"),
-                      fontFamily: "Inter",
-                    ),
-                  ),
+                    ],
+                  )
                 ],
               ),
             ),
-          ),
-        ],
+            ClipPath(
+              clipper: ZigZagClipper(),
+              child: Container(
+                width: 40,
+                height: 50,
+                decoration: BoxDecoration(
+                    color: parseColor(offerbgcolor),
+                    borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(10),
+                    )),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      "30%",
+                      style: theme.textTheme.bodyMedium!.copyWith(
+                          color: parseColor(offertextcolor),
+                          fontFamily: "Inter",
+                          fontWeight: FontWeight.w900),
+                    ),
+                    Text(
+                      "OFF",
+                      style: theme.textTheme.bodyMedium!.copyWith(
+                        color: parseColor(offertextcolor),
+                        fontFamily: "Inter",
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

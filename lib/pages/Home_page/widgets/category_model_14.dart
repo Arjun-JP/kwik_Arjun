@@ -145,15 +145,20 @@ class CategoryModel14 extends StatelessWidget {
                                           crossAxisCellCount: 1,
                                           mainAxisExtent: 266,
                                           child: ProductItem(
+                                            product: state.products
+                                                .where((product) =>
+                                                    product.subCategoryRef.id ==
+                                                    state.selectedCategoryId)
+                                                .toList()[index],
                                             buttontextcolor: "E23338",
                                             context: context,
                                             offertextcolor: "FFFFFF",
                                             productBgColor: "FFFFFF",
-                                            seeAllButtonBG: "000000",
-                                            seeAllButtontext: "FFFFFF",
+
+                                            buttonBgColor: "FFFFFF",
                                             sellingPriceColor: "000000",
                                             unitTextcolor: "000000",
-                                            unitbgcolor: "FFFFFF",
+                                            offerbgcolor: "FFFFFF",
                                             // bgcolor: "FFFFFF",
                                             imageurl: state.products
                                                 .where((product) =>
@@ -170,7 +175,7 @@ class CategoryModel14 extends StatelessWidget {
                                                 .toList()[index]
                                                 .productName,
                                             price: 85,
-                                            productcolor: "670000",
+
                                             sellingpricecolor: "00000",
                                           ),
                                         );

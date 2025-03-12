@@ -20,6 +20,7 @@ class CategoryModel5 extends StatelessWidget {
   final String productBgColor;
   final String mrpColor;
   final String sellingPriceColor;
+  final bool showcategory;
 
   const CategoryModel5({
     super.key,
@@ -34,153 +35,169 @@ class CategoryModel5 extends StatelessWidget {
     required this.mrpColor,
     required this.sellingPriceColor,
     required this.brandImage,
+    required this.showcategory,
   });
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return BlocProvider(
-      create: (_) =>
-          CategoryBloc5(categoryRepository: Categorymodel5Repository())
-            ..add(FetchCategoryAndProductsEvent(
-              categoryId: categoryId,
-              subCategoryIds:
-                  maincategories, // Dispatch event to fetch category and products
-            )),
-      child: Container(
-        color: parseColor(bgcolor),
-        width: double.infinity,
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Expanded(
-                  flex: 8,
-                  child: Text(
-                    categoryName,
-                    style: theme.textTheme.titleLarge!.copyWith(
-                        color: parseColor(titleColor),
-                        fontWeight: FontWeight.w600),
-                  ),
-                ),
-                Expanded(
-                    flex: 2,
-                    child: Align(
-                        alignment: Alignment.centerRight,
-                        child: Image.network(brandImage, height: 60)))
-              ],
-            ),
-            const SizedBox(height: 10),
-            BlocBuilder<CategoryBloc5, CategoryState>(
-              builder: (context, state) {
-                if (state is SubCategoriesLoading) {
-                  return const Center(child: CircularProgressIndicator());
-                } else if (state is CategoryErrorState) {
-                  return Center(child: Text(state.message));
-                } else if (state is CategoryLoadedState) {
-                  return Column(
+    return showcategory
+        ? BlocProvider(
+            create: (_) =>
+                CategoryBloc5(categoryRepository: Categorymodel5Repository())
+                  ..add(FetchCategoryAndProductsEvent(
+                    categoryId: categoryId,
+                    subCategoryIds:
+                        maincategories, // Dispatch event to fetch category and products
+                  )),
+            child: Container(
+              color: parseColor(bgcolor),
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
                     children: [
-                      state.subCategories.isNotEmpty
-                          ? SizedBox(
-                              height: 128,
-                              width: MediaQuery.of(context).size.width,
-                              child: ListView.builder(
-                                scrollDirection: Axis.horizontal,
-                                itemCount: state.subCategories.length,
-                                itemBuilder: (context, index) {
-                                  return InkWell(
-                                    onTap: () {
-                                      context.read<CategoryBloc5>().add(
-                                          UpdateSelectedCategoryEvent(
-                                              selectedCategoryId: state
-                                                  .subCategories[index].id));
-                                    },
-                                    child: subcategoryItem(
-                                        name: state.subCategories[index].name,
-                                        bgcolor: "ffffff",
-                                        textcolor: "000000",
-                                        imageurl:
-                                            state.subCategories[index].imageUrl,
-                                        context: context,
-                                        subcatId: state.subCategories[index].id,
-                                        selectedId: state.selectedCategoryId,
-                                        theme: theme),
-                                  );
-                                },
-                              ),
-                            )
-                          : const SizedBox(),
-                      const SizedBox(height: 5),
-                      state.products.isNotEmpty
-                          ? StaggeredGrid.count(
-                              crossAxisCount: 3,
-                              mainAxisSpacing: 8,
-                              crossAxisSpacing: 8,
-                              children: List.generate(
-                                  state.products
+                      Expanded(
+                        flex: 8,
+                        child: Text(
+                          categoryName,
+                          style: theme.textTheme.titleLarge!.copyWith(
+                              color: parseColor(titleColor),
+                              fontWeight: FontWeight.w600),
+                        ),
+                      ),
+                      Expanded(
+                          flex: 2,
+                          child: Align(
+                              alignment: Alignment.centerRight,
+                              child: Image.network(brandImage, height: 60)))
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+                  BlocBuilder<CategoryBloc5, CategoryState>(
+                    builder: (context, state) {
+                      if (state is SubCategoriesLoading) {
+                        return const Center(child: CircularProgressIndicator());
+                      } else if (state is CategoryErrorState) {
+                        return Center(child: Text(state.message));
+                      } else if (state is CategoryLoadedState) {
+                        return Column(
+                          children: [
+                            state.subCategories.isNotEmpty
+                                ? SizedBox(
+                                    height: 128,
+                                    width: MediaQuery.of(context).size.width,
+                                    child: ListView.builder(
+                                      scrollDirection: Axis.horizontal,
+                                      itemCount: state.subCategories.length,
+                                      itemBuilder: (context, index) {
+                                        return InkWell(
+                                          onTap: () {
+                                            context.read<CategoryBloc5>().add(
+                                                UpdateSelectedCategoryEvent(
+                                                    selectedCategoryId: state
+                                                        .subCategories[index]
+                                                        .id));
+                                          },
+                                          child: subcategoryItem(
+                                              name: state
+                                                  .subCategories[index].name,
+                                              bgcolor: "ffffff",
+                                              textcolor: "000000",
+                                              imageurl: state
+                                                  .subCategories[index]
+                                                  .imageUrl,
+                                              context: context,
+                                              subcatId:
+                                                  state.subCategories[index].id,
+                                              selectedId:
+                                                  state.selectedCategoryId,
+                                              theme: theme),
+                                        );
+                                      },
+                                    ),
+                                  )
+                                : const SizedBox(),
+                            const SizedBox(height: 5),
+                            state.products.isNotEmpty
+                                ? StaggeredGrid.count(
+                                    crossAxisCount: 3,
+                                    mainAxisSpacing: 8,
+                                    crossAxisSpacing: 8,
+                                    children: List.generate(
+                                        state
+                                                    .products
+                                                    .where((product) =>
+                                                        product.subCategoryRef
+                                                            .id ==
+                                                        state
+                                                            .selectedCategoryId)
+                                                    .toList()
+                                                    .length <=
+                                                6
+                                            ? state.products
+                                                .where((product) =>
+                                                    product.subCategoryRef.id ==
+                                                    state.selectedCategoryId)
+                                                .toList()
+                                                .length
+                                            : 6, (index) {
+                                      return StaggeredGridTile.extent(
+                                        crossAxisCellCount: 1,
+                                        mainAxisExtent: 266,
+                                        child: ProductItem(
+                                          product: state.products
                                               .where((product) =>
                                                   product.subCategoryRef.id ==
                                                   state.selectedCategoryId)
-                                              .toList()
-                                              .length <=
-                                          6
-                                      ? state.products
-                                          .where((product) =>
-                                              product.subCategoryRef.id ==
-                                              state.selectedCategoryId)
-                                          .toList()
-                                          .length
-                                      : 6, (index) {
-                                return StaggeredGridTile.extent(
-                                  crossAxisCellCount: 1,
-                                  mainAxisExtent: 266,
-                                  child: ProductItem(
-                                    buttontextcolor: "E23338",
-                                    context: context,
-                                    offertextcolor: "FFFFFF",
-                                    productBgColor: "FFFFFF",
-                                    seeAllButtonBG: "000000",
-                                    seeAllButtontext: "FFFFFF",
-                                    sellingPriceColor: "000000",
-                                    unitTextcolor: "000000",
-                                    unitbgcolor: "FFFFFF",
-                                    // bgcolor: "FFFFFF",
-                                    imageurl: state.products
-                                        .where((product) =>
-                                            product.subCategoryRef.id ==
-                                            state.selectedCategoryId)
-                                        .toList()[index]
-                                        .productImages
-                                        .first,
-                                    mrpColor: "FFFFFF",
-                                    name: state.products
-                                        .where((product) =>
-                                            product.subCategoryRef.id ==
-                                            state.selectedCategoryId)
-                                        .toList()[index]
-                                        .productName,
-                                    price: 85,
-                                    productcolor: "670000",
-                                    sellingpricecolor: "00000",
+                                              .toList()[index],
+                                          buttontextcolor: "E23338",
+                                          context: context,
+                                          offertextcolor: "FFFFFF",
+                                          productBgColor: "FFFFFF",
+
+                                          buttonBgColor: "FFFFFF",
+                                          sellingPriceColor: "000000",
+                                          unitTextcolor: "000000",
+                                          offerbgcolor: "FFFFFF",
+                                          // bgcolor: "FFFFFF",
+                                          imageurl: state.products
+                                              .where((product) =>
+                                                  product.subCategoryRef.id ==
+                                                  state.selectedCategoryId)
+                                              .toList()[index]
+                                              .productImages
+                                              .first,
+                                          mrpColor: "FFFFFF",
+                                          name: state.products
+                                              .where((product) =>
+                                                  product.subCategoryRef.id ==
+                                                  state.selectedCategoryId)
+                                              .toList()[index]
+                                              .productName,
+                                          price: 85,
+
+                                          sellingpricecolor: "00000",
+                                        ),
+                                      );
+                                    }),
+                                  )
+                                : const SizedBox(
+                                    child: Text("No data"),
                                   ),
-                                );
-                              }),
-                            )
-                          : const SizedBox(
-                              child: Text("No data"),
-                            ),
-                    ],
-                  );
-                }
-                return const Center(child: Text('No Data Available'));
-              },
+                          ],
+                        );
+                      }
+                      return const Center(child: Text('No Data Available'));
+                    },
+                  ),
+                ],
+              ),
             ),
-          ],
-        ),
-      ),
-    );
+          )
+        : const SizedBox();
   }
 }
 
