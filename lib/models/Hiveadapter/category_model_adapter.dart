@@ -1,5 +1,6 @@
 import 'package:hive/hive.dart';
 import '../category_model.dart';
+import '../subcategory_model.dart';
 
 class CategoryAdapter extends TypeAdapter<Category> {
   @override
@@ -17,6 +18,14 @@ class CategoryAdapter extends TypeAdapter<Category> {
     final createdTime = reader.readString();
     final bannerImage = reader.readString();
     final isDeleted = reader.readBool();
+    final islandingPage = reader.readBool();
+
+    // Read the list of SubCategoryModel
+    final int subCategoryLength = reader.readInt();
+    final selectedSubCategoryRef = List<dynamic>.generate(
+      subCategoryLength,
+      (_) => reader.read(),
+    );
 
     return Category(
       catref: catref,
@@ -29,6 +38,8 @@ class CategoryAdapter extends TypeAdapter<Category> {
       createdTime: createdTime,
       bannerImage: bannerImage,
       isDeleted: isDeleted,
+      islandingPage: islandingPage,
+      selectedSubCategoryRef: selectedSubCategoryRef,
     );
   }
 
@@ -45,5 +56,10 @@ class CategoryAdapter extends TypeAdapter<Category> {
         DateTime.now().toString()); // Handle null createdTime
     writer.writeString(obj.bannerImage);
     writer.writeBool(obj.isDeleted);
+    writer.writeBool(obj.islandingPage ?? false);
+
+    // Write the list of SubCategoryModel
+    writer.writeInt(obj.selectedSubCategoryRef?.length ?? 0);
+    obj.selectedSubCategoryRef?.forEach(writer.write);
   }
 }

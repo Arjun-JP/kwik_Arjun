@@ -13,6 +13,7 @@ class CategoryModel2 extends StatelessWidget {
   final String titleColor;
   final String subcatColor;
   final bool showcategory;
+  final String title;
 
   const CategoryModel2({
     super.key,
@@ -21,6 +22,7 @@ class CategoryModel2 extends StatelessWidget {
     required this.titleColor,
     required this.subcatColor,
     required this.showcategory,
+    required this.title,
   });
 
   @override
@@ -48,7 +50,7 @@ class CategoryModel2 extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             const SizedBox(height: 15),
-                            Text(state.category.name,
+                            Text(title ?? state.category.name,
                                 style: theme.textTheme.titleLarge!.copyWith(
                                     fontWeight: FontWeight.w600,
                                     color: parseColor(titleColor))),

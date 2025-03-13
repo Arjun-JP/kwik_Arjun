@@ -9,7 +9,6 @@ class ProductItem extends StatelessWidget {
   final double price;
   final String imageurl;
 
-  final String sellingpricecolor;
   final String mrpColor;
   final String offertextcolor;
   final String productBgColor;
@@ -25,7 +24,6 @@ class ProductItem extends StatelessWidget {
       required this.name,
       required this.price,
       required this.imageurl,
-      required this.sellingpricecolor,
       required this.mrpColor,
       required this.offertextcolor,
       required this.productBgColor,

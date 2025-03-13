@@ -106,8 +106,6 @@ class CategoryModel12 extends StatelessWidget {
                                             price: 85,
                                             offertextcolor: offerTextcolor,
 
-                                            sellingpricecolor:
-                                                sellingPriceColor,
                                             buttontextcolor: buttontextcolor,
                                             productBgColor: productBgColor,
                                             sellingPriceColor:

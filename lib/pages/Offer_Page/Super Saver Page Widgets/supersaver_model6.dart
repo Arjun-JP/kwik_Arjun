@@ -34,6 +34,7 @@ class SupersaverModel6 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    ThemeData theme = Theme.of(context);
     return BlocProvider(
       create: (context) =>
           SupersaverModel6Bloc(repository: SubcategoryProductRepository())
@@ -86,8 +87,7 @@ class SupersaverModel6 extends StatelessWidget {
                       ),
                       const SizedBox(height: 10),
                       Text(
-                        state.products.first.subCategoryRef
-                            .name, // Display section title
+                        " state.products.first.subCategoryRef.name", // Display section title
                         style: TextStyle(
                             color: parseColor(titleColor),
                             fontSize: 18,
@@ -104,6 +104,14 @@ class SupersaverModel6 extends StatelessWidget {
                               : 5,
                           itemBuilder: (context, index) {
                             return productItem(
+                                buttonbgcolor: "FFFFFF",
+                                buttontextcolor: "000000",
+                                offerTextcolor: "000000",
+                                offerbgcolor: "FFFFFF",
+                                theme: theme,
+                                unitcolor: "000000",
+                                offerborder: "000000",
+                                offertext2: "FFFFFF",
                                 mrpColor: mrpColor,
                                 sellingpricecolor: sellingpricecolor,
                                 productcolor: productColor,

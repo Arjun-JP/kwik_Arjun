@@ -8,16 +8,24 @@ import '../../../bloc/home_page_bloc/category_model_4_bloc/category_model_4_stat
 import '../../../repositories/sub_category_product_repository.dart';
 
 class CategoryModel4 extends StatelessWidget {
+  final String title;
+  final String subtitle;
   final String subCategoryId;
   final String bgcolor;
   final String titleColor;
   final String productColor;
   final String sellingpricecolor;
   final String mrpColor;
-
   final String seeAllButtonBG;
   final String seeAllButtontext;
   final bool showcategory;
+  final String buttonbgcolor;
+  final String buttontextcolor;
+  final String offertextcolor;
+  final String offerbgcolor;
+  final String unitcolor;
+  final String offertext2;
+  final String offerborder;
 
   const CategoryModel4({
     super.key,
@@ -30,10 +38,20 @@ class CategoryModel4 extends StatelessWidget {
     required this.seeAllButtonBG,
     required this.seeAllButtontext,
     required this.showcategory,
+    required this.buttonbgcolor,
+    required this.buttontextcolor,
+    required this.offertextcolor,
+    required this.offerbgcolor,
+    required this.unitcolor,
+    required this.offertext2,
+    required this.offerborder,
+    required this.title,
+    required this.subtitle,
   });
 
   @override
   Widget build(BuildContext context) {
+    ThemeData theme = Theme.of(context);
     return showcategory
         ? BlocProvider(
             create: (context) =>
@@ -63,8 +81,7 @@ class CategoryModel4 extends StatelessWidget {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     Text(
-                                      state.products.first.subCategoryRef
-                                          .name, // Display section title
+                                      title, // Display section title
                                       style: TextStyle(
                                           color: parseColor("2C8E55"),
                                           fontSize: 18,
@@ -72,7 +89,7 @@ class CategoryModel4 extends StatelessWidget {
                                     ),
                                     const SizedBox(height: 5),
                                     Text(
-                                      "Starting at just ₹102/kg", // Display section title
+                                      subtitle, // Display section title
                                       style: TextStyle(
                                           color: parseColor(titleColor),
                                           fontSize: 16,
@@ -81,9 +98,9 @@ class CategoryModel4 extends StatelessWidget {
                                   ],
                                 ),
                                 Text(
-                                  "See All >", // Display section title
+                                  "See All  >", // Display section title
                                   style: TextStyle(
-                                      color: parseColor("233D4D"),
+                                      color: parseColor(seeAllButtontext),
                                       fontSize: 16,
                                       fontWeight: FontWeight.w600),
                                 ),
@@ -100,11 +117,19 @@ class CategoryModel4 extends StatelessWidget {
                                     : 5,
                                 itemBuilder: (context, index) {
                                   return productItem(
+                                      buttonbgcolor: buttonbgcolor,
+                                      buttontextcolor: buttontextcolor,
+                                      offerTextcolor: offertextcolor,
+                                      offerbgcolor: offerbgcolor,
+                                      theme: theme,
+                                      unitcolor: unitcolor,
                                       mrpColor: mrpColor,
                                       sellingpricecolor: sellingpricecolor,
                                       productcolor: productColor,
                                       name: state.products[index].productName,
                                       price: 200,
+                                      offerborder: offerborder,
+                                      offertext2: offertext2,
                                       bgcolor: state
                                           .products.first.categoryRef.color,
                                       imageurl: state
@@ -171,6 +196,14 @@ Widget productItem(
     required String productcolor,
     required String sellingpricecolor,
     required String mrpColor,
+    required String buttonbgcolor,
+    required String buttontextcolor,
+    required String offerbgcolor,
+    required String offerTextcolor,
+    required String unitcolor,
+    required String offertext2,
+    required String offerborder,
+    required ThemeData theme,
     required BuildContext context}) {
   final theme = Theme.of(context);
   return Padding(
@@ -191,9 +224,10 @@ Widget productItem(
                     height: 58,
                     width: 154,
                     decoration: BoxDecoration(
-                      border: const Border(
+                      border: Border(
                         top: BorderSide(
-                          color: Colors.yellow, // Change color as needed
+                          color:
+                              parseColor(offerborder), // Change color as needed
                           width: 2.0, // Change width as needed
                         ),
                       ),
@@ -217,7 +251,7 @@ Widget productItem(
                             style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w900,
-                                color: parseColor(mrpColor))),
+                                color: parseColor(sellingpricecolor))),
                       ],
                     ),
                   ),
@@ -246,7 +280,7 @@ Widget productItem(
                             child: Container(
                               width: 55,
                               height: 55,
-                              color: Colors.green,
+                              color: parseColor(offerbgcolor),
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -254,14 +288,14 @@ Widget productItem(
                                   Text(
                                     "30%",
                                     style: theme.textTheme.bodyMedium!.copyWith(
-                                        color: parseColor("233D4D"),
+                                        color: parseColor(offerTextcolor),
                                         fontFamily: "Inter",
                                         fontWeight: FontWeight.w900),
                                   ),
                                   Text(
                                     "OFF",
                                     style: theme.textTheme.bodyMedium!.copyWith(
-                                      color: parseColor("233D4D"),
+                                      color: parseColor(offertext2),
                                       fontFamily: "Inter",
                                     ),
                                   ),
@@ -295,8 +329,8 @@ Widget productItem(
             ),
           ),
           const SizedBox(height: 5),
-          const Padding(
-            padding: EdgeInsets.only(
+          Padding(
+            padding: const EdgeInsets.only(
               left: 10.0,
               right: 10,
             ),
@@ -304,7 +338,10 @@ Widget productItem(
               "500 g",
               textAlign: TextAlign.start,
               maxLines: 2,
-              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700),
+              style: theme.textTheme.bodyMedium!.copyWith(
+                  fontSize: 14,
+                  color: parseColor(unitcolor),
+                  fontWeight: FontWeight.w700),
             ),
           ),
           const SizedBox(height: 5),
@@ -319,16 +356,16 @@ Widget productItem(
               child: ElevatedButton(
                 onPressed: () {},
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: parseColor("#FFFFFF"),
+                  backgroundColor: parseColor(buttonbgcolor),
                   shape: RoundedRectangleBorder(
-                    side: BorderSide(color: parseColor("#E23338")),
+                    side: BorderSide(color: parseColor(buttontextcolor)),
                     borderRadius: BorderRadius.circular(5),
                   ),
                 ),
                 child: Text(
                   'Add to Cart',
                   style: TextStyle(
-                    color: parseColor("#E23338"),
+                    color: parseColor(buttontextcolor),
                     fontWeight: FontWeight.w800,
                     fontSize: 13,
                   ),

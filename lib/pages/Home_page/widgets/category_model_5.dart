@@ -21,6 +21,11 @@ class CategoryModel5 extends StatelessWidget {
   final String mrpColor;
   final String sellingPriceColor;
   final bool showcategory;
+  final String indicatercolor;
+  final String buttontextcolor;
+  final String offertextcolor;
+  final String buttonbgcolor;
+  final String unitcolor;
 
   const CategoryModel5({
     super.key,
@@ -36,6 +41,11 @@ class CategoryModel5 extends StatelessWidget {
     required this.sellingPriceColor,
     required this.brandImage,
     required this.showcategory,
+    required this.indicatercolor,
+    required this.buttontextcolor,
+    required this.offertextcolor,
+    required this.buttonbgcolor,
+    required this.unitcolor,
   });
 
   @override
@@ -102,10 +112,11 @@ class CategoryModel5 extends StatelessWidget {
                                                         .id));
                                           },
                                           child: subcategoryItem(
+                                              indicatercolor: indicatercolor,
+                                              bgcolor: bgcolor,
                                               name: state
                                                   .subCategories[index].name,
-                                              bgcolor: "ffffff",
-                                              textcolor: "000000",
+                                              textcolor: subcatColor,
                                               imageurl: state
                                                   .subCategories[index]
                                                   .imageUrl,
@@ -127,21 +138,22 @@ class CategoryModel5 extends StatelessWidget {
                                     mainAxisSpacing: 8,
                                     crossAxisSpacing: 8,
                                     children: List.generate(
-                                        state
-                                                    .products
-                                                    .where((product) =>
-                                                        product.subCategoryRef
-                                                            .id ==
-                                                        state
-                                                            .selectedCategoryId)
-                                                    .toList()
+                                        state.products
+                                                    .where((product) => product
+                                                        .subCategoryRef
+                                                        .any((subCategory) =>
+                                                            subCategory.id ==
+                                                            state
+                                                                .selectedCategoryId))
                                                     .length <=
                                                 6
                                             ? state.products
-                                                .where((product) =>
-                                                    product.subCategoryRef.id ==
-                                                    state.selectedCategoryId)
-                                                .toList()
+                                                .where((product) => product
+                                                    .subCategoryRef
+                                                    .any((subCategory) =>
+                                                        subCategory.id ==
+                                                        state
+                                                            .selectedCategoryId))
                                                 .length
                                             : 6, (index) {
                                       return StaggeredGridTile.extent(
@@ -149,37 +161,39 @@ class CategoryModel5 extends StatelessWidget {
                                         mainAxisExtent: 266,
                                         child: ProductItem(
                                           product: state.products
-                                              .where((product) =>
-                                                  product.subCategoryRef.id ==
-                                                  state.selectedCategoryId)
+                                              .where((product) => product
+                                                  .subCategoryRef
+                                                  .any((subCategory) =>
+                                                      subCategory.id ==
+                                                      state.selectedCategoryId))
                                               .toList()[index],
-                                          buttontextcolor: "E23338",
+                                          buttontextcolor: buttontextcolor,
+                                          offertextcolor: offertextcolor,
+                                          buttonBgColor: buttonbgcolor,
+                                          unitTextcolor: unitcolor,
                                           context: context,
-                                          offertextcolor: "FFFFFF",
-                                          productBgColor: "FFFFFF",
-
-                                          buttonBgColor: "FFFFFF",
-                                          sellingPriceColor: "000000",
-                                          unitTextcolor: "000000",
-                                          offerbgcolor: "FFFFFF",
-                                          // bgcolor: "FFFFFF",
+                                          productBgColor: productBgColor,
+                                          sellingPriceColor: sellingPriceColor,
+                                          offerbgcolor: offerBGcolor,
                                           imageurl: state.products
-                                              .where((product) =>
-                                                  product.subCategoryRef.id ==
-                                                  state.selectedCategoryId)
+                                              .where((product) => product
+                                                  .subCategoryRef
+                                                  .any((subCategory) =>
+                                                      subCategory.id ==
+                                                      state.selectedCategoryId))
                                               .toList()[index]
                                               .productImages
                                               .first,
-                                          mrpColor: "FFFFFF",
+                                          mrpColor: mrpColor,
                                           name: state.products
-                                              .where((product) =>
-                                                  product.subCategoryRef.id ==
-                                                  state.selectedCategoryId)
+                                              .where((product) => product
+                                                  .subCategoryRef
+                                                  .any((subCategory) =>
+                                                      subCategory.id ==
+                                                      state.selectedCategoryId))
                                               .toList()[index]
                                               .productName,
                                           price: 85,
-
-                                          sellingpricecolor: "00000",
                                         ),
                                       );
                                     }),
@@ -206,6 +220,7 @@ Widget subcategoryItem(
     required String bgcolor,
     required String textcolor,
     required String imageurl,
+    required String indicatercolor,
     required String selectedId,
     required String subcatId,
     required ThemeData theme,
@@ -222,14 +237,14 @@ Widget subcategoryItem(
               width: 80,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(8),
-                color: parseColor(bgcolor),
+                color: lightenColor(parseColor(bgcolor), .9),
                 image: DecorationImage(
                   image: NetworkImage(imageurl),
                   fit: BoxFit.fill,
                 ),
               ),
             ),
-            const SizedBox(height: 4),
+            const SizedBox(height: 5),
             Text(
               name,
               textAlign: TextAlign.center,
@@ -247,7 +262,9 @@ Widget subcategoryItem(
           height: 5,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(8),
-            color: subcatId == selectedId ? Colors.white : Colors.transparent,
+            color: subcatId == selectedId
+                ? parseColor(indicatercolor)
+                : Colors.transparent,
           ),
         )
       ],

@@ -14,6 +14,7 @@ class CategoryModel3 extends StatelessWidget {
   final List<String> maincategories;
   final List<String> secondarycategories;
   final bool showcategory;
+  final String title;
 
   const CategoryModel3(
       {super.key,
@@ -23,7 +24,8 @@ class CategoryModel3 extends StatelessWidget {
       required this.subcatColor,
       required this.maincategories,
       required this.secondarycategories,
-      required this.showcategory});
+      required this.showcategory,
+      required this.title});
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +60,7 @@ class CategoryModel3 extends StatelessWidget {
                           children: [
                             const SizedBox(height: 15),
                             Text(
-                              state.category.name,
+                              title ?? state.category.name,
                               style: theme.textTheme.titleLarge!.copyWith(
                                   fontWeight: FontWeight.w600,
                                   color: parseColor(titleColor)),

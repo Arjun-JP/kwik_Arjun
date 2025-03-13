@@ -102,7 +102,7 @@ class SupersaverModel5 extends StatelessWidget {
                                     price: 85,
                                     offertextcolor: offerTextcolor,
                                     buttonBgColor: productBgColor,
-                                    sellingpricecolor: sellingPriceColor,
+
                                     buttontextcolor: buttontextcolor,
                                     context: context,
                                     productBgColor: productBgColor,
