@@ -1,5 +1,4 @@
 import 'package:hive/hive.dart';
-
 part 'category_model.g.dart'; // The generated file from build_runner
 
 @HiveType(typeId: 11) // Unique typeId for Category model
@@ -34,6 +33,12 @@ class Category {
   @HiveField(9)
   final bool isDeleted; // New field for deletion status
 
+  @HiveField(10)
+  final List<dynamic>? selectedSubCategoryRef;
+
+  @HiveField(11)
+  final bool? islandingPage;
+
   Category({
     required this.catref,
     required this.id,
@@ -43,6 +48,8 @@ class Category {
     required this.color,
     required this.bannerImage,
     required this.isDeleted,
+    this.selectedSubCategoryRef,
+    this.islandingPage,
     this.visibility,
     this.createdTime,
   });
@@ -62,7 +69,9 @@ class Category {
           DateTime.now().toString(), // Handle null createdTime
       bannerImage:
           json['category_banner_image'] ?? "", // Handle null banner image
-      isDeleted: json['isDeleted'] ?? false, // Handle null isDeleted
+      isDeleted: json['isDeleted'] ?? false,
+      selectedSubCategoryRef: json["selected_sub_category_ref"] ?? [],
+      islandingPage: json["is_landingPage"] ?? false, // Handle null isDeleted
     );
   }
 
@@ -79,6 +88,7 @@ class Category {
       'created_time': createdTime,
       'banner_image': bannerImage,
       'is_deleted': isDeleted,
+      'selected_sub_category_ref': selectedSubCategoryRef
     };
   }
 
@@ -94,6 +104,7 @@ class Category {
       bannerImage: '',
       isDeleted: false,
       visibility: true,
+      selectedSubCategoryRef: [],
       createdTime: DateTime.now().toString(),
     );
   }

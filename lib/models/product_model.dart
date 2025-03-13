@@ -29,7 +29,7 @@ class ProductModel extends HiveObject {
   final Category categoryRef;
 
   @HiveField(6)
-  final SubCategoryModel subCategoryRef;
+  final List<SubCategoryModel> subCategoryRef;
 
   @HiveField(7)
   final List<VariationModel> variations;
@@ -81,8 +81,10 @@ class ProductModel extends HiveObject {
           ? Category.fromJson(json['category_ref'])
           : Category.empty(),
       subCategoryRef: json['sub_category_ref'] != null
-          ? SubCategoryModel.fromJson(json['sub_category_ref'])
-          : SubCategoryModel.empty(),
+          ? (json['sub_category_ref'] as List<dynamic>)
+              .map((e) => SubCategoryModel.fromJson(e as Map<String, dynamic>))
+              .toList()
+          : [],
       variations: (json['variations'] as List<dynamic>?)
               ?.map((e) => VariationModel.fromJson(e))
               .toList() ??
@@ -110,7 +112,9 @@ class ProductModel extends HiveObject {
       'product_image': productImages,
       'Brand': brandId.toJson(),
       'category_ref': categoryRef.toJson(),
-      'sub_category_ref': subCategoryRef.toJson(),
+      'sub_category_ref': subCategoryRef
+          .map((e) => e.toJson())
+          .toList(), // Updated to handle list
       'variations': variations.map((e) => e.toJson()).toList(),
       'warehouse_ref': warehouseRefs.map((e) => e.toJson()).toList(),
       'sku': sku,

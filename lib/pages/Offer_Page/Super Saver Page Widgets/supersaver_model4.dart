@@ -95,7 +95,6 @@ class SupersaverModel4 extends StatelessWidget {
                           buttonBgColor: productColor,
                           offerbgcolor: ratingBgColor,
                           sellingPriceColor: sellTextColor,
-                          sellingpricecolor: sellPriceBgColor,
                           unitTextcolor: offertextcolor,
                           offertextcolor: "000000",
                           price: 278,

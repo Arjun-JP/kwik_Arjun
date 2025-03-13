@@ -103,9 +103,9 @@ class _CategoryLandingPageState extends State<CategoryLandingPage> {
                   return Center(child: Text(state.message));
                 } else if (state is CategoryLoadedState) {
                   List<ProductModel> filteredProducts = state.products
-                      .where((product) =>
-                          product.subCategoryRef.id == state.selectedCategoryId)
-                      .toSet()
+                      .where((product) => product.subCategoryRef.any(
+                          (subCategory) =>
+                              subCategory.id == state.selectedCategoryId))
                       .toList();
                   return Padding(
                       padding: const EdgeInsets.symmetric(vertical: 10),

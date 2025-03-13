@@ -123,17 +123,21 @@ class CategoryModel13 extends StatelessWidget {
                                 crossAxisSpacing: 8,
                                 children: List.generate(
                                     state.products
-                                                .where((product) =>
-                                                    product.subCategoryRef.id ==
-                                                    state.selectedCategoryId)
+                                                .where((product) => product
+                                                    .subCategoryRef
+                                                    .any((subCategory) =>
+                                                        subCategory.id ==
+                                                        state
+                                                            .selectedCategoryId))
                                                 .toList()
                                                 .length <=
                                             6
                                         ? state.products
-                                            .where((product) =>
-                                                product.subCategoryRef.id ==
-                                                state.selectedCategoryId)
-                                            .toList()
+                                            .where((product) => product
+                                                .subCategoryRef
+                                                .any((subCategory) =>
+                                                    subCategory.id ==
+                                                    state.selectedCategoryId))
                                             .length
                                         : 6, (index) {
                                   return StaggeredGridTile.extent(
@@ -141,9 +145,11 @@ class CategoryModel13 extends StatelessWidget {
                                     mainAxisExtent: 216,
                                     child: ProductItem(
                                       product: state.products
-                                          .where((product) =>
-                                              product.subCategoryRef.id ==
-                                              state.selectedCategoryId)
+                                          .where((product) => product
+                                              .subCategoryRef
+                                              .any((subCategory) =>
+                                                  subCategory.id ==
+                                                  state.selectedCategoryId))
                                           .toList()[index],
                                       buttontextcolor: "000000",
                                       context: context,
@@ -154,21 +160,24 @@ class CategoryModel13 extends StatelessWidget {
                                       unitTextcolor: "000000",
                                       offerbgcolor: "FFFFFF",
                                       imageurl: state.products
-                                          .where((product) =>
-                                              product.subCategoryRef.id ==
-                                              state.selectedCategoryId)
+                                          .where((product) => product
+                                              .subCategoryRef
+                                              .any((subCategory) =>
+                                                  subCategory.id ==
+                                                  state.selectedCategoryId))
                                           .toList()[index]
                                           .productImages
                                           .first,
                                       mrpColor: "FFFFFF",
                                       name: state.products
-                                          .where((product) =>
-                                              product.subCategoryRef.id ==
-                                              state.selectedCategoryId)
+                                          .where((product) => product
+                                              .subCategoryRef
+                                              .any((subCategory) =>
+                                                  subCategory.id ==
+                                                  state.selectedCategoryId))
                                           .toList()[index]
                                           .productName,
                                       price: 85,
-                                      sellingpricecolor: "00000",
                                     ),
                                   );
                                 }),

@@ -78,6 +78,39 @@ void main() async {
   Hive.registerAdapter(BannerModelAdapter());
   Hive.registerAdapter(WarehouseModelAdapter());
   Hive.registerAdapter(BrandAdapter());
+
+  await Hive.deleteBoxFromDisk('product_cache');
+  await Hive.deleteBoxFromDisk('product_cache_category_model7');
+  await Hive.deleteBoxFromDisk('subCategoriesBox'); // Open boxes before usage
+  await Hive.deleteBoxFromDisk('productsBox');
+  await Hive.deleteBoxFromDisk('productsBoxcatmodel9');
+  await Hive.deleteBoxFromDisk('productsBoxcatmodel12');
+  await Hive.deleteBoxFromDisk('product_cache_category_model10');
+  await Hive.deleteBoxFromDisk('categoryPagemodel1Cache');
+  await Hive.deleteBoxFromDisk('subCategoryPagemodel1Cache');
+  await Hive.deleteBoxFromDisk('categoryPagemodel2Cache');
+  await Hive.deleteBoxFromDisk('subCategoryPagemodel2Cache');
+  await Hive.deleteBoxFromDisk('categoryPagemodel3Cache');
+  await Hive.deleteBoxFromDisk('subCategoryPagemodel3Cache');
+  await Hive.deleteBoxFromDisk('subCategoriesBoxCatPage');
+  await Hive.deleteBoxFromDisk('productsBoxCatPage');
+  await Hive.deleteBoxFromDisk('categorymodel8Cache');
+  await Hive.deleteBoxFromDisk('subCategorymodel8Cache');
+  await Hive.deleteBoxFromDisk('categoryPagemodel10Cache');
+  await Hive.deleteBoxFromDisk('subCategoriesBoxCM14');
+  await Hive.deleteBoxFromDisk('productsBoxCM14');
+  await Hive.deleteBoxFromDisk('subCategoryPagemodel10Cache');
+  await Hive.deleteBoxFromDisk('product_cache_category_ss2');
+  await Hive.deleteBoxFromDisk('product_cache_SS5');
+  await Hive.deleteBoxFromDisk('productsBoxcatmodel15');
+  await Hive.deleteBoxFromDisk('categorymodel16Cache');
+  await Hive.deleteBoxFromDisk('subCategorymodel16Cache');
+  // await Hive.deleteBoxFromDisk('subcategories_CatM5');
+  await Hive.deleteBoxFromDisk('All_category_box');
+  await Hive.deleteBoxFromDisk('all_subcategory_box');
+  await Hive.deleteBoxFromDisk('subCategoriesBoxcategorylanding');
+  await Hive.deleteBoxFromDisk('productsBoxcategorylanding');
+
 // Print the path to the console
   await Hive.openBox('product_cache');
   await Hive.openBox('product_cache_category_model7');
