@@ -81,6 +81,7 @@ class CategoryModel14 extends StatelessWidget {
                                                   .subCategories[index].id));
                                     },
                                     child: subcategoryItem(
+                                        indicatercolor: "000000",
                                         name: state.subCategories[index].name,
                                         bgcolor: "ffffff",
                                         textcolor: "000000",
@@ -259,6 +260,7 @@ Widget subcategoryItem(
     required String imageurl,
     required String selectedId,
     required String subcatId,
+    required String indicatercolor,
     required ThemeData theme,
     required BuildContext context}) {
   return SizedBox(
@@ -298,7 +300,9 @@ Widget subcategoryItem(
           height: 5,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(8),
-            color: subcatId == selectedId ? Colors.black : Colors.transparent,
+            color: subcatId == selectedId
+                ? parseColor(indicatercolor)
+                : Colors.transparent,
           ),
         )
       ],

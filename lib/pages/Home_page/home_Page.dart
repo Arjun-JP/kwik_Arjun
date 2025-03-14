@@ -237,30 +237,30 @@ class _HomePageState extends State<HomePage> {
                   //   'order': uiData["template4"]["ui_order_number"]
                   // },
 
-                  {
-                    'template': CategoryModel4(
-                      buttonbgcolor: uiData["template6"]["buttonbgcolor"],
-                      buttontextcolor: uiData["template6"]["buttontextcolor"],
-                      offerbgcolor: uiData["template6"]["offerbgcolor"],
-                      offertextcolor: uiData["template6"]["offertextcolor"],
-                      offertext2: uiData["template6"]["offertext2"],
-                      offerborder: uiData["template6"]["offerborder"],
-                      unitcolor: uiData["template6"]["unitcolor"],
-                      seeAllButtonBG: uiData["template6"]["seeAllButtonBG"],
-                      seeAllButtontext: uiData["template6"]["seeAllButtontext"],
-                      mrpColor: uiData["template6"]["mrp_color"],
-                      sellingpricecolor: uiData["template6"]
-                          ["selling_price_color"],
-                      title: uiData["template6"]["title"],
-                      subtitle: uiData["template6"]["subtitle"],
-                      subCategoryId: uiData["template6"]["sub_category_ref"],
-                      bgcolor: uiData["template6"]["background_color"],
-                      titleColor: uiData["template6"]["title_color"],
-                      productColor: uiData["template6"]["subcat_color"],
-                      showcategory: uiData["template6"]["show_Category"],
-                    ),
-                    'order': uiData["template6"]["ui_order_number"]
-                  },
+                  // {
+                  //   'template': CategoryModel4(
+                  //     buttonbgcolor: uiData["template6"]["buttonbgcolor"],
+                  //     buttontextcolor: uiData["template6"]["buttontextcolor"],
+                  //     offerbgcolor: uiData["template6"]["offerbgcolor"],
+                  //     offertextcolor: uiData["template6"]["offertextcolor"],
+                  //     offertext2: uiData["template6"]["offertext2"],
+                  //     offerborder: uiData["template6"]["offerborder"],
+                  //     unitcolor: uiData["template6"]["unitcolor"],
+                  //     seeAllButtonBG: uiData["template6"]["seeAllButtonBG"],
+                  //     seeAllButtontext: uiData["template6"]["seeAllButtontext"],
+                  //     mrpColor: uiData["template6"]["mrp_color"],
+                  //     sellingpricecolor: uiData["template6"]
+                  //         ["selling_price_color"],
+                  //     title: uiData["template6"]["title"],
+                  //     subtitle: uiData["template6"]["subtitle"],
+                  //     subCategoryId: uiData["template6"]["sub_category_ref"],
+                  //     bgcolor: uiData["template6"]["background_color"],
+                  //     titleColor: uiData["template6"]["title_color"],
+                  //     productColor: uiData["template6"]["subcat_color"],
+                  //     showcategory: uiData["template6"]["show_Category"],
+                  //   ),
+                  //   'order': uiData["template6"]["ui_order_number"]
+                  // },
 
                   // {
                   //   'template': CategoryModel5(
@@ -303,76 +303,78 @@ class _HomePageState extends State<HomePage> {
                   //   'order': uiData["template9"]["ui_order_number"]
                   // },
 
-                  {
-                    'template': CategoryModel9(
-                      seeAllButtonBG: "D5E2C9",
-                      seeAllButtontext: "00AE11",
-                      maincategories: List<String>.from(
-                          uiData["template12"]["maincategories"]),
-                      categoryId: uiData["template12"]["categoryId"],
-                      bgcolor: uiData["template12"]["bgcolor"],
-                      titleColor: uiData["template12"]["titleColor"],
-                      subcatColor: uiData["template12"]["offerBGcolor"],
-                      offerBGcolor: uiData["template12"]["offerBGcolor"],
-                      mrpColor: uiData["template12"]["mrpColor"],
-                      productBgColor: uiData["template12"]["productBgColor"],
-                      sellingPriceColor: uiData["template12"]
-                          ["sellingPriceColor"],
-                      buttontextcolor: uiData["template12"]["buttontextcolor"],
-                      offerTextcolor: uiData["template12"]["offerTextcolor"],
-                      title: uiData["template12"]["title"],
-                      unitTextcolor: uiData["template12"]["unitTextcolor"],
-                      unitbgcolor: uiData["template12"]["unitbgcolor"],
-                      showcategory: uiData["template12"]["show_Category"],
-                    ),
-                    'order': uiData["template12"]["ui_order_number"]
-                  },
-                  {
-                    'template': CategoryModel10(
-                      title: uiData["template13"]["title"],
-                      titleColor: uiData["template13"]["titleColor"],
-                      bgcolor: uiData["template13"]["background_color"],
-                      image: uiData["template13"]["image"],
-                      cartbuttontextcolor: uiData["template13"]
-                          ["cartbuttontextcolor"],
-                      mrpcolor: uiData["template13"]["mrpcolor"],
-                      crosscolor: uiData["template13"]["crosscolor"],
-                      prodoductbgcolor: uiData["template13"]
-                          ["prodoductbgcolor"],
-                      productTextColor: uiData["template13"]
-                          ["productTextColor"],
-                      sellingpricecolor: uiData["template13"]
-                          ["sellingpricecolor"],
-                      seeAllButtonBG: uiData["template13"]["seeAllButtonBG"],
-                      seeAllButtontext: uiData["template13"]
-                          ["seeAllButtontext"],
-                      showcategory: uiData["template13"]["show_Category"],
-                    ),
-                    'order': uiData["template13"]["ui_order_number"]
-                  },
+                  // {
+                  //   'template': CategoryModel9(
+                  //     seeAllButtonBG: uiData["template12"]["seeAllButtonBG"],
+                  //     seeAllButtontext: uiData["template12"]
+                  //         ["seeAllButtontext"],
+                  //     maincategories: List<String>.from(
+                  //         uiData["template12"]["maincategories"]),
+                  //     categoryId: uiData["template12"]["categoryId"],
+                  //     bgcolor: uiData["template12"]["bgcolor"],
+                  //     titleColor: uiData["template12"]["titleColor"],
+                  //     subcatColor: uiData["template12"]["offerBGcolor"],
+                  //     offerBGcolor: uiData["template12"]["offerBGcolor"],
+                  //     mrpColor: uiData["template12"]["mrpColor"],
+                  //     productBgColor: uiData["template12"]["productBgColor"],
+                  //     sellingPriceColor: uiData["template12"]
+                  //         ["sellingPriceColor"],
+                  //     buttontextcolor: uiData["template12"]["buttontextcolor"],
+                  //     offerTextcolor: uiData["template12"]["offerTextcolor"],
+                  //     title: uiData["template12"]["title"],
+                  //     unitTextcolor: uiData["template12"]["unitTextcolor"],
+                  //     unitbgcolor: uiData["template12"]["unitbgcolor"],
+                  //     showcategory: uiData["template12"]["show_Category"],
+                  //   ),
+                  //   'order': uiData["template12"]["ui_order_number"]
+                  // },
+                  // {
+                  //   'template': CategoryModel10(
+                  //     title: uiData["template13"]["title"],
+                  //     titleColor: uiData["template13"]["titleColor"],
+                  //     bgcolor: uiData["template13"]["background_color"],
+                  //     image: uiData["template13"]["image"],
+                  //     cartbuttontextcolor: uiData["template13"]
+                  //         ["cartbuttontextcolor"],
+                  //     mrpcolor: uiData["template13"]["mrpcolor"],
+                  //     crosscolor: uiData["template13"]["crosscolor"],
+                  //     prodoductbgcolor: uiData["template13"]
+                  //         ["prodoductbgcolor"],
+                  //     productTextColor: uiData["template13"]
+                  //         ["productTextColor"],
+                  //     sellingpricecolor: uiData["template13"]
+                  //         ["sellingpricecolor"],
+                  //     seeAllButtonBG: uiData["template13"]["seeAllButtonBG"],
+                  //     seeAllButtontext: uiData["template13"]
+                  //         ["seeAllButtontext"],
+                  //     showcategory: uiData["template13"]["show_Category"],
+                  //   ),
+                  //   'order': uiData["template13"]["ui_order_number"]
+                  // },
 
-                  {
-                    'template': CategoryModel12(
-                      topimage: uiData["template14"]["top_image"],
-                      seeAllButtonBG: "D5E2C9",
-                      seeAllButtontext: "00AE11",
-                      maincategories: List<String>.from(
-                          uiData["template14"]["maincategories"]),
-                      categoryId: uiData["template14"]["category_ref"],
-                      bgcolor: uiData["template14"]["bgcolor"],
-                      subcatColor: uiData["template14"]["bgcolor"],
-                      mrpColor: uiData["template14"]["mrpColor"],
-                      productBgColor: uiData["template14"]["productBgColor"],
-                      sellingPriceColor: uiData["template14"]
-                          ["sellingPriceColor"],
-                      buttontextcolor: uiData["template14"]["buttontextcolor"],
-                      offerTextcolor: uiData["template14"]["offerTextcolor"],
-                      unitTextcolor: uiData["template14"]["unitTextcolor"],
-                      unitbgcolor: uiData["template14"]["unitbgcolor"],
-                      showcategory: uiData["template14"]["show_Category"],
-                    ),
-                    'order': uiData["template14"]["ui_order_number"]
-                  },
+                  // {
+                  //   'template': CategoryModel12(
+                  //     topimage: uiData["template14"]["top_image"],
+                  //     seeAllButtonBG: uiData["template14"]["seeAllButtonBG"],
+                  //     seeAllButtontext: uiData["template14"]
+                  //         ["seeAllButtontext"],
+                  //     maincategories: List<String>.from(
+                  //         uiData["template14"]["maincategories"]),
+                  //     categoryId: uiData["template14"]["category_ref"],
+                  //     bgcolor: uiData["template14"]["bgcolor"],
+                  //     subcatColor: uiData["template14"]["bgcolor"],
+                  //     mrpColor: uiData["template14"]["mrpColor"],
+                  //     productBgColor: uiData["template14"]["productBgColor"],
+                  //     sellingPriceColor: uiData["template14"]
+                  //         ["sellingPriceColor"],
+                  //     buttontextcolor: uiData["template14"]["buttontextcolor"],
+                  //     offerTextcolor: uiData["template14"]["offerTextcolor"],
+                  //     unitTextcolor: uiData["template14"]["unitTextcolor"],
+                  //     unitbgcolor: uiData["template14"]["unitbgcolor"],
+                  //     showcategory: uiData["template14"]["show_Category"],
+                  //   ),
+                  //   'order': uiData["template14"]["ui_order_number"]
+                  // },
 
                   {
                     'template': CategoryModel14(

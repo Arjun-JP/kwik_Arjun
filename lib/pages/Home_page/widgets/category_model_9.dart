@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:kwik/models/product_model.dart';
 import 'package:kwik/widgets/produc_model_1.dart';
 import '../../../bloc/home_page_bloc/category_model_9_bloc/category_model_9_bloc.dart';
 import '../../../bloc/home_page_bloc/category_model_9_bloc/category_model_9_event.dart';
@@ -98,11 +99,8 @@ class CategoryModel9 extends StatelessWidget {
                                         mainAxisExtent: 240,
                                         child: productItem(
                                             // bgcolor: "FFFFFF",
-                                            imageurl: state.products[index]
-                                                .productImages.first,
+                                            product: state.products[index],
                                             mrpColor: mrpColor,
-                                            name: state
-                                                .products[index].productName,
                                             price: 85,
                                             offertextcolor: offerTextcolor,
                                             productcolor: productBgColor,
@@ -176,9 +174,8 @@ class CategoryModel9 extends StatelessWidget {
 }
 
 Widget productItem({
-  required String name,
+  required ProductModel product,
   required double price,
-  required String imageurl,
   required String productcolor,
   required String sellingpricecolor,
   required String mrpColor,
@@ -207,12 +204,12 @@ Widget productItem({
             spacing: 5,
             children: [
               Container(
-                height: 150,
+                height: 120,
                 decoration: BoxDecoration(
                   color: parseColor(productcolor),
                   borderRadius: BorderRadius.circular(12),
                   image: DecorationImage(
-                    image: NetworkImage(imageurl),
+                    image: NetworkImage(product.productImages[0]),
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -240,15 +237,59 @@ Widget productItem({
                   ],
                 ),
               ),
-              const SizedBox(
+              SizedBox(
                 width: 120,
                 child: Text(
-                  "Lay’s American Style Cream & Onion Potato C..",
+                  product.productName,
                   textAlign: TextAlign.left,
                   maxLines: 3,
-                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
+                  style: const TextStyle(
+                      fontSize: 12, fontWeight: FontWeight.w500),
                 ),
               ),
+              const SizedBox(
+                  child: Row(
+                children: [
+                  Icon(
+                    Icons.star_rounded,
+                    color: Colors.amber,
+                    size: 15,
+                  ),
+                  Icon(
+                    Icons.star_rounded,
+                    color: Colors.amber,
+                    size: 15,
+                  ),
+                  Icon(
+                    Icons.star_rounded,
+                    color: Colors.amber,
+                    size: 15,
+                  ),
+                  Icon(
+                    Icons.star_rounded,
+                    color: Colors.amber,
+                    size: 15,
+                  ),
+                  Icon(
+                    Icons.star_outline_rounded,
+                    color: Colors.amber,
+                    size: 15,
+                  ),
+                ],
+              )),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                spacing: 8,
+                children: [
+                  Text("₹ 137",
+                      style: theme.textTheme.bodyMedium!
+                          .copyWith(color: parseColor(sellingpricecolor))),
+                  Text("₹ 137",
+                      style: theme.textTheme.bodyMedium!.copyWith(
+                          decoration: TextDecoration.lineThrough,
+                          color: parseColor(mrpColor)))
+                ],
+              )
             ],
           ),
         ),
@@ -285,7 +326,7 @@ Widget productItem({
           ),
         ),
         Positioned(
-          top: 125,
+          top: 95,
           right: -10,
           child: Container(
             height: 35,
