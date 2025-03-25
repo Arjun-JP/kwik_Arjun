@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kwik/bloc/home_page_bloc/category_model_16_bloc/category_model_16_state.dart';
 import 'package:kwik/constants/colors.dart';
+import 'package:kwik/models/subcategory_model.dart';
 import 'package:kwik/repositories/category_model2_repository.dart';
+import 'package:kwik/widgets/shimmer/product_model1_list.dart';
 
 import '../../../bloc/home_page_bloc/category_model_16_bloc/category_model_16_bloc.dart';
 import '../../../bloc/home_page_bloc/category_model_16_bloc/category_model_16_event.dart';
@@ -10,17 +12,27 @@ import '../../../bloc/home_page_bloc/category_model_16_bloc/category_model_16_ev
 class CategoryModel16 extends StatelessWidget {
   final String categoryId;
   final String bgcolor;
+  final String title;
   final String titleColor;
-  final String subcatColor;
+  final List<String> subcategroylist;
   final bool showcategory;
+  final String categorybgcolor;
+  final String offerbgcolor;
+  final String offertext1;
+  final String offertext2;
 
   const CategoryModel16({
     super.key,
     required this.categoryId,
     required this.bgcolor,
     required this.titleColor,
-    required this.subcatColor,
     required this.showcategory,
+    required this.title,
+    required this.categorybgcolor,
+    required this.offerbgcolor,
+    required this.offertext1,
+    required this.offertext2,
+    required this.subcategroylist,
   });
 
   @override
@@ -36,31 +48,40 @@ class CategoryModel16 extends StatelessWidget {
                 return BlocBuilder<CategoryBlocModel16, CategoryModel16State>(
                   builder: (context, state) {
                     if (state is CategoryLoading) {
-                      return const Center(child: CircularProgressIndicator());
+                      return const Center(child: ProductModel1ListShimmer());
                     } else if (state is CategoryLoaded) {
                       return Container(
-                        color: parseColor("FFF3C4"),
+                        color: parseColor(bgcolor),
                         width: double.infinity,
-                        height: 410,
+                        height: 425,
                         padding: const EdgeInsets.symmetric(horizontal: 10),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             const SizedBox(height: 15),
-                            Text(state.category.name,
+                            Text(title ?? state.category.name,
                                 style: theme.textTheme.titleLarge!.copyWith(
                                     fontWeight: FontWeight.w600,
                                     color: parseColor(titleColor))),
-                            const SizedBox(height: 12),
+                            const SizedBox(height: 15),
                             Padding(
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 5.0),
                               child: SizedBox(
-                                height: 340,
+                                height: 350,
                                 width: MediaQuery.of(context).size.width,
                                 child: GridView.builder(
-                                  itemCount: state.subCategories.length,
+                                  itemCount: state.subCategories
+                                              .where((subcat) => subcategroylist
+                                                  .contains(subcat.id))
+                                              .length >
+                                          6
+                                      ? 6
+                                      : state.subCategories
+                                          .where((subcat) => subcategroylist
+                                              .contains(subcat.id))
+                                          .length,
                                   physics: const NeverScrollableScrollPhysics(),
                                   gridDelegate:
                                       const SliverGridDelegateWithFixedCrossAxisCount(
@@ -70,12 +91,20 @@ class CategoryModel16 extends StatelessWidget {
                                     crossAxisSpacing: 25,
                                   ),
                                   itemBuilder: (context, index) {
+                                    List<SubCategoryModel> filtredsubcat = state
+                                        .subCategories
+                                        .where((subcat) =>
+                                            subcategroylist.contains(subcat.id))
+                                        .toList();
                                     return subcategoryItem(
-                                        name: state.subCategories[index].name,
+                                        categorybgcolor: categorybgcolor,
+                                        offerbgcolor: offerbgcolor,
+                                        offertext1: offertext1,
+                                        offertext2: offertext2,
+                                        name: filtredsubcat[index].name,
                                         bgcolor: state.category.color,
-                                        textcolor: subcatColor,
-                                        imageurl:
-                                            state.subCategories[index].imageUrl,
+                                        textcolor: titleColor,
+                                        imageurl: filtredsubcat[index].imageUrl,
                                         theme: theme);
                                   },
                                 ),
@@ -101,6 +130,10 @@ Widget subcategoryItem(
     {required String name,
     required String bgcolor,
     required String textcolor,
+    required String offerbgcolor,
+    required String offertext1,
+    required String offertext2,
+    required String categorybgcolor,
     required ThemeData theme,
     required String imageurl}) {
   return Column(
@@ -138,13 +171,14 @@ Widget subcategoryItem(
                     children: [
                       Text(
                         "Upto",
-                        style: theme.textTheme.bodySmall!
-                            .copyWith(fontWeight: FontWeight.w700),
+                        style: theme.textTheme.bodySmall!.copyWith(
+                            fontWeight: FontWeight.w700,
+                            color: parseColor(offertext1)),
                       ),
                       Text(
                         "85% OFF",
-                        style:
-                            theme.textTheme.bodyMedium!.copyWith(fontSize: 12),
+                        style: theme.textTheme.bodyMedium!.copyWith(
+                            fontSize: 12, color: parseColor(offertext2)),
                       ),
                     ],
                   ),
@@ -156,16 +190,18 @@ Widget subcategoryItem(
               child: Padding(
                 padding: const EdgeInsets.only(top: 45),
                 child: Text(
-                  "Toys",
+                  name,
                   maxLines: 2,
                   textAlign: TextAlign.center,
-                  style: theme.textTheme.bodySmall!
-                      .copyWith(fontWeight: FontWeight.w900, fontSize: 16),
+                  style: theme.textTheme.bodySmall!.copyWith(
+                      fontWeight: FontWeight.w900,
+                      fontSize: 16,
+                      color: parseColor(textcolor)),
                 ),
               ),
             ),
             Align(
-              alignment: const Alignment(0, 1.6),
+              alignment: const Alignment(0, 1.8),
               child: Image.network(
                   height: 85,
                   "https://firebasestorage.googleapis.com/v0/b/kwikgroceries-8a11e.firebasestorage.app/o/33571-5-plush-toy-image.png?alt=media&token=25835858-a69b-4ebb-8df0-76548d6c1b7d"),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kwik/constants/colors.dart';
+import 'package:kwik/widgets/shimmer/topcategory_shimmer.dart';
 
 import '../../../bloc/home_page_bloc/category_bloc/category_bloc.dart';
 import '../../../bloc/home_page_bloc/category_bloc/category_event.dart';
@@ -41,7 +42,11 @@ class _CategoryModel1State extends State<CategoryModel1> {
             child: BlocBuilder<CategoryBloc, CategoryState>(
               builder: (context, state) {
                 if (state is CategoryLoading) {
-                  return const Center(child: CircularProgressIndicator());
+                  return Center(
+                      child: TopcategoryShimmer(
+                    title: widget.title,
+                    titlecolor: widget.titlecolor,
+                  ));
                 } else if (state is CategoryLoaded) {
                   return Container(
                     color: parseColor(widget.bgColor),
@@ -53,8 +58,9 @@ class _CategoryModel1State extends State<CategoryModel1> {
                           const SizedBox(height: 7),
                           Text(
                             widget.title,
-                            style: theme.textTheme.titleLarge!
-                                .copyWith(fontWeight: FontWeight.w600),
+                            style: theme.textTheme.titleLarge!.copyWith(
+                                color: parseColor(widget.titlecolor),
+                                fontWeight: FontWeight.w600),
                           ),
                           const SizedBox(height: 10),
                           SingleChildScrollView(

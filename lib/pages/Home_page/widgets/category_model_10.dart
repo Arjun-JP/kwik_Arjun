@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:kwik/constants/colors.dart';
 import 'package:kwik/models/product_model.dart';
+import 'package:kwik/widgets/shimmer/product_model1_list.dart';
 import '../../../bloc/home_page_bloc/category_model_10_bloc/category_model_10_bloc.dart';
 import '../../../bloc/home_page_bloc/category_model_10_bloc/category_model_10_event.dart';
 import '../../../bloc/home_page_bloc/category_model_10_bloc/category_model_10_state.dart';
@@ -46,11 +47,11 @@ class CategoryModel10 extends StatelessWidget {
             create: (context) =>
                 CategoryModel10Bloc(repository: CategoryModel10Repo())
                   ..add(FetchSubCategoryProducts(
-                      subCategoryId: '6780ff720bfef51d79df1a06')),
+                      subCategoryId: '6780ff980bfef51d79df1a08')),
             child: BlocBuilder<CategoryModel10Bloc, CategoryModel10State>(
               builder: (context, state) {
                 if (state is CategoryModel10Loading) {
-                  return const Center(child: CircularProgressIndicator());
+                  return const Center(child: ProductModel1ListShimmer());
                 } else if (state is CategoryModel10Loaded) {
                   return _buildCategoryModel10(state.products, context);
                 } else if (state is CategoryModel10Error) {

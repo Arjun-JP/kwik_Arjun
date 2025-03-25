@@ -12,6 +12,8 @@ import 'package:kwik/bloc/home_page_bloc/category_bloc/category_bloc.dart';
 import 'package:kwik/bloc/home_page_bloc/category_model_13_bloc/category_model_13_bloc.dart';
 import 'package:kwik/bloc/home_page_bloc/category_model_14_bloc/category_model_14_bloc.dart';
 import 'package:kwik/bloc/home_page_bloc/category_model_16_bloc/category_model_16_bloc.dart';
+import 'package:kwik/bloc/home_page_bloc/category_model_18_bloc/category_model_18_bloc.dart';
+import 'package:kwik/bloc/home_page_bloc/category_model_19_bloc/category_model_19_bloc.dart';
 import 'package:kwik/bloc/home_page_bloc/category_model_1_bloc/category_model1_bloc.dart';
 import 'package:kwik/bloc/home_page_bloc/category_model_2_bloc/category_model2_bloc.dart';
 import 'package:kwik/bloc/home_page_bloc/category_model_12_bloc/category_model_12_bloc.dart';
@@ -21,6 +23,7 @@ import 'package:kwik/bloc/home_page_bloc/category_model_8_bloc/category_model_8_
 import 'package:kwik/bloc/home_page_bloc/category_model_9_bloc/category_model_9_bloc.dart';
 import 'package:kwik/bloc/home_Ui_bloc/home_Ui_Bloc.dart';
 import 'package:kwik/bloc/navbar_bloc/navbar_bloc.dart';
+import 'package:kwik/bloc/product_details_page/product_details_page_bloc.dart';
 import 'package:kwik/constants/textstyle.dart';
 import 'package:kwik/firebase_options.dart';
 import 'package:kwik/models/Hiveadapter/brand_model_adapter.dart';
@@ -33,6 +36,7 @@ import 'package:kwik/repositories/category_landing_page_repo.dart';
 import 'package:kwik/repositories/category_model1_repository.dart';
 import 'package:kwik/repositories/category_model_12_repo.dart';
 import 'package:kwik/repositories/category_model_13_repo.dart';
+import 'package:kwik/repositories/category_model_18.dart';
 import 'package:kwik/repositories/category_model_3_repo_home.dart';
 import 'package:kwik/repositories/category_model_6_repo.dart';
 import 'package:kwik/repositories/category_model_8_repo.dart';
@@ -41,6 +45,7 @@ import 'package:kwik/repositories/home_Ui_repository.dart';
 import 'package:kwik/repositories/home_category_repository.dart';
 import 'package:kwik/repositories/sub_category_product_repository.dart';
 import 'package:kwik/routes/routes.dart';
+import 'package:kwik/widgets/Error_widget.dart';
 import 'bloc/Categories Page Bloc/categories_UI_bloc/categories_ui_bloc.dart';
 import 'bloc/Categories Page Bloc/categories_page_model1/categories_page_model1_bloc.dart';
 import 'bloc/Categories Page Bloc/categories_page_model2/categories_page_model2_bloc.dart';
@@ -49,7 +54,6 @@ import 'bloc/Categories Page Bloc/categories_page_model4/categories_page_model4_
 import 'bloc/Categories Page Bloc/categories_page_model5/categories_page_model5_bloc.dart';
 import 'bloc/Categories Page Bloc/categories_page_model6/categories_page_model6_bloc.dart';
 import 'bloc/Categories Page Bloc/categories_page_model7/categories_page_model7_bloc.dart';
-import 'bloc/Categories Page Bloc/categories_page_model8/categories_page_model8_bloc.dart';
 import 'bloc/home_page_bloc/category_model_10_bloc/category_model_10_bloc.dart';
 import 'bloc/home_page_bloc/category_model_15_bloc/category_model_15_bloc.dart';
 import 'bloc/home_page_bloc/category_model_4_bloc/category_model_4_bloc.dart';
@@ -110,11 +114,14 @@ void main() async {
   await Hive.deleteBoxFromDisk('all_subcategory_box');
   await Hive.deleteBoxFromDisk('subCategoriesBoxcategorylanding');
   await Hive.deleteBoxFromDisk('productsBoxcategorylanding');
+  await Hive.deleteBoxFromDisk('subCategoriesBoxCM19');
+  await Hive.deleteBoxFromDisk('productsBoxCM19');
 
 // Print the path to the console
   await Hive.openBox('product_cache');
   await Hive.openBox('product_cache_category_model7');
-  await Hive.openBox('subCategoriesBox'); // Open boxes before usage
+  await Hive.openBox('subCategoriesBox');
+  await Hive.openBox('subCategoriesBoxCM18'); // Open boxes before usage
   await Hive.openBox('productsBox');
   await Hive.openBox('productsBoxcatmodel9');
   await Hive.openBox('productsBoxcatmodel12');
@@ -138,6 +145,8 @@ void main() async {
   await Hive.openBox('productsBoxcatmodel15');
   await Hive.openBox('categorymodel16Cache');
   await Hive.openBox('subCategorymodel16Cache');
+  await Hive.openBox('subCategoriesBoxCM19');
+  await Hive.openBox('productsBoxCM19');
   // await Hive.openBox('subcategories_CatM5');
   await Hive.openBox('All_category_box');
   await Hive.openBox('all_subcategory_box');
@@ -226,6 +235,14 @@ class _MyAppState extends State<MyApp> {
         BlocProvider<CategoryBlocModel16>(
             create: (_) => CategoryBlocModel16(
                 categoryRepositoryModel2: CategoryRepositoryModel2())),
+        BlocProvider<CategoryBloc18>(
+            create: (_) => CategoryBloc18(
+                categoryRepository: Categorymodel18Repository())),
+        BlocProvider<CategoryBloc19>(
+            create: (_) =>
+                CategoryBloc19(categoryRepository: Categorymodel5Repository())),
+        BlocProvider<VariationBloc>(create: (_) => VariationBloc()),
+
 //for categories page
 
         BlocProvider<CategoriesPageModel1Bloc>(
@@ -267,6 +284,12 @@ class _MyAppState extends State<MyApp> {
         ),
       ],
       child: MaterialApp.router(
+        builder: (context, child) {
+          ErrorWidget.builder = (FlutterErrorDetails) {
+            return KwikErrorWidget(errordetails: FlutterErrorDetails);
+          };
+          return child!;
+        },
         routerConfig: _router,
         title: 'Kwik',
         theme: appTheme(context),

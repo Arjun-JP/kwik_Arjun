@@ -32,20 +32,24 @@ class VariationModel {
   @HiveField(8)
   final List<Map<String, dynamic>> info;
 
-  VariationModel({
-    required this.qty,
-    required this.unit,
-    required this.mrp,
-    required this.buyingPrice,
-    required this.sellingPrice,
-    required this.stock,
-    required this.createdTime,
-    required this.highlight,
-    required this.info,
-  });
+  @HiveField(9)
+  final String id;
+
+  VariationModel(
+      {required this.qty,
+      required this.unit,
+      required this.mrp,
+      required this.buyingPrice,
+      required this.sellingPrice,
+      required this.stock,
+      required this.createdTime,
+      required this.highlight,
+      required this.info,
+      required this.id});
 
   factory VariationModel.fromJson(Map<String, dynamic> json) {
     return VariationModel(
+      id: json['_id'] ?? "",
       qty: json['Qty'] ?? 0,
       unit: json['unit'] ?? '',
       mrp: (json['MRP'] ?? 0).toDouble(),
@@ -55,15 +59,23 @@ class VariationModel {
               ?.map((e) => StockModel.fromJson(e))
               .toList() ??
           [],
-      createdTime: DateTime.parse(
-          json['created_time'] ?? DateTime.now().toIso8601String()),
-      highlight: List<Map<String, dynamic>>.from(json['highlight'] ?? []),
-      info: List<Map<String, dynamic>>.from(json['info'] ?? []),
+      createdTime: json['created_time'] != null
+          ? DateTime.tryParse(json['created_time']) ?? DateTime.now()
+          : DateTime.now(),
+      highlight: (json['highlight'] as List<dynamic>?)
+              ?.map((e) => Map<String, dynamic>.from(e))
+              .toList() ??
+          [],
+      info: (json['info'] as List<dynamic>?)
+              ?.map((e) => Map<String, dynamic>.from(e))
+              .toList() ??
+          [],
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
+      '_id': id, // Ensure consistency with `fromJson()`
       'Qty': qty,
       'unit': unit,
       'MRP': mrp,
@@ -71,8 +83,8 @@ class VariationModel {
       'selling_price': sellingPrice,
       'stock': stock.map((e) => e.toJson()).toList(),
       'created_time': createdTime.toIso8601String(),
-      'highlight': highlight,
-      'info': info,
+      'highlight': highlight.map((e) => Map<String, dynamic>.from(e)).toList(),
+      'info': info.map((e) => Map<String, dynamic>.from(e)).toList(),
     };
   }
 }

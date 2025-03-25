@@ -4,6 +4,7 @@ import 'package:kwik/bloc/home_page_bloc/category_model_2_bloc/category_model2_e
 import 'package:kwik/bloc/home_page_bloc/category_model_2_bloc/category_model2_state.dart';
 import 'package:kwik/constants/colors.dart';
 import 'package:kwik/repositories/category_model2_repository.dart';
+import 'package:kwik/widgets/shimmer/product_model1_list.dart';
 
 import '../../../bloc/home_page_bloc/category_model_2_bloc/category_model2_bloc.dart';
 
@@ -46,7 +47,7 @@ class CategoryModel11 extends StatelessWidget {
           return BlocBuilder<CategoryBlocModel2, CategoryState>(
             builder: (context, state) {
               if (state is CategoryLoading) {
-                return const Center(child: CircularProgressIndicator());
+                return const Center(child: ProductModel1ListShimmer());
               } else if (state is CategoryLoaded) {
                 return Container(
                   color: parseColor(bgcolor),

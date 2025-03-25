@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kwik/constants/colors.dart';
+import 'package:kwik/widgets/shimmer/product_model1_list.dart';
 import '../../../bloc/home_page_bloc/category_model_8_bloc/category_model_8_bloc.dart';
 import '../../../bloc/home_page_bloc/category_model_8_bloc/category_model_8_event.dart';
 import '../../../bloc/home_page_bloc/category_model_8_bloc/category_model_8_state.dart';
@@ -42,7 +43,7 @@ class _CategoryModel8State extends State<CategoryModel8> {
       child: BlocBuilder<CategoryModel8Bloc, CategoryBloc8State>(
         builder: (context, state) {
           if (state is Categorymode8Loading) {
-            return const Center(child: CircularProgressIndicator());
+            return const Center(child: ProductModel1ListShimmer());
           } else if (state is Categorymode8Loaded) {
             return Container(
               color: parseColor(widget.bgColor),

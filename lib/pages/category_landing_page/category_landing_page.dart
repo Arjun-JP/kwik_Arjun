@@ -37,6 +37,7 @@ class _CategoryLandingPageState extends State<CategoryLandingPage> {
           subCategoryIds: widget.subcategoryIDs,
         )),
       child: Scaffold(
+        backgroundColor: Colors.white,
         extendBodyBehindAppBar: true,
         body: NestedScrollView(
           headerSliverBuilder: (context, innerBoxIsScrolled) => [
@@ -91,57 +92,56 @@ class _CategoryLandingPageState extends State<CategoryLandingPage> {
               ),
             ),
           ],
-          body: SafeArea(
-            child: Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5),
-              child: BlocBuilder<CategoryLandingpageBloc,
-                  CategorylandingpageState>(builder: (context, state) {
-                if (state is SubCategoriesLoading) {
-                  return const Center(child: CircularProgressIndicator());
-                } else if (state is CategoryErrorState) {
-                  return Center(child: Text(state.message));
-                } else if (state is CategoryLoadedState) {
-                  List<ProductModel> filteredProducts = state.products
-                      .where((product) => product.subCategoryRef.any(
-                          (subCategory) =>
-                              subCategory.id == state.selectedCategoryId))
-                      .toList();
-                  return Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 10),
-                      child: StaggeredGrid.count(
-                        crossAxisCount: 2,
-                        crossAxisSpacing: 30,
-                        mainAxisSpacing: 25,
-                        children: List.generate(
-                          filteredProducts.length,
-                          (index) {
-                            return ProductModel2(
-                              buttontextcolor: "000000",
-                              context: context,
-                              imageurl:
-                                  filteredProducts[index].productImages[0],
-                              mrpColor: "000000",
-                              name: filteredProducts[index].productName,
-                              offertextcolor: "000000",
-                              price: 6777,
-                              unitbgcolor: "FFFFFF",
-                              productBgColor: "FFFFFF",
-                              productcolor: "000000",
-                              seeAllButtonBG: "FFFFFF",
-                              seeAllButtontext: "000000",
-                              sellingPriceColor: "000000",
-                              sellingpricecolor: "000000",
-                              unitTextcolor: "000000",
-                            );
-                          },
-                        ),
-                      ));
-                } else {
-                  return const CircularProgressIndicator(color: Colors.red);
-                }
-              }),
-            ),
+          body: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5),
+            child:
+                BlocBuilder<CategoryLandingpageBloc, CategorylandingpageState>(
+                    builder: (context, state) {
+              if (state is SubCategoriesLoading) {
+                return const Center(child: CircularProgressIndicator());
+              } else if (state is CategoryErrorState) {
+                return Center(child: Text(state.message));
+              } else if (state is CategoryLoadedState) {
+                List<ProductModel> filteredProducts = state.products
+                    .where((product) => product.subCategoryRef.any(
+                        (subCategory) =>
+                            subCategory.id == state.selectedCategoryId))
+                    .toList();
+                return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    child: StaggeredGrid.count(
+                      crossAxisCount: 2,
+                      crossAxisSpacing: 15,
+                      mainAxisSpacing: 15,
+                      children: List.generate(
+                        filteredProducts.length,
+                        (index) {
+                          return ProductModel2(
+                            buttontextcolor: "E23338",
+                            context: context,
+                            imageurl: filteredProducts[index].productImages[0],
+                            mrpColor: "000000",
+                            name: filteredProducts[index].productName,
+                            offertextcolor: "FFFFFF",
+                            price: 6777,
+                            unitbgcolor: "FFFFFF",
+                            productBgColor: "FFFFFF",
+                            productcolor: "000000",
+                            buttonbgcolor: "FFFFFF",
+                            sellingpricecolor: "000000",
+                            unitTextcolor: "000000",
+                            offerbgcolor1: "E23338",
+                            offerbgcolor2: "2DB164",
+                            offerbordercolor: "FFD62C",
+                            offertextcolor2: "FFFFFF",
+                          );
+                        },
+                      ),
+                    ));
+              } else {
+                return const CircularProgressIndicator(color: Colors.red);
+              }
+            }),
           ),
         ),
       ),

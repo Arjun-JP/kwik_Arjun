@@ -6,6 +6,7 @@ import 'package:kwik/bloc/home_page_bloc/category_model_13_bloc/category_model_1
 import 'package:kwik/bloc/home_page_bloc/category_model_13_bloc/category_model_13_state.dart';
 import 'package:kwik/repositories/category_model_13_repo.dart';
 import 'package:kwik/widgets/produc_model_1.dart';
+import 'package:kwik/widgets/shimmer/product_model1_list.dart';
 import '../../../constants/colors.dart';
 
 class CategoryModel13 extends StatelessWidget {
@@ -20,6 +21,7 @@ class CategoryModel13 extends StatelessWidget {
   final String productBgColor;
   final String mrpColor;
   final String sellingPriceColor;
+  final String producttextcolor;
 
   const CategoryModel13({
     super.key,
@@ -34,6 +36,7 @@ class CategoryModel13 extends StatelessWidget {
     required this.mrpColor,
     required this.sellingPriceColor,
     required this.brandImage,
+    required this.producttextcolor,
   });
 
   @override
@@ -79,7 +82,7 @@ class CategoryModel13 extends StatelessWidget {
               BlocBuilder<CategoryBloc13, CategoryModel13State>(
                 builder: (context, state) {
                   if (state is SubCategoriesLoading) {
-                    return const Center(child: CircularProgressIndicator());
+                    return const Center(child: ProductModel1ListShimmer());
                   } else if (state is CategoryErrorState) {
                     return Center(child: Text(state.message));
                   } else if (state is CategoryLoadedState) {
@@ -144,6 +147,7 @@ class CategoryModel13 extends StatelessWidget {
                                     crossAxisCellCount: 1,
                                     mainAxisExtent: 216,
                                     child: ProductItem(
+                                      productnamecolor: producttextcolor,
                                       product: state.products
                                           .where((product) => product
                                               .subCategoryRef
@@ -158,6 +162,7 @@ class CategoryModel13 extends StatelessWidget {
                                       buttonBgColor: "FFFFFF",
                                       sellingPriceColor: "000000",
                                       unitTextcolor: "000000",
+                                      unitbgcolor: "FFFFFF",
                                       offerbgcolor: "FFFFFF",
                                       imageurl: state.products
                                           .where((product) => product

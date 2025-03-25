@@ -16,7 +16,7 @@ class Categorymodel5Repository {
 
   /// Fetch all subcategories of a given category ID (GET request)
   Future<List<SubCategoryModel>> fetchSubCategories(String categoryId) async {
-    final url = Uri.parse('$baseUrl/subcategory/allsubcategories/$categoryId');
+    final url = Uri.parse('$baseUrl/subcategory/allsubcategories');
 
     try {
       final response = await http.get(url, headers: headers);
@@ -54,7 +54,7 @@ class Categorymodel5Repository {
 
         if (bodydata.containsKey("data") && bodydata["data"] is List) {
           List<dynamic> data = bodydata["data"];
-
+          print(data);
           return data.map((json) => ProductModel.fromJson(json)).toList();
         } else {
           return []; // Return an empty list if "data" is missing or not a list.

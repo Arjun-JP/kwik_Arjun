@@ -30,13 +30,14 @@ class VariationModelAdapter extends TypeAdapter<VariationModel> {
       info: (fields[8] as List)
           .map((dynamic e) => (e as Map).cast<String, dynamic>())
           .toList(),
+      id: fields[9] as String,
     );
   }
 
   @override
   void write(BinaryWriter writer, VariationModel obj) {
     writer
-      ..writeByte(9)
+      ..writeByte(10)
       ..writeByte(0)
       ..write(obj.qty)
       ..writeByte(1)
@@ -54,7 +55,9 @@ class VariationModelAdapter extends TypeAdapter<VariationModel> {
       ..writeByte(7)
       ..write(obj.highlight)
       ..writeByte(8)
-      ..write(obj.info);
+      ..write(obj.info)
+      ..writeByte(9)
+      ..write(obj.id);
   }
 
   @override

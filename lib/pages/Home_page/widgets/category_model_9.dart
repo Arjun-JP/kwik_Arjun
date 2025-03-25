@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:kwik/models/product_model.dart';
 import 'package:kwik/widgets/produc_model_1.dart';
+import 'package:kwik/widgets/shimmer/product_model1_list.dart';
 import '../../../bloc/home_page_bloc/category_model_9_bloc/category_model_9_bloc.dart';
 import '../../../bloc/home_page_bloc/category_model_9_bloc/category_model_9_event.dart';
 import '../../../bloc/home_page_bloc/category_model_9_bloc/category_model_9_state.dart';
@@ -79,7 +80,7 @@ class CategoryModel9 extends StatelessWidget {
                   BlocBuilder<CategoryBloc9, CategoryModel9State>(
                     builder: (context, state) {
                       if (state is SubCategoriesLoading) {
-                        return const Center(child: CircularProgressIndicator());
+                        return const Center(child: ProductModel1ListShimmer());
                       } else if (state is CategoryErrorState) {
                         return Center(child: Text(state.message));
                       } else if (state is CategoryLoadedState) {

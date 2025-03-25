@@ -85,6 +85,7 @@ class SupersaverModel4 extends StatelessWidget {
                       state.products.length > 6 ? 6 : state.products.length,
                       (index) {
                         return ProductItem(
+                          productnamecolor: "000000",
                           product: state.products[index],
                           imageurl: state.products[index].productImages.first,
                           buttontextcolor: ratingBgColor,
@@ -96,6 +97,7 @@ class SupersaverModel4 extends StatelessWidget {
                           offerbgcolor: ratingBgColor,
                           sellingPriceColor: sellTextColor,
                           unitTextcolor: offertextcolor,
+                          unitbgcolor: "FFFFFF",
                           offertextcolor: "000000",
                           price: 278,
                         );

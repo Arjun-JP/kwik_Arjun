@@ -29,7 +29,6 @@ import '../../constants/colors.dart';
 import 'Super Saver Page Widgets/supersaver_model2.dart';
 import 'Super Saver Page Widgets/supersaver_model3.dart';
 import 'Super Saver Page Widgets/supersaver_model5.dart';
-import 'Super Saver Page Widgets/supersaver_model6.dart';
 
 class OfferPage extends StatefulWidget {
   const OfferPage({super.key});
@@ -147,7 +146,7 @@ class _OfferPageState extends State<OfferPage> {
                   },
                   {
                     'template': SupersaverModel2(
-                      subcategoryid: uiData["template10"]["category_ref"],
+                      subcategoryid: "6780ff980bfef51d79df1a08",
                       titleColor: uiData["template10"]["title_color"],
                       bgcolor: uiData["template10"]["background_color"],
                       cartbuttontextcolor: uiData["template10"]

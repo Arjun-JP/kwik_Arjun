@@ -110,7 +110,7 @@ Widget subcategoryItem(
         width: 100,
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(8),
-            color: parseColor(bgcolor),
+            color: lightenColor(parseColor(bgcolor), .9),
             image: DecorationImage(
                 image: NetworkImage(imageurl), fit: BoxFit.fill)),
       ),

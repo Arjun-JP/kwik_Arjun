@@ -93,6 +93,7 @@ class SupersaverModel5 extends StatelessWidget {
                                   crossAxisCellCount: 1,
                                   mainAxisExtent: 255,
                                   child: ProductItem(
+                                    productnamecolor: "000000",
                                     // bgcolor: "FFFFFF",
                                     product: state.products[index],
                                     imageurl: state
@@ -108,6 +109,7 @@ class SupersaverModel5 extends StatelessWidget {
                                     productBgColor: productBgColor,
                                     sellingPriceColor: sellingPriceColor,
                                     unitTextcolor: unitTextcolor,
+                                    unitbgcolor: "FFFFFF",
                                     offerbgcolor: unitbgcolor,
                                   ),
                                 );

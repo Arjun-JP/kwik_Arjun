@@ -1,8 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-
 import '../models/product_model.dart';
-import '../models/subcategory_model.dart';
 
 class Categorymodel12Repository {
   String baseUrl = "https://kwik-backend.vercel.app";
