@@ -8,7 +8,7 @@ class ProductItem extends StatelessWidget {
   final String name;
   final double price;
   final String imageurl;
-
+  final String productnamecolor;
   final String mrpColor;
   final String offertextcolor;
   final String productBgColor;
@@ -17,6 +17,7 @@ class ProductItem extends StatelessWidget {
   final String buttonBgColor;
   final String offerbgcolor;
   final String unitTextcolor;
+  final String unitbgcolor;
 
   final BuildContext context;
   const ProductItem(
@@ -33,7 +34,9 @@ class ProductItem extends StatelessWidget {
       required this.context,
       required this.product,
       required this.offerbgcolor,
-      required this.buttonBgColor});
+      required this.buttonBgColor,
+      required this.productnamecolor,
+      required this.unitbgcolor});
 
   @override
   build(BuildContext context) {
@@ -52,7 +55,7 @@ class ProductItem extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
-                spacing: 4,
+                spacing: 3,
                 children: [
                   Container(
                     height: 147,
@@ -69,15 +72,25 @@ class ProductItem extends StatelessWidget {
                               fit: BoxFit.fill)),
                     ),
                   ),
+                  const SizedBox(
+                    height: 1,
+                  ),
                   Row(
                     mainAxisSize: MainAxisSize.min,
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      Text(
-                        "100 g",
-                        style: theme.textTheme.bodyMedium!.copyWith(
-                            color: parseColor(unitTextcolor),
-                            fontWeight: FontWeight.w600),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 10, vertical: 1),
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8),
+                            color: parseColor(unitbgcolor)),
+                        child: Text(
+                          "100 g",
+                          style: theme.textTheme.bodyMedium!.copyWith(
+                              color: parseColor(unitTextcolor),
+                              fontWeight: FontWeight.w600),
+                        ),
                       ),
                     ],
                   ),
@@ -88,7 +101,7 @@ class ProductItem extends StatelessWidget {
                       textAlign: TextAlign.left,
                       maxLines: 2,
                       style: theme.textTheme.bodyMedium!.copyWith(
-                          color: parseColor(unitTextcolor),
+                          color: parseColor(productnamecolor),
                           fontWeight: FontWeight.w600),
                     ),
                   ),

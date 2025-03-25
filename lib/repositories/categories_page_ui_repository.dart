@@ -18,17 +18,16 @@ class CategoriesPageUiRepository {
     var box = await Hive.openBox('cat_ui_cache_box');
 
     // Return cached data if it exists and no force refresh
-    // if (!forceRefresh && box.containsKey(_cacheKey)) {
-    //   print("getting cached data");
-    //   return json.decode(box.get(_cacheKey));
-    // }
+    if (!forceRefresh && box.containsKey(_cacheKey)) {
+      print("getting cached data");
+      return json.decode(box.get(_cacheKey));
+    }
 
     // Fetch from API
     final response = await http.get(Uri.parse('$_baseUrl/categoryui/getui'),
         headers: headers);
-    print(response.statusCode);
+
     if (response.statusCode == 200) {
-      print(response.body);
       final data = json.decode(response.body);
 
       // Cache the data

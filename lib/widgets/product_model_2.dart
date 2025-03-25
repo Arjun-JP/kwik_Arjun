@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kwik/constants/colors.dart';
 import 'package:kwik/models/product_model.dart';
+import 'package:kwik/pages/Home_page/widgets/category_model_4.dart';
 
 class ProductModel2 extends StatelessWidget {
   // final ProductModel product;
@@ -12,13 +13,17 @@ class ProductModel2 extends StatelessWidget {
   final String sellingpricecolor;
   final String mrpColor;
   final String offertextcolor;
+  final String offertextcolor2;
+  final String offerbordercolor;
+  final String offerbgcolor1;
+  final String offerbgcolor2;
   final String productBgColor;
-  final String sellingPriceColor;
+
   final String buttontextcolor;
   final String unitbgcolor;
   final String unitTextcolor;
-  final String seeAllButtonBG;
-  final String seeAllButtontext;
+  final String buttonbgcolor;
+
   final BuildContext context;
   const ProductModel2({
     super.key,
@@ -30,137 +35,188 @@ class ProductModel2 extends StatelessWidget {
     required this.mrpColor,
     required this.offertextcolor,
     required this.productBgColor,
-    required this.sellingPriceColor,
     required this.buttontextcolor,
     required this.unitbgcolor,
     required this.unitTextcolor,
-    required this.seeAllButtonBG,
-    required this.seeAllButtontext,
     required this.context,
+    required this.offertextcolor2,
+    required this.offerbordercolor,
+    required this.buttonbgcolor,
+    required this.offerbgcolor1,
+    required this.offerbgcolor2,
     // required this.product
   });
 
   @override
   build(BuildContext context) {
     final theme = Theme.of(context);
-    return InkWell(
-      // onTap: () => context.push(
-      //   '/productdetails',
-      //   // extra: product
-      // ),
+    return Padding(
+      padding: const EdgeInsets.only(right: 5),
       child: SizedBox(
-        child: Stack(
+        width: 154,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                // color: const Color.fromARGB(255, 233, 255, 234),
-              ),
+            Card(
+              shadowColor: const Color.fromARGB(255, 233, 233, 233),
+              elevation: .1,
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                spacing: 5,
                 children: [
-                  Container(
-                    height: 200,
-                    decoration: BoxDecoration(
-                      color: parseColor("F9F9F9"),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
+                  Padding(
+                    padding:
+                        const EdgeInsets.only(left: 20, right: 20, top: 10),
                     child: Container(
+                      height: 58,
+                      width: 154,
                       decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          image: DecorationImage(
-                              image: NetworkImage(imageurl), fit: BoxFit.fill)),
-                    ),
-                  ),
-                  Text(
-                    name,
-                    textAlign: TextAlign.left,
-                    maxLines: 2,
-                    style: theme.textTheme.bodyMedium!.copyWith(
-                        color: parseColor(unitTextcolor),
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600),
-                  ),
-                  Text(
-                    "100 g",
-                    style: theme.textTheme.bodyMedium!.copyWith(
-                        color: parseColor('A19DA3'),
-                        fontWeight: FontWeight.w600),
-                  ),
-                  Row(
-                    spacing: 10,
-                    children: [
-                      Text(
-                        "₹ 85",
-                        style: theme.textTheme.bodyMedium!.copyWith(
-                            color: parseColor(unitTextcolor),
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600),
-                      ),
-                      Text(
-                        "₹ 45",
-                        style: theme.textTheme.bodyMedium!.copyWith(
-                            color: parseColor("A19DA3"),
-                            fontSize: 14,
-                            decoration: TextDecoration.lineThrough),
-                      )
-                    ],
-                  ),
-                  SizedBox(
-                    height: 35,
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: () {},
-                      style: ElevatedButton.styleFrom(
-                          backgroundColor: parseColor("#FFFFFF"),
-                          shape: RoundedRectangleBorder(
-                            side: BorderSide(color: parseColor("#E23338")),
-                            borderRadius: BorderRadius.circular(5),
+                        border: Border(
+                          top: BorderSide(
+                            color: parseColor(
+                                offerbordercolor), // Change color as needed
+                            width: 2.0, // Change width as needed
                           ),
-                          padding: const EdgeInsets.all(0)),
-                      child: Text(
-                        'Add',
-                        style: theme.textTheme.bodyMedium!.copyWith(
-                            color: parseColor("E23338"),
-                            fontFamily: "Inter",
-                            fontWeight: FontWeight.w900),
+                        ),
+                        borderRadius: const BorderRadius.only(
+                            topLeft: Radius.circular(10),
+                            topRight: Radius.circular(10)),
+                        color: parseColor(offerbgcolor1),
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text(
+                            "₹126",
+                            style: TextStyle(
+                                fontSize: 22,
+                                fontWeight: FontWeight.w900,
+                                color: parseColor(sellingpricecolor)),
+                          ),
+                          Text("MRP ₹150",
+                              style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w900,
+                                  color: parseColor(mrpColor))),
+                        ],
                       ),
                     ),
-                  )
+                  ),
+                  Padding(
+                    padding:
+                        const EdgeInsets.only(left: 10, right: 10, bottom: 10),
+                    child: SizedBox(
+                      height: 164,
+                      width: 143,
+                      child: Stack(
+                        children: [
+                          Container(
+                            height: 164,
+                            width: 143,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                image: DecorationImage(
+                                    image: NetworkImage(imageurl),
+                                    fit: BoxFit.cover)),
+                          ),
+                          Align(
+                            alignment: const Alignment(-.8, .9),
+                            child: ClipPath(
+                              clipper: SmoothJaggedCircleClipper(),
+                              child: Container(
+                                width: 55,
+                                height: 55,
+                                color: parseColor(offerbgcolor2),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      "30%",
+                                      style: theme.textTheme.bodyMedium!
+                                          .copyWith(
+                                              color: parseColor(offertextcolor),
+                                              fontFamily: "Inter",
+                                              fontWeight: FontWeight.w900),
+                                    ),
+                                    Text(
+                                      "OFF",
+                                      style:
+                                          theme.textTheme.bodyMedium!.copyWith(
+                                        color: parseColor(offertextcolor2),
+                                        fontFamily: "Inter",
+                                      ),
+                                    ),
+                                  ],
+                                ), // Match the color in your image
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),
-            ClipPath(
-              clipper: ZigZagClipper(),
-              child: Container(
-                width: 40,
-                height: 50,
-                decoration: const BoxDecoration(
-                    color: Colors.orange,
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(10),
-                    )),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Text(
-                      "30%",
-                      style: theme.textTheme.bodyMedium!.copyWith(
-                          color: parseColor("233D4D"),
-                          fontFamily: "Inter",
-                          fontWeight: FontWeight.w900),
+            Padding(
+              padding: const EdgeInsets.only(
+                left: 10.0,
+                right: 10,
+              ),
+              child: SizedBox(
+                width: 154,
+                height: 40,
+                child: Text(
+                  name,
+                  textAlign: TextAlign.start,
+                  maxLines: 2,
+                  style: const TextStyle(
+                      fontSize: 14, fontWeight: FontWeight.w500),
+                ),
+              ),
+            ),
+            const SizedBox(height: 5),
+            Padding(
+              padding: const EdgeInsets.only(
+                left: 10.0,
+                right: 10,
+              ),
+              child: Text(
+                "500 g",
+                textAlign: TextAlign.start,
+                maxLines: 2,
+                style: theme.textTheme.bodyMedium!.copyWith(
+                    fontSize: 14,
+                    color: parseColor(unitTextcolor),
+                    fontWeight: FontWeight.w700),
+              ),
+            ),
+            const SizedBox(height: 5),
+            Padding(
+              padding: const EdgeInsets.only(
+                left: 5.0,
+                right: 5,
+              ),
+              child: SizedBox(
+                height: 35,
+                width: 154,
+                child: ElevatedButton(
+                  onPressed: () {},
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: parseColor(buttonbgcolor),
+                    shape: RoundedRectangleBorder(
+                      side: BorderSide(color: parseColor(buttontextcolor)),
+                      borderRadius: BorderRadius.circular(5),
                     ),
-                    Text(
-                      "OFF",
-                      style: theme.textTheme.bodyMedium!.copyWith(
-                        color: parseColor("233D4D"),
-                        fontFamily: "Inter",
-                      ),
+                  ),
+                  child: Text(
+                    'Add to Cart',
+                    style: TextStyle(
+                      color: parseColor(buttontextcolor),
+                      fontWeight: FontWeight.w800,
+                      fontSize: 13,
                     ),
-                  ],
+                  ),
                 ),
               ),
             ),

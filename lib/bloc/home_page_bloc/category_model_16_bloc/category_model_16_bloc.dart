@@ -24,8 +24,8 @@ class CategoryBlocModel16
       emit(CategoryLoading());
 
       // Open boxes for cache
-      var categoryBox = await Hive.openBox('categorymodel2Cache');
-      var subCategoryBox = await Hive.openBox('subCategorymodel2Cache');
+      var categoryBox = await Hive.openBox('categorymodel16Cache');
+      var subCategoryBox = await Hive.openBox('subCategorymodel16Cache');
 
       Category? cachedCategory;
       List<SubCategoryModel>? cachedSubCategories;

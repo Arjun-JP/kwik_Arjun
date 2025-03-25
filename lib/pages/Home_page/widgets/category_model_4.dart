@@ -2,6 +2,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kwik/constants/colors.dart';
+import 'package:kwik/widgets/shimmer/product_model1_list.dart';
 import '../../../bloc/home_page_bloc/category_model_4_bloc/category_model_4_bloc.dart';
 import '../../../bloc/home_page_bloc/category_model_4_bloc/category_model_4_event.dart';
 import '../../../bloc/home_page_bloc/category_model_4_bloc/category_model_4_state.dart';
@@ -62,7 +63,7 @@ class CategoryModel4 extends StatelessWidget {
                 return BlocBuilder<CategoryModel4Bloc, CategoryModel4State>(
                   builder: (context, state) {
                     if (state is CategoryModel4Loading) {
-                      return const Center(child: CircularProgressIndicator());
+                      return const Center(child: ProductModel1ListShimmer());
                     } else if (state is CategoryModel4Loaded) {
                       return Container(
                         color: parseColor(bgcolor),
@@ -245,13 +246,13 @@ Widget productItem(
                           style: TextStyle(
                               fontSize: 22,
                               fontWeight: FontWeight.w900,
-                              color: parseColor(mrpColor)),
+                              color: parseColor(sellingpricecolor)),
                         ),
                         Text("MRP ₹150",
                             style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w900,
-                                color: parseColor(sellingpricecolor))),
+                                color: parseColor(mrpColor))),
                       ],
                     ),
                   ),

@@ -57,7 +57,7 @@ class CategoryBlocModel6 extends Bloc<CategoryEvent6, CategoryState6> {
     try {
       // Open cache boxes
 
-      var subCategoryBox = await Hive.openBox('subCategorymodel1Cache');
+      var subCategoryBox = await Hive.openBox('categorymodel6cache');
 
       // Clear the cache
 

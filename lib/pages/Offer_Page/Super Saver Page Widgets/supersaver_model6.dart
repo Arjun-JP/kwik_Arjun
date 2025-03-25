@@ -46,7 +46,6 @@ class SupersaverModel6 extends StatelessWidget {
               if (state is SupersaverModel6Loading) {
                 return const Center(child: CircularProgressIndicator());
               } else if (state is SupersaverModel6Loaded) {
-                print(state.products.length);
                 return Container(
                   color: parseColor(bgcolor),
                   width: double.infinity,

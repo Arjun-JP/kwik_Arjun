@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:kwik/bloc/home_page_bloc/category_model_14_bloc/category_model_14_state.dart';
-import 'package:kwik/pages/Home_page/widgets/category_model_12.dart';
 import 'package:kwik/widgets/produc_model_1.dart';
+import 'package:kwik/widgets/shimmer/product_model1_list.dart'
+    show ProductModel1ListShimmer;
 import '../../../bloc/home_page_bloc/category_model_14_bloc/category_model_14_bloc.dart';
 import '../../../bloc/home_page_bloc/category_model_14_bloc/category_model_14_event.dart';
 import '../../../constants/colors.dart';
@@ -20,7 +21,9 @@ class CategoryModel14 extends StatelessWidget {
   final String offerBGcolor;
   final String productBgColor;
   final String mrpColor;
+  final String producttextcolor;
   final String sellingPriceColor;
+  final String indicatercolor;
 
   const CategoryModel14({
     super.key,
@@ -35,6 +38,8 @@ class CategoryModel14 extends StatelessWidget {
     required this.mrpColor,
     required this.sellingPriceColor,
     required this.brandImage,
+    required this.indicatercolor,
+    required this.producttextcolor,
   });
 
   @override
@@ -59,7 +64,7 @@ class CategoryModel14 extends StatelessWidget {
             BlocBuilder<CategoryBloc14, CategoryModel14State>(
               builder: (context, state) {
                 if (state is SubCategoriesLoading) {
-                  return const Center(child: CircularProgressIndicator());
+                  return const Center(child: ProductModel1ListShimmer());
                 } else if (state is CategoryErrorState) {
                   return Center(child: Text(state.message));
                 } else if (state is CategoryLoadedState) {
@@ -81,7 +86,7 @@ class CategoryModel14 extends StatelessWidget {
                                                   .subCategories[index].id));
                                     },
                                     child: subcategoryItem(
-                                        indicatercolor: "000000",
+                                        indicatercolor: indicatercolor,
                                         name: state.subCategories[index].name,
                                         bgcolor: "ffffff",
                                         textcolor: "000000",
@@ -113,8 +118,11 @@ class CategoryModel14 extends StatelessWidget {
                             ])),
                         child: Column(
                           children: [
-                            Image.network(
-                                "https://firebasestorage.googleapis.com/v0/b/kwikgroceries-8a11e.firebasestorage.app/o/Screenshot%202025-03-05%20at%206.36.08%E2%80%AFPM.jpeg?alt=media&token=3cf4e8ab-63d4-4e83-b295-13a5b5944b3c"),
+                            InkWell(
+                              onTap: () {},
+                              child: Image.network(
+                                  "https://firebasestorage.googleapis.com/v0/b/kwikgroceries-8a11e.firebasestorage.app/o/Screenshot%202025-03-05%20at%206.36.08%E2%80%AFPM.jpeg?alt=media&token=3cf4e8ab-63d4-4e83-b295-13a5b5944b3c"),
+                            ),
                             const SizedBox(height: 10),
                             state.products.isNotEmpty
                                 ? Padding(
@@ -149,6 +157,7 @@ class CategoryModel14 extends StatelessWidget {
                                           crossAxisCellCount: 1,
                                           mainAxisExtent: 266,
                                           child: ProductItem(
+                                            productnamecolor: producttextcolor,
                                             product: state.products
                                                 .where((product) => product
                                                     .subCategoryRef
@@ -159,13 +168,14 @@ class CategoryModel14 extends StatelessWidget {
                                                 .toList()[index],
                                             buttontextcolor: "E23338",
                                             context: context,
-                                            offertextcolor: "FFFFFF",
+                                            offertextcolor: "000000",
                                             productBgColor: "FFFFFF",
 
                                             buttonBgColor: "FFFFFF",
                                             sellingPriceColor: "000000",
                                             unitTextcolor: "000000",
-                                            offerbgcolor: "FFFFFF",
+                                            unitbgcolor: "FFFFFF",
+                                            offerbgcolor: "FFFA76",
                                             // bgcolor: "FFFFFF",
                                             imageurl: state.products
                                                 .where((product) => product
@@ -177,7 +187,7 @@ class CategoryModel14 extends StatelessWidget {
                                                 .toList()[index]
                                                 .productImages
                                                 .first,
-                                            mrpColor: "FFFFFF",
+                                            mrpColor: "A19DA3",
                                             name: state.products
                                                 .where((product) => product
                                                     .subCategoryRef

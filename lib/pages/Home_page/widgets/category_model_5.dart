@@ -4,6 +4,7 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:kwik/bloc/home_page_bloc/category_model_5__Bloc/category_model5__bloc.dart';
 import 'package:kwik/bloc/home_page_bloc/category_model_5__Bloc/category_model5__state.dart';
 import 'package:kwik/widgets/produc_model_1.dart';
+import 'package:kwik/widgets/shimmer/product_model1_list.dart';
 import '../../../bloc/home_page_bloc/category_model_5__Bloc/category_model5__event.dart';
 import '../../../constants/colors.dart';
 import '../../../repositories/category_subcategory_product_repo.dart';
@@ -26,6 +27,8 @@ class CategoryModel5 extends StatelessWidget {
   final String offertextcolor;
   final String buttonbgcolor;
   final String unitcolor;
+  final String unitbgcolor;
+  final String producttextcolor;
 
   const CategoryModel5({
     super.key,
@@ -46,6 +49,8 @@ class CategoryModel5 extends StatelessWidget {
     required this.offertextcolor,
     required this.buttonbgcolor,
     required this.unitcolor,
+    required this.producttextcolor,
+    required this.unitbgcolor,
   });
 
   @override
@@ -89,7 +94,7 @@ class CategoryModel5 extends StatelessWidget {
                   BlocBuilder<CategoryBloc5, CategoryState>(
                     builder: (context, state) {
                       if (state is SubCategoriesLoading) {
-                        return const Center(child: CircularProgressIndicator());
+                        return const Center(child: ProductModel1ListShimmer());
                       } else if (state is CategoryErrorState) {
                         return Center(child: Text(state.message));
                       } else if (state is CategoryLoadedState) {
@@ -160,6 +165,7 @@ class CategoryModel5 extends StatelessWidget {
                                         crossAxisCellCount: 1,
                                         mainAxisExtent: 266,
                                         child: ProductItem(
+                                          productnamecolor: producttextcolor,
                                           product: state.products
                                               .where((product) => product
                                                   .subCategoryRef
@@ -171,6 +177,7 @@ class CategoryModel5 extends StatelessWidget {
                                           offertextcolor: offertextcolor,
                                           buttonBgColor: buttonbgcolor,
                                           unitTextcolor: unitcolor,
+                                          unitbgcolor: unitbgcolor,
                                           context: context,
                                           productBgColor: productBgColor,
                                           sellingPriceColor: sellingPriceColor,

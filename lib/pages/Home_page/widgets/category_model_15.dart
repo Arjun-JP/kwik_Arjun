@@ -5,6 +5,7 @@ import 'package:kwik/bloc/home_page_bloc/category_model_12_bloc/category_model_1
 import 'package:kwik/bloc/home_page_bloc/category_model_12_bloc/category_model_12_state.dart';
 import 'package:kwik/repositories/category_model_12_repo.dart';
 import 'package:kwik/widgets/produc_model_1.dart';
+import 'package:kwik/widgets/shimmer/product_model1_list.dart';
 
 import '../../../bloc/home_page_bloc/category_model_12_bloc/category_model_12_bloc.dart';
 import '../../../constants/colors.dart';
@@ -13,18 +14,17 @@ import '../../../repositories/category_model9_repo.dart';
 class CategoryModel15 extends StatelessWidget {
   final String categoryId;
   final String bgcolor;
-
   final String subcatColor;
-
   final List<String> maincategories;
   final String offerTextcolor;
-
+  final String offerbgcolor;
   final String productBgColor;
   final String mrpColor;
   final String sellingPriceColor;
   final String buttontextcolor;
   final String unitbgcolor;
   final String unitTextcolor;
+  final String productnamecolor;
   final String seeAllButtonBG;
   final String seeAllButtontext;
   final String topimage;
@@ -47,6 +47,8 @@ class CategoryModel15 extends StatelessWidget {
     required this.unitTextcolor,
     required this.topimage,
     required this.showcategory,
+    required this.productnamecolor,
+    required this.offerbgcolor,
   });
 
   @override
@@ -74,7 +76,7 @@ class CategoryModel15 extends StatelessWidget {
                   BlocBuilder<CategoryBloc12, CategoryModel12State>(
                     builder: (context, state) {
                       if (state is SubCategoriesLoading) {
-                        return const Center(child: CircularProgressIndicator());
+                        return const Center(child: ProductModel1ListShimmer());
                       } else if (state is CategoryErrorState) {
                         return Center(child: Text(state.message));
                       } else if (state is CategoryLoadedState) {
@@ -96,6 +98,8 @@ class CategoryModel15 extends StatelessWidget {
                                             crossAxisCellCount: 1,
                                             mainAxisExtent: 255,
                                             child: ProductItem(
+                                              productnamecolor:
+                                                  productnamecolor,
                                               product: state.products[index],
                                               // bgcolor: "FFFFFF",
                                               context: context,
@@ -112,8 +116,9 @@ class CategoryModel15 extends StatelessWidget {
                                               sellingPriceColor:
                                                   sellingPriceColor,
                                               unitTextcolor: unitTextcolor,
-                                              buttonBgColor: "FFFFFF",
-                                              offerbgcolor: seeAllButtonBG,
+                                              unitbgcolor: unitbgcolor,
+                                              buttonBgColor: seeAllButtonBG,
+                                              offerbgcolor: offerbgcolor,
                                             ));
                                       }),
                                     ),

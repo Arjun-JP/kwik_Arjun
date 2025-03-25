@@ -89,6 +89,7 @@ class SupersaverModel2 extends StatelessWidget {
                 return Padding(
                   padding: const EdgeInsets.only(right: 15),
                   child: ProductItem(
+                    productnamecolor: "000000",
                     product: product,
                     productBgColor: prodoductbgcolor,
                     buttontextcolor: "000000",
@@ -100,6 +101,7 @@ class SupersaverModel2 extends StatelessWidget {
                     buttonBgColor: "FFFFFF",
                     offerbgcolor: "FFFFFF",
                     unitTextcolor: "000000",
+                    unitbgcolor: "FFFFFF",
                     mrpColor: mrpcolor,
                     sellingPriceColor: sellingpricecolor,
                   ),

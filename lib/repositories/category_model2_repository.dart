@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:hive_flutter/hive_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:kwik/models/subcategory_model.dart';
 
@@ -43,7 +42,7 @@ class CategoryRepositoryModel2 {
         'api_Secret': apiSecret,
       };
       final response = await http.get(
-          Uri.parse('$baseUrl/subcategory/allsubcategories/$categoryId'),
+          Uri.parse('$baseUrl/subcategory/allsubcategories'),
           headers: headers);
 
       if (response.statusCode == 200) {
