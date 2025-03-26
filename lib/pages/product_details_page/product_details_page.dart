@@ -1,20 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:kwik/bloc/product_details_page/product_details_page_bloc.dart';
-import 'package:kwik/bloc/product_details_page/product_details_page_event.dart';
-import 'package:kwik/bloc/product_details_page/product_details_page_state.dart';
+import 'package:kwik/bloc/product_details_page/product_details_bloc/product_details_page_bloc.dart';
+import 'package:kwik/bloc/product_details_page/product_details_bloc/product_details_page_event.dart';
+import 'package:kwik/bloc/product_details_page/product_details_bloc/product_details_page_state.dart';
+import 'package:kwik/bloc/product_details_page/similerproduct_bloc/similar_product_bloc.dart';
+import 'package:kwik/bloc/product_details_page/similerproduct_bloc/similar_product_event.dart';
+import 'package:kwik/bloc/product_details_page/similerproduct_bloc/similar_products_state.dart';
 import 'package:kwik/constants/colors.dart';
 import 'package:kwik/constants/constants.dart';
 import 'package:kwik/models/product_model.dart';
 import 'package:kwik/models/variation_model.dart';
+import 'package:kwik/repositories/sub_category_product_repository.dart';
 
 import 'package:kwik/widgets/produc_model_1.dart';
 
 class ProductDetailsPage extends StatefulWidget {
   final ProductModel product;
+  final String subcategoryref;
 
-  const ProductDetailsPage({super.key, required this.product});
+  const ProductDetailsPage(
+      {super.key, required this.product, required this.subcategoryref});
 
   @override
   State<ProductDetailsPage> createState() => _ProductDetailsPageState();
@@ -38,38 +44,64 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
   Widget build(BuildContext context) {
     ThemeData theme = Theme.of(context);
 
-    return Scaffold(
-      backgroundColor: AppColors.backgroundColorWhite,
-      body: Column(
-        children: [
-          Expanded(
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  BlocBuilder<VariationBloc, VariationState>(
-                    builder: (context, state) {
-                      if (state is VariationSelected) {
-                        print(state.selectedVariation.id);
-                        print("object");
-                        return productdetails(
-                          theme: theme,
-                          product: widget.product,
-                          selectedvariation: state.selectedVariation,
-                        );
+    return BlocProvider(
+      create: (context) =>
+          SubcategoryProductBloc(SubcategoryProductRepository())
+            ..add(FetchSubcategoryProducts(widget.subcategoryref)),
+      child: Scaffold(
+        backgroundColor: AppColors.backgroundColorWhite,
+        // appBar: AppBar(
+        //   toolbarHeight: 10,
+        //   foregroundColor: Colors.transparent,
+        //   backgroundColor: Colors.transparent,
+        // ),
+        body: Column(
+          children: [
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    BlocBuilder<VariationBloc, VariationState>(
+                      builder: (context, state) {
+                        if (state is VariationSelected) {
+                          print(state.selectedVariation.id);
+                          print("object");
+                          return productdetails(
+                            theme: theme,
+                            product: widget.product,
+                            selectedvariation: state.selectedVariation,
+                          );
+                        } else {
+                          return const SizedBox(); // Return an empty widget if no variation is selected
+                        }
+                      },
+                    ),
+                    BlocBuilder<SubcategoryProductBloc,
+                        SubcategoryProductState>(builder: (context, state) {
+                      if (state is SubcategoryProductLoading) {
+                        return const Center(child: CircularProgressIndicator());
+                      } else if (state is SubcategoryProductLoaded) {
+                        return similerproducts(
+                            theme: theme,
+                            productList: state.products
+                                .where((element) =>
+                                    element.id != widget.product.id)
+                                .toList());
+                      } else if (state is SubcategoryProductError) {
+                        return Center(child: Text(state.message));
                       } else {
-                        return const SizedBox(); // Return an empty widget if no variation is selected
+                        return const Center(child: Text("No products found"));
                       }
-                    },
-                  ),
-                  similerproducts(theme: theme),
-                  productsYouMightAlsoLike(theme: theme),
-                ],
+                    }),
+                    productsYouMightAlsoLike(theme: theme),
+                  ],
+                ),
               ),
             ),
-          ),
-          addtocartContainer(theme: theme),
-        ],
+            addtocartContainer(theme: theme),
+          ],
+        ),
       ),
     );
   }
@@ -87,26 +119,29 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
           Stack(
             clipBehavior: Clip.none,
             children: [
-              SizedBox(
-                height: 433,
-                child: PageView.builder(
-                  controller: _pageController,
-                  onPageChanged: (index) {
-                    setState(() {
-                      _currentIndex = index;
-                    });
-                  },
-                  itemCount: widget.product.productImages.length,
-                  itemBuilder: (context, index) {
-                    return ClipRRect(
-                      borderRadius: BorderRadius.circular(10),
-                      child: Image.network(
-                        widget.product.productImages[index],
-                        fit: BoxFit.cover,
-                        width: double.infinity,
-                      ),
-                    );
-                  },
+              Padding(
+                padding: const EdgeInsets.only(top: 60.0),
+                child: SizedBox(
+                  height: 433,
+                  child: PageView.builder(
+                    controller: _pageController,
+                    onPageChanged: (index) {
+                      setState(() {
+                        _currentIndex = index;
+                      });
+                    },
+                    itemCount: widget.product.productImages.length,
+                    itemBuilder: (context, index) {
+                      return ClipRRect(
+                        borderRadius: BorderRadius.circular(10),
+                        child: Image.network(
+                          widget.product.productImages[index],
+                          fit: BoxFit.cover,
+                          width: double.infinity,
+                        ),
+                      );
+                    },
+                  ),
                 ),
               ),
               SafeArea(
@@ -116,12 +151,14 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                   onPressed: () => context.pop(),
                 ),
               ),
-              Positioned(
-                top: 20,
-                right: 10,
-                child: IconButton(
-                  icon: const Icon(Icons.search, color: AppColors.kblackColor),
-                  onPressed: () {},
+              SafeArea(
+                child: Align(
+                  alignment: Alignment.topRight,
+                  child: IconButton(
+                    icon:
+                        const Icon(Icons.search, color: AppColors.kblackColor),
+                    onPressed: () {},
+                  ),
                 ),
               ),
               Positioned.fill(
@@ -270,17 +307,17 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                                   borderRadius: BorderRadius.circular(10)),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  highlightContent("Imported", "No"),
-                                  highlightContent("Organic", "No"),
-                                  highlightContent("About The Product",
-                                      "Incorporate strawberries into your diet as a naturally sweet treat that can elevate your breakfast, desserts, or smoothies."),
-                                  highlightContent("Brand", "No"),
-                                  highlightContent("Good For", "Immunity"),
-                                  highlightContent(
-                                      "Product Type", "Strawberry"),
-                                  highlightContent("Weight", "160 - 180 G"),
-                                ],
+                                children: List.generate(
+                                  selectedvariation.highlight.length,
+                                  (index) {
+                                    final MapEntry<String, dynamic> entry =
+                                        selectedvariation
+                                            .highlight[index].entries.first;
+
+                                    return highlightContent(
+                                        entry.key, entry.value.toString());
+                                  },
+                                ),
                               ),
                             ),
                           ],
@@ -338,7 +375,8 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
     );
   }
 
-  Widget similerproducts({required ThemeData theme}) {
+  Widget similerproducts(
+      {required ThemeData theme, required List<ProductModel> productList}) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10),
       color: AppColors.kwhiteColor,
@@ -357,6 +395,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                   return Padding(
                     padding: const EdgeInsets.only(right: 10.0),
                     child: ProductItem(
+                        subcategoryRef: widget.subcategoryref,
                         productnamecolor: "000000",
                         name: widget.product.productName,
                         price: 200,
@@ -371,11 +410,11 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                         unitbgcolor: "FFFFFF",
                         offerbgcolor: "FFFFFF",
                         context: context,
-                        product: widget.product),
+                        product: productList[index]),
                   );
                 },
                 scrollDirection: Axis.horizontal,
-                itemCount: 3),
+                itemCount: productList.length > 10 ? 10 : productList.length),
           ),
         ],
       ),
@@ -390,6 +429,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         spacing: 15,
         children: [
+          const SizedBox(height: 15),
           Text("You might also like", style: theme.textTheme.titleMedium),
           SizedBox(
             height: 280,
@@ -398,6 +438,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                   return Padding(
                     padding: const EdgeInsets.only(right: 10.0),
                     child: ProductItem(
+                        subcategoryRef: widget.subcategoryref,
                         productnamecolor: "000000",
                         name: widget.product.productName,
                         price: 200,
@@ -438,69 +479,75 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Column(
-            spacing: 0,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                "1 pack (160g - 180g)",
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              ),
-              Row(
-                spacing: 5,
-                children: [
-                  const Text("₹66",
-                      style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                  const Text("MRP ₹160",
-                      style: TextStyle(
-                          decoration: TextDecoration.lineThrough,
-                          decorationColor: AppColors.kgreyColorlite,
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.textColorDimGrey)),
-                  Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
-                    decoration: BoxDecoration(
-                        color: AppColors.korangeColor,
-                        borderRadius: BorderRadius.circular(10)),
-                    child: const Text(
-                      "15% OFF",
-                      style: TextStyle(
-                          fontSize: 12,
-                          color: AppColors.textColorWhite,
-                          fontWeight: FontWeight.bold),
+          Expanded(
+            flex: 7,
+            child: Column(
+              spacing: 0,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  "1 pack (160g - 180g)",
+                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                ),
+                Row(
+                  spacing: 5,
+                  children: [
+                    const Text("₹66",
+                        style: TextStyle(
+                            fontSize: 14, fontWeight: FontWeight.bold)),
+                    const Text("MRP ₹160",
+                        style: TextStyle(
+                            decoration: TextDecoration.lineThrough,
+                            decorationColor: AppColors.kgreyColorlite,
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.textColorDimGrey)),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 5, vertical: 2),
+                      decoration: BoxDecoration(
+                          color: AppColors.korangeColor,
+                          borderRadius: BorderRadius.circular(10)),
+                      child: const Text(
+                        "15% OFF",
+                        style: TextStyle(
+                            fontSize: 10,
+                            color: AppColors.textColorWhite,
+                            fontWeight: FontWeight.bold),
+                      ),
                     ),
+                  ],
+                ),
+                const Text(
+                  "Inclusive of all taxes",
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: AppColors.textColorDimGrey,
                   ),
-                ],
-              ),
-              const Text(
-                "Inclusive of all taxes",
-                style: TextStyle(
-                  fontSize: 14,
-                  color: AppColors.textColorDimGrey,
                 ),
-              ),
-              const SizedBox(
-                height: 8,
-              )
-            ],
+                const SizedBox(
+                  height: 8,
+                )
+              ],
+            ),
           ),
-          SizedBox(
-            height: 50,
-            child: ElevatedButton(
-              onPressed: () {},
-              style: ElevatedButton.styleFrom(
-                shape: RoundedRectangleBorder(
-                  borderRadius:
-                      BorderRadius.circular(15), // Set border radius here
+          Expanded(
+            flex: 5,
+            child: SizedBox(
+              height: 50,
+              child: ElevatedButton(
+                onPressed: () {},
+                style: ElevatedButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                    borderRadius:
+                        BorderRadius.circular(15), // Set border radius here
+                  ),
+                  backgroundColor: AppColors.addToCartBorder,
+                  minimumSize: const Size(152, 48),
                 ),
-                backgroundColor: AppColors.addToCartBorder,
-                minimumSize: const Size(152, 48),
+                child: const Text("Add to Cart",
+                    style: TextStyle(fontSize: 18, color: Colors.white)),
               ),
-              child: const Text("Add to Cart",
-                  style: TextStyle(fontSize: 18, color: Colors.white)),
             ),
           ),
         ],
@@ -516,7 +563,7 @@ Widget highlightContent(String title, String value) {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Expanded(
-          flex: 1,
+          flex: 2,
           child: Text(
             title,
             style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),

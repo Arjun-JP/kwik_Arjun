@@ -85,9 +85,21 @@ final GoRouter router = GoRouter(
     GoRoute(
       path: '/productdetails',
       builder: (BuildContext context, GoRouterState state) {
-        final product =
-            state.extra as ProductModel; // Get the product model from extra
-        return ProductDetailsPage(product: product);
+        final extraData =
+            state.extra as Map<String, dynamic>?; // Cast extra as a Map
+        if (extraData == null ||
+            !extraData.containsKey('product') ||
+            !extraData.containsKey('subcategoryref')) {
+          throw Exception("Missing required parameters");
+        }
+        final product = extraData['product'] as ProductModel;
+        final subcategoryref =
+            extraData['subcategoryref']; // Adjust type if needed
+
+        return ProductDetailsPage(
+          product: product,
+          subcategoryref: subcategoryref,
+        );
       },
     ),
     GoRoute(

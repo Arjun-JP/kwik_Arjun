@@ -98,6 +98,7 @@ class CategoryModel15 extends StatelessWidget {
                                             crossAxisCellCount: 1,
                                             mainAxisExtent: 255,
                                             child: ProductItem(
+                                              subcategoryRef: maincategories[0],
                                               productnamecolor:
                                                   productnamecolor,
                                               product: state.products[index],

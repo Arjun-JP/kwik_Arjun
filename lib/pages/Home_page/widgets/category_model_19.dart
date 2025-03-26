@@ -11,9 +11,7 @@ import '../../../repositories/category_subcategory_product_repo.dart';
 class CategoryModel19 extends StatelessWidget {
   final String categoryId;
   final String bgcolor;
-
   final String subcatColor;
-
   final List<String> maincategories;
   final String topimage;
   final String offerBGcolor1;
