@@ -4,7 +4,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kwik/bloc/home_page_bloc/category_model_13_bloc/category_model_13_bloc.dart';
 import 'package:kwik/bloc/home_page_bloc/category_model_13_bloc/category_model_13_event.dart';
-
 import 'package:kwik/bloc/home_page_bloc/category_model_16_bloc/category_model_16_bloc.dart';
 import 'package:kwik/bloc/home_page_bloc/category_model_16_bloc/category_model_16_event.dart';
 import 'package:kwik/bloc/home_page_bloc/category_model_18_bloc/category_model_18_bloc.dart';
@@ -24,6 +23,8 @@ import 'package:kwik/bloc/home_Ui_bloc/home_Ui_Bloc.dart';
 import 'package:kwik/bloc/home_Ui_bloc/home_Ui_Event.dart';
 import 'package:kwik/bloc/home_Ui_bloc/home_Ui_State.dart';
 import 'package:kwik/bloc/navbar_bloc/navbar_bloc.dart';
+import 'package:kwik/bloc/product_details_page/similerproduct_bloc/similar_product_bloc.dart';
+import 'package:kwik/bloc/product_details_page/similerproduct_bloc/similar_product_event.dart';
 import 'package:kwik/pages/Home_page/widgets/banner_model.dart';
 import 'package:kwik/pages/Home_page/widgets/category_model_10.dart';
 import 'package:kwik/pages/Home_page/widgets/category_model_12.dart';
@@ -82,6 +83,7 @@ class _HomePageState extends State<HomePage> {
 
     BlocProvider.of<CategoryBloc18>(context).add(ClearCacheEventCM18());
     BlocProvider.of<CategoryBloc19>(context).add(ClearCacheEventCM19());
+    BlocProvider.of<SubcategoryProductBloc>(context).add(ClearSimilarCache());
   }
 
   @override

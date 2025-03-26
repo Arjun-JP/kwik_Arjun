@@ -15,11 +15,9 @@ class VariationModelAdapter extends TypeAdapter<VariationModel> {
     final buyingPrice = reader.readDouble();
     final sellingPrice = reader.readDouble();
 
-    // Read the list of StockModel objects safely
-    final stock =
-        (reader.readList() as List).map((e) => e as StockModel).toList();
+    // Correctly read the StockModel list
+    final stock = (reader.readList() as List).whereType<StockModel>().toList();
 
-    // Read DateTime as int (milliseconds since epoch)
     final createdTimeMillis = reader.readInt();
     final createdTime = DateTime.fromMillisecondsSinceEpoch(createdTimeMillis);
 
@@ -56,18 +54,16 @@ class VariationModelAdapter extends TypeAdapter<VariationModel> {
     writer.writeDouble(obj.buyingPrice);
     writer.writeDouble(obj.sellingPrice);
 
-    // Write the list of StockModel objects
-    writer.writeList(obj.stock.map((e) => e.toJson()).toList());
+    // Correctly write StockModel list
+    writer.writeList(obj.stock);
 
     // Write DateTime as int (milliseconds since epoch)
     writer.writeInt(obj.createdTime.millisecondsSinceEpoch);
 
     // Write highlight list safely
-    writer.writeList(
-        obj.highlight.map((e) => Map<String, dynamic>.from(e)).toList());
+    writer.writeList(obj.highlight);
 
     // Write info list safely
-    writer
-        .writeList(obj.info.map((e) => Map<String, dynamic>.from(e)).toList());
+    writer.writeList(obj.info);
   }
 }

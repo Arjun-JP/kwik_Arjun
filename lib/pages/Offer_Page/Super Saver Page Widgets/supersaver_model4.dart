@@ -85,6 +85,7 @@ class SupersaverModel4 extends StatelessWidget {
                       state.products.length > 6 ? 6 : state.products.length,
                       (index) {
                         return ProductItem(
+                          subcategoryRef: subCategoryId,
                           productnamecolor: "000000",
                           product: state.products[index],
                           imageurl: state.products[index].productImages.first,

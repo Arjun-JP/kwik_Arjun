@@ -1,6 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:kwik/bloc/product_details_page/product_details_page_event.dart';
-import 'package:kwik/bloc/product_details_page/product_details_page_state.dart';
+import 'package:kwik/bloc/product_details_page/product_details_bloc/product_details_page_event.dart';
+import 'package:kwik/bloc/product_details_page/product_details_bloc/product_details_page_state.dart';
 
 class VariationBloc extends Bloc<VariationEvent, VariationState> {
   VariationBloc() : super(VariationInitial()) {

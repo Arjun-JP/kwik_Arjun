@@ -147,6 +147,7 @@ class CategoryModel13 extends StatelessWidget {
                                     crossAxisCellCount: 1,
                                     mainAxisExtent: 216,
                                     child: ProductItem(
+                                      subcategoryRef: categoryId,
                                       productnamecolor: producttextcolor,
                                       product: state.products
                                           .where((product) => product

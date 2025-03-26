@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:kwik/bloc/Auth_bloc/auth_bloc.dart';
+import 'package:kwik/bloc/Cart_bloc/cart_bloc.dart';
 import 'package:kwik/bloc/Categories%20Page%20Bloc/category_model_bloc/category_model_bloc.dart';
 import 'package:kwik/bloc/banner_bloc/banner_bloc.dart';
 import 'package:kwik/bloc/category_landing_page_bloc/category_landing_page_bloc.dart';
@@ -23,14 +24,17 @@ import 'package:kwik/bloc/home_page_bloc/category_model_8_bloc/category_model_8_
 import 'package:kwik/bloc/home_page_bloc/category_model_9_bloc/category_model_9_bloc.dart';
 import 'package:kwik/bloc/home_Ui_bloc/home_Ui_Bloc.dart';
 import 'package:kwik/bloc/navbar_bloc/navbar_bloc.dart';
-import 'package:kwik/bloc/product_details_page/product_details_page_bloc.dart';
+import 'package:kwik/bloc/product_details_page/product_details_bloc/product_details_page_bloc.dart';
+import 'package:kwik/bloc/product_details_page/similerproduct_bloc/similar_product_bloc.dart';
 import 'package:kwik/constants/textstyle.dart';
 import 'package:kwik/firebase_options.dart';
 import 'package:kwik/models/Hiveadapter/brand_model_adapter.dart';
 import 'package:kwik/models/Hiveadapter/category_model_adapter.dart';
 import 'package:kwik/models/Hiveadapter/review_model_adapter.dart';
 import 'package:kwik/models/Hiveadapter/stock_model_adapter.dart';
+import 'package:kwik/models/cart_model.dart';
 import 'package:kwik/repositories/banner_repository.dart';
+import 'package:kwik/repositories/cart_repo.dart';
 import 'package:kwik/repositories/categories_page_ui_repository.dart';
 import 'package:kwik/repositories/category_landing_page_repo.dart';
 import 'package:kwik/repositories/category_model1_repository.dart';
@@ -82,6 +86,7 @@ void main() async {
   Hive.registerAdapter(BannerModelAdapter());
   Hive.registerAdapter(WarehouseModelAdapter());
   Hive.registerAdapter(BrandAdapter());
+  Hive.registerAdapter(CartProductAdapter());
 
   await Hive.deleteBoxFromDisk('product_cache');
   await Hive.deleteBoxFromDisk('product_cache_category_model7');
@@ -116,6 +121,8 @@ void main() async {
   await Hive.deleteBoxFromDisk('productsBoxcategorylanding');
   await Hive.deleteBoxFromDisk('subCategoriesBoxCM19');
   await Hive.deleteBoxFromDisk('productsBoxCM19');
+  await Hive.deleteBoxFromDisk('similar_product_cache');
+  // await Hive.deleteBoxFromDisk('cart');
 
 // Print the path to the console
   await Hive.openBox('product_cache');
@@ -152,6 +159,8 @@ void main() async {
   await Hive.openBox('all_subcategory_box');
   await Hive.openBox('subCategoriesBoxcategorylanding');
   await Hive.openBox('productsBoxcategorylanding');
+  await Hive.openBox('similar_product_cache');
+  await Hive.openBox('cart');
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
@@ -281,6 +290,17 @@ class _MyAppState extends State<MyApp> {
         BlocProvider<CategoryLandingpageBloc>(
           create: (_) => CategoryLandingpageBloc(
               categoryRepository: CategoryLandingPageRepo()),
+        ),
+
+        // productdetailspagebloc
+
+        BlocProvider<SubcategoryProductBloc>(
+          create: (_) => SubcategoryProductBloc(SubcategoryProductRepository()),
+        ),
+
+        // Cart bloc
+        BlocProvider<CartBloc>(
+          create: (_) => CartBloc(cartRepository: CartRepository()),
         ),
       ],
       child: MaterialApp.router(

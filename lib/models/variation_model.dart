@@ -62,7 +62,7 @@ class VariationModel {
       createdTime: json['created_time'] != null
           ? DateTime.tryParse(json['created_time']) ?? DateTime.now()
           : DateTime.now(),
-      highlight: (json['highlight'] as List<dynamic>?)
+      highlight: (json['Highlight'] as List<dynamic>?)
               ?.map((e) => Map<String, dynamic>.from(e))
               .toList() ??
           [],
@@ -83,7 +83,7 @@ class VariationModel {
       'selling_price': sellingPrice,
       'stock': stock.map((e) => e.toJson()).toList(),
       'created_time': createdTime.toIso8601String(),
-      'highlight': highlight.map((e) => Map<String, dynamic>.from(e)).toList(),
+      'Highlight': highlight.map((e) => Map<String, dynamic>.from(e)).toList(),
       'info': info.map((e) => Map<String, dynamic>.from(e)).toList(),
     };
   }
