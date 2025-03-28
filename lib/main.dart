@@ -7,6 +7,8 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:kwik/bloc/Auth_bloc/auth_bloc.dart';
 import 'package:kwik/bloc/Cart_bloc/cart_bloc.dart';
 import 'package:kwik/bloc/Categories%20Page%20Bloc/category_model_bloc/category_model_bloc.dart';
+import 'package:kwik/bloc/Super%20Saver%20Page%20Bloc/super_saver_ui_bloc/super_saver_ui_bloc.dart';
+import 'package:kwik/bloc/all_sub_category_bloc/all_sub_category_bloc.dart';
 import 'package:kwik/bloc/banner_bloc/banner_bloc.dart';
 import 'package:kwik/bloc/category_landing_page_bloc/category_landing_page_bloc.dart';
 import 'package:kwik/bloc/home_page_bloc/category_bloc/category_bloc.dart';
@@ -33,6 +35,9 @@ import 'package:kwik/models/Hiveadapter/category_model_adapter.dart';
 import 'package:kwik/models/Hiveadapter/review_model_adapter.dart';
 import 'package:kwik/models/Hiveadapter/stock_model_adapter.dart';
 import 'package:kwik/models/cart_model.dart';
+import 'package:kwik/models/product_model.dart' show ProductModel;
+import 'package:kwik/models/subcategory_model.dart' show SubCategoryModel;
+import 'package:kwik/repositories/allsubcategory_repo.dart';
 import 'package:kwik/repositories/banner_repository.dart';
 import 'package:kwik/repositories/cart_repo.dart';
 import 'package:kwik/repositories/categories_page_ui_repository.dart';
@@ -48,6 +53,7 @@ import 'package:kwik/repositories/category_subcategory_product_repo.dart';
 import 'package:kwik/repositories/home_Ui_repository.dart';
 import 'package:kwik/repositories/home_category_repository.dart';
 import 'package:kwik/repositories/sub_category_product_repository.dart';
+import 'package:kwik/repositories/super_saver_ui_repo.dart';
 import 'package:kwik/routes/routes.dart';
 import 'package:kwik/widgets/Error_widget.dart';
 import 'bloc/Categories Page Bloc/categories_UI_bloc/categories_ui_bloc.dart';
@@ -122,9 +128,13 @@ void main() async {
   await Hive.deleteBoxFromDisk('subCategoriesBoxCM19');
   await Hive.deleteBoxFromDisk('productsBoxCM19');
   await Hive.deleteBoxFromDisk('similar_product_cache');
-  // await Hive.deleteBoxFromDisk('cart');
+  await Hive.deleteBoxFromDisk('cart');
+  await Hive.deleteBoxFromDisk('Supersaver_ui_cache_box');
+  await Hive.deleteBoxFromDisk('subCategoriesallcategorypage');
+  await Hive.deleteBoxFromDisk('productsallsubcategorypage');
 
-// Print the path to the console
+// hive open box
+  await Hive.openBox('Supersaver_ui_cache_box');
   await Hive.openBox('product_cache');
   await Hive.openBox('product_cache_category_model7');
   await Hive.openBox('subCategoriesBox');
@@ -161,6 +171,10 @@ void main() async {
   await Hive.openBox('productsBoxcategorylanding');
   await Hive.openBox('similar_product_cache');
   await Hive.openBox('cart');
+  await Hive.openBox<List<SubCategoryModel>>('subcategoriesallcategorypage');
+  await Hive.openBox<List<ProductModel>>('productsallcategorypage');
+  // await Hive.openBox('subcategoriesallcategorypage');
+  // await Hive.openBox('productsallcategorypage');
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
@@ -302,6 +316,15 @@ class _MyAppState extends State<MyApp> {
         BlocProvider<CartBloc>(
           create: (_) => CartBloc(cartRepository: CartRepository()),
         ),
+
+        //Supersaver page bloc
+        BlocProvider<SuperSaverUiBloc>(
+            create: (_) =>
+                SuperSaverUiBloc(uiRepository: SuperSaverRepository())),
+        // all sub category bloc
+        BlocProvider<AllSubCategoryBloc>(
+            create: (_) =>
+                AllSubCategoryBloc(repository: AllsubcategoryRepo())),
       ],
       child: MaterialApp.router(
         builder: (context, child) {

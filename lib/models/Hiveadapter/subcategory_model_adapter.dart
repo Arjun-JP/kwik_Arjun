@@ -1,4 +1,5 @@
 import 'package:hive/hive.dart';
+import 'package:kwik/models/category_model.dart';
 import 'package:kwik/models/subcategory_model.dart';
 
 class SubCategoryModelAdapter extends TypeAdapter<SubCategoryModel> {
@@ -11,7 +12,9 @@ class SubCategoryModelAdapter extends TypeAdapter<SubCategoryModel> {
     final name = reader.readString();
     final description = reader.readString();
     final imageUrl = reader.readString();
-    final createdTime = reader.readString();
+    final createdTime = DateTime.fromMillisecondsSinceEpoch(reader.readInt());
+    final categoryRef = CategoryAdapter().read(reader);
+    final isDeleted = reader.readBool();
 
     return SubCategoryModel(
       id: id,
@@ -19,6 +22,8 @@ class SubCategoryModelAdapter extends TypeAdapter<SubCategoryModel> {
       description: description,
       imageUrl: imageUrl,
       createdTime: createdTime,
+      categoryRef: categoryRef,
+      isDeleted: isDeleted,
     );
   }
 
@@ -28,6 +33,8 @@ class SubCategoryModelAdapter extends TypeAdapter<SubCategoryModel> {
     writer.writeString(obj.name);
     writer.writeString(obj.description);
     writer.writeString(obj.imageUrl);
-    writer.writeString(obj.createdTime);
+    writer.writeInt(obj.createdTime.millisecondsSinceEpoch);
+    CategoryAdapter().write(writer, obj.categoryRef);
+    writer.writeBool(obj.isDeleted);
   }
 }

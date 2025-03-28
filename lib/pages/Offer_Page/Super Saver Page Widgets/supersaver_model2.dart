@@ -21,6 +21,7 @@ class SupersaverModel2 extends StatelessWidget {
   final String offerBGcolor;
   final String seeAllButtonBG;
   final String seeAllButtontext;
+  final String title;
   const SupersaverModel2({
     super.key,
     required this.bgcolor,
@@ -35,6 +36,7 @@ class SupersaverModel2 extends StatelessWidget {
     required this.seeAllButtonBG,
     required this.seeAllButtontext,
     required this.subcategoryid,
+    required this.title,
   });
 
   @override
@@ -62,7 +64,7 @@ class SupersaverModel2 extends StatelessWidget {
       List<ProductModel> products, BuildContext context) {
     return Container(
       color: parseColor(bgcolor),
-      height: 390,
+      height: 400,
       width: double.infinity,
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
       child: Column(
@@ -70,7 +72,7 @@ class SupersaverModel2 extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Text(
-            "Explore Dairy Products",
+            title,
             style: TextStyle(
                 color: parseColor(titleColor),
                 fontSize: 18,
@@ -79,7 +81,7 @@ class SupersaverModel2 extends StatelessWidget {
           const SizedBox(height: 10),
           const SizedBox(height: 10),
           SizedBox(
-            height: 253,
+            height: 263,
             width: MediaQuery.of(context).size.width,
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
