@@ -1,4 +1,6 @@
 import 'package:hive/hive.dart';
+import 'category_model.dart'; // Import CategoryModel
+
 part 'subcategory_model.g.dart';
 
 @HiveType(typeId: 55) // Unique typeId for the SubCategoryModel
@@ -16,7 +18,13 @@ class SubCategoryModel {
   final String imageUrl;
 
   @HiveField(4)
-  final String createdTime;
+  final DateTime createdTime;
+
+  @HiveField(5)
+  final Category categoryRef; // Category reference as an object
+
+  @HiveField(6)
+  final bool isDeleted; // Added isDeleted field
 
   SubCategoryModel({
     required this.id,
@@ -24,6 +32,8 @@ class SubCategoryModel {
     required this.description,
     required this.imageUrl,
     required this.createdTime,
+    required this.categoryRef,
+    required this.isDeleted,
   });
 
   factory SubCategoryModel.fromJson(Map<String, dynamic> json) {
@@ -32,7 +42,12 @@ class SubCategoryModel {
       name: json['sub_category_name'] ?? '',
       description: json['sub_category_des'] ?? '',
       imageUrl: json['sub_category_image'] ?? '',
-      createdTime: json['sub_created_time'] ?? '',
+      createdTime:
+          DateTime.tryParse(json['sub_created_time'] ?? '') ?? DateTime.now(),
+      categoryRef: json['category_ref'] != null
+          ? Category.fromJson(json['category_ref'])
+          : Category.empty(), // Convert JSON to CategoryModel
+      isDeleted: json['isDeleted'] ?? false,
     );
   }
 
@@ -42,7 +57,9 @@ class SubCategoryModel {
       'sub_category_name': name,
       'sub_category_des': description,
       'sub_category_image': imageUrl,
-      'sub_created_time': createdTime,
+      'sub_created_time': createdTime.toIso8601String(),
+      'category_ref': categoryRef.toJson(), // Convert CategoryModel to JSON
+      'isDeleted': isDeleted,
     };
   }
 
@@ -52,7 +69,9 @@ class SubCategoryModel {
       name: '',
       description: '',
       imageUrl: '',
-      createdTime: '',
+      createdTime: DateTime.now(),
+      categoryRef: Category.empty(), // Use an empty CategoryModel instance
+      isDeleted: false,
     );
   }
 }

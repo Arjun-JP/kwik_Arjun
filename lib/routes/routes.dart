@@ -9,6 +9,7 @@ import 'package:kwik/pages/Offer_Page/offer_page.dart';
 import 'package:kwik/pages/OnboardingScreen/onboarding_screen.dart';
 import 'package:kwik/pages/OtpVerificationPage/otp_verification_page.dart';
 import 'package:kwik/pages/SplashScreen/splash_screen.dart';
+import 'package:kwik/pages/all_subcategory/all_suubcategory.dart';
 import 'package:kwik/pages/cart_page/cart_page.dart';
 import 'package:kwik/pages/category_landing_page/category_landing_page.dart';
 import 'package:kwik/pages/product_details_page/product_details_page.dart';
@@ -116,6 +117,20 @@ final GoRouter router = GoRouter(
               subcategoryIDs, // Ensure parameter name matches in the widget
         );
       },
-    )
+    ),
+    GoRoute(
+      path: '/allsubcategorypage',
+      builder: (context, state) {
+        final categoryrId = state.uri.queryParameters['categoryId'] ?? '';
+        final selectedsubcategory =
+            state.uri.queryParameters['selectedsubcategory'];
+
+        return AllSubcategory(
+          categoryrId: categoryrId,
+          selectedsubcategory:
+              selectedsubcategory, // Explicitly assign as a named argument
+        );
+      },
+    ),
   ],
 );

@@ -53,16 +53,13 @@ class ProductItem extends StatelessWidget {
     final theme = Theme.of(context);
 
     return BlocBuilder<CartBloc, CartState>(builder: (context, state) {
-      bool isInCart = false;
+      List<CartProduct> cartItems = [];
       String productqty = "0";
       print(state);
       if (state is CartUpdated) {
         print(state.cartItems.length);
-        isInCart = state.cartItems.any((item) => item.productRef == product.id);
-        print(state.cartItems
-            .where((item) => item.productRef == product.id)
-            .first
-            .quantity);
+        // isInCart = state.cartItems.any((item) => item.productRef == product.id);
+        cartItems = state.cartItems;
         productqty = state.cartItems
             .where((item) => item.productRef == product.id)
             .first
@@ -102,7 +99,7 @@ class ProductItem extends StatelessWidget {
                           borderRadius: BorderRadius.circular(10),
                           image: DecorationImage(
                             image: NetworkImage(product.productImages[0]),
-                            fit: BoxFit.fill,
+                            fit: BoxFit.contain,
                           ),
                         ),
                       ),
@@ -164,7 +161,10 @@ class ProductItem extends StatelessWidget {
                         ),
                         SizedBox(
                           height: 30,
-                          child: isInCart
+                          child: cartItems
+                                  .where((element) =>
+                                      element.productRef == product.id)
+                                  .isNotEmpty
                               ? quantitycontrolbutton(
                                   theme: theme,
                                   product: product,

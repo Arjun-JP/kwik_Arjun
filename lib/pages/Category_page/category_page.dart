@@ -102,6 +102,7 @@ class _CategoryPageState extends State<CategoryPage> {
                       categoryId: uiData["template1"]["category"],
                       bgcolor:
                           uiData["template1"]["background_color"] ?? "FFFFFF",
+                      title: uiData["template1"]["title"],
                       titleColor:
                           uiData["template1"]["title_color"] ?? "FFFFFF",
                       subcatColor: uiData["template1"]
@@ -120,6 +121,7 @@ class _CategoryPageState extends State<CategoryPage> {
                       categoryId: uiData["template2"]["category"],
                       bgcolor:
                           uiData["template2"]["background_color"] ?? "FFFFFF",
+                      title: uiData["template2"]["title"],
                       titleColor:
                           uiData["template2"]["title_color"] ?? "FFFFFF",
                       subcatColor: uiData["template2"]
@@ -128,6 +130,63 @@ class _CategoryPageState extends State<CategoryPage> {
                       showcategory: uiData["template2"]["show_Category"],
                     ),
                     'order': uiData["template2"]["ui_order_number"]
+                  },
+                  {
+                    'template': CategoryModel(
+                      maincategories: List<String>.from(
+                          uiData["template3"]["main_categories"]),
+                      secondarycategories: List<String>.from(
+                          uiData["template3"]["Sub_categories"]),
+                      categoryId: uiData["template3"]["category"],
+                      bgcolor:
+                          uiData["template3"]["background_color"] ?? "FFFFFF",
+                      title: uiData["template3"]["title"],
+                      titleColor:
+                          uiData["template3"]["title_color"] ?? "FFFFFF",
+                      subcatColor: uiData["template3"]
+                              ["subcategory_title_color"] ??
+                          "FFFFFF",
+                      showcategory: uiData["template3"]["show_Category"],
+                    ),
+                    'order': uiData["template3"]["ui_order_number"]
+                  },
+                  {
+                    'template': CategoryModel(
+                      maincategories: List<String>.from(
+                          uiData["template4"]["main_categories"]),
+                      secondarycategories: List<String>.from(
+                          uiData["template4"]["Sub_categories"]),
+                      categoryId: uiData["template4"]["category"],
+                      bgcolor:
+                          uiData["template4"]["background_color"] ?? "FFFFFF",
+                      title: uiData["template4"]["title"],
+                      titleColor:
+                          uiData["template4"]["title_color"] ?? "FFFFFF",
+                      subcatColor: uiData["template4"]
+                              ["subcategory_title_color"] ??
+                          "FFFFFF",
+                      showcategory: uiData["template4"]["show_Category"],
+                    ),
+                    'order': uiData["template4"]["ui_order_number"]
+                  },
+                  {
+                    'template': CategoryModel(
+                      maincategories: List<String>.from(
+                          uiData["template5"]["main_categories"]),
+                      secondarycategories: List<String>.from(
+                          uiData["template5"]["Sub_categories"]),
+                      categoryId: uiData["template5"]["category"],
+                      bgcolor:
+                          uiData["template5"]["background_color"] ?? "FFFFFF",
+                      title: uiData["template5"]["title"],
+                      titleColor:
+                          uiData["template5"]["title_color"] ?? "FFFFFF",
+                      subcatColor: uiData["template5"]
+                              ["subcategory_title_color"] ??
+                          "FFFFFF",
+                      showcategory: uiData["template5"]["show_Category"],
+                    ),
+                    'order': uiData["template4"]["ui_order_number"]
                   },
                   {
                     'template': const DescriptiveWidget(
@@ -243,7 +302,7 @@ class _CategoryPageState extends State<CategoryPage> {
                                 padding:
                                     const EdgeInsets.only(right: 12.0, top: 12),
                                 child: GestureDetector(
-                                  onTap: () => context.go('/onboardingScreen'),
+                                  onTap: () => context.push('/profile'),
                                   child: CircleAvatar(
                                     radius: 20,
                                     backgroundColor: Colors.white,

@@ -1,11 +1,9 @@
 import 'package:hive/hive.dart';
-import 'dart:convert';
-
 import 'package:kwik/models/variation_model.dart';
 
-part 'cart_model.g.dart'; // Required for Hive adapter
+part 'cart_model.g.dart';
 
-@HiveType(typeId: 39) // Unique type ID for Hive
+@HiveType(typeId: 39)
 class CartProduct {
   @HiveField(0)
   final String productRef;
@@ -54,7 +52,6 @@ class CartProduct {
     required this.cartAddedDate,
   });
 
-  /// ✅ Convert JSON to CartProduct
   factory CartProduct.fromJson(Map<String, dynamic> json) {
     return CartProduct(
       productRef: json['product_ref'],
@@ -71,7 +68,6 @@ class CartProduct {
     );
   }
 
-  /// ✅ **Add copyWith method**
   CartProduct copyWith({
     String? productRef,
     VariationModel? variant,
@@ -100,20 +96,24 @@ class CartProduct {
     );
   }
 
-  /// ✅ Convert CartProduct to JSON
   Map<String, dynamic> toJson() {
-    return {
-      'product_ref': productRef,
-      'variant': variant.toJson(),
-      'quantity': quantity,
-      'pincode': pincode,
-      'selling_price': sellingPrice,
-      'mrp': mrp,
-      'buying_price': buyingPrice,
-      'inStock': inStock,
-      'variation_visibility': variationVisibility,
-      'final_price': finalPrice,
-      'cart_added_date': cartAddedDate.toIso8601String(),
-    };
+    try {
+      return {
+        'product_ref': productRef,
+        'variant': variant.toJson(),
+        'quantity': quantity,
+        'pincode': pincode,
+        'selling_price': sellingPrice,
+        'mrp': mrp,
+        'buying_price': buyingPrice,
+        'inStock': inStock,
+        'variation_visibility': variationVisibility,
+        'final_price': finalPrice,
+        'cart_added_date': cartAddedDate.toIso8601String(),
+      };
+    } catch (e) {
+      print("Error in CartProduct.toJson(): $e");
+      return {}; // or handle the error appropriately
+    }
   }
 }

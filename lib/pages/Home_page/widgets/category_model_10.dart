@@ -191,8 +191,8 @@ Widget productsWidget(
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(12),
                   child: Image.network(
-                    "https://firebasestorage.googleapis.com/v0/b/kwikgroceries-8a11e.firebasestorage.app/o/image.png?alt=media&token=b46f34c1-0560-47c3-b611-c0105f96ded2",
-                    fit: BoxFit.fill,
+                    product.productImages.first,
+                    fit: BoxFit.contain,
                     colorBlendMode: BlendMode.color,
                   ),
                 ),

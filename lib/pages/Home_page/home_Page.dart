@@ -638,7 +638,7 @@ class _HomePageState extends State<HomePage> {
                                 padding:
                                     const EdgeInsets.only(right: 12.0, top: 12),
                                 child: GestureDetector(
-                                  onTap: () => context.go('/onboardingScreen'),
+                                  onTap: () => context.push('/profile'),
                                   child: CircleAvatar(
                                     radius: 20,
                                     backgroundColor: Colors.white,

@@ -22,6 +22,7 @@ class SupersaverModel3 extends StatelessWidget {
   final String seeAllButtontext;
   final String title;
   final String image;
+  final String categoryID;
   const SupersaverModel3({
     super.key,
     required this.bgcolor,
@@ -36,6 +37,7 @@ class SupersaverModel3 extends StatelessWidget {
     required this.crosscolor,
     required this.title,
     required this.image,
+    required this.categoryID,
   });
 
   @override
@@ -43,8 +45,7 @@ class SupersaverModel3 extends StatelessWidget {
     return BlocProvider(
       create: (context) =>
           CategoryModel10Bloc(repository: CategoryModel10Repo())
-            ..add(FetchSubCategoryProducts(
-                subCategoryId: '6780ff980bfef51d79df1a08')),
+            ..add(FetchSubCategoryProducts(subCategoryId: categoryID)),
       child: BlocBuilder<CategoryModel10Bloc, CategoryModel10State>(
         builder: (context, state) {
           if (state is CategoryModel10Loading) {

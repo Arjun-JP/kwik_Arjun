@@ -19,27 +19,22 @@ class CartBloc extends Bloc<CartEvent, CartState> {
   Future<void> _onAddToCart(AddToCart event, Emitter<CartState> emit) async {
     emit(CartLoading());
     try {
-      print("called");
       final message = await cartRepository.addToCart(
         userId: event.userId,
         productRef: event.productRef,
         variant: event.variantId,
         pincode: event.pincode,
       );
-      // Fetch existing cart items
-      // Fetch existing cart items
+
       List<CartProduct> cartItems =
-          cartBox.get('cart', defaultValue: []).cast<CartProduct>();
-      print("get cart item");
-// Add the new product to the cart list
+          (cartBox.get('cart', defaultValue: []) as List)
+              .map((e) => CartProduct.fromJson(Map<String, dynamic>.from(e)))
+              .toList();
+
       cartItems.add(event.cartProduct);
-      print("called add to cart");
-// Save updated list back to Hive (without converting to JSON)
+
       await cartBox.put('cart', cartItems.map((e) => e.toJson()).toList());
 
-      print("Saved in local storage");
-
-      // Emit updated cart state
       emit(CartUpdated(
         message: message,
         cartItems: cartItems,
@@ -64,13 +59,11 @@ class CartBloc extends Bloc<CartEvent, CartState> {
               .map((e) => CartProduct.fromJson(Map<String, dynamic>.from(e)))
               .toList();
 
-      // Find the product in the cart
       int existingIndex = cartItems.indexWhere((item) =>
           item.productRef == event.productRef &&
           item.variant.id == event.variantId);
 
       if (existingIndex != -1) {
-        // Increase quantity
         cartItems[existingIndex] = cartItems[existingIndex]
             .copyWith(quantity: cartItems[existingIndex].quantity + 1);
         cartBox.put("cart", cartItems.map((e) => e.toJson()).toList());
@@ -100,25 +93,21 @@ class CartBloc extends Bloc<CartEvent, CartState> {
               .map((e) => CartProduct.fromJson(Map<String, dynamic>.from(e)))
               .toList();
 
-      // Find the product in the cart
       int existingIndex = cartItems.indexWhere((item) =>
           item.productRef == event.productRef &&
-          item.variant == event.variantId);
+          item.variant.id == event.variantId);
 
       if (existingIndex != -1) {
         if (cartItems[existingIndex].quantity > 1) {
-          // Reduce quantity
           cartItems[existingIndex] = cartItems[existingIndex]
               .copyWith(quantity: cartItems[existingIndex].quantity - 1);
         } else {
-          // Remove item if quantity reaches 0
           cartItems.removeAt(existingIndex);
         }
 
         cartBox.put('cart', cartItems.map((e) => e.toJson()).toList());
       }
 
-      print(cartBox.values);
       emit(CartUpdated(
         message: message,
         cartItems: cartItems,
@@ -132,14 +121,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
       SyncCartWithServer event, Emitter<CartState> emit) async {
     emit(CartLoading());
     try {
-      // // Implement sync logic here
-      // emit(CartSynced(
-      //   isSynced: true,
-      //   cartItems:
-      //       (cartBox.get('cart', defaultValue: []) as List)
-      //         .map((e) => CartProduct.fromJson(Map<String, dynamic>.from(e)))
-      //         .toList(),
-      // ));
+      // Implement sync logic here
     } catch (e) {
       emit(CartError(message: "Error syncing cart: $e"));
     }

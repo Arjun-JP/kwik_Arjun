@@ -91,10 +91,10 @@ class SupersaverModel5 extends StatelessWidget {
                                       : 6, (index) {
                                 return StaggeredGridTile.extent(
                                   crossAxisCellCount: 1,
-                                  mainAxisExtent: 255,
+                                  mainAxisExtent: 258,
                                   child: ProductItem(
                                     subcategoryRef: categoryId,
-                                    productnamecolor: "000000",
+                                    productnamecolor: subcatColor,
                                     // bgcolor: "FFFFFF",
                                     product: state.products[index],
                                     imageurl: state
@@ -110,7 +110,7 @@ class SupersaverModel5 extends StatelessWidget {
                                     productBgColor: productBgColor,
                                     sellingPriceColor: sellingPriceColor,
                                     unitTextcolor: unitTextcolor,
-                                    unitbgcolor: "FFFFFF",
+                                    unitbgcolor: unitbgcolor,
                                     offerbgcolor: unitbgcolor,
                                   ),
                                 );

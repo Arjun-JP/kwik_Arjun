@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:kwik/bloc/Categories%20Page%20Bloc/category_model_bloc/category_model_bloc.dart';
 import 'package:kwik/bloc/Categories%20Page%20Bloc/category_model_bloc/category_model_state.dart';
 import 'package:kwik/bloc/Categories%20Page%20Bloc/category_model_bloc/category_model_event.dart';
@@ -15,6 +16,7 @@ class CategoryModel extends StatelessWidget {
   final List<String> maincategories;
   final List<String> secondarycategories;
   final bool showcategory;
+  final String title;
 
   const CategoryModel(
       {super.key,
@@ -24,7 +26,8 @@ class CategoryModel extends StatelessWidget {
       required this.subcatColor,
       required this.maincategories,
       required this.showcategory,
-      required this.secondarycategories});
+      required this.secondarycategories,
+      required this.title});
 
   @override
   Widget build(BuildContext context) {
@@ -59,12 +62,7 @@ class CategoryModel extends StatelessWidget {
                           children: [
                             const SizedBox(height: 15),
                             Text(
-                              state.category
-                                  .firstWhere(
-                                    (category) => category.catref == categoryId,
-                                    // Provide a default category
-                                  )
-                                  .name,
+                              title,
                               style: theme.textTheme.titleLarge!.copyWith(
                                   fontWeight: FontWeight.w600,
                                   color: parseColor(titleColor)),
@@ -88,6 +86,10 @@ class CategoryModel extends StatelessWidget {
                                         return Expanded(
                                           flex: 1,
                                           child: mainsubcategoryItem(
+                                            context: context,
+                                            subcategoryID: subCategory.id,
+                                            categoryID:
+                                                subCategory.categoryRef.catref,
                                             name: subCategory.name,
                                             bgcolor: state.category
                                                 .firstWhere((category) =>
@@ -118,6 +120,10 @@ class CategoryModel extends StatelessWidget {
                                                 index];
                                         return Expanded(
                                           child: subcategoryItem(
+                                            categoryID:
+                                                subCategory.categoryRef.catref,
+                                            subcategoryID: subCategory.id,
+                                            context: context,
                                             name: subCategory.name,
                                             bgcolor: state.category
                                                 .firstWhere((category) =>
@@ -156,41 +162,48 @@ class CategoryModel extends StatelessWidget {
       required String bgcolor,
       required String textcolor,
       required ThemeData theme,
+      required String categoryID,
+      required String subcategoryID,
+      required BuildContext context,
       required String imageurl}) {
-    return Column(
-      mainAxisSize: MainAxisSize.max,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Container(
-          margin: const EdgeInsets.all(10),
-          decoration: BoxDecoration(
-              color: lightenColor(parseColor(bgcolor), .9),
-              borderRadius: BorderRadius.circular(8)),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(top: 10, bottom: 10),
-                child: Container(
-                  height: 75,
-                  width: 100,
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8),
-                      color: lightenColor(parseColor(bgcolor), .9),
-                      image: DecorationImage(
-                          image: NetworkImage(imageurl), fit: BoxFit.fill)),
+    return InkWell(
+      onTap: () => context.push(
+          "/allsubcategorypage?categoryId=$categoryID&selectedsubcategory=$subcategoryID"),
+      child: Column(
+        mainAxisSize: MainAxisSize.max,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Container(
+            margin: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+                color: lightenColor(parseColor(bgcolor), .9),
+                borderRadius: BorderRadius.circular(8)),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(top: 10, bottom: 10),
+                  child: Container(
+                    height: 75,
+                    width: 100,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8),
+                        color: lightenColor(parseColor(bgcolor), .9),
+                        image: DecorationImage(
+                            image: NetworkImage(imageurl), fit: BoxFit.fill)),
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
-        Text(name,
-            textAlign: TextAlign.center,
-            maxLines: 2,
-            style: theme.textTheme.bodyMedium!.copyWith(
-                fontWeight: FontWeight.w600, color: parseColor(textcolor)))
-      ],
+          Text(name,
+              textAlign: TextAlign.center,
+              maxLines: 2,
+              style: theme.textTheme.bodyMedium!.copyWith(
+                  fontWeight: FontWeight.w600, color: parseColor(textcolor)))
+        ],
+      ),
     );
   }
 }
@@ -200,28 +213,35 @@ Widget subcategoryItem(
     required String bgcolor,
     required String textcolor,
     required ThemeData theme,
+    required String categoryID,
+    required String subcategoryID,
+    required BuildContext context,
     required String imageurl}) {
-  return Column(
-    mainAxisSize: MainAxisSize.max,
-    crossAxisAlignment: CrossAxisAlignment.center,
-    children: [
-      Container(
-        height: 80,
-        width: 75,
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(8),
-            color: lightenColor(parseColor(bgcolor), .9),
-            image: DecorationImage(
-                image: NetworkImage(imageurl), fit: BoxFit.fill)),
-      ),
-      const SizedBox(height: 8),
-      Text(
-        name,
-        textAlign: TextAlign.center,
-        maxLines: 2,
-        style: theme.textTheme.bodyMedium!.copyWith(
-            fontWeight: FontWeight.w600, color: parseColor(textcolor)),
-      )
-    ],
+  return InkWell(
+    onTap: () => context.push(
+        "/allsubcategorypage?categoryId=$categoryID&selectedsubcategory=$subcategoryID"),
+    child: Column(
+      mainAxisSize: MainAxisSize.max,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Container(
+          height: 80,
+          width: 75,
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(8),
+              color: lightenColor(parseColor(bgcolor), .9),
+              image: DecorationImage(
+                  image: NetworkImage(imageurl), fit: BoxFit.fill)),
+        ),
+        const SizedBox(height: 8),
+        Text(
+          name,
+          textAlign: TextAlign.center,
+          maxLines: 2,
+          style: theme.textTheme.bodyMedium!.copyWith(
+              fontWeight: FontWeight.w600, color: parseColor(textcolor)),
+        )
+      ],
+    ),
   );
 }

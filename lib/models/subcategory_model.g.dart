@@ -21,14 +21,16 @@ class SubCategoryModelAdapter extends TypeAdapter<SubCategoryModel> {
       name: fields[1] as String,
       description: fields[2] as String,
       imageUrl: fields[3] as String,
-      createdTime: fields[4] as String,
+      createdTime: fields[4] as DateTime,
+      categoryRef: fields[5] as Category,
+      isDeleted: fields[6] as bool,
     );
   }
 
   @override
   void write(BinaryWriter writer, SubCategoryModel obj) {
     writer
-      ..writeByte(5)
+      ..writeByte(7)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -38,7 +40,11 @@ class SubCategoryModelAdapter extends TypeAdapter<SubCategoryModel> {
       ..writeByte(3)
       ..write(obj.imageUrl)
       ..writeByte(4)
-      ..write(obj.createdTime);
+      ..write(obj.createdTime)
+      ..writeByte(5)
+      ..write(obj.categoryRef)
+      ..writeByte(6)
+      ..write(obj.isDeleted);
   }
 
   @override

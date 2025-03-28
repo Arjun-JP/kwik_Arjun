@@ -11,7 +11,8 @@ class CartProductAdapter extends TypeAdapter<CartProduct> {
   CartProduct read(BinaryReader reader) {
     return CartProduct(
       productRef: reader.readString(),
-      variant: reader.read() as VariationModel, // Read Variation object
+      variant: VariationModelAdapter()
+          .read(reader), // Read Variation object using its adapter
       quantity: reader.readInt(),
       pincode: reader.readString(),
       sellingPrice: reader.readDouble(),
@@ -27,7 +28,8 @@ class CartProductAdapter extends TypeAdapter<CartProduct> {
   @override
   void write(BinaryWriter writer, CartProduct obj) {
     writer.writeString(obj.productRef);
-    writer.write(obj.variant); // Write Variation object
+    VariationModelAdapter()
+        .write(writer, obj.variant); // Write Variation object using its adapter
     writer.writeInt(obj.quantity);
     writer.writeString(obj.pincode);
     writer.writeDouble(obj.sellingPrice);
