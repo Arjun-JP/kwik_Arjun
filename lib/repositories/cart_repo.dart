@@ -16,6 +16,7 @@ class CartRepository {
     required String variant,
     required String pincode,
   }) async {
+    print("Api called");
     final url = Uri.parse("$baseUrl/addtocart");
 
     final Map<String, dynamic> body = {
@@ -24,14 +25,15 @@ class CartRepository {
       "variant": variant,
       "pincode": pincode,
     };
-
+    print("Api called$body");
     try {
       final response = await http.post(
         url,
         headers: headers,
         body: jsonEncode(body),
       );
-
+      print(response.statusCode);
+      print(response.body);
       if (response.statusCode == 201) {
         return "Product added to cart";
       } else {

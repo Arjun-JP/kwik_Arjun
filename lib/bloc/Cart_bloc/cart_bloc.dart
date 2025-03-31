@@ -60,7 +60,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
               .toList();
 
       int existingIndex = cartItems.indexWhere((item) =>
-          item.productRef == event.productRef &&
+          item.productRef.id == event.productRef &&
           item.variant.id == event.variantId);
 
       if (existingIndex != -1) {
@@ -94,7 +94,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
               .toList();
 
       int existingIndex = cartItems.indexWhere((item) =>
-          item.productRef == event.productRef &&
+          item.productRef.id == event.productRef &&
           item.variant.id == event.variantId);
 
       if (existingIndex != -1) {

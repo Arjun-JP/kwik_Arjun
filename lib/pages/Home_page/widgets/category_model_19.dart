@@ -157,6 +157,16 @@ class CategoryModel19 extends StatelessWidget {
                                         return SizedBox(
                                           width: 154,
                                           child: ProductModel2(
+                                            product: state.products
+                                                .where((product) => product
+                                                    .subCategoryRef
+                                                    .any((subCategory) =>
+                                                        subCategory.id ==
+                                                        state
+                                                            .selectedCategoryId))
+                                                .toList()[index],
+                                            subcategoryref:
+                                                maincategories.first,
                                             productcolor: productBgColor,
                                             unitbgcolor: unitbgcolor,
                                             buttonbgcolor: buttonbgcolor,
@@ -171,27 +181,7 @@ class CategoryModel19 extends StatelessWidget {
                                             unitTextcolor: unitcolor,
                                             context: context,
                                             productBgColor: productBgColor,
-                                            imageurl: state.products
-                                                .where((product) => product
-                                                    .subCategoryRef
-                                                    .any((subCategory) =>
-                                                        subCategory.id ==
-                                                        state
-                                                            .selectedCategoryId))
-                                                .toList()[index]
-                                                .productImages
-                                                .first,
                                             mrpColor: mrpColor,
-                                            name: state.products
-                                                .where((product) => product
-                                                    .subCategoryRef
-                                                    .any((subCategory) =>
-                                                        subCategory.id ==
-                                                        state
-                                                            .selectedCategoryId))
-                                                .toList()[index]
-                                                .productName,
-                                            price: 85,
                                           ),
                                         );
                                       }),

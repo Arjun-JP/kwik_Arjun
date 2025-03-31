@@ -119,11 +119,10 @@ class _CategoryLandingPageState extends State<CategoryLandingPage> {
                           return ProductModel2(
                             buttontextcolor: "E23338",
                             context: context,
-                            imageurl: filteredProducts[index].productImages[0],
+                            product: filteredProducts[index],
                             mrpColor: "000000",
-                            name: filteredProducts[index].productName,
+                            subcategoryref: widget.subcategoryIDs.first,
                             offertextcolor: "FFFFFF",
-                            price: 6777,
                             unitbgcolor: "FFFFFF",
                             productBgColor: "FFFFFF",
                             productcolor: "000000",

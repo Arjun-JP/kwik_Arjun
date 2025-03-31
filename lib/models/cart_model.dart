@@ -1,5 +1,5 @@
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:hive/hive.dart';
+import 'package:kwik/models/product_model.dart';
 import 'package:kwik/models/variation_model.dart';
 
 part 'cart_model.g.dart';
@@ -7,7 +7,7 @@ part 'cart_model.g.dart';
 @HiveType(typeId: 39)
 class CartProduct {
   @HiveField(0)
-  final String productRef;
+  final ProductModel productRef;
 
   @HiveField(1)
   final VariationModel variant;
@@ -55,22 +55,22 @@ class CartProduct {
 
   factory CartProduct.fromJson(Map<String, dynamic> json) {
     return CartProduct(
-      productRef: json['product_ref'],
+      productRef: ProductModel.fromJson(json['product_ref']),
       variant: VariationModel.fromJson(json['variant']),
       quantity: json['quantity'],
       pincode: json['pincode'],
-      sellingPrice: json['selling_price'].toDouble(),
-      mrp: json['mrp'].toDouble(),
-      buyingPrice: json['buying_price'].toDouble(),
+      sellingPrice: (json['selling_price'] as num).toDouble(),
+      mrp: (json['mrp'] as num).toDouble(),
+      buyingPrice: (json['buying_price'] as num).toDouble(),
       inStock: json['inStock'],
       variationVisibility: json['variation_visibility'],
-      finalPrice: json['final_price'].toDouble(),
+      finalPrice: (json['final_price'] as num).toDouble(),
       cartAddedDate: DateTime.parse(json['cart_added_date']),
     );
   }
 
   CartProduct copyWith({
-    String? productRef,
+    ProductModel? productRef,
     VariationModel? variant,
     int? quantity,
     String? pincode,
@@ -100,7 +100,7 @@ class CartProduct {
   Map<String, dynamic> toJson() {
     try {
       return {
-        'product_ref': productRef,
+        'product_ref': productRef.toJson(),
         'variant': variant.toJson(),
         'quantity': quantity,
         'pincode': pincode,
@@ -113,7 +113,7 @@ class CartProduct {
         'cart_added_date': cartAddedDate.toIso8601String(),
       };
     } catch (e) {
-      return {}; // or handle the error appropriately
+      return {}; // Handle the error appropriately
     }
   }
 }

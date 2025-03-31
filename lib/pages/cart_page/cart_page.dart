@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dash/flutter_dash.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:kwik/constants/colors.dart' show AppColors;
+import 'package:kwik/bloc/Cart_bloc/cart_bloc.dart';
+import 'package:kwik/bloc/Cart_bloc/cart_event.dart';
+import 'package:kwik/bloc/Cart_bloc/cart_state.dart';
+import 'package:kwik/models/cart_model.dart';
+import 'package:kwik/models/product_model.dart';
 import '../../widgets/navbar/navbar.dart';
 
 class CartPage extends StatefulWidget {
@@ -16,69 +22,73 @@ class _CartPageState extends State<CartPage> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Scaffold(
-      backgroundColor: const Color(0xFFfbfafb),
-      // backgroundColor: const Color.fromARGB(255, 201, 201, 201),
-      appBar: AppBar(
-        // leading: InkWell(
-        //   onTap: () => context.pop(),
-        //   child: const Icon(
-        //     Icons.arrow_back_ios,
-        //     color: Colors.black,
-        //   ),
-        // ),
+    return BlocBuilder<CartBloc, CartState>(builder: (context, state) {
+      List<CartProduct> cartItems = [];
+
+      if (state is CartUpdated) {
+        cartItems = state.cartItems;
+      }
+      return Scaffold(
         backgroundColor: const Color(0xFFfbfafb),
-        elevation: 0,
-        centerTitle: false,
-        title: Row(
-          children: [
-            Text(
-              "Your Cart",
-              style: theme.textTheme.bodyMedium!.copyWith(fontSize: 18),
-            ),
-            const SizedBox(width: 15),
-            Container(
-              decoration: BoxDecoration(
-                  color: const Color(0xFFFFD93C),
-                  borderRadius: BorderRadius.circular(15)),
-              child: const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 5),
-                child: Text("Saved ₹95"),
+        // backgroundColor: const Color.fromARGB(255, 201, 201, 201),
+        appBar: AppBar(
+          backgroundColor: const Color(0xFFfbfafb),
+          elevation: 0,
+          centerTitle: false,
+          title: Row(
+            children: [
+              Text(
+                "Your Cart",
+                style: theme.textTheme.bodyMedium!.copyWith(fontSize: 18),
               ),
-            )
+              const SizedBox(width: 15),
+              Container(
+                decoration: BoxDecoration(
+                    color: const Color(0xFFFFD93C),
+                    borderRadius: BorderRadius.circular(15)),
+                child: const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 5),
+                  child: Text("Saved ₹95"),
+                ),
+              )
+            ],
+          ),
+        ),
+        body: Column(
+          children: [
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    deliveryContainer(theme: theme),
+                    deliveryTimeContainer(theme: theme),
+                    Column(
+                      children: List.generate(
+                          cartItems.length,
+                          (index) => cartproductItem(
+                              cartproduct: cartItems[index],
+                              theme: theme,
+                              qty: cartItems[index].quantity.toString())),
+                    ),
+                    addMoreItem(theme: theme),
+                    const SizedBox(height: 15),
+                    selectDeliveryType(theme: theme),
+                    const SizedBox(height: 15),
+                    deliveryInstructions(theme: theme),
+                    billDetails(theme: theme),
+                    const SizedBox(height: 15),
+                    addressContainer(theme: theme),
+                    const SizedBox(height: 15),
+                  ],
+                ),
+              ),
+            ),
+            paymentOptions(theme: theme)
           ],
         ),
-      ),
-      body: Column(
-        children: [
-          Expanded(
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  deliveryContainer(theme: theme),
-                  deliveryTimeContainer(theme: theme),
-                  cartproductItem(theme: theme),
-                  cartproductItem(theme: theme),
-                  cartproductItem(theme: theme),
-                  cartproductItem(theme: theme),
-                  addMoreItem(theme: theme),
-                  const SizedBox(height: 15),
-                  selectDeliveryType(theme: theme),
-                  const SizedBox(height: 15),
-                  deliveryInstructions(theme: theme),
-                  billDetails(theme: theme),
-                  const SizedBox(height: 15),
-                  addressContainer(theme: theme),
-                  const SizedBox(height: 15),
-                ],
-              ),
-            ),
-          ),
-          paymentOptions(theme: theme)
-        ],
-      ),
-      bottomNavigationBar: const Navbar(),
-    );
+        bottomNavigationBar: const Navbar(),
+      );
+    });
   }
 
   Widget deliveryContainer({required ThemeData theme}) {
@@ -169,7 +179,10 @@ class _CartPageState extends State<CartPage> {
     );
   }
 
-  Widget cartproductItem({required ThemeData theme}) {
+  Widget cartproductItem(
+      {required ThemeData theme,
+      required CartProduct cartproduct,
+      required String qty}) {
     return Container(
       width: MediaQuery.of(context).size.width,
       padding: const EdgeInsets.all(15),
@@ -185,37 +198,31 @@ class _CartPageState extends State<CartPage> {
                 "https://firebasestorage.googleapis.com/v0/b/kwikgroceries-8a11e.firebasestorage.app/o/users%2FswjgrVITpJRvzbi2rYpR2a9TyjQ2%2Fuploads%2F1739278870228000.jpg?alt=media&token=638a3741-e869-49a4-a07a-f02fdebc40eb"),
           ),
           Expanded(
-            flex: 4,
+            flex: 5,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.start,
               spacing: 3,
               children: [
-                Text("Fortune Sunlite Refined Sunflower Oil",
+                Text(cartproduct.productRef.productName,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                     style: theme.textTheme.bodyMedium),
-                Text("1 ltr", style: theme.textTheme.bodySmall),
+                Text("${cartproduct.variant.qty} ${cartproduct.variant.unit}",
+                    style: theme.textTheme.bodySmall),
                 Text("Save for later", style: theme.textTheme.bodySmall),
               ],
             ),
           ),
           Expanded(
-            flex: 2,
+            flex: 3,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Container(
-                  decoration: BoxDecoration(
-                      color: Colors.red,
-                      borderRadius: BorderRadius.circular(10)),
-                  height: 35,
-                  width: 100,
-                  child: Center(
-                    child: Text(
-                      "-    1    +",
-                      style: theme.textTheme.bodyLarge!
-                          .copyWith(color: Colors.white),
-                    ),
-                  ),
+                quantitycontrolbutton(
+                  theme: theme,
+                  product: cartproduct.productRef,
+                  qty: qty,
                 )
               ],
             ),
@@ -226,11 +233,12 @@ class _CartPageState extends State<CartPage> {
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Text(
-                  "₹180",
+                  (cartproduct.quantity * cartproduct.variant.mrp).toString(),
                   style: theme.textTheme.bodyLarge,
                 ),
                 Text(
-                  "₹210",
+                  (cartproduct.quantity * cartproduct.variant.sellingPrice)
+                      .toString(),
                   style: theme.textTheme.bodyLarge!.copyWith(
                       color: Colors.grey,
                       decoration: TextDecoration.lineThrough),
@@ -961,6 +969,82 @@ class _CartPageState extends State<CartPage> {
                   ],
                 ), // Button text
               )),
+        ],
+      ),
+    );
+  }
+
+  Widget quantitycontrolbutton(
+      {required ThemeData theme,
+      required ProductModel product,
+      required String qty}) {
+    print(qty);
+    return Container(
+      decoration: BoxDecoration(
+          color: const Color(0xFFE23338),
+          borderRadius: BorderRadius.circular(10)),
+      child: Row(
+        spacing: 2,
+        children: [
+          InkWell(
+            onTap: () {
+              HapticFeedback.mediumImpact();
+              context.read<CartBloc>().add(DecreaseCartQuantity(
+                  pincode: "560003",
+                  productRef: product.id,
+                  userId: "s5ZdLnYhnVfAramtr7knGduOI872",
+                  variantId: product.variations.first.id));
+            },
+            child: Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: SizedBox(
+                    child: Center(
+                        child: Container(
+                  width: 12,
+                  height: 2,
+                  decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(3)),
+                ))),
+              ),
+            ),
+          ),
+          Expanded(
+            child: SizedBox(
+                child: Center(
+              child: Text(
+                qty,
+                style: theme.textTheme.bodyMedium!.copyWith(
+                    color: Colors.white,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w800),
+              ),
+            )),
+          ),
+          InkWell(
+            onTap: () {
+              HapticFeedback.mediumImpact();
+              context.read<CartBloc>().add(IncreaseCartQuantity(
+                  pincode: "560003",
+                  productRef: product.id,
+                  userId: "s5ZdLnYhnVfAramtr7knGduOI872",
+                  variantId: product.variations.first.id));
+            },
+            child: const Expanded(
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 4),
+                child: SizedBox(
+                    child: Center(
+                  child: Icon(
+                    Icons.add,
+                    size: 20,
+                    color: Colors.white,
+                  ),
+                )),
+              ),
+            ),
+          )
         ],
       ),
     );

@@ -384,9 +384,9 @@ class SearchBarDelegate extends SliverPersistentHeaderDelegate {
                   height: 20,
                   color: Colors.grey,
                 ),
-                SizedBox(width: 10),
+                const SizedBox(width: 10),
                 AnimatedSwitcher(
-                  duration: Duration(milliseconds: 500),
+                  duration: const Duration(milliseconds: 500),
                   child: Text(
                     'Search "$searchText"',
                     key: ValueKey(searchText),
