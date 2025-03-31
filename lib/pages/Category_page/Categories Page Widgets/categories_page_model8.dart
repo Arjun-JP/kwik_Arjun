@@ -61,7 +61,7 @@ class CategoriesPageModel8 extends StatelessWidget {
                     spacing: 10,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      SizedBox(
+                     const SizedBox(
                         height: 8,
                       ),
                       Text(

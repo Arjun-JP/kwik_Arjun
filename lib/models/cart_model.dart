@@ -1,3 +1,4 @@
+import 'package:flutter/src/widgets/framework.dart';
 import 'package:hive/hive.dart';
 import 'package:kwik/models/variation_model.dart';
 
@@ -112,7 +113,6 @@ class CartProduct {
         'cart_added_date': cartAddedDate.toIso8601String(),
       };
     } catch (e) {
-      print("Error in CartProduct.toJson(): $e");
       return {}; // or handle the error appropriately
     }
   }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
@@ -348,7 +349,7 @@ class _OfferPageState extends State<OfferPage> {
                           SliverPersistentHeader(
                             pinned: true,
                             floating: false,
-                            delegate: _SearchBarDelegate(),
+                            delegate: SearchBarDelegate("apple"),
                           ),
                           ...templates.map((template) {
                             return SliverToBoxAdapter(
@@ -378,41 +379,55 @@ class _OfferPageState extends State<OfferPage> {
   }
 }
 
-class _SearchBarDelegate extends SliverPersistentHeaderDelegate {
+class SearchBarDelegate extends SliverPersistentHeaderDelegate {
+  final String searchText;
+
+  SearchBarDelegate(this.searchText);
+
   @override
   Widget build(
-      BuildContext context, double shrinkOffset, bool overlapsContent) {
+    BuildContext context,
+    double shrinkOffset,
+    bool overlapsContent,
+  ) {
+    ThemeData theme = Theme.of(context);
     return SafeArea(
-      child: Container(
-        color: const Color(0xFF219f52),
-        padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
-        child: TextField(
-          decoration: InputDecoration(
-            enabledBorder: OutlineInputBorder(
-              borderSide: const BorderSide(color: AppColors.dotColorUnSelected),
+      child: InkWell(
+        onTap: () {
+          HapticFeedback.selectionClick();
+          context.push('/searchpage');
+        },
+        child: Container(
+          height: 80,
+          color: const Color(0xFF219f52),
+          padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12.0),
+            decoration: BoxDecoration(
+              color: Colors.white,
               borderRadius: BorderRadius.circular(10),
             ),
-            hintText: "   Search...",
-            filled: true,
-            fillColor: AppColors.backgroundColorWhite,
-            suffixIcon: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: SvgPicture.asset(
-                "assets/images/search.svg",
-                fit: BoxFit.contain,
-                width: 30,
-                height: 20,
-                color: Colors.grey,
-              ),
+            child: Row(
+              children: [
+                SvgPicture.asset(
+                  "assets/images/search.svg",
+                  fit: BoxFit.contain,
+                  width: 30,
+                  height: 20,
+                  color: Colors.grey,
+                ),
+                SizedBox(width: 10),
+                AnimatedSwitcher(
+                  duration: Duration(milliseconds: 500),
+                  child: Text(
+                    'Search "$searchText"',
+                    key: ValueKey(searchText),
+                    style: theme.textTheme.bodyMedium!
+                        .copyWith(fontSize: 16, fontWeight: FontWeight.w400),
+                  ),
+                ),
+              ],
             ),
-            border: OutlineInputBorder(
-              borderSide: const BorderSide(color: AppColors.dotColorUnSelected),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            hintStyle: const TextStyle(
-                fontSize: 16,
-                color: AppColors.textColorGrey,
-                fontWeight: FontWeight.w400),
           ),
         ),
       ),
@@ -427,7 +442,6 @@ class _SearchBarDelegate extends SliverPersistentHeaderDelegate {
   bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) =>
       false;
 }
-
 
 
 

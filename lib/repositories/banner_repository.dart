@@ -28,9 +28,7 @@ class BannerRepository {
         for (var item in body) {
           try {
             banners.add(BannerModel.fromJson(item));
-          } catch (e) {
-            print("Error parsing banner: $e");
-          }
+          } catch (e) {}
         }
 
         // If no banners were added, throw an error
@@ -43,7 +41,6 @@ class BannerRepository {
         throw Exception("Failed to load banners: ${response.statusCode}");
       }
     } catch (e) {
-      print("Error occurred: $e");
       rethrow; // Re-throw the error for further handling
     }
   }

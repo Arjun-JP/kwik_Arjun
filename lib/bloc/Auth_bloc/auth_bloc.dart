@@ -6,11 +6,7 @@ import 'auth_event.dart';
 import 'auth_state.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
-
-
   AuthBloc() : super(AuthInitial()) {
-
-    
     on<SendOtpToPhoneEvent>((event, emit) async {
       emit(AuthLoading());
 
@@ -40,14 +36,14 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           timeout: Duration.zero,
         );
       } catch (e) {
-       emit(AuthFailureState(e.toString()));
+        emit(AuthFailureState(e.toString()));
       }
     });
 
-       on<OnPhoneOtpSend>((event, emit) {
+    on<OnPhoneOtpSend>((event, emit) {
       emit(PhoneAuthCodeSentSuccess(verificationId: event.verificationId));
     });
-    
+
     on<VerifySentOtp>((event, emit) {
       try {
         emit(AuthLoading());
@@ -62,8 +58,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         emit(AuthFailureState(e.toString()));
       }
     });
-      on<OnPhoneAuthErrorEvent>((event, emit) {
-         emit(AuthFailureState(event.error.toString()));
+    on<OnPhoneAuthErrorEvent>((event, emit) {
+      emit(AuthFailureState(event.error.toString()));
     });
 
     on<OnPhoneAuthVerificationCompletedEvent>((event, emit) async {
@@ -73,21 +69,19 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
         String userId = userCredential.user!.uid;
         String? phone = userCredential.user!.phoneNumber;
-        String? displayName = userCredential.user!.displayName??'';
- 
+        String? displayName = userCredential.user!.displayName ?? '';
 
         DocumentSnapshot userDoc = await FirebaseFirestore.instance
             .collection('users')
             .doc(userId)
             .get();
-   
+
         if (!userDoc.exists) {
           await FirebaseFirestore.instance.collection('users').doc(userId).set({
             'phone': phone,
             'createdAt': DateTime.now(),
             'userId': userId,
             'displayName': displayName,
-            
           });
         }
         emit(AuthenticatedState(userId));

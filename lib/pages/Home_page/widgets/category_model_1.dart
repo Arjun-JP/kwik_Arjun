@@ -94,14 +94,15 @@ class _CategoryModel1State extends State<CategoryModel1> {
                                             width: 100,
                                             height: 100,
                                             decoration: BoxDecoration(
-                                                color:
+                                                color: lightenColor(
                                                     parseColor(category.color),
+                                                    .9),
                                                 borderRadius:
                                                     BorderRadius.circular(8),
                                                 image: DecorationImage(
                                                     image: NetworkImage(
                                                         category.imageUrl),
-                                                    fit: BoxFit.cover)),
+                                                    fit: BoxFit.contain)),
                                           ),
                                           const SizedBox(height: 7),
                                           Text(

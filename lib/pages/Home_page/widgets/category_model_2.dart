@@ -112,7 +112,7 @@ Widget subcategoryItem(
             borderRadius: BorderRadius.circular(8),
             color: lightenColor(parseColor(bgcolor), .9),
             image: DecorationImage(
-                image: NetworkImage(imageurl), fit: BoxFit.fill)),
+                image: NetworkImage(imageurl), fit: BoxFit.contain)),
       ),
       const SizedBox(height: 10),
       Text(name,

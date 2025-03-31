@@ -47,7 +47,7 @@ class CategoryModel10 extends StatelessWidget {
             create: (context) =>
                 CategoryModel10Bloc(repository: CategoryModel10Repo())
                   ..add(FetchSubCategoryProducts(
-                      subCategoryId: '6780ff980bfef51d79df1a08')),
+                      subCategoryId: '6780ff720bfef51d79df1a06')),
             child: BlocBuilder<CategoryModel10Bloc, CategoryModel10State>(
               builder: (context, state) {
                 if (state is CategoryModel10Loading) {
@@ -174,7 +174,7 @@ Widget productsWidget(
           width: 150,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20),
-            // color: Colors.white,
+            color: const Color.fromARGB(255, 236, 253, 255),
           ),
           child: Column(
             mainAxisSize: MainAxisSize.max,
@@ -186,7 +186,7 @@ Widget productsWidget(
                 width: 150,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(12),
-                  color: parseColor(bgColor),
+                  color: const Color.fromARGB(255, 236, 253, 255),
                 ),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(12),
@@ -197,24 +197,6 @@ Widget productsWidget(
                   ),
                 ),
               ),
-              // Padding(
-              //   padding: const EdgeInsets.symmetric(
-              //     vertical: 5,
-              //     horizontal: 8.0,
-              //   ),
-              //   child: Expanded(
-              //     child: Text(
-              //       product.productName,
-              //       textAlign: TextAlign.left,
-              //       maxLines: 2,
-              //       style: TextStyle(
-              //         fontWeight: FontWeight.w500,
-              //         color: parseColor(producttextcolor),
-              //         fontSize: 12,
-              //       ),
-              //     ),
-              //   ),
-              // ),
               Padding(
                 padding: const EdgeInsets.only(left: 8, right: 8, bottom: 5),
                 child: Row(
@@ -231,10 +213,11 @@ Widget productsWidget(
                           Text("₹ 75",
                               style: TextStyle(
                                   decoration: TextDecoration.lineThrough,
-                                  decorationColor: parseColor(
-                                      crosscolor), // Change line color
+                                  decorationColor:
+                                      parseColor("A19DA3"), // Change line color
                                   decorationThickness: 2,
                                   fontSize: 12,
+                                  color: parseColor("A19DA3"),
                                   fontWeight: FontWeight.w500))
                         ],
                       ),
@@ -245,8 +228,7 @@ Widget productsWidget(
                       child: ElevatedButton(
                         onPressed: () {},
                         style: ElevatedButton.styleFrom(
-                          backgroundColor:
-                              lightenColor(parseColor(cartButtontextColor), .8),
+                          backgroundColor: parseColor("E23338"),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
@@ -254,7 +236,7 @@ Widget productsWidget(
                         child: Text(
                           'Add',
                           style: TextStyle(
-                            color: parseColor(cartButtontextColor),
+                            color: parseColor("FFFFFF"),
                             fontWeight: FontWeight.w800,
                             fontSize: 13,
                           ),

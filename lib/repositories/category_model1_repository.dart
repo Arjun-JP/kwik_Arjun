@@ -20,8 +20,7 @@ class CategoryRepositoryModel1 {
 
       final response = await http
           .get(Uri.parse('$baseUrl/category/allcategories'), headers: headers);
-      print(response.statusCode);
-      print(Uri.parse('$baseUrl/category/allcategories'));
+
       if (response.statusCode == 200) {
         List<dynamic> jsonList =
             jsonDecode(response.body); // Decode the response as a List

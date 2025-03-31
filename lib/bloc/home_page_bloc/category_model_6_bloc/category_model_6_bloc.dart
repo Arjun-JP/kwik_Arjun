@@ -62,10 +62,9 @@ class CategoryBlocModel6 extends Bloc<CategoryEvent6, CategoryState6> {
       // Clear the cache
 
       await subCategoryBox.clear();
-      print("Cache cleared");
+
       emit(CacheCleared()); // Emit the cache cleared state
     } catch (e) {
-      print("Error clearing cache: $e");
       emit(CacheClearError("Failed to clear cache: $e"));
     }
   }

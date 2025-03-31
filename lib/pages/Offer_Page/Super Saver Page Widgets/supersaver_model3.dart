@@ -6,6 +6,7 @@ import 'package:kwik/constants/colors.dart';
 import 'package:kwik/models/product_model.dart';
 import 'package:kwik/pages/Home_page/widgets/category_model_10.dart';
 import 'package:kwik/repositories/category_model_10_repo.dart';
+import 'package:kwik/widgets/product_model_2.dart';
 
 import '../../../bloc/home_page_bloc/category_model_10_bloc/category_model_10_bloc.dart';
 
@@ -92,22 +93,31 @@ class SupersaverModel3 extends StatelessWidget {
           ),
           const SizedBox(height: 10),
           SizedBox(
-            height: 248,
+            height: 355,
             width: MediaQuery.of(context).size.width,
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
               itemCount: products.length > 5 ? 5 : products.length,
               itemBuilder: (context, index) {
                 final product = products[index];
-                return productsWidget(
-                    bgColor: prodoductbgcolor,
-                    product: product,
-                    productBackgroundColor: prodoductbgcolor,
-                    producttextcolor: productTextColor,
-                    crosscolor: crosscolor,
-                    mrpColor: mrpcolor,
-                    sellingPriceColor: sellingpricecolor,
-                    cartButtontextColor: cartbuttontextcolor);
+                return ProductModel2(
+                    name: product.productName,
+                    price: product.variations.first.sellingPrice,
+                    imageurl: product.productImages[0],
+                    productcolor: "000000",
+                    sellingpricecolor: "FFFFFF",
+                    mrpColor: "FFFFFF",
+                    offertextcolor: "FFFFFF",
+                    productBgColor: "DF2401",
+                    buttontextcolor: "E23338",
+                    unitbgcolor: "FFFFFF",
+                    unitTextcolor: "A19DA3",
+                    context: context,
+                    offertextcolor2: "FFFFFF",
+                    offerbordercolor: "FCFF3B",
+                    buttonbgcolor: "FFFFFF",
+                    offerbgcolor1: "DF2401",
+                    offerbgcolor2: "2DB164");
               },
             ),
           ),
@@ -117,7 +127,7 @@ class SupersaverModel3 extends StatelessWidget {
             height: 48,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
-              color: parseColor(seeAllButtonBG),
+              color: lightenColor(parseColor(seeAllButtonBG), .8),
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,

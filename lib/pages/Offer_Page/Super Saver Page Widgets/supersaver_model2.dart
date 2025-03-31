@@ -64,7 +64,7 @@ class SupersaverModel2 extends StatelessWidget {
       List<ProductModel> products, BuildContext context) {
     return Container(
       color: parseColor(bgcolor),
-      height: 400,
+      height: 417,
       width: double.infinity,
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
       child: Column(
@@ -81,7 +81,7 @@ class SupersaverModel2 extends StatelessWidget {
           const SizedBox(height: 10),
           const SizedBox(height: 10),
           SizedBox(
-            height: 263,
+            height: 275,
             width: MediaQuery.of(context).size.width,
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
@@ -92,21 +92,18 @@ class SupersaverModel2 extends StatelessWidget {
                   padding: const EdgeInsets.only(right: 15),
                   child: ProductItem(
                     subcategoryRef: subcategoryid,
-                    productnamecolor: "000000",
+                    productnamecolor: "233D4D",
                     product: product,
                     productBgColor: prodoductbgcolor,
-                    buttontextcolor: "000000",
+                    buttontextcolor: "E23338",
                     context: context,
-                    imageurl: product.productImages.first,
-                    name: product.productName,
-                    offertextcolor: "000000",
-                    price: 200,
+                    offertextcolor: "FFFFFF",
                     buttonBgColor: "FFFFFF",
-                    offerbgcolor: "FFFFFF",
-                    unitTextcolor: "000000",
+                    offerbgcolor: "2DB164",
+                    unitTextcolor: "A19DA3",
                     unitbgcolor: "FFFFFF",
-                    mrpColor: mrpcolor,
-                    sellingPriceColor: sellingpricecolor,
+                    mrpColor: "A19DA3",
+                    sellingPriceColor: "233D4D",
                   ),
                 );
               },
@@ -118,7 +115,7 @@ class SupersaverModel2 extends StatelessWidget {
             height: 48,
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
-                color: parseColor(seeAllButtonBG)),
+                color: lightenColor(parseColor("8CCA97"), .8)),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [

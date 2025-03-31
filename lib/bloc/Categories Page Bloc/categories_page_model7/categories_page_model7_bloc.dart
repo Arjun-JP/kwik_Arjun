@@ -7,15 +7,16 @@ import 'package:kwik/repositories/category_model_10_repo.dart';
 part 'categories_page_model7_event.dart';
 part 'categories_page_model7_state.dart';
 
-class CategoriesPageModel7Bloc extends Bloc<CategoriesPageModel7Event, CategoriesPageModel7State> {
-    final CategoryModel10Repo repository;
-    final Box _cacheBoxCM4 = Hive.box('product_cache_category_model10');
-  CategoriesPageModel7Bloc({required this.repository}) : super(CategoriesPageModel7Initial()) {
-      
-   on<FetchSubCategoryProducts>(_onFetchProducts);
+class CategoriesPageModel7Bloc
+    extends Bloc<CategoriesPageModel7Event, CategoriesPageModel7State> {
+  final CategoryModel10Repo repository;
+  final Box _cacheBoxCM4 = Hive.box('product_cache_category_model10');
+  CategoriesPageModel7Bloc({required this.repository})
+      : super(CategoriesPageModel7Initial()) {
+    on<FetchSubCategoryProducts>(_onFetchProducts);
     on<Clearsubcatproduct10Cache>(_onClearCache);
   }
-Future<void> _onFetchProducts(FetchSubCategoryProducts event,
+  Future<void> _onFetchProducts(FetchSubCategoryProducts event,
       Emitter<CategoriesPageModel7State> emit) async {
     emit(CategoriesPageModel7Loading());
 
@@ -52,11 +53,9 @@ Future<void> _onFetchProducts(FetchSubCategoryProducts event,
       // Clear the cache
       await subcategoryproduct.clear();
 
-      print("Cache cleared");
       emit(CacheCleared()); // Emit the cache cleared state
     } catch (e) {
       emit(CacheClearError("Failed to clear cache: $e"));
     }
   }
 }
-

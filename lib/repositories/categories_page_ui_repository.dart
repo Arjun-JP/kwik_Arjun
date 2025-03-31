@@ -19,7 +19,6 @@ class CategoriesPageUiRepository {
 
     // Return cached data if it exists and no force refresh
     if (!forceRefresh && box.containsKey(_cacheKey)) {
-      print("getting cached data");
       return json.decode(box.get(_cacheKey));
     }
 

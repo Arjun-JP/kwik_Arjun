@@ -165,25 +165,7 @@ class CategoryModel13 extends StatelessWidget {
                                       unitTextcolor: "000000",
                                       unitbgcolor: "FFFFFF",
                                       offerbgcolor: "FFFFFF",
-                                      imageurl: state.products
-                                          .where((product) => product
-                                              .subCategoryRef
-                                              .any((subCategory) =>
-                                                  subCategory.id ==
-                                                  state.selectedCategoryId))
-                                          .toList()[index]
-                                          .productImages
-                                          .first,
                                       mrpColor: "FFFFFF",
-                                      name: state.products
-                                          .where((product) => product
-                                              .subCategoryRef
-                                              .any((subCategory) =>
-                                                  subCategory.id ==
-                                                  state.selectedCategoryId))
-                                          .toList()[index]
-                                          .productName,
-                                      price: 85,
                                     ),
                                   );
                                 }),
@@ -228,7 +210,7 @@ Widget subcategoryItem(
                 color: parseColor(bgcolor),
                 image: DecorationImage(
                   image: NetworkImage(imageurl),
-                  fit: BoxFit.fill,
+                  fit: BoxFit.contain,
                 ),
               ),
             ),

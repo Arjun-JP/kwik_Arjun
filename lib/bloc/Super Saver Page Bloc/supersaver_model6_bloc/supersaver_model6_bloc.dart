@@ -52,7 +52,6 @@ class SupersaverModel6Bloc
       // Clear the cache
       await subcategoryproduct.clear();
 
-      print("Cache cleared");
       emit(CacheCleared()); // Emit the cache cleared state
     } catch (e) {
       emit(CacheClearError("Failed to clear cache: $e"));

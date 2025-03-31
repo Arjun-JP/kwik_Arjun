@@ -11,7 +11,7 @@ class CartSimilarProductsBloc
     extends Bloc<CartSimilarProductsEvent, CartSimilarProductsState> {
   final SubcategoryProductRepository repository;
   final Box _cacheBoxCM4 = Hive.box('product');
- 
+
   CartSimilarProductsBloc({required this.repository})
       : super(CartSimilarProductsInitial()) {
     on<FetchSubCategoryProducts>(_onFetchProducts);
@@ -54,7 +54,6 @@ class CartSimilarProductsBloc
       // Clear the cache
       await subcategoryproduct.clear();
 
-      print("Cache cleared");
       emit(CacheCleared()); // Emit the cache cleared state
     } catch (e) {
       emit(CacheClearError("Failed to clear cache: $e"));

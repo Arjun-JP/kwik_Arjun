@@ -38,6 +38,7 @@ class _AllSubcategoryState extends State<AllSubcategory> {
 
   @override
   Widget build(BuildContext context) {
+    print("categoru ID : ${widget.categoryrId}");
     ThemeData theme = Theme.of(context);
     return Scaffold(
         backgroundColor: Colors.white,
@@ -79,19 +80,32 @@ class _AllSubcategoryState extends State<AllSubcategory> {
                         /// Left Column (Scrollable)
                         Expanded(
                           flex: 1,
-                          child: SingleChildScrollView(
-                            child: Column(
-                              spacing: 5,
-                              children: List.generate(
-                                state.subCategories.length,
-                                (index) => subcategoryModel(
-                                    categoryID: widget.categoryrId,
-                                    selectedsubcategoryID:
-                                        state.selectedSubCategory,
-                                    subcategory: state.subCategories[index],
-                                    theme: theme,
-                                    categorycolor: state
-                                        .subCategories.first.categoryRef.color),
+                          child: Container(
+                            decoration: const BoxDecoration(
+                              border: Border(
+                                right: BorderSide(
+                                  color: Color.fromARGB(
+                                      255, 212, 212, 212), // Border color
+                                  width: .3, // Border width
+                                ),
+                              ),
+                              color: Color.fromARGB(255, 250, 250, 250),
+                            ),
+                            height: double.infinity,
+                            child: SingleChildScrollView(
+                              child: Column(
+                                spacing: 15,
+                                children: List.generate(
+                                  state.subCategories.length,
+                                  (index) => subcategoryModel(
+                                      categoryID: widget.categoryrId,
+                                      selectedsubcategoryID:
+                                          state.selectedSubCategory,
+                                      subcategory: state.subCategories[index],
+                                      theme: theme,
+                                      categorycolor: state.subCategories.first
+                                          .categoryRef.color),
+                                ),
                               ),
                             ),
                           ),
@@ -103,7 +117,7 @@ class _AllSubcategoryState extends State<AllSubcategory> {
                           child: Container(
                             height: MediaQuery.of(context).size.height,
                             padding: const EdgeInsets.all(10),
-                            color: const Color.fromARGB(255, 240, 240, 240),
+                            color: const Color.fromARGB(255, 255, 255, 255),
                             child: StaggeredGrid.count(
                               mainAxisSpacing: 10,
                               crossAxisSpacing: 10,
@@ -116,7 +130,6 @@ class _AllSubcategoryState extends State<AllSubcategory> {
                                             state.selectedSubCategory))
                                     .length,
                                 (index) => ProductItem(
-                                    name: "name",
                                     product: state.products
                                         .where((product) => product
                                             .subCategoryRef
@@ -124,22 +137,19 @@ class _AllSubcategoryState extends State<AllSubcategory> {
                                                 subcat.id ==
                                                 state.selectedSubCategory))
                                         .toList()[index],
-                                    price: 100,
-                                    imageurl:
-                                        "https://firebasestorage.googleapis.com/v0/b/kwikgroceries-8a11e.firebasestorage.app/o/image%2023.png?alt=media&token=9925215f-e0eb-4a12-8431-281cea504c44",
                                     buttonBgColor: "FFFFFF",
-                                    mrpColor: "000000",
+                                    mrpColor: "A19DA3",
                                     offertextcolor: "000000",
                                     productBgColor: "FFFFFF",
-                                    productnamecolor: "000000",
-                                    sellingPriceColor: "000000",
+                                    productnamecolor: "233D4D",
+                                    sellingPriceColor: "233D4D",
                                     subcategoryRef:
                                         widget.selectedsubcategory ??
                                             state.products[index].subCategoryRef
                                                 .first.id,
-                                    unitTextcolor: "000000",
-                                    unitbgcolor: "FFFFFF",
-                                    buttontextcolor: "000000",
+                                    unitTextcolor: "A19DA3",
+                                    unitbgcolor: "00FFFFFF",
+                                    buttontextcolor: "E23338",
                                     offerbgcolor: "FFFA76",
                                     context: context),
                               ),
@@ -172,10 +182,6 @@ class _AllSubcategoryState extends State<AllSubcategory> {
         HapticFeedback.selectionClick();
         context.read<AllSubCategoryBloc>().add(SelectSubCategory(
             subCategoryId: subcategory.id, categoryID: categoryID));
-
-        print(subcategory.id);
-        print("selecetedcategory");
-        print(selectedsubcategoryID);
       },
       child: Container(
           margin: const EdgeInsets.symmetric(horizontal: 5),
