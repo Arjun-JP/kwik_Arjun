@@ -1,6 +1,7 @@
 import 'package:hive/hive.dart';
 import 'package:kwik/models/cart_model.dart';
 import 'package:kwik/models/variation_model.dart';
+import 'package:kwik/models/product_model.dart';
 
 // 📌 CartProduct Adapter
 class CartProductAdapter extends TypeAdapter<CartProduct> {
@@ -10,9 +11,10 @@ class CartProductAdapter extends TypeAdapter<CartProduct> {
   @override
   CartProduct read(BinaryReader reader) {
     return CartProduct(
-      productRef: reader.readString(),
+      productRef: ProductModelAdapter()
+          .read(reader), // Read ProductModel object using its adapter
       variant: VariationModelAdapter()
-          .read(reader), // Read Variation object using its adapter
+          .read(reader), // Read VariationModel object using its adapter
       quantity: reader.readInt(),
       pincode: reader.readString(),
       sellingPrice: reader.readDouble(),
@@ -27,9 +29,10 @@ class CartProductAdapter extends TypeAdapter<CartProduct> {
 
   @override
   void write(BinaryWriter writer, CartProduct obj) {
-    writer.writeString(obj.productRef);
-    VariationModelAdapter()
-        .write(writer, obj.variant); // Write Variation object using its adapter
+    ProductModelAdapter().write(
+        writer, obj.productRef); // Write ProductModel object using its adapter
+    VariationModelAdapter().write(
+        writer, obj.variant); // Write VariationModel object using its adapter
     writer.writeInt(obj.quantity);
     writer.writeString(obj.pincode);
     writer.writeDouble(obj.sellingPrice);

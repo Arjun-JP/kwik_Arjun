@@ -17,7 +17,7 @@ class CartProductAdapter extends TypeAdapter<CartProduct> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return CartProduct(
-      productRef: fields[0] as String,
+      productRef: fields[0] as ProductModel,
       variant: fields[1] as VariationModel,
       quantity: fields[2] as int,
       pincode: fields[3] as String,

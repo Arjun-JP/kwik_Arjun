@@ -101,9 +101,8 @@ class SupersaverModel3 extends StatelessWidget {
               itemBuilder: (context, index) {
                 final product = products[index];
                 return ProductModel2(
-                    name: product.productName,
-                    price: product.variations.first.sellingPrice,
-                    imageurl: product.productImages[0],
+                    product: product,
+                    subcategoryref: product.subCategoryRef.first.id,
                     productcolor: "000000",
                     sellingpricecolor: "FFFFFF",
                     mrpColor: "FFFFFF",

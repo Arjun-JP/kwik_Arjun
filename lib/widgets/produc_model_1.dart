@@ -48,9 +48,9 @@ class ProductItem extends StatelessWidget {
 
     return BlocBuilder<CartBloc, CartState>(builder: (context, state) {
       List<CartProduct> cartItems = [];
-      String productqty = "0";
 
       if (state is CartUpdated) {
+        print(state.cartItems.length);
         cartItems = state.cartItems;
       }
       return InkWell(
@@ -153,14 +153,14 @@ class ProductItem extends StatelessWidget {
                         ),
                         SizedBox(
                           height: 30,
-                          child: cartItems.any(
-                                  (element) => element.productRef == product.id)
+                          child: cartItems.any((element) =>
+                                  element.productRef.id == product.id)
                               ? quantitycontrolbutton(
                                   theme: theme,
                                   product: product,
                                   qty: cartItems
                                       .firstWhere((element) =>
-                                          element.productRef == product.id)
+                                          element.productRef.id == product.id)
                                       .quantity
                                       .toString(),
                                 )
@@ -174,9 +174,9 @@ class ProductItem extends StatelessWidget {
                                         context.read<CartBloc>().add(
                                               AddToCart(
                                                 cartProduct: CartProduct(
-                                                  productRef: product.id,
+                                                  productRef: product,
                                                   variant: firstVariation,
-                                                  quantity: firstVariation.qty,
+                                                  quantity: 1,
                                                   pincode: "560003",
                                                   sellingPrice: firstVariation
                                                       .sellingPrice,
