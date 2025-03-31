@@ -31,14 +31,13 @@ class CartRepository {
         headers: headers,
         body: jsonEncode(body),
       );
-      print(response.statusCode);
+
       if (response.statusCode == 201) {
         return "Product added to cart";
       } else {
         throw Exception("Failed to add product to cart: ${response.body}");
       }
     } catch (e) {
-      print("Error: $e");
       throw Exception("Error adding to cart");
     }
   }
@@ -70,7 +69,6 @@ class CartRepository {
         throw Exception("Failed to increase quantity: ${response.body}");
       }
     } catch (e) {
-      print("Error: $e");
       throw Exception("Error increasing quantity");
     }
   }
@@ -102,7 +100,6 @@ class CartRepository {
         throw Exception("Failed to decrease quantity: ${response.body}");
       }
     } catch (e) {
-      print("Error: $e");
       throw Exception("Error decreasing quantity");
     }
   }
@@ -121,7 +118,6 @@ class CartRepository {
         throw Exception("Failed to fetch cart: ${response.body}");
       }
     } catch (e) {
-      print("Error: $e");
       throw Exception("Error fetching cart");
     }
   }

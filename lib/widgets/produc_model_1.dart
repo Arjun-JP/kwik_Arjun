@@ -8,14 +8,11 @@ import 'package:kwik/bloc/Cart_bloc/cart_state.dart';
 import 'package:kwik/constants/colors.dart';
 import 'package:kwik/models/cart_model.dart';
 import 'package:kwik/models/product_model.dart';
-import 'package:kwik/repositories/cart_repo.dart';
 
 class ProductItem extends StatelessWidget {
   final String subcategoryRef;
   final ProductModel product;
-  final String name;
-  final double price;
-  final String imageurl;
+
   final String productnamecolor;
   final String mrpColor;
   final String offertextcolor;
@@ -30,9 +27,6 @@ class ProductItem extends StatelessWidget {
 
   const ProductItem({
     super.key,
-    required this.name,
-    required this.price,
-    required this.imageurl,
     required this.mrpColor,
     required this.offertextcolor,
     required this.productBgColor,
@@ -55,16 +49,9 @@ class ProductItem extends StatelessWidget {
     return BlocBuilder<CartBloc, CartState>(builder: (context, state) {
       List<CartProduct> cartItems = [];
       String productqty = "0";
-      print(state);
+
       if (state is CartUpdated) {
-        print(state.cartItems.length);
-        // isInCart = state.cartItems.any((item) => item.productRef == product.id);
         cartItems = state.cartItems;
-        productqty = state.cartItems
-            .where((item) => item.productRef == product.id)
-            .first
-            .quantity
-            .toString();
       }
       return InkWell(
         onTap: () => context.push(
@@ -105,26 +92,7 @@ class ProductItem extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 1),
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 10, vertical: 1),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(8),
-                            color: parseColor(unitbgcolor),
-                          ),
-                          child: Text(
-                            "100 g",
-                            style: theme.textTheme.bodyMedium!.copyWith(
-                              color: parseColor(unitTextcolor),
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
+
                     SizedBox(
                       width: 120,
                       child: Text(
@@ -136,6 +104,30 @@ class ProductItem extends StatelessWidget {
                           fontWeight: FontWeight.w600,
                         ),
                       ),
+                    ),
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Container(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: unitbgcolor == "FFFFFF" ||
+                                      unitbgcolor == "00FFFFFF"
+                                  ? 0
+                                  : 10,
+                              vertical: 1),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8),
+                            color: parseColor(unitbgcolor),
+                          ),
+                          child: Text(
+                            "${product.variations.first.qty}  ${product.variations.first.unit}",
+                            style: theme.textTheme.bodyMedium!.copyWith(
+                              color: parseColor(unitTextcolor),
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                     // const Spacer(),
                     Row(
@@ -161,64 +153,72 @@ class ProductItem extends StatelessWidget {
                         ),
                         SizedBox(
                           height: 30,
-                          child: cartItems
-                                  .where((element) =>
-                                      element.productRef == product.id)
-                                  .isNotEmpty
+                          child: cartItems.any(
+                                  (element) => element.productRef == product.id)
                               ? quantitycontrolbutton(
                                   theme: theme,
                                   product: product,
-                                  qty: productqty)
-                              : ElevatedButton(
-                                  onPressed: () {
-                                    HapticFeedback.mediumImpact();
-                                    context.read<CartBloc>().add(
-                                          AddToCart(
-                                            cartProduct: CartProduct(
+                                  qty: cartItems
+                                      .firstWhere((element) =>
+                                          element.productRef == product.id)
+                                      .quantity
+                                      .toString(),
+                                )
+                              : (product.variations.isNotEmpty
+                                  ? ElevatedButton(
+                                      onPressed: () {
+                                        HapticFeedback.mediumImpact();
+                                        final firstVariation =
+                                            product.variations.first;
+
+                                        context.read<CartBloc>().add(
+                                              AddToCart(
+                                                cartProduct: CartProduct(
+                                                  productRef: product.id,
+                                                  variant: firstVariation,
+                                                  quantity: firstVariation.qty,
+                                                  pincode: "560003",
+                                                  sellingPrice: firstVariation
+                                                      .sellingPrice,
+                                                  mrp: firstVariation.mrp,
+                                                  buyingPrice: firstVariation
+                                                      .buyingPrice,
+                                                  inStock: true,
+                                                  variationVisibility: true,
+                                                  finalPrice: 0,
+                                                  cartAddedDate: DateTime.now(),
+                                                ),
+                                                userId:
+                                                    "s5ZdLnYhnVfAramtr7knGduOI872",
                                                 productRef: product.id,
-                                                variant:
-                                                    product.variations.first,
-                                                quantity: product
-                                                    .variations.first.qty,
+                                                variantId: firstVariation.id,
                                                 pincode: "560003",
-                                                sellingPrice: product.variations
-                                                    .first.sellingPrice,
-                                                mrp: product
-                                                    .variations.first.mrp,
-                                                buyingPrice: product.variations
-                                                    .first.buyingPrice,
-                                                inStock: true,
-                                                variationVisibility: true,
-                                                finalPrice: 0,
-                                                cartAddedDate: DateTime.now()),
-                                            userId:
-                                                "s5ZdLnYhnVfAramtr7knGduOI872",
-                                            productRef: product.id,
-                                            variantId:
-                                                product.variations.first.id,
-                                            pincode: "560003",
-                                          ),
-                                        );
-                                    print("cartbuttonclicked");
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: parseColor(buttonBgColor),
-                                    shape: RoundedRectangleBorder(
-                                      side: BorderSide(
-                                          color: parseColor(buttontextcolor)),
-                                      borderRadius: BorderRadius.circular(5),
-                                    ),
-                                    padding: const EdgeInsets.all(0),
-                                  ),
-                                  child: Text(
-                                    'Add',
-                                    style: theme.textTheme.bodyMedium!.copyWith(
-                                      color: parseColor(buttontextcolor),
-                                      fontFamily: "Inter",
-                                      fontWeight: FontWeight.w900,
-                                    ),
-                                  ),
-                                ),
+                                              ),
+                                            );
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor:
+                                            parseColor(buttonBgColor),
+                                        shape: RoundedRectangleBorder(
+                                          side: BorderSide(
+                                              color:
+                                                  parseColor(buttontextcolor)),
+                                          borderRadius:
+                                              BorderRadius.circular(5),
+                                        ),
+                                        padding: const EdgeInsets.all(0),
+                                      ),
+                                      child: Text(
+                                        'Add',
+                                        style: theme.textTheme.bodyMedium!
+                                            .copyWith(
+                                          color: parseColor(buttontextcolor),
+                                          fontFamily: "Inter",
+                                          fontWeight: FontWeight.w900,
+                                        ),
+                                      ),
+                                    )
+                                  : const SizedBox()), // Return empty widget if no variations
                         )
                       ],
                     ),
@@ -269,6 +269,7 @@ class ProductItem extends StatelessWidget {
       {required ThemeData theme,
       required ProductModel product,
       required String qty}) {
+    print(qty);
     return Container(
       decoration: BoxDecoration(
           color: const Color(0xFFE23338),
@@ -284,7 +285,6 @@ class ProductItem extends StatelessWidget {
                   productRef: product.id,
                   userId: "s5ZdLnYhnVfAramtr7knGduOI872",
                   variantId: product.variations.first.id));
-              print("cartbuttonclicked");
             },
             child: Padding(
               padding: const EdgeInsets.all(8.0),
@@ -302,7 +302,7 @@ class ProductItem extends StatelessWidget {
           SizedBox(
               child: Center(
             child: Text(
-              "1",
+              qty,
               style: theme.textTheme.bodyMedium!.copyWith(
                   color: Colors.white,
                   fontSize: 14,
@@ -317,7 +317,6 @@ class ProductItem extends StatelessWidget {
                   productRef: product.id,
                   userId: "s5ZdLnYhnVfAramtr7knGduOI872",
                   variantId: product.variations.first.id));
-              print("cartbuttonclicked");
             },
             child: const Padding(
               padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 4),

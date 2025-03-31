@@ -70,7 +70,6 @@ class CategoryModel18 extends StatelessWidget {
                       } else if (state is CategoryErrorState) {
                         return Center(child: Text(state.message));
                       } else if (state is CategoryLoadedState) {
-                        print(state.subCategories.length);
                         return Column(
                           children: [
                             state.subCategories.isNotEmpty
@@ -94,8 +93,8 @@ class CategoryModel18 extends StatelessWidget {
                                           offertext2: offertextcolor2,
                                           name: state.subCategories[index].name,
                                           textcolor: categorytitlecolor,
-                                          imageurl: state.subCategories.length
-                                              .toString(),
+                                          imageurl: state
+                                              .subCategories[index].imageUrl,
                                           theme: theme,
                                         );
                                       }),
@@ -231,9 +230,7 @@ Widget subcategoryItem(
                   spacing: 5,
                   children: [
                     const SizedBox(height: 5),
-                    Image.network(
-                        height: 85,
-                        "https://firebasestorage.googleapis.com/v0/b/kwikgroceries-8a11e.firebasestorage.app/o/33571-5-plush-toy-image.png?alt=media&token=25835858-a69b-4ebb-8df0-76548d6c1b7d"),
+                    Image.network(height: 85, imageurl),
                     Padding(
                       padding: const EdgeInsets.only(
                           left: 4.0, right: 4, bottom: 10),

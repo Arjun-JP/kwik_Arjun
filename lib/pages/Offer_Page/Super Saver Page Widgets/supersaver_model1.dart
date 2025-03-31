@@ -55,7 +55,7 @@ class SupersaverModel1 extends StatelessWidget {
                     children: [
                       const SizedBox(height: 15),
                       Text(
-                        "Nuts, Seeds & Berries",
+                        "Daily Essentials",
                         //state.category.name,
                         style: TextStyle(
                             color: parseColor(titleColor),
@@ -159,7 +159,7 @@ class SupersaverModel1 extends StatelessWidget {
       required String vegOrNonIcon,
       required String imageurl}) {
     return Container(
-      width: 160,
+      width: 165,
       height: 73,
       padding: const EdgeInsets.only(left: 8, top: 8.0),
       decoration: BoxDecoration(
@@ -227,9 +227,10 @@ class SupersaverModel1 extends StatelessWidget {
               imageurl,
               width: 60,
               height: 260,
-              fit: BoxFit.fill,
+              fit: BoxFit.contain,
             ),
           ),
+          const SizedBox(width: 5)
         ],
       ),
     );

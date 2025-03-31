@@ -7,6 +7,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:kwik/bloc/Auth_bloc/auth_bloc.dart';
 import 'package:kwik/bloc/Cart_bloc/cart_bloc.dart';
 import 'package:kwik/bloc/Categories%20Page%20Bloc/category_model_bloc/category_model_bloc.dart';
+import 'package:kwik/bloc/Search_bloc/Search_bloc.dart';
 import 'package:kwik/bloc/Super%20Saver%20Page%20Bloc/super_saver_ui_bloc/super_saver_ui_bloc.dart';
 import 'package:kwik/bloc/all_sub_category_bloc/all_sub_category_bloc.dart';
 import 'package:kwik/bloc/banner_bloc/banner_bloc.dart';
@@ -52,6 +53,7 @@ import 'package:kwik/repositories/category_model_8_repo.dart';
 import 'package:kwik/repositories/category_subcategory_product_repo.dart';
 import 'package:kwik/repositories/home_Ui_repository.dart';
 import 'package:kwik/repositories/home_category_repository.dart';
+import 'package:kwik/repositories/search_repo.dart';
 import 'package:kwik/repositories/sub_category_product_repository.dart';
 import 'package:kwik/repositories/super_saver_ui_repo.dart';
 import 'package:kwik/routes/routes.dart';
@@ -80,7 +82,22 @@ import 'repositories/category_model_10_repo.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
+  debugProfilePlatformChannelsEnabled:
+  true;
+  FlutterError.onError = (FlutterErrorDetails details) {
+    if (details.exception.toString().contains('memory') ||
+        details.exception.toString().contains('dispose')) {
+      print("*** POTENTIAL MEMORY LEAK : ${details.exception}");
+      print("*** context : ${details.context}");
+      print("*** stack trace : ${details.stack}");
+    }
+    FlutterError.presentError(details);
+  };
+// if(kDebugMode){
+//   WidgetsBinding.instance.addPostFrameCallback((_) {
+//     debugPrint("current memory use : ${ProcessInfo.currentRss / 1024 / 1024 }").toStringAsFixed(2)
+//   },)
+// }
   await Hive.initFlutter();
   Hive.registerAdapter(SubCategoryModelAdapter());
   Hive.registerAdapter(CategoryAdapter());
@@ -132,6 +149,8 @@ void main() async {
   await Hive.deleteBoxFromDisk('Supersaver_ui_cache_box');
   await Hive.deleteBoxFromDisk('subCategoriesallcategorypage');
   await Hive.deleteBoxFromDisk('productsallsubcategorypage');
+  await Hive.deleteBoxFromDisk('search_productCache');
+  await Hive.deleteBoxFromDisk('search_history');
 
 // hive open box
   await Hive.openBox('Supersaver_ui_cache_box');
@@ -171,7 +190,9 @@ void main() async {
   await Hive.openBox('productsBoxcategorylanding');
   await Hive.openBox('similar_product_cache');
   await Hive.openBox('cart');
-  await Hive.openBox<List<SubCategoryModel>>('subcategoriesallcategorypage');
+  await Hive.openBox('search_productCache');
+  await Hive.openBox('search_history');
+  // await Hive.openBox<List<SubCategoryModel>>('subcategoriesallcategorypage');
   await Hive.openBox<List<ProductModel>>('productsallcategorypage');
   // await Hive.openBox('subcategoriesallcategorypage');
   // await Hive.openBox('productsallcategorypage');
@@ -180,6 +201,9 @@ void main() async {
     DeviceOrientation.portraitDown,
   ]);
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  // debugPrintScheduleFrameStacks:
+  // true;
+
   runApp(const MyApp());
 }
 
@@ -325,6 +349,9 @@ class _MyAppState extends State<MyApp> {
         BlocProvider<AllSubCategoryBloc>(
             create: (_) =>
                 AllSubCategoryBloc(repository: AllsubcategoryRepo())),
+        //search bloc
+        BlocProvider<SearchBloc>(
+            create: (_) => SearchBloc(repository: SearchRepo())),
       ],
       child: MaterialApp.router(
         builder: (context, child) {

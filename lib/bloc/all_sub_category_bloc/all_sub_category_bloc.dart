@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:bloc/bloc.dart';
 import 'package:hive/hive.dart';
 import 'package:kwik/bloc/all_sub_category_bloc/all_sub_category_event.dart';
@@ -9,8 +10,8 @@ import 'package:kwik/repositories/allsubcategory_repo.dart';
 class AllSubCategoryBloc
     extends Bloc<AllSubCategoryEvent, AllSubCategoryState> {
   final AllsubcategoryRepo repository;
-  late Box<List<SubCategoryModel>> subCategoryBox;
-  late Box<List<ProductModel>> productBox;
+  late Box<String> subCategoryBox;
+  late Box<String> productBox;
 
   AllSubCategoryBloc({required this.repository}) : super(CategoryInitial()) {
     _initializeHiveBoxes(); // Ensure Hive boxes are initialized
@@ -23,31 +24,45 @@ class AllSubCategoryBloc
   /// **Initialize Hive boxes safely**
   Future<void> _initializeHiveBoxes() async {
     if (!Hive.isBoxOpen('subCategoriesallcategorypage')) {
-      subCategoryBox = await Hive.openBox<List<SubCategoryModel>>(
-          'subCategoriesallcategorypage');
-    } else {
+      print("inside 1");
       subCategoryBox =
-          Hive.box<List<SubCategoryModel>>('subCategoriesallcategorypage');
+          await Hive.openBox<String>('subCategoriesallcategorypage');
+    } else {
+      print("inside else");
+      subCategoryBox = Hive.box<String>('subCategoriesallcategorypage');
+      print("object");
+      print(subCategoryBox);
     }
 
     if (!Hive.isBoxOpen('productsallsubcategorypage')) {
-      productBox =
-          await Hive.openBox<List<ProductModel>>('productsallsubcategorypage');
+      productBox = await Hive.openBox<String>('productsallsubcategorypage');
     } else {
-      productBox = Hive.box<List<ProductModel>>('productsallsubcategorypage');
+      productBox = Hive.box<String>('productsallsubcategorypage');
     }
   }
 
   /// **Load all subcategories and products initially with Hive caching**
   Future<void> _onLoadSubCategories(
       LoadSubCategories event, Emitter<AllSubCategoryState> emit) async {
-    // await _initializeHiveBoxes(); // Ensure boxes are open
+    print("event called");
+    await _initializeHiveBoxes(); // Ensure boxes are open
 
-    if (subCategoryBox.isNotEmpty && productBox.isNotEmpty) {
-      final cachedSubCategories =
-          subCategoryBox.get('subCategoriesallcategorypage') ?? [];
-      final cachedProducts = productBox.get('productsallsubcategorypage') ?? [];
+    String categoryKey = event.categoryId; // Use category ID as the cache key
 
+    if (subCategoryBox.containsKey(categoryKey) &&
+        productBox.containsKey(categoryKey)) {
+      List<SubCategoryModel> cachedSubCategories =
+          (jsonDecode(subCategoryBox.get(categoryKey)!) as List)
+              .map((data) => SubCategoryModel.fromJson(data))
+              .toList();
+      print("1111");
+      print(cachedSubCategories);
+      List<ProductModel> cachedProducts =
+          (jsonDecode(productBox.get(categoryKey)!) as List)
+              .map((data) => ProductModel.fromJson(data))
+              .toList();
+      print("2222");
+      print(cachedProducts);
       if (cachedSubCategories.isNotEmpty) {
         final defaultSubCategory =
             event.selectedsubcategoryId ?? cachedSubCategories.first.id;
@@ -56,7 +71,8 @@ class AllSubCategoryBloc
             .where((product) => product.subCategoryRef
                 .any((sub) => sub.id == defaultSubCategory))
             .toList();
-
+        print("333323");
+        print(filteredProducts);
         emit(CategoryLoaded(
           subCategories: cachedSubCategories,
           selectedSubCategory: defaultSubCategory,
@@ -73,9 +89,11 @@ class AllSubCategoryBloc
       final products = await repository.fetchProductsFromSubCategories(
           subCategories.map((sub) => sub.id).toList());
 
-      // Save fetched data to Hive cache
-      subCategoryBox.put('subCategoriesallcategorypage', subCategories);
-      productBox.put('productsallsubcategorypage', products);
+      // Save fetched data to Hive cache (store as JSON strings)
+      subCategoryBox.put(categoryKey,
+          jsonEncode(subCategories.map((sub) => sub.toJson()).toList()));
+      productBox.put(
+          categoryKey, jsonEncode(products.map((p) => p.toJson()).toList()));
 
       final defaultSubCategory =
           event.selectedsubcategoryId ?? subCategories.first.id;
@@ -97,24 +115,25 @@ class AllSubCategoryBloc
   /// **Filter products instead of fetching again**
   Future<void> _onSelectSubCategory(
       SelectSubCategory event, Emitter<AllSubCategoryState> emit) async {
-    // await _initializeHiveBoxes(); // Ensure boxes are open
+    await _initializeHiveBoxes(); // Ensure boxes are open
 
     final currentState = state;
     if (currentState is CategoryLoaded) {
-      final cachedProducts = productBox.get('productsallsubcategorypage') ?? [];
+      String categoryKey = event.categoryID;
+
+      List<ProductModel> cachedProducts =
+          (jsonDecode(productBox.get(categoryKey)!) as List)
+              .map((data) => ProductModel.fromJson(data))
+              .toList();
 
       final filteredProducts = cachedProducts
           .where((product) => product.subCategoryRef
               .any((sub) => sub.id == event.subCategoryId))
           .toList();
-      // final subCategories =
-      //     await repository.fetchSubCategories(event.categoryID);
-      // final products = await repository.fetchProductsFromSubCategories(
-      //     subCategories.map((sub) => sub.id).toList());
 
       emit(currentState.copyWith(
         selectedSubCategory: event.subCategoryId,
-        products: cachedProducts,
+        products: filteredProducts,
       ));
     }
   }

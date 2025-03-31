@@ -77,10 +77,9 @@ class CategoryBlocModel17
       // Clear the cache
       await categoryBox.clear();
       await subCategoryBox.clear();
-      print("Cache cleared");
+
       emit(CacheCleared()); // Emit the cache cleared state
     } catch (e) {
-      print("Error clearing cache: $e");
       emit(CacheClearError("Failed to clear cache: $e"));
     }
   }

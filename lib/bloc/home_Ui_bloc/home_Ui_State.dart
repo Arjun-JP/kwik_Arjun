@@ -11,11 +11,18 @@ class UiLoading extends HomeUiState {}
 
 class UiLoaded extends HomeUiState {
   final Map<String, dynamic> uiData;
+  final String searchterm;
 
-  UiLoaded({required this.uiData});
+  UiLoaded({required this.searchterm, required this.uiData});
 
   @override
-  List<Object?> get props => [uiData];
+  List<Object?> get props => [uiData, searchterm];
+  UiLoaded copyWith({Map<String, dynamic>? uiData, String? searchterm}) {
+    return UiLoaded(
+      uiData: uiData ?? this.uiData,
+      searchterm: searchterm ?? this.searchterm,
+    );
+  }
 }
 
 class UiError extends HomeUiState {

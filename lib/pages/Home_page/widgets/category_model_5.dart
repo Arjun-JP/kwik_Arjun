@@ -102,7 +102,7 @@ class CategoryModel5 extends StatelessWidget {
                           children: [
                             state.subCategories.isNotEmpty
                                 ? SizedBox(
-                                    height: 128,
+                                    height: 129,
                                     width: MediaQuery.of(context).size.width,
                                     child: ListView.builder(
                                       scrollDirection: Axis.horizontal,
@@ -163,7 +163,7 @@ class CategoryModel5 extends StatelessWidget {
                                             : 6, (index) {
                                       return StaggeredGridTile.extent(
                                         crossAxisCellCount: 1,
-                                        mainAxisExtent: 266,
+                                        mainAxisExtent: 276,
                                         child: ProductItem(
                                           subcategoryRef: categoryId,
                                           productnamecolor: producttextcolor,
@@ -183,25 +183,7 @@ class CategoryModel5 extends StatelessWidget {
                                           productBgColor: productBgColor,
                                           sellingPriceColor: sellingPriceColor,
                                           offerbgcolor: offerBGcolor,
-                                          imageurl: state.products
-                                              .where((product) => product
-                                                  .subCategoryRef
-                                                  .any((subCategory) =>
-                                                      subCategory.id ==
-                                                      state.selectedCategoryId))
-                                              .toList()[index]
-                                              .productImages
-                                              .first,
                                           mrpColor: mrpColor,
-                                          name: state.products
-                                              .where((product) => product
-                                                  .subCategoryRef
-                                                  .any((subCategory) =>
-                                                      subCategory.id ==
-                                                      state.selectedCategoryId))
-                                              .toList()[index]
-                                              .productName,
-                                          price: 85,
                                         ),
                                       );
                                     }),
@@ -248,7 +230,7 @@ Widget subcategoryItem(
                 color: lightenColor(parseColor(bgcolor), .9),
                 image: DecorationImage(
                   image: NetworkImage(imageurl),
-                  fit: BoxFit.fill,
+                  fit: BoxFit.contain,
                 ),
               ),
             ),

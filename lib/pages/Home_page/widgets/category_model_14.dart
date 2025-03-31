@@ -155,7 +155,7 @@ class CategoryModel14 extends StatelessWidget {
                                               : 3, (index) {
                                         return StaggeredGridTile.extent(
                                           crossAxisCellCount: 1,
-                                          mainAxisExtent: 266,
+                                          mainAxisExtent: 276,
                                           child: ProductItem(
                                             subcategoryRef:
                                                 state.selectedCategoryId,
@@ -179,27 +179,8 @@ class CategoryModel14 extends StatelessWidget {
                                             unitbgcolor: "FFFFFF",
                                             offerbgcolor: "FFFA76",
                                             // bgcolor: "FFFFFF",
-                                            imageurl: state.products
-                                                .where((product) => product
-                                                    .subCategoryRef
-                                                    .any((subCategory) =>
-                                                        subCategory.id ==
-                                                        state
-                                                            .selectedCategoryId))
-                                                .toList()[index]
-                                                .productImages
-                                                .first,
+
                                             mrpColor: "A19DA3",
-                                            name: state.products
-                                                .where((product) => product
-                                                    .subCategoryRef
-                                                    .any((subCategory) =>
-                                                        subCategory.id ==
-                                                        state
-                                                            .selectedCategoryId))
-                                                .toList()[index]
-                                                .productName,
-                                            price: 85,
                                           ),
                                         );
                                       }),

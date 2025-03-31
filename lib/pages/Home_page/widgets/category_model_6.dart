@@ -172,7 +172,7 @@ Widget subcategoryItem(
                             name,
                             maxLines: 2,
                             style: TextStyle(
-                                fontSize: 10,
+                                fontSize: 13,
                                 fontWeight: FontWeight.w700,
                                 color: parseColor(catnamecolor)),
                           ),

@@ -11,4 +11,9 @@ class FetchUiDataEvent extends HomeUiEvent {
   FetchUiDataEvent({this.forceRefresh = false});
 }
 
+class UpdateSearchTermEvent extends HomeUiEvent {
+  final String searchTerm;
+  UpdateSearchTermEvent(this.searchTerm);
+}
+
 class ClearUiCacheEvent extends HomeUiEvent {}

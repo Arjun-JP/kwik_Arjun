@@ -8,6 +8,7 @@ import 'package:kwik/pages/LoginPage/login_page.dart';
 import 'package:kwik/pages/Offer_Page/offer_page.dart';
 import 'package:kwik/pages/OnboardingScreen/onboarding_screen.dart';
 import 'package:kwik/pages/OtpVerificationPage/otp_verification_page.dart';
+import 'package:kwik/pages/Search%20page/search_page.dart';
 import 'package:kwik/pages/SplashScreen/splash_screen.dart';
 import 'package:kwik/pages/all_subcategory/all_suubcategory.dart';
 import 'package:kwik/pages/cart_page/cart_page.dart';
@@ -73,6 +74,12 @@ final GoRouter router = GoRouter(
       path: '/loginPage',
       builder: (BuildContext context, GoRouterState state) {
         return const LoginPage();
+      },
+    ),
+    GoRoute(
+      path: '/searchpage',
+      builder: (BuildContext context, GoRouterState state) {
+        return const SearchPage();
       },
     ),
     GoRoute(

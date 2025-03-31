@@ -97,7 +97,7 @@ class CategoryModel9 extends StatelessWidget {
                                             : 6, (index) {
                                       return StaggeredGridTile.extent(
                                         crossAxisCellCount: 1,
-                                        mainAxisExtent: 240,
+                                        mainAxisExtent: 252,
                                         child: productItem(
                                             // bgcolor: "FFFFFF",
                                             product: state.products[index],

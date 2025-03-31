@@ -188,23 +188,21 @@ Widget subcategoryItem(
             Align(
               alignment: Alignment.topCenter,
               child: Padding(
-                padding: const EdgeInsets.only(top: 45),
+                padding: const EdgeInsets.only(top: 45, left: 5, right: 5),
                 child: Text(
                   name,
                   maxLines: 2,
                   textAlign: TextAlign.center,
                   style: theme.textTheme.bodySmall!.copyWith(
-                      fontWeight: FontWeight.w900,
-                      fontSize: 16,
+                      fontWeight: FontWeight.w800,
+                      fontSize: 14,
                       color: parseColor(textcolor)),
                 ),
               ),
             ),
             Align(
               alignment: const Alignment(0, 1.8),
-              child: Image.network(
-                  height: 85,
-                  "https://firebasestorage.googleapis.com/v0/b/kwikgroceries-8a11e.firebasestorage.app/o/33571-5-plush-toy-image.png?alt=media&token=25835858-a69b-4ebb-8df0-76548d6c1b7d"),
+              child: Image.network(height: 85, imageurl),
             )
           ],
         ),

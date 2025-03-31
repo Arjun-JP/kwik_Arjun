@@ -91,17 +91,15 @@ class SupersaverModel5 extends StatelessWidget {
                                       : 6, (index) {
                                 return StaggeredGridTile.extent(
                                   crossAxisCellCount: 1,
-                                  mainAxisExtent: 258,
+                                  mainAxisExtent: 275,
                                   child: ProductItem(
                                     subcategoryRef: categoryId,
                                     productnamecolor: subcatColor,
                                     // bgcolor: "FFFFFF",
                                     product: state.products[index],
-                                    imageurl: state
-                                        .products[index].productImages.first,
+
                                     mrpColor: mrpColor,
-                                    name: state.products[index].productName,
-                                    price: 85,
+
                                     offertextcolor: offerTextcolor,
                                     buttonBgColor: productBgColor,
 
@@ -153,7 +151,7 @@ class SupersaverModel5 extends StatelessWidget {
                         padding: const EdgeInsets.only(right: 14.0),
                         child: Icon(
                           Icons.arrow_forward,
-                          color: parseColor("00AE11"),
+                          color: parseColor(seeAllButtontext),
                         ),
                       ),
                     ),

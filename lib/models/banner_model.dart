@@ -99,7 +99,6 @@ class CategoryRef {
         color: json['color'] ?? '',
       );
     } catch (e) {
-      print("Error parsing CategoryRef: $e");
       throw Exception("Error parsing CategoryRef");
     }
   }

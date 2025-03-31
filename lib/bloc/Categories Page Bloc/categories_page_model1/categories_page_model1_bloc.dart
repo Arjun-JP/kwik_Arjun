@@ -10,17 +10,17 @@ import 'package:kwik/repositories/category_model2_repository.dart';
 part 'categories_page_model1_event.dart';
 part 'categories_page_model1_state.dart';
 
-class CategoriesPageModel1Bloc extends Bloc<CategoriesPageModel1Event, CategoriesPageModel1State> {
- final CategoryRepositoryModel2 categoryRepositoryModel2;
+class CategoriesPageModel1Bloc
+    extends Bloc<CategoriesPageModel1Event, CategoriesPageModel1State> {
+  final CategoryRepositoryModel2 categoryRepositoryModel2;
 
-  
-   CategoriesPageModel1Bloc({required this.categoryRepositoryModel2})
+  CategoriesPageModel1Bloc({required this.categoryRepositoryModel2})
       : super(CategoriesPageModel1Initial()) {
     on<FetchCategoryDetailsModel1>(_onFetchCategoryDetails);
     on<ClearCacheCatPage1>(_onClearCache);
   }
-void _onFetchCategoryDetails(
-      FetchCategoryDetailsModel1 event, Emitter<CategoriesPageModel1State> emit) async {
+  void _onFetchCategoryDetails(FetchCategoryDetailsModel1 event,
+      Emitter<CategoriesPageModel1State> emit) async {
     try {
       emit(CategoriesPageModel1Loading());
 
@@ -60,14 +60,16 @@ void _onFetchCategoryDetails(
         subCategoryBox.put(event.categoryId,
             jsonEncode(subCategories.map((e) => e.toJson()).toList()));
 
-        emit(CategoriesPageModel1Loaded(category: category, subCategories: subCategories));
+        emit(CategoriesPageModel1Loaded(
+            category: category, subCategories: subCategories));
       }
     } catch (e) {
       emit(const CategoriesPageModel1Error("Failed to load category details"));
     }
   }
 
-  void _onClearCache(ClearCacheCatPage1 event, Emitter<CategoriesPageModel1State> emit) async {
+  void _onClearCache(
+      ClearCacheCatPage1 event, Emitter<CategoriesPageModel1State> emit) async {
     try {
       // Open cache boxes
       var categoryBox = await Hive.openBox('categoryPagemodel1Cache');
@@ -76,12 +78,10 @@ void _onFetchCategoryDetails(
       // Clear the cache
       await categoryBox.clear();
       await subCategoryBox.clear();
-      print("Cache cleared");
+
       emit(CacheCleared()); // Emit the cache cleared state
     } catch (e) {
-      print("Error clearing cache: $e");
       emit(CacheClearError("Failed to clear cache: $e"));
     }
   }
 }
-

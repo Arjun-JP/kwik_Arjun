@@ -65,8 +65,6 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                     BlocBuilder<VariationBloc, VariationState>(
                       builder: (context, state) {
                         if (state is VariationSelected) {
-                          print(state.selectedVariation.id);
-                          print("object");
                           return productdetails(
                             theme: theme,
                             product: widget.product,
@@ -111,7 +109,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
       required ProductModel product,
       required VariationModel selectedvariation}) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10.0),
+      padding: const EdgeInsets.symmetric(horizontal: 0.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         spacing: 10,
@@ -195,70 +193,81 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
               ),
             ],
           ),
-          Text(product.productName, style: theme.textTheme.titleMedium),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            child:
+                Text(product.productName, style: theme.textTheme.titleMedium),
+          ),
           product.variations.length > 1
-              ? SizedBox(
-                  width: MediaQuery.of(context).size.width,
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      children: List.generate(
-                        product.variations.length,
-                        (index) => InkWell(
-                          onTap: () {
-                            context.read<VariationBloc>().add(
-                                SelectVariationEvent(
-                                    product.variations[index]));
-                            print(product.variations[index].id);
-                            print(product.variations[index].info.length);
-                          },
-                          child: variationItem(
-                              theme: theme,
-                              variation: product.variations[index],
-                              selectedvariationid: selectedvariation.id),
+              ? Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  child: SizedBox(
+                    width: MediaQuery.of(context).size.width,
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        children: List.generate(
+                          product.variations.length,
+                          (index) => InkWell(
+                            onTap: () {
+                              context.read<VariationBloc>().add(
+                                  SelectVariationEvent(
+                                      product.variations[index]));
+                            },
+                            child: variationItem(
+                                theme: theme,
+                                variation: product.variations[index],
+                                selectedvariationid: selectedvariation.id),
+                          ),
                         ),
                       ),
                     ),
                   ),
                 )
-              : Text("${product.variations.first.qty} "
-                  "${product.variations.first.unit}"),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            spacing: 10,
-            children: [
-              product.variations.length == 1
-                  ? Text("₹" "${product.variations.first.sellingPrice} ",
-                      style: const TextStyle(
-                          fontSize: 16, fontWeight: FontWeight.bold))
-                  : const SizedBox(),
-              product.variations.length == 1
-                  ? Text("₹" "${product.variations.first.mrp} ",
-                      style: const TextStyle(
-                          decoration: TextDecoration.lineThrough,
-                          decorationColor: AppColors.kgreyColorlite,
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.textColorDimGrey))
-                  : const SizedBox(),
-              product.variations.length == 1
-                  ? Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 8, vertical: 4),
-                      decoration: BoxDecoration(
-                          color: AppColors.korangeColor,
-                          borderRadius: BorderRadius.circular(10)),
-                      child: Text(
-                        "${percentage(product.variations.first.mrp, product.variations.first.sellingPrice)}"
-                        " OFF",
+              : Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  child: Text("${product.variations.first.qty} "
+                      "${product.variations.first.unit}"),
+                ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              spacing: 10,
+              children: [
+                product.variations.length == 1
+                    ? Text("₹" "${product.variations.first.sellingPrice} ",
                         style: const TextStyle(
-                            fontSize: 14,
-                            color: AppColors.textColorWhite,
-                            fontWeight: FontWeight.bold),
-                      ),
-                    )
-                  : const SizedBox(),
-            ],
+                            fontSize: 16, fontWeight: FontWeight.bold))
+                    : const SizedBox(),
+                product.variations.length == 1
+                    ? Text("₹" "${product.variations.first.mrp} ",
+                        style: const TextStyle(
+                            decoration: TextDecoration.lineThrough,
+                            decorationColor: AppColors.kgreyColorlite,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.textColorDimGrey))
+                    : const SizedBox(),
+                product.variations.length == 1
+                    ? Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 8, vertical: 4),
+                        decoration: BoxDecoration(
+                            color: AppColors.korangeColor,
+                            borderRadius: BorderRadius.circular(10)),
+                        child: Text(
+                          "${percentage(product.variations.first.mrp, product.variations.first.sellingPrice)}"
+                          " OFF",
+                          style: const TextStyle(
+                              fontSize: 14,
+                              color: AppColors.textColorWhite,
+                              fontWeight: FontWeight.bold),
+                        ),
+                      )
+                    : const SizedBox(),
+              ],
+            ),
           ),
           Theme(
             data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
@@ -397,18 +406,15 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                     child: ProductItem(
                         subcategoryRef: widget.subcategoryref,
                         productnamecolor: "000000",
-                        name: widget.product.productName,
-                        price: 200,
-                        imageurl: widget.product.productImages[0],
-                        mrpColor: "000000",
-                        offertextcolor: "000000",
+                        mrpColor: "A19DA3",
+                        offertextcolor: "FFFFFF",
                         productBgColor: "FFFFFF",
                         sellingPriceColor: "000000",
-                        buttontextcolor: "000000",
+                        buttontextcolor: "E23338",
                         buttonBgColor: "FFFFFF",
-                        unitTextcolor: "000000",
+                        unitTextcolor: "A19DA3",
                         unitbgcolor: "FFFFFF",
-                        offerbgcolor: "FFFFFF",
+                        offerbgcolor: "E3520D",
                         context: context,
                         product: productList[index]),
                   );
@@ -440,18 +446,15 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                     child: ProductItem(
                         subcategoryRef: widget.subcategoryref,
                         productnamecolor: "000000",
-                        name: widget.product.productName,
-                        price: 200,
-                        imageurl: widget.product.productImages[0],
-                        mrpColor: "000000",
-                        offertextcolor: "000000",
+                        mrpColor: "A19DA3",
+                        offertextcolor: "233D4D",
                         productBgColor: "FFFFFF",
                         sellingPriceColor: "000000",
-                        buttontextcolor: "000000",
+                        buttontextcolor: "E23338",
                         buttonBgColor: "FFFFFF",
-                        unitTextcolor: "000000",
+                        unitTextcolor: "A19DA3",
                         unitbgcolor: "FFFFFF",
-                        offerbgcolor: "FFFFFF",
+                        offerbgcolor: "FFFA76",
                         context: context,
                         product: widget.product),
                   );

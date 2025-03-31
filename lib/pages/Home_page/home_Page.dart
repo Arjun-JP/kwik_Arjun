@@ -1,7 +1,12 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:kwik/bloc/Search_bloc/Search_bloc.dart';
+import 'package:kwik/bloc/Search_bloc/search_event.dart';
 import 'package:kwik/bloc/home_page_bloc/category_model_13_bloc/category_model_13_bloc.dart';
 import 'package:kwik/bloc/home_page_bloc/category_model_13_bloc/category_model_13_event.dart';
 import 'package:kwik/bloc/home_page_bloc/category_model_16_bloc/category_model_16_bloc.dart';
@@ -84,12 +89,18 @@ class _HomePageState extends State<HomePage> {
     BlocProvider.of<CategoryBloc18>(context).add(ClearCacheEventCM18());
     BlocProvider.of<CategoryBloc19>(context).add(ClearCacheEventCM19());
     BlocProvider.of<SubcategoryProductBloc>(context).add(ClearSimilarCache());
+    BlocProvider.of<SearchBloc>(context).add(ClearCachesearch());
   }
 
   @override
   void initState() {
     super.initState();
     context.read<HomeUiBloc>().add(FetchUiDataEvent());
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   @override
@@ -144,7 +155,10 @@ class _HomePageState extends State<HomePage> {
           backgroundColor: const Color.fromARGB(0, 255, 193, 7),
           body: BlocBuilder<HomeUiBloc, HomeUiState>(
             builder: (context, state) {
-              if (state is UiLoading) {
+              if (state is UiInitial) {
+                context.read<HomeUiBloc>().add(FetchUiDataEvent());
+                return const Center(child: CircularProgressIndicator());
+              } else if (state is UiLoading) {
                 return const Center(child: CircularProgressIndicator());
               } else if (state is UiLoaded) {
                 final uiData = state.uiData;
@@ -194,7 +208,7 @@ class _HomePageState extends State<HomePage> {
                     'order': "9"
                   },
 
-// Home page dynamic widgets in the created order
+                  // Home page dynamic widgets in the created order
 
                   {
                     'template': CategoryModel1(
@@ -652,7 +666,7 @@ class _HomePageState extends State<HomePage> {
                           SliverPersistentHeader(
                             pinned: true,
                             floating: false,
-                            delegate: _SearchBarDelegate(),
+                            delegate: SearchBarDelegate(state.searchterm),
                           ),
                           ...templates.map((template) {
                             return SliverToBoxAdapter(
@@ -682,42 +696,55 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
-class _SearchBarDelegate extends SliverPersistentHeaderDelegate {
+class SearchBarDelegate extends SliverPersistentHeaderDelegate {
+  final String searchText;
+
+  SearchBarDelegate(this.searchText);
+
   @override
   Widget build(
-      BuildContext context, double shrinkOffset, bool overlapsContent) {
+    BuildContext context,
+    double shrinkOffset,
+    bool overlapsContent,
+  ) {
+    ThemeData theme = Theme.of(context);
     return SafeArea(
-      child: Container(
-        height: 80,
-        color: const Color(0xFFfecc6c),
-        padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
-        child: TextField(
-          decoration: InputDecoration(
-            enabledBorder: OutlineInputBorder(
-              borderSide: const BorderSide(color: AppColors.dotColorUnSelected),
+      child: InkWell(
+        onTap: () {
+          HapticFeedback.selectionClick();
+          context.push('/searchpage');
+        },
+        child: Container(
+          height: 80,
+          color: const Color(0xFFfecc6c),
+          padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12.0),
+            decoration: BoxDecoration(
+              color: Colors.white,
               borderRadius: BorderRadius.circular(10),
             ),
-            hintText: "   Search...",
-            filled: true,
-            fillColor: AppColors.backgroundColorWhite,
-            suffixIcon: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: SvgPicture.asset(
-                "assets/images/search.svg",
-                fit: BoxFit.contain,
-                width: 30,
-                height: 20,
-                color: Colors.grey,
-              ),
+            child: Row(
+              children: [
+                SvgPicture.asset(
+                  "assets/images/search.svg",
+                  fit: BoxFit.contain,
+                  width: 30,
+                  height: 20,
+                  color: Colors.grey,
+                ),
+                SizedBox(width: 10),
+                AnimatedSwitcher(
+                  duration: Duration(milliseconds: 500),
+                  child: Text(
+                    'Search "$searchText"',
+                    key: ValueKey(searchText),
+                    style: theme.textTheme.bodyMedium!
+                        .copyWith(fontSize: 16, fontWeight: FontWeight.w400),
+                  ),
+                ),
+              ],
             ),
-            border: OutlineInputBorder(
-              borderSide: const BorderSide(color: AppColors.dotColorUnSelected),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            hintStyle: const TextStyle(
-                fontSize: 16,
-                color: AppColors.textColorGrey,
-                fontWeight: FontWeight.w400),
           ),
         ),
       ),
