@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:kwik/bloc/home_page_bloc/category_model_2_bloc/category_model2_event.dart';
 import 'package:kwik/bloc/home_page_bloc/category_model_2_bloc/category_model2_state.dart';
 import 'package:kwik/constants/colors.dart';
@@ -69,13 +70,19 @@ class CategoryModel2 extends StatelessWidget {
                                   crossAxisSpacing: 5,
                                 ),
                                 itemBuilder: (context, index) {
-                                  return subcategoryItem(
-                                      name: state.subCategories[index].name,
-                                      bgcolor: state.category.color,
-                                      textcolor: subcatColor,
-                                      imageurl:
-                                          state.subCategories[index].imageUrl,
-                                      theme: theme);
+                                  return InkWell(
+                                    onTap: () {
+                                      context.push(
+                                          "/allsubcategorypage?categoryId=$categoryId&selectedsubcategory=${state.subCategories[index].id}");
+                                    },
+                                    child: subcategoryItem(
+                                        name: state.subCategories[index].name,
+                                        bgcolor: state.category.color,
+                                        textcolor: subcatColor,
+                                        imageurl:
+                                            state.subCategories[index].imageUrl,
+                                        theme: theme),
+                                  );
                                 },
                               ),
                             ),

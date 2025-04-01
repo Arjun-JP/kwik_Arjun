@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:kwik/bloc/home_page_bloc/category_model_19_bloc/category_model_19_bloc.dart';
 import 'package:kwik/bloc/home_page_bloc/category_model_19_bloc/category_model_19_event.dart';
 import 'package:kwik/bloc/home_page_bloc/category_model_19_bloc/category_model_19_state.dart';
@@ -190,41 +191,46 @@ class CategoryModel19 extends StatelessWidget {
                                 : const SizedBox(
                                     child: Text("No data"),
                                   ),
-                            Container(
-                              margin:
-                                  const EdgeInsets.symmetric(horizontal: 15),
-                              width: MediaQuery.of(context).size.width,
-                              height: 48,
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10),
-                                  color: parseColor(seeallbgcolorl)),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Expanded(
-                                    flex: 5,
-                                    child: Align(
-                                      alignment: Alignment.centerRight,
-                                      child: Text('See all products',
-                                          style: TextStyle(
-                                              color:
-                                                  parseColor(seealltextcolor),
-                                              fontSize: 18)),
-                                    ),
-                                  ),
-                                  Expanded(
-                                    flex: 2,
-                                    child: Align(
-                                      alignment: Alignment.centerRight,
-                                      child: Padding(
-                                        padding:
-                                            const EdgeInsets.only(right: 14.0),
-                                        child: Icon(Icons.arrow_forward,
-                                            color: parseColor(seealltextcolor)),
+                            InkWell(
+                              onTap: () => context.push(
+                                  "/allsubcategorypage?categoryId=$categoryId&selectedsubcategory=${state.selectedCategoryId}"),
+                              child: Container(
+                                margin:
+                                    const EdgeInsets.symmetric(horizontal: 15),
+                                width: MediaQuery.of(context).size.width,
+                                height: 48,
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    color: parseColor(seeallbgcolorl)),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Expanded(
+                                      flex: 5,
+                                      child: Align(
+                                        alignment: Alignment.centerRight,
+                                        child: Text('See all products',
+                                            style: TextStyle(
+                                                color:
+                                                    parseColor(seealltextcolor),
+                                                fontSize: 18)),
                                       ),
                                     ),
-                                  )
-                                ],
+                                    Expanded(
+                                      flex: 2,
+                                      child: Align(
+                                        alignment: Alignment.centerRight,
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(
+                                              right: 14.0),
+                                          child: Icon(Icons.arrow_forward,
+                                              color:
+                                                  parseColor(seealltextcolor)),
+                                        ),
+                                      ),
+                                    )
+                                  ],
+                                ),
                               ),
                             )
                           ],

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:go_router/go_router.dart';
 import 'package:kwik/bloc/home_page_bloc/category_model_14_bloc/category_model_14_state.dart';
+import 'package:kwik/models/subcategory_model.dart';
 import 'package:kwik/widgets/produc_model_1.dart';
 import 'package:kwik/widgets/shimmer/product_model1_list.dart'
     show ProductModel1ListShimmer;
@@ -76,27 +78,38 @@ class CategoryModel14 extends StatelessWidget {
                               width: MediaQuery.of(context).size.width,
                               child: ListView.builder(
                                 scrollDirection: Axis.horizontal,
-                                itemCount: state.subCategories.length,
+                                itemCount: state.subCategories
+                                    ?.where((element) =>
+                                        maincategories.contains(element.id))
+                                    ?.toList()
+                                    .length,
                                 itemBuilder: (context, index) {
+                                  List<SubCategoryModel>? filtredsubcat = state
+                                      .subCategories
+                                      ?.where((element) =>
+                                          maincategories.contains(element.id))
+                                      ?.toList();
                                   return InkWell(
-                                    onTap: () {
-                                      context.read<CategoryBloc14>().add(
-                                          UpdateSelectedCategoryModel14Event(
-                                              selectedCategoryId: state
-                                                  .subCategories[index].id));
-                                    },
-                                    child: subcategoryItem(
-                                        indicatercolor: indicatercolor,
-                                        name: state.subCategories[index].name,
-                                        bgcolor: "ffffff",
-                                        textcolor: "000000",
-                                        imageurl:
-                                            state.subCategories[index].imageUrl,
-                                        context: context,
-                                        subcatId: state.subCategories[index].id,
-                                        selectedId: state.selectedCategoryId,
-                                        theme: theme),
-                                  );
+                                      onTap: () {
+                                        context.read<CategoryBloc14>().add(
+                                            UpdateSelectedCategoryModel14Event(
+                                                selectedCategoryId: state
+                                                    .subCategories[index].id));
+                                      },
+                                      child: filtredsubcat?.length != 0
+                                          ? subcategoryItem(
+                                              indicatercolor: indicatercolor,
+                                              name: filtredsubcat![index].name,
+                                              bgcolor: "ffffff",
+                                              textcolor: "000000",
+                                              imageurl:
+                                                  filtredsubcat[index].imageUrl,
+                                              context: context,
+                                              subcatId: filtredsubcat[index].id,
+                                              selectedId:
+                                                  state.selectedCategoryId,
+                                              theme: theme)
+                                          : const SizedBox());
                                 },
                               ),
                             )
@@ -190,43 +203,49 @@ class CategoryModel14 extends StatelessWidget {
                                     child: Text("No data"),
                                   ),
                             const SizedBox(height: 20),
-                            Container(
-                              margin:
-                                  const EdgeInsets.symmetric(horizontal: 10),
-                              width: MediaQuery.of(context).size.width,
-                              height: 48,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                color: parseColor("FFF2E2"),
-                              ),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Expanded(
-                                    flex: 5,
-                                    child: Align(
-                                      alignment: Alignment.centerRight,
-                                      child: Text('See all products',
-                                          style: TextStyle(
-                                              color: parseColor("#917337"),
-                                              fontSize: 18)),
-                                    ),
-                                  ),
-                                  Expanded(
-                                    flex: 2,
-                                    child: Align(
-                                      alignment: Alignment.centerRight,
-                                      child: Padding(
-                                        padding:
-                                            const EdgeInsets.only(right: 14.0),
-                                        child: Icon(
-                                          Icons.arrow_forward,
-                                          color: parseColor("#917337"),
-                                        ),
+                            InkWell(
+                              onTap: () {
+                                context.push(
+                                    "/allsubcategorypage?categoryId=${state.subCategories.where((subcat) => subcat.id == state.selectedCategoryId).first.categoryRef.catref}&selectedsubcategory=${state.selectedCategoryId}");
+                              },
+                              child: Container(
+                                margin:
+                                    const EdgeInsets.symmetric(horizontal: 10),
+                                width: MediaQuery.of(context).size.width,
+                                height: 48,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                  color: parseColor("FFF2E2"),
+                                ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Expanded(
+                                      flex: 5,
+                                      child: Align(
+                                        alignment: Alignment.centerRight,
+                                        child: Text('See all products',
+                                            style: TextStyle(
+                                                color: parseColor("#917337"),
+                                                fontSize: 18)),
                                       ),
                                     ),
-                                  )
-                                ],
+                                    Expanded(
+                                      flex: 2,
+                                      child: Align(
+                                        alignment: Alignment.centerRight,
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(
+                                              right: 14.0),
+                                          child: Icon(
+                                            Icons.arrow_forward,
+                                            color: parseColor("#917337"),
+                                          ),
+                                        ),
+                                      ),
+                                    )
+                                  ],
+                                ),
                               ),
                             ),
                             const SizedBox(height: 15),

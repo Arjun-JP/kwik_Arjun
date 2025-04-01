@@ -42,7 +42,7 @@ class CategoryRepositoryModel2 {
         'api_Secret': apiSecret,
       };
       final response = await http.get(
-          Uri.parse('$baseUrl/subcategory/allsubcategories'),
+          Uri.parse('$baseUrl/subcategory/allsubcategories/$categoryId'),
           headers: headers);
 
       if (response.statusCode == 200) {

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:kwik/constants/colors.dart';
 import 'package:kwik/models/product_model.dart';
 import 'package:kwik/pages/Home_page/widgets/category_model_7.dart';
@@ -50,7 +51,7 @@ class SupersaverModel2 extends StatelessWidget {
           if (state is SupersaverModel2Loading) {
             return const Center(child: CircularProgressIndicator());
           } else if (state is SupersaverModel2Loaded) {
-            return _buildCategoryModel7(state.products, context);
+            return _buildCategoryModel7(state.products, context, subcategoryid);
           } else if (state is SupersaverModel2Error) {
             return Center(child: Text('Error: ${state.message}'));
           }
@@ -61,7 +62,7 @@ class SupersaverModel2 extends StatelessWidget {
   }
 
   Widget _buildCategoryModel7(
-      List<ProductModel> products, BuildContext context) {
+      List<ProductModel> products, BuildContext context, String subcategoryid) {
     return Container(
       color: parseColor(bgcolor),
       height: 417,
@@ -85,7 +86,7 @@ class SupersaverModel2 extends StatelessWidget {
             width: MediaQuery.of(context).size.width,
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
-              itemCount: products.length > 5 ? 5 : products.length,
+              itemCount: products.length > 10 ? 10 : products.length,
               itemBuilder: (context, index) {
                 final product = products[index];
                 return Padding(
@@ -109,37 +110,42 @@ class SupersaverModel2 extends StatelessWidget {
               },
             ),
           ),
-          const SizedBox(height: 10),
-          Container(
-            width: MediaQuery.of(context).size.width,
-            height: 48,
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                color: lightenColor(parseColor("8CCA97"), .8)),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Expanded(
-                  flex: 5,
-                  child: Align(
-                    alignment: Alignment.centerRight,
-                    child: Text('See all products',
-                        style: TextStyle(
-                            color: parseColor(seeAllButtontext), fontSize: 18)),
-                  ),
-                ),
-                Expanded(
-                  flex: 2,
-                  child: Align(
-                    alignment: Alignment.centerRight,
-                    child: Padding(
-                      padding: const EdgeInsets.only(right: 14.0),
-                      child: Icon(Icons.arrow_forward,
-                          color: parseColor(seeAllButtontext)),
+          const SizedBox(height: 15),
+          InkWell(
+            onTap: () => context.push(
+                "/allsubcategorypage?categoryId=${products.first.categoryRef.catref}&selectedsubcategory=$subcategoryid"),
+            child: Container(
+              width: MediaQuery.of(context).size.width,
+              height: 48,
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: lightenColor(parseColor("8CCA97"), .8)),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Expanded(
+                    flex: 5,
+                    child: Align(
+                      alignment: Alignment.centerRight,
+                      child: Text('See all products',
+                          style: TextStyle(
+                              color: parseColor(seeAllButtontext),
+                              fontSize: 18)),
                     ),
                   ),
-                )
-              ],
+                  Expanded(
+                    flex: 2,
+                    child: Align(
+                      alignment: Alignment.centerRight,
+                      child: Padding(
+                        padding: const EdgeInsets.only(right: 14.0),
+                        child: Icon(Icons.arrow_forward,
+                            color: parseColor(seeAllButtontext)),
+                      ),
+                    ),
+                  )
+                ],
+              ),
             ),
           ),
         ],

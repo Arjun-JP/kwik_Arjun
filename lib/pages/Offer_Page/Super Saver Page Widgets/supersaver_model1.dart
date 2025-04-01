@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:go_router/go_router.dart';
 import 'package:kwik/constants/colors.dart';
 import 'package:kwik/repositories/category_model2_repository.dart';
 
@@ -74,64 +75,70 @@ class SupersaverModel1 extends StatelessWidget {
                               mainAxisSpacing: 20,
                               crossAxisSpacing: 20,
                               children: List.generate(
-                                state.subCategories.length > 10
-                                    ? 10
-                                    : state.subCategories.length,
+                                state.subCategories.length,
                                 (index) {
-                                  return subcategoryItemOffer(
-                                    theme: theme,
-                                    titleColor: titleColor,
-                                    name: state.subCategories[index].name,
-                                    bgcolor: state.category.color,
-                                    textcolor: titleColor,
-                                    imageurl:
-                                        state.subCategories[index].imageUrl,
-                                    subcatcolor1: subcatcolor1,
-                                    subcatcolor2: subcatcolor2,
-                                    priceColor: priceColor,
-                                    vegOrNonIcon: vegOrNonIcon,
+                                  return InkWell(
+                                    onTap: () => context.push(
+                                        "/allsubcategorypage?categoryId=$categoryId&selectedsubcategory=${state.subCategories[index]}"),
+                                    child: subcategoryItemOffer(
+                                      theme: theme,
+                                      titleColor: titleColor,
+                                      name: state.subCategories[index].name,
+                                      bgcolor: state.category.color,
+                                      textcolor: titleColor,
+                                      imageurl:
+                                          state.subCategories[index].imageUrl,
+                                      subcatcolor1: subcatcolor1,
+                                      subcatcolor2: subcatcolor2,
+                                      priceColor: priceColor,
+                                      vegOrNonIcon: vegOrNonIcon,
+                                    ),
                                   );
                                 },
                               ),
                             ),
                           )),
                       const SizedBox(height: 15),
-                      Container(
-                        width: MediaQuery.of(context).size.width,
-                        height: 45,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          color: parseColor(subcatcolor1),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Expanded(
-                              flex: 5,
-                              child: Align(
-                                alignment: Alignment.centerRight,
-                                child: Text('See all Categories',
-                                    style: TextStyle(
-                                        color: parseColor(priceColor),
-                                        fontSize: 18)),
-                              ),
-                            ),
-                            Expanded(
-                              flex: 2,
-                              child: Align(
-                                alignment: Alignment.centerRight,
-                                child: Padding(
-                                  padding: const EdgeInsets.only(right: 14.0),
-                                  child: Icon(
-                                    Icons.arrow_forward,
-                                    color: parseColor(priceColor),
-                                  ),
-                                ),
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
+                      // InkWell(
+                      //   onTap: () => context.push(
+                      //       "/allsubcategorypage?categoryId=$categoryId&selectedsubcategory=${maincategories.first}"),
+                      //   child: Container(
+                      //     width: MediaQuery.of(context).size.width,
+                      //     height: 45,
+                      //     decoration: BoxDecoration(
+                      //       borderRadius: BorderRadius.circular(10),
+                      //       color: parseColor(subcatcolor1),
+                      //     ),
+                      //     child: Row(
+                      //       mainAxisAlignment: MainAxisAlignment.center,
+                      //       children: [
+                      //         Expanded(
+                      //           flex: 5,
+                      //           child: Align(
+                      //             alignment: Alignment.centerRight,
+                      //             child: Text('See all Categories',
+                      //                 style: TextStyle(
+                      //                     color: parseColor(priceColor),
+                      //                     fontSize: 18)),
+                      //           ),
+                      //         ),
+                      //         Expanded(
+                      //           flex: 2,
+                      //           child: Align(
+                      //             alignment: Alignment.centerRight,
+                      //             child: Padding(
+                      //               padding: const EdgeInsets.only(right: 14.0),
+                      //               child: Icon(
+                      //                 Icons.arrow_forward,
+                      //                 color: parseColor(priceColor),
+                      //               ),
+                      //             ),
+                      //           ),
+                      //         )
+                      //       ],
+                      //     ),
+                      //   ),
+                      // ),
                       const SizedBox(height: 10),
                     ],
                   ),
