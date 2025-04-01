@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:go_router/go_router.dart';
 import 'package:kwik/models/product_model.dart';
 import 'package:kwik/widgets/produc_model_1.dart';
 import 'package:kwik/widgets/shimmer/product_model1_list.dart';
@@ -98,25 +99,36 @@ class CategoryModel9 extends StatelessWidget {
                                       return StaggeredGridTile.extent(
                                         crossAxisCellCount: 1,
                                         mainAxisExtent: 252,
-                                        child: productItem(
-                                            // bgcolor: "FFFFFF",
-                                            product: state.products[index],
-                                            mrpColor: mrpColor,
-                                            price: 85,
-                                            offertextcolor: offerTextcolor,
-                                            productcolor: productBgColor,
-                                            sellingpricecolor:
-                                                sellingPriceColor,
-                                            buttontextcolor: buttontextcolor,
-                                            offerBGcolor: offerBGcolor,
-                                            productBgColor: productBgColor,
-                                            sellingPriceColor:
-                                                sellingPriceColor,
-                                            unitTextcolor: unitTextcolor,
-                                            unitbgcolor: unitbgcolor,
-                                            seeAllButtonBG: seeAllButtonBG,
-                                            seeAllButtontext: seeAllButtontext,
-                                            theme: theme),
+                                        child: InkWell(
+                                          onTap: () => context.push(
+                                            '/productdetails',
+                                            extra: {
+                                              'product': state.products[index],
+                                              'subcategoryref':
+                                                  maincategories.first,
+                                            },
+                                          ),
+                                          child: productItem(
+                                              // bgcolor: "FFFFFF",
+                                              product: state.products[index],
+                                              mrpColor: mrpColor,
+                                              price: 85,
+                                              offertextcolor: offerTextcolor,
+                                              productcolor: productBgColor,
+                                              sellingpricecolor:
+                                                  sellingPriceColor,
+                                              buttontextcolor: buttontextcolor,
+                                              offerBGcolor: offerBGcolor,
+                                              productBgColor: productBgColor,
+                                              sellingPriceColor:
+                                                  sellingPriceColor,
+                                              unitTextcolor: unitTextcolor,
+                                              unitbgcolor: unitbgcolor,
+                                              seeAllButtonBG: seeAllButtonBG,
+                                              seeAllButtontext:
+                                                  seeAllButtontext,
+                                              theme: theme),
+                                        ),
                                       );
                                     }),
                                   )
@@ -130,39 +142,43 @@ class CategoryModel9 extends StatelessWidget {
                     },
                   ),
                   const SizedBox(height: 10),
-                  Container(
-                    width: MediaQuery.of(context).size.width,
-                    height: 48,
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: parseColor(seeAllButtonBG)),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Expanded(
-                          flex: 5,
-                          child: Align(
-                            alignment: Alignment.centerRight,
-                            child: Text('See all products',
-                                style: TextStyle(
-                                    color: parseColor(seeAllButtontext),
-                                    fontSize: 18)),
-                          ),
-                        ),
-                        Expanded(
-                          flex: 2,
-                          child: Align(
-                            alignment: Alignment.centerRight,
-                            child: Padding(
-                              padding: const EdgeInsets.only(right: 14.0),
-                              child: Icon(
-                                Icons.arrow_forward,
-                                color: parseColor("00AE11"),
-                              ),
+                  InkWell(
+                    onTap: () => context.push(
+                        "/allsubcategorypage?categoryId=$categoryId&selectedsubcategory=${maincategories.first}"),
+                    child: Container(
+                      width: MediaQuery.of(context).size.width,
+                      height: 48,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: parseColor(seeAllButtonBG)),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Expanded(
+                            flex: 5,
+                            child: Align(
+                              alignment: Alignment.centerRight,
+                              child: Text('See all products',
+                                  style: TextStyle(
+                                      color: parseColor(seeAllButtontext),
+                                      fontSize: 18)),
                             ),
                           ),
-                        )
-                      ],
+                          Expanded(
+                            flex: 2,
+                            child: Align(
+                              alignment: Alignment.centerRight,
+                              child: Padding(
+                                padding: const EdgeInsets.only(right: 14.0),
+                                child: Icon(
+                                  Icons.arrow_forward,
+                                  color: parseColor("00AE11"),
+                                ),
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
                     ),
                   ),
                   const SizedBox(height: 10),

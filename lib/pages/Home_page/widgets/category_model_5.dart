@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:go_router/go_router.dart';
 import 'package:kwik/bloc/home_page_bloc/category_model_5__Bloc/category_model5__bloc.dart';
 import 'package:kwik/bloc/home_page_bloc/category_model_5__Bloc/category_model5__state.dart';
 import 'package:kwik/widgets/produc_model_1.dart';
@@ -29,6 +30,8 @@ class CategoryModel5 extends StatelessWidget {
   final String unitcolor;
   final String unitbgcolor;
   final String producttextcolor;
+  final String seeallbuttontext;
+  final String seeallbuttonbg;
 
   const CategoryModel5({
     super.key,
@@ -51,6 +54,8 @@ class CategoryModel5 extends StatelessWidget {
     required this.unitcolor,
     required this.producttextcolor,
     required this.unitbgcolor,
+    required this.seeallbuttontext,
+    required this.seeallbuttonbg,
   });
 
   @override
@@ -191,6 +196,47 @@ class CategoryModel5 extends StatelessWidget {
                                 : const SizedBox(
                                     child: Text("No data"),
                                   ),
+                            const SizedBox(height: 15),
+                            InkWell(
+                              onTap: () => context.push(
+                                  "/allsubcategorypage?categoryId=${state.subCategories.where((element) => element.id == state.selectedCategoryId).first.categoryRef.catref}&selectedsubcategory=${state.selectedCategoryId}"),
+                              child: Container(
+                                width: MediaQuery.of(context).size.width,
+                                height: 48,
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    color: parseColor(seeallbuttonbg)),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Expanded(
+                                      flex: 5,
+                                      child: Align(
+                                        alignment: Alignment.centerRight,
+                                        child: Text('See all products',
+                                            style: TextStyle(
+                                                color: parseColor(
+                                                    seeallbuttontext),
+                                                fontSize: 18)),
+                                      ),
+                                    ),
+                                    Expanded(
+                                      flex: 2,
+                                      child: Align(
+                                        alignment: Alignment.centerRight,
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(
+                                              right: 14.0),
+                                          child: Icon(Icons.arrow_forward,
+                                              color:
+                                                  parseColor(seeallbuttontext)),
+                                        ),
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
+                            )
                           ],
                         );
                       }

@@ -53,12 +53,18 @@ class _AllSubcategoryState extends State<AllSubcategory> {
               ),
             ),
             actions: [
-              SvgPicture.asset(
-                "assets/images/search.svg",
-                fit: BoxFit.contain,
-                width: 30,
-                height: 30,
-                color: Colors.black,
+              InkWell(
+                onTap: () {
+                  HapticFeedback.selectionClick();
+                  context.push('/searchpage');
+                },
+                child: SvgPicture.asset(
+                  "assets/images/search.svg",
+                  fit: BoxFit.contain,
+                  width: 30,
+                  height: 30,
+                  color: Colors.black,
+                ),
               ),
               const SizedBox(width: 15)
             ]),

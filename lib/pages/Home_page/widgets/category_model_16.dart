@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:kwik/bloc/home_page_bloc/category_model_16_bloc/category_model_16_state.dart';
 import 'package:kwik/constants/colors.dart';
 import 'package:kwik/models/subcategory_model.dart';
@@ -96,16 +97,21 @@ class CategoryModel16 extends StatelessWidget {
                                         .where((subcat) =>
                                             subcategroylist.contains(subcat.id))
                                         .toList();
-                                    return subcategoryItem(
-                                        categorybgcolor: categorybgcolor,
-                                        offerbgcolor: offerbgcolor,
-                                        offertext1: offertext1,
-                                        offertext2: offertext2,
-                                        name: filtredsubcat[index].name,
-                                        bgcolor: state.category.color,
-                                        textcolor: titleColor,
-                                        imageurl: filtredsubcat[index].imageUrl,
-                                        theme: theme);
+                                    return InkWell(
+                                      onTap: () => context.push(
+                                          "/allsubcategorypage?categoryId=${filtredsubcat[index].categoryRef.catref}&selectedsubcategory=${filtredsubcat[index].id}"),
+                                      child: subcategoryItem(
+                                          categorybgcolor: categorybgcolor,
+                                          offerbgcolor: offerbgcolor,
+                                          offertext1: offertext1,
+                                          offertext2: offertext2,
+                                          name: filtredsubcat[index].name,
+                                          bgcolor: state.category.color,
+                                          textcolor: titleColor,
+                                          imageurl:
+                                              filtredsubcat[index].imageUrl,
+                                          theme: theme),
+                                    );
                                   },
                                 ),
                               ),

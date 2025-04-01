@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:go_router/go_router.dart';
 import 'package:kwik/bloc/home_page_bloc/category_model_18_bloc/category_model_18_state.dart';
 import 'package:kwik/models/subcategory_model.dart';
 import 'package:kwik/repositories/category_model_18.dart';
@@ -86,16 +87,21 @@ class CategoryModel18 extends StatelessWidget {
                                                       .contains(element.id),
                                                 )
                                                 .toList();
-                                        return subcategoryItem(
-                                          categorybgcolor: categoryBgColor,
-                                          offerbgcolor: offerBGcolor,
-                                          offertext1: offertextcolor1,
-                                          offertext2: offertextcolor2,
-                                          name: state.subCategories[index].name,
-                                          textcolor: categorytitlecolor,
-                                          imageurl: state
-                                              .subCategories[index].imageUrl,
-                                          theme: theme,
+                                        return InkWell(
+                                          onTap: () => context.push(
+                                              "/allsubcategorypage?categoryId=${state.subCategories[index].categoryRef.catref}&selectedsubcategory=${state.subCategories[index].id}"),
+                                          child: subcategoryItem(
+                                            categorybgcolor: categoryBgColor,
+                                            offerbgcolor: offerBGcolor,
+                                            offertext1: offertextcolor1,
+                                            offertext2: offertextcolor2,
+                                            name:
+                                                state.subCategories[index].name,
+                                            textcolor: categorytitlecolor,
+                                            imageurl: state
+                                                .subCategories[index].imageUrl,
+                                            theme: theme,
+                                          ),
                                         );
                                       }),
                                     ))
@@ -105,42 +111,46 @@ class CategoryModel18 extends StatelessWidget {
                                     width: 200,
                                   ),
                             const SizedBox(height: 10),
-                            Container(
-                              margin:
-                                  const EdgeInsets.symmetric(horizontal: 15),
-                              width: MediaQuery.of(context).size.width,
-                              height: 48,
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10),
-                                  color: parseColor(seeallbuttonbgcolor)),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Expanded(
-                                    flex: 5,
-                                    child: Align(
-                                      alignment: Alignment.centerRight,
-                                      child: Text('See all products',
-                                          style: TextStyle(
-                                              color: parseColor(
-                                                  seeallbuttontextcolor),
-                                              fontSize: 18)),
-                                    ),
-                                  ),
-                                  Expanded(
-                                    flex: 2,
-                                    child: Align(
-                                      alignment: Alignment.centerRight,
-                                      child: Padding(
-                                        padding:
-                                            const EdgeInsets.only(right: 14.0),
-                                        child: Icon(Icons.arrow_forward,
-                                            color: parseColor(
-                                                seeallbuttontextcolor)),
+                            InkWell(
+                              onTap: () => context.push(
+                                  "/allsubcategorypage?categoryId=$categoryId&selectedsubcategory=${state.subCategories.first.id}"),
+                              child: Container(
+                                margin:
+                                    const EdgeInsets.symmetric(horizontal: 15),
+                                width: MediaQuery.of(context).size.width,
+                                height: 48,
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    color: parseColor(seeallbuttonbgcolor)),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Expanded(
+                                      flex: 5,
+                                      child: Align(
+                                        alignment: Alignment.centerRight,
+                                        child: Text('See all products',
+                                            style: TextStyle(
+                                                color: parseColor(
+                                                    seeallbuttontextcolor),
+                                                fontSize: 18)),
                                       ),
                                     ),
-                                  )
-                                ],
+                                    Expanded(
+                                      flex: 2,
+                                      child: Align(
+                                        alignment: Alignment.centerRight,
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(
+                                              right: 14.0),
+                                          child: Icon(Icons.arrow_forward,
+                                              color: parseColor(
+                                                  seeallbuttontextcolor)),
+                                        ),
+                                      ),
+                                    )
+                                  ],
+                                ),
                               ),
                             ),
                           ],

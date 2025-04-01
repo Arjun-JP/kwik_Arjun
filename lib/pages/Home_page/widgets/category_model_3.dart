@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:kwik/bloc/home_page_bloc/category_model_1_bloc/category_model1_bloc.dart';
 import 'package:kwik/bloc/home_page_bloc/category_model_1_bloc/category_model1_event.dart';
 import 'package:kwik/bloc/home_page_bloc/category_model_1_bloc/category_model1_state.dart';
@@ -83,12 +84,18 @@ class CategoryModel3 extends StatelessWidget {
                                             filteredSubCategories[index];
                                         return Expanded(
                                           flex: 1,
-                                          child: mainsubcategoryItem(
-                                            name: subCategory.name,
-                                            bgcolor: state.category.color,
-                                            textcolor: subcatColor,
-                                            imageurl: subCategory.imageUrl,
-                                            theme: theme,
+                                          child: InkWell(
+                                            onTap: () {
+                                              context.push(
+                                                  "/allsubcategorypage?categoryId=${subCategory.categoryRef.catref}&selectedsubcategory=${subCategory.id}");
+                                            },
+                                            child: mainsubcategoryItem(
+                                              name: subCategory.name,
+                                              bgcolor: state.category.color,
+                                              textcolor: subcatColor,
+                                              imageurl: subCategory.imageUrl,
+                                              theme: theme,
+                                            ),
                                           ),
                                         );
                                       }),
@@ -109,12 +116,18 @@ class CategoryModel3 extends StatelessWidget {
                                             filteredSecondarySubCategories[
                                                 index];
                                         return Expanded(
-                                          child: subcategoryItem(
-                                            name: subCategory.name,
-                                            bgcolor: state.category.color,
-                                            textcolor: subcatColor,
-                                            imageurl: subCategory.imageUrl,
-                                            theme: theme,
+                                          child: InkWell(
+                                            onTap: () {
+                                              context.push(
+                                                  "/allsubcategorypage?categoryId=${subCategory.categoryRef.catref}&selectedsubcategory=${subCategory.id}");
+                                            },
+                                            child: subcategoryItem(
+                                              name: subCategory.name,
+                                              bgcolor: state.category.color,
+                                              textcolor: subcatColor,
+                                              imageurl: subCategory.imageUrl,
+                                              theme: theme,
+                                            ),
                                           ),
                                         );
                                       }),

@@ -71,14 +71,10 @@ class _CategoryModel1State extends State<CategoryModel1> {
                                 if (widget.categories
                                     .contains(category.catref)) {
                                   return InkWell(
-                                    onTap: () => context
-                                        .push('/categorylandingpage', extra: {
-                                      "category": category,
-                                      "subcategoryIDs": [
-                                        "6780ff720bfef51d79df1a06",
-                                        "6780ff980bfef51d79df1a08"
-                                      ]
-                                    }),
+                                    onTap: () {
+                                      context.push(
+                                          "/allsubcategorypage?categoryId=${category.catref}&selectedsubcategory=");
+                                    },
                                     child: Container(
                                       margin: const EdgeInsetsDirectional.only(
                                           end: 20),

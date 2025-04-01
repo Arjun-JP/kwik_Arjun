@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:go_router/go_router.dart';
 import 'package:kwik/constants/colors.dart';
 import 'package:kwik/widgets/produc_model_1.dart';
 
@@ -103,38 +104,42 @@ class SupersaverModel4 extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 20),
-                  Container(
-                    width: MediaQuery.of(context).size.width,
-                    height: 48,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      color: parseColor(seeAllButtonBG),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Expanded(
-                          flex: 5,
-                          child: Align(
-                            alignment: Alignment.centerRight,
-                            child: Text('See all products',
-                                style: TextStyle(
-                                    color: parseColor(seeAllButtontext),
-                                    fontSize: 18)),
-                          ),
-                        ),
-                        Expanded(
-                          flex: 2,
-                          child: Align(
-                            alignment: Alignment.centerRight,
-                            child: Padding(
-                              padding: const EdgeInsets.only(right: 14.0),
-                              child: Icon(Icons.arrow_forward,
-                                  color: parseColor(seeAllButtontext)),
+                  InkWell(
+                    onTap: () => context.push(
+                        "/allsubcategorypage?categoryId=${state.products.first.categoryRef.catref}&selectedsubcategory=$subCategoryId"),
+                    child: Container(
+                      width: MediaQuery.of(context).size.width,
+                      height: 48,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: parseColor(seeAllButtonBG),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Expanded(
+                            flex: 5,
+                            child: Align(
+                              alignment: Alignment.centerRight,
+                              child: Text('See all products',
+                                  style: TextStyle(
+                                      color: parseColor(seeAllButtontext),
+                                      fontSize: 18)),
                             ),
                           ),
-                        ),
-                      ],
+                          Expanded(
+                            flex: 2,
+                            child: Align(
+                              alignment: Alignment.centerRight,
+                              child: Padding(
+                                padding: const EdgeInsets.only(right: 14.0),
+                                child: Icon(Icons.arrow_forward,
+                                    color: parseColor(seeAllButtontext)),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ],

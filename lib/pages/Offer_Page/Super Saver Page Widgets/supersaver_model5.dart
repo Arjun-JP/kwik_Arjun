@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:go_router/go_router.dart';
 import 'package:kwik/constants/colors.dart';
 import 'package:kwik/pages/Home_page/widgets/category_model_9.dart';
 import 'package:kwik/repositories/category_model9_repo.dart';
@@ -86,9 +87,9 @@ class SupersaverModel5 extends StatelessWidget {
                               mainAxisSpacing: 25,
                               crossAxisSpacing: 25,
                               children: List.generate(
-                                  state.products.length <= 6
+                                  state.products.length <= 10
                                       ? state.products.length
-                                      : 6, (index) {
+                                      : 10, (index) {
                                 return StaggeredGridTile.extent(
                                   crossAxisCellCount: 1,
                                   mainAxisExtent: 275,
@@ -117,49 +118,53 @@ class SupersaverModel5 extends StatelessWidget {
                           : const SizedBox(
                               child: Text("No data"),
                             ),
+                      const SizedBox(height: 15),
+                      InkWell(
+                        onTap: () => context.push(
+                            "/allsubcategorypage?categoryId=${state.products.first.categoryRef.catref}&selectedsubcategory=$categoryId"),
+                        child: Container(
+                          width: MediaQuery.of(context).size.width,
+                          height: 48,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              color: parseColor(seeAllButtonBG)),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Expanded(
+                                flex: 5,
+                                child: Align(
+                                  alignment: Alignment.centerRight,
+                                  child: Text('See all products',
+                                      style: TextStyle(
+                                          color: parseColor(seeAllButtontext),
+                                          fontSize: 18)),
+                                ),
+                              ),
+                              Expanded(
+                                flex: 2,
+                                child: Align(
+                                  alignment: Alignment.centerRight,
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(right: 14.0),
+                                    child: Icon(
+                                      Icons.arrow_forward,
+                                      color: parseColor(seeAllButtontext),
+                                    ),
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
                     ],
                   );
                 }
                 return const Center(child: Text('No Data Available'));
               },
             ),
-            const SizedBox(height: 10),
-            Container(
-              width: MediaQuery.of(context).size.width,
-              height: 48,
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: parseColor(seeAllButtonBG)),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Expanded(
-                    flex: 5,
-                    child: Align(
-                      alignment: Alignment.centerRight,
-                      child: Text('See all products',
-                          style: TextStyle(
-                              color: parseColor(seeAllButtontext),
-                              fontSize: 18)),
-                    ),
-                  ),
-                  Expanded(
-                    flex: 2,
-                    child: Align(
-                      alignment: Alignment.centerRight,
-                      child: Padding(
-                        padding: const EdgeInsets.only(right: 14.0),
-                        child: Icon(
-                          Icons.arrow_forward,
-                          color: parseColor(seeAllButtontext),
-                        ),
-                      ),
-                    ),
-                  )
-                ],
-              ),
-            ),
-            const SizedBox(height: 10),
+            const SizedBox(height: 5),
           ],
         ),
       ),

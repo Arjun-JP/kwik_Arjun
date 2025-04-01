@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:go_router/go_router.dart';
 import 'package:kwik/bloc/home_page_bloc/category_model_12_bloc/category_model_12_event.dart';
 import 'package:kwik/bloc/home_page_bloc/category_model_12_bloc/category_model_12_state.dart';
 import 'package:kwik/repositories/category_model_12_repo.dart';
@@ -14,7 +15,6 @@ import '../../../repositories/category_model9_repo.dart';
 class CategoryModel12 extends StatelessWidget {
   final String categoryId;
   final String bgcolor;
-
   final String subcatColor;
   final String offerbgcolor;
   final List<String> maincategories;
@@ -30,7 +30,6 @@ class CategoryModel12 extends StatelessWidget {
   final String seeAllButtontext;
   final String topimage;
   final bool showcategory;
-
   const CategoryModel12({
     super.key,
     required this.categoryId,
@@ -125,39 +124,45 @@ class CategoryModel12 extends StatelessWidget {
                     },
                   ),
                   const SizedBox(height: 20),
-                  Container(
-                    width: MediaQuery.of(context).size.width,
-                    height: 48,
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: lightenColor(parseColor("E23338"), .8)),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Expanded(
-                          flex: 5,
-                          child: Align(
-                            alignment: Alignment.centerRight,
-                            child: Text('See all products',
-                                style: TextStyle(
-                                    color: parseColor("#E23338"),
-                                    fontSize: 18)),
-                          ),
-                        ),
-                        Expanded(
-                          flex: 2,
-                          child: Align(
-                            alignment: Alignment.centerRight,
-                            child: Padding(
-                              padding: const EdgeInsets.only(right: 14.0),
-                              child: Icon(
-                                Icons.arrow_forward,
-                                color: parseColor("#E23338"),
-                              ),
+                  InkWell(
+                    onTap: () {
+                      context.push(
+                          "/allsubcategorypage?categoryId=$categoryId&selectedsubcategory=${maincategories.first}");
+                    },
+                    child: Container(
+                      width: MediaQuery.of(context).size.width,
+                      height: 48,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: lightenColor(parseColor("E23338"), .8)),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Expanded(
+                            flex: 5,
+                            child: Align(
+                              alignment: Alignment.centerRight,
+                              child: Text('See all products',
+                                  style: TextStyle(
+                                      color: parseColor("#E23338"),
+                                      fontSize: 18)),
                             ),
                           ),
-                        )
-                      ],
+                          Expanded(
+                            flex: 2,
+                            child: Align(
+                              alignment: Alignment.centerRight,
+                              child: Padding(
+                                padding: const EdgeInsets.only(right: 14.0),
+                                child: Icon(
+                                  Icons.arrow_forward,
+                                  color: parseColor("#E23338"),
+                                ),
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
                     ),
                   ),
                   const SizedBox(height: 10),

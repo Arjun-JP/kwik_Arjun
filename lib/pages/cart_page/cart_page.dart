@@ -3,9 +3,13 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dash/flutter_dash.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:kwik/bloc/Cart_bloc/cart_bloc.dart';
 import 'package:kwik/bloc/Cart_bloc/cart_event.dart';
 import 'package:kwik/bloc/Cart_bloc/cart_state.dart';
+import 'package:kwik/bloc/navbar_bloc/navbar_bloc.dart';
+import 'package:kwik/bloc/navbar_bloc/navbar_event.dart';
+import 'package:kwik/constants/doted_devider.dart';
 import 'package:kwik/models/cart_model.dart';
 import 'package:kwik/models/product_model.dart';
 import '../../widgets/navbar/navbar.dart';
@@ -22,73 +26,82 @@ class _CartPageState extends State<CartPage> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return BlocBuilder<CartBloc, CartState>(builder: (context, state) {
-      List<CartProduct> cartItems = [];
-
-      if (state is CartUpdated) {
-        cartItems = state.cartItems;
-      }
-      return Scaffold(
+    return Scaffold(
+      backgroundColor: const Color(0xFFfbfafb),
+      // backgroundColor: const Color.fromARGB(255, 201, 201, 201),
+      appBar: AppBar(
         backgroundColor: const Color(0xFFfbfafb),
-        // backgroundColor: const Color.fromARGB(255, 201, 201, 201),
-        appBar: AppBar(
-          backgroundColor: const Color(0xFFfbfafb),
-          elevation: 0,
-          centerTitle: false,
-          title: Row(
-            children: [
-              Text(
-                "Your Cart",
-                style: theme.textTheme.bodyMedium!.copyWith(fontSize: 18),
-              ),
-              const SizedBox(width: 15),
-              Container(
-                decoration: BoxDecoration(
-                    color: const Color(0xFFFFD93C),
-                    borderRadius: BorderRadius.circular(15)),
-                child: const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 5),
-                  child: Text("Saved ₹95"),
-                ),
-              )
-            ],
-          ),
-        ),
-        body: Column(
+        elevation: 0,
+        centerTitle: false,
+        title: Row(
           children: [
-            Expanded(
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    deliveryContainer(theme: theme),
-                    deliveryTimeContainer(theme: theme),
-                    Column(
-                      children: List.generate(
-                          cartItems.length,
-                          (index) => cartproductItem(
-                              cartproduct: cartItems[index],
-                              theme: theme,
-                              qty: cartItems[index].quantity.toString())),
-                    ),
-                    addMoreItem(theme: theme),
-                    const SizedBox(height: 15),
-                    selectDeliveryType(theme: theme),
-                    const SizedBox(height: 15),
-                    deliveryInstructions(theme: theme),
-                    billDetails(theme: theme),
-                    const SizedBox(height: 15),
-                    addressContainer(theme: theme),
-                    const SizedBox(height: 15),
-                  ],
-                ),
-              ),
+            Text(
+              "Your Cart",
+              style: theme.textTheme.bodyMedium!.copyWith(fontSize: 18),
             ),
-            paymentOptions(theme: theme)
+            const SizedBox(width: 15),
+            Container(
+              decoration: BoxDecoration(
+                  color: const Color(0xFFFFD93C),
+                  borderRadius: BorderRadius.circular(15)),
+              child: const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 5),
+                child: Text("Saved ₹95"),
+              ),
+            )
           ],
         ),
-        bottomNavigationBar: const Navbar(),
-      );
-    });
+      ),
+      body: Column(
+        children: [
+          Expanded(
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  deliveryContainer(theme: theme),
+                  deliveryTimeContainer(theme: theme),
+                  BlocBuilder<CartBloc, CartState>(builder: (context, state) {
+                    return state is CartUpdated
+                        ? SizedBox(
+                            height: state.cartItems.length * 111,
+                            child: ListView.separated(
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemBuilder: (context, index) => cartproductItem(
+                                  cartproduct: state.cartItems[index],
+                                  theme: theme,
+                                  qty: state.cartItems[index].quantity
+                                      .toString()),
+                              separatorBuilder: (context, index) =>
+                                  const Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 10.0),
+                                child: DottedDivider(
+                                  color: Color.fromARGB(255, 198, 198, 198),
+                                ),
+                              ),
+                              itemCount: state.cartItems.length,
+                            ),
+                          )
+                        : const SizedBox();
+                  }),
+                  const SizedBox(height: 15),
+                  addMoreItem(theme: theme),
+                  const SizedBox(height: 15),
+                  selectDeliveryType(theme: theme),
+                  const SizedBox(height: 15),
+                  deliveryInstructions(theme: theme),
+                  billDetails(theme: theme),
+                  const SizedBox(height: 15),
+                  addressContainer(theme: theme),
+                  const SizedBox(height: 15),
+                ],
+              ),
+            ),
+          ),
+          paymentOptions(theme: theme)
+        ],
+      ),
+      bottomNavigationBar: const Navbar(),
+    );
   }
 
   Widget deliveryContainer({required ThemeData theme}) {
@@ -187,65 +200,72 @@ class _CartPageState extends State<CartPage> {
       width: MediaQuery.of(context).size.width,
       padding: const EdgeInsets.all(15),
       color: Colors.white,
-      child: Row(
-        spacing: 15,
+      child: Column(
         children: [
-          Expanded(
-            flex: 1,
-            child: Image.network(
-                width: 50,
-                height: 80,
-                "https://firebasestorage.googleapis.com/v0/b/kwikgroceries-8a11e.firebasestorage.app/o/users%2FswjgrVITpJRvzbi2rYpR2a9TyjQ2%2Fuploads%2F1739278870228000.jpg?alt=media&token=638a3741-e869-49a4-a07a-f02fdebc40eb"),
-          ),
-          Expanded(
-            flex: 5,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.start,
-              spacing: 3,
-              children: [
-                Text(cartproduct.productRef.productName,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: theme.textTheme.bodyMedium),
-                Text("${cartproduct.variant.qty} ${cartproduct.variant.unit}",
-                    style: theme.textTheme.bodySmall),
-                Text("Save for later", style: theme.textTheme.bodySmall),
-              ],
-            ),
-          ),
-          Expanded(
-            flex: 3,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                quantitycontrolbutton(
-                  theme: theme,
-                  product: cartproduct.productRef,
-                  qty: qty,
-                )
-              ],
-            ),
-          ),
-          Expanded(
-            flex: 2,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Text(
-                  (cartproduct.quantity * cartproduct.variant.mrp).toString(),
-                  style: theme.textTheme.bodyLarge,
+          Row(
+            spacing: 15,
+            children: [
+              Expanded(
+                flex: 3,
+                child: Image.network(
+                    width: 50,
+                    height: 80,
+                    fit: BoxFit.fill,
+                    cartproduct.productRef.productImages.first),
+              ),
+              Expanded(
+                flex: 5,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  spacing: 3,
+                  children: [
+                    Text(cartproduct.productRef.productName,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: theme.textTheme.bodyMedium),
+                    Text(
+                        "${cartproduct.variant.qty} ${cartproduct.variant.unit}",
+                        style: theme.textTheme.bodySmall),
+                    Text("Save for later", style: theme.textTheme.bodySmall),
+                  ],
                 ),
-                Text(
-                  (cartproduct.quantity * cartproduct.variant.sellingPrice)
-                      .toString(),
-                  style: theme.textTheme.bodyLarge!.copyWith(
-                      color: Colors.grey,
-                      decoration: TextDecoration.lineThrough),
-                )
-              ],
-            ),
-          )
+              ),
+              Expanded(
+                flex: 3,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    quantitycontrolbutton(
+                      theme: theme,
+                      product: cartproduct.productRef,
+                      qty: qty,
+                    )
+                  ],
+                ),
+              ),
+              Expanded(
+                flex: 2,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Text(
+                      (cartproduct.quantity * cartproduct.variant.mrp)
+                          .toString(),
+                      style: theme.textTheme.bodyLarge,
+                    ),
+                    Text(
+                      (cartproduct.quantity * cartproduct.variant.sellingPrice)
+                          .toString(),
+                      style: theme.textTheme.bodyLarge!.copyWith(
+                          color: Colors.grey,
+                          decoration: TextDecoration.lineThrough),
+                    )
+                  ],
+                ),
+              )
+            ],
+          ),
         ],
       ),
     );
@@ -272,7 +292,10 @@ class _CartPageState extends State<CartPage> {
               style: theme.textTheme.bodyMedium!.copyWith(fontSize: 14),
             ),
             ElevatedButton.icon(
-              onPressed: () {},
+              onPressed: () {
+                context.go("/home");
+                context.read<NavbarBloc>().add(const UpdateNavBarIndex(0));
+              },
               icon: const Icon(
                 Icons.add,
                 color: Colors.white,
@@ -979,74 +1002,85 @@ class _CartPageState extends State<CartPage> {
       required ProductModel product,
       required String qty}) {
     print(qty);
-    return Container(
-      decoration: BoxDecoration(
-          color: const Color(0xFFE23338),
-          borderRadius: BorderRadius.circular(10)),
-      child: Row(
-        spacing: 2,
-        children: [
-          InkWell(
-            onTap: () {
-              HapticFeedback.mediumImpact();
-              context.read<CartBloc>().add(DecreaseCartQuantity(
-                  pincode: "560003",
-                  productRef: product.id,
-                  userId: "s5ZdLnYhnVfAramtr7knGduOI872",
-                  variantId: product.variations.first.id));
-            },
-            child: Expanded(
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: SizedBox(
-                    child: Center(
-                        child: Container(
-                  width: 12,
-                  height: 2,
-                  decoration: BoxDecoration(
+    return BlocBuilder<CartBloc, CartState>(builder: (context, state) {
+      List<CartProduct> cartItems = [];
+
+      if (state is CartUpdated) {
+        cartItems = state.cartItems;
+      }
+      return Container(
+        decoration: BoxDecoration(
+            color: const Color(0xFFE23338),
+            borderRadius: BorderRadius.circular(10)),
+        child: Row(
+          spacing: 2,
+          children: [
+            InkWell(
+              onTap: () {
+                HapticFeedback.mediumImpact();
+                context.read<CartBloc>().add(DecreaseCartQuantity(
+                    pincode: "560003",
+                    productRef: product.id,
+                    userId: "s5ZdLnYhnVfAramtr7knGduOI872",
+                    variantId: product.variations.first.id));
+              },
+              child: Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: SizedBox(
+                      child: Center(
+                          child: Container(
+                    width: 12,
+                    height: 2,
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(3)),
+                  ))),
+                ),
+              ),
+            ),
+            Expanded(
+              child: SizedBox(
+                  child: Center(
+                child: Text(
+                  cartItems
+                      .where((element) => element.productRef.id == product.id)
+                      .first
+                      .quantity
+                      .toString(),
+                  style: theme.textTheme.bodyMedium!.copyWith(
                       color: Colors.white,
-                      borderRadius: BorderRadius.circular(3)),
-                ))),
-              ),
+                      fontSize: 14,
+                      fontWeight: FontWeight.w800),
+                ),
+              )),
             ),
-          ),
-          Expanded(
-            child: SizedBox(
-                child: Center(
-              child: Text(
-                qty,
-                style: theme.textTheme.bodyMedium!.copyWith(
-                    color: Colors.white,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w800),
+            InkWell(
+              onTap: () {
+                HapticFeedback.mediumImpact();
+                context.read<CartBloc>().add(IncreaseCartQuantity(
+                    pincode: "560003",
+                    productRef: product.id,
+                    userId: "s5ZdLnYhnVfAramtr7knGduOI872",
+                    variantId: product.variations.first.id));
+              },
+              child: const Expanded(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 4),
+                  child: SizedBox(
+                      child: Center(
+                    child: Icon(
+                      Icons.add,
+                      size: 20,
+                      color: Colors.white,
+                    ),
+                  )),
+                ),
               ),
-            )),
-          ),
-          InkWell(
-            onTap: () {
-              HapticFeedback.mediumImpact();
-              context.read<CartBloc>().add(IncreaseCartQuantity(
-                  pincode: "560003",
-                  productRef: product.id,
-                  userId: "s5ZdLnYhnVfAramtr7knGduOI872",
-                  variantId: product.variations.first.id));
-            },
-            child: const Expanded(
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 4),
-                child: SizedBox(
-                    child: Center(
-                  child: Icon(
-                    Icons.add,
-                    size: 20,
-                    color: Colors.white,
-                  ),
-                )),
-              ),
-            ),
-          )
-        ],
-      ),
-    );
+            )
+          ],
+        ),
+      );
+    });
   }
 }

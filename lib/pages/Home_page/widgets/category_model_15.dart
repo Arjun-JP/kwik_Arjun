@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:go_router/go_router.dart';
 import 'package:kwik/bloc/home_page_bloc/category_model_12_bloc/category_model_12_event.dart';
 import 'package:kwik/bloc/home_page_bloc/category_model_12_bloc/category_model_12_state.dart';
 import 'package:kwik/repositories/category_model_12_repo.dart';
@@ -68,7 +69,7 @@ class CategoryModel15 extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Image.network(
-                    "https://firebasestorage.googleapis.com/v0/b/kwikgroceries-8a11e.firebasestorage.app/o/Screenshot%202025-03-06%20at%2011.31.11%E2%80%AFAM.jpeg?alt=media&token=b0a04ee2-5572-4678-bf2d-ea53b63fa6a6",
+                    topimage,
                     fit: BoxFit.fill,
                     width: MediaQuery.of(context).size.width,
                   ),
@@ -131,39 +132,44 @@ class CategoryModel15 extends StatelessWidget {
                     },
                   ),
                   const SizedBox(height: 20),
-                  Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 10),
-                    width: MediaQuery.of(context).size.width,
-                    height: 48,
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: parseColor("FFFFFF")),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Expanded(
-                          flex: 5,
-                          child: Align(
-                            alignment: Alignment.centerRight,
-                            child: Text('See all products',
-                                style: TextStyle(
-                                    color: parseColor("000000"), fontSize: 18)),
-                          ),
-                        ),
-                        Expanded(
-                          flex: 2,
-                          child: Align(
-                            alignment: Alignment.centerRight,
-                            child: Padding(
-                              padding: const EdgeInsets.only(right: 14.0),
-                              child: Icon(
-                                Icons.arrow_forward,
-                                color: parseColor("000000"),
-                              ),
+                  InkWell(
+                    onTap: () => context.push(
+                        "/allsubcategorypage?categoryId=$categoryId&selectedsubcategory=${maincategories.first}"),
+                    child: Container(
+                      margin: const EdgeInsets.symmetric(horizontal: 10),
+                      width: MediaQuery.of(context).size.width,
+                      height: 48,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: parseColor("FFFFFF")),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Expanded(
+                            flex: 5,
+                            child: Align(
+                              alignment: Alignment.centerRight,
+                              child: Text('See all products',
+                                  style: TextStyle(
+                                      color: parseColor("000000"),
+                                      fontSize: 18)),
                             ),
                           ),
-                        )
-                      ],
+                          Expanded(
+                            flex: 2,
+                            child: Align(
+                              alignment: Alignment.centerRight,
+                              child: Padding(
+                                padding: const EdgeInsets.only(right: 14.0),
+                                child: Icon(
+                                  Icons.arrow_forward,
+                                  color: parseColor("000000"),
+                                ),
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
                     ),
                   ),
                   const SizedBox(height: 10),

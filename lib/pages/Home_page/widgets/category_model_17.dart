@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import 'package:kwik/constants/colors.dart';
 
@@ -12,7 +13,7 @@ class CategoryModel17 extends StatelessWidget {
   final String bgcolor;
   final String title;
   final String titleColor;
-
+  final String category;
   final bool showcategory;
 
   const CategoryModel17({
@@ -27,6 +28,7 @@ class CategoryModel17 extends StatelessWidget {
     required this.titleColor,
     required this.showcategory,
     required this.title,
+    required this.category,
   });
 
   @override
@@ -58,25 +60,37 @@ class CategoryModel17 extends StatelessWidget {
                         spacing: 15,
                         children: [
                           Expanded(
-                            child: subcategoryItem(
-                              height: 291,
-                              subcatgroryid: categoryId1,
-                              imageurl: image1,
+                            child: InkWell(
+                              onTap: () => context.push(
+                                  "/allsubcategorypage?categoryId=$category&selectedsubcategory=$categoryId1"),
+                              child: subcategoryItem(
+                                height: 291,
+                                subcatgroryid: categoryId1,
+                                imageurl: image1,
+                              ),
                             ),
                           ),
                           Expanded(
                             child: Column(
                               spacing: 15,
                               children: [
-                                subcategoryItem(
-                                  subcatgroryid: categoryId2,
-                                  height: 140,
-                                  imageurl: image2,
+                                InkWell(
+                                  onTap: () => context.push(
+                                      "/allsubcategorypage?categoryId=$category&selectedsubcategory=$categoryId2"),
+                                  child: subcategoryItem(
+                                    subcatgroryid: categoryId2,
+                                    height: 140,
+                                    imageurl: image2,
+                                  ),
                                 ),
-                                subcategoryItem(
-                                  subcatgroryid: categoryId3,
-                                  height: 140,
-                                  imageurl: image3,
+                                InkWell(
+                                  onTap: () => context.push(
+                                      "/allsubcategorypage?categoryId=$category&selectedsubcategory=$categoryId3"),
+                                  child: subcategoryItem(
+                                    subcatgroryid: categoryId3,
+                                    height: 140,
+                                    imageurl: image3,
+                                  ),
                                 ),
                               ],
                             ),

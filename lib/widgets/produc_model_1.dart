@@ -269,7 +269,6 @@ class ProductItem extends StatelessWidget {
       {required ThemeData theme,
       required ProductModel product,
       required String qty}) {
-    print(qty);
     return Container(
       decoration: BoxDecoration(
           color: const Color(0xFFE23338),

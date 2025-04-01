@@ -312,6 +312,8 @@ class _HomePageState extends State<HomePage> {
                       offertextcolor: uiData["template8"]["offertextcolor"],
                       unitcolor: uiData["template8"]["unitcolor"],
                       unitbgcolor: uiData["template8"]["unitbgcolor"],
+                      seeallbuttonbg: uiData["template8"]["seeallbuttonbg"],
+                      seeallbuttontext: uiData["template8"]["seeallbuttontext"],
                     ),
                     'order': uiData["template8"]["ui_order_number"]
                   },
@@ -474,6 +476,7 @@ class _HomePageState extends State<HomePage> {
                   },
                   {
                     'template': CategoryModel17(
+                      category: uiData["template18"]["categoryid"],
                       categoryId1: uiData["template18"]["categoryId1"],
                       categoryId2: uiData["template18"]["categoryId2"],
                       categoryId3: uiData["template18"]["categoryId3"],
