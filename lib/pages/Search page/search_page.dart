@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kwik/bloc/Search_bloc/Search_bloc.dart';
 import 'package:kwik/bloc/Search_bloc/search_event.dart';
@@ -33,6 +34,18 @@ class _SearchPageState extends State<SearchPage> {
     }
   }
 
+  Future<List<String>> searchProducts(String query) async {
+    if (query.isEmpty) return [];
+    final searchBloc = context.read<SearchBloc>();
+    searchBloc.add(SearchProducts(query, "67821e97640fb7573f33cba5", 1, 10));
+    await Future.delayed(const Duration(milliseconds: 500));
+    final state = searchBloc.state;
+    if (state is ProductLoaded) {
+      return state.searchHistory;
+    }
+    return [];
+  }
+
   @override
   Widget build(BuildContext context) {
     ThemeData theme = Theme.of(context);
@@ -42,62 +55,46 @@ class _SearchPageState extends State<SearchPage> {
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 12),
           child: Column(
-            spacing: 10,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(
                 height: 45,
-                child: TextField(
-                  controller: _searchController,
-                  onSubmitted: (_) => _onSearch(),
-                  decoration: InputDecoration(
-                    enabledBorder: OutlineInputBorder(
-                      borderSide:
-                          const BorderSide(color: AppColors.dotColorUnSelected),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    hintText: "Search for \"Iphone\"",
-                    filled: true,
-                    fillColor: AppColors.backgroundColorWhite,
-                    prefixIcon: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: InkWell(
-                          onTap: () => context.pop(),
-                          child: const Icon(
-                            Icons.arrow_back_ios_new_rounded,
-                            size: 20,
+                child: TypeAheadField<String>(
+                  builder: (context, controller, focusNode) {
+                    return TextField(
+                      controller: controller,
+                      focusNode: focusNode,
+                      onSubmitted: (_) => _onSearch(),
+                      decoration: InputDecoration(
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: const BorderSide(
+                              color: AppColors.dotColorUnSelected),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        hintText: "Search for \"Iphone\"",
+                        filled: true,
+                        fillColor: AppColors.backgroundColorWhite,
+                        prefixIcon: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: InkWell(
+                            onTap: () => context.pop(),
+                            child: const Icon(
+                              Icons.arrow_back_ios_new_rounded,
+                              size: 20,
+                            ),
                           ),
-                        )),
-                    focusColor: AppColors.textColorGrey,
-                    errorBorder: OutlineInputBorder(
-                      gapPadding: 0,
-                      borderSide:
-                          const BorderSide(color: AppColors.textColorGrey),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      gapPadding: 0,
-                      borderSide:
-                          const BorderSide(color: AppColors.textColorGrey),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    disabledBorder: OutlineInputBorder(
-                      gapPadding: 0,
-                      borderSide:
-                          const BorderSide(color: AppColors.textColorGrey),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    border: OutlineInputBorder(
-                      gapPadding: 0,
-                      borderSide:
-                          const BorderSide(color: AppColors.textColorGrey),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    hintStyle: const TextStyle(
-                        fontSize: 13,
-                        color: Color.fromARGB(255, 112, 119, 123),
-                        fontWeight: FontWeight.w400),
-                  ),
+                        ),
+                      ),
+                    );
+                  },
+                  suggestionsCallback: searchProducts,
+                  itemBuilder: (context, suggestion) {
+                    return ListTile(title: Text(suggestion));
+                  },
+                  onSelected: (suggestion) {
+                    _searchController.text = suggestion;
+                    _onSearch();
+                  },
                 ),
               ),
               BlocBuilder<SearchBloc, SearchState>(
@@ -105,14 +102,14 @@ class _SearchPageState extends State<SearchPage> {
                   if (state is ProductLoading) {
                     return const Center(child: CircularProgressIndicator());
                   } else if (state is ProductLoaded) {
-                    print(state.searchHistory);
                     return Expanded(
                       child: SingleChildScrollView(
                         physics: const BouncingScrollPhysics(),
                         child: Column(
+                          spacing: 10,
                           crossAxisAlignment: CrossAxisAlignment.start,
-                          spacing: 5,
                           children: [
+                            const SizedBox(height: 5),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
@@ -167,7 +164,7 @@ class _SearchPageState extends State<SearchPage> {
                             ),
                             const SizedBox(height: 10),
                             Text(
-                              "Top picks for you ",
+                              "Top picks for you",
                               style: theme.textTheme.bodyMedium!.copyWith(
                                   fontSize: 16, fontWeight: FontWeight.w700),
                             ),
@@ -177,22 +174,24 @@ class _SearchPageState extends State<SearchPage> {
                               mainAxisSpacing: 30,
                               crossAxisSpacing: 12,
                               children: List.generate(
-                                  state.products.length,
-                                  (index) => ProductItem(
-                                      mrpColor: "A19DA3",
-                                      offertextcolor: "FFFFFF",
-                                      productBgColor: "FFFFFF",
-                                      sellingPriceColor: "233D4D",
-                                      buttontextcolor: "E23338",
-                                      unitTextcolor: "A19DA3",
-                                      product: state.products[index],
-                                      offerbgcolor: "E3520D",
-                                      buttonBgColor: "FFFFFF",
-                                      productnamecolor: "000000",
-                                      unitbgcolor: "FFFFFF",
-                                      subcategoryRef: state.products[index]
-                                          .subCategoryRef.first.id,
-                                      context: context)),
+                                state.products.length,
+                                (index) => ProductItem(
+                                  mrpColor: "A19DA3",
+                                  offertextcolor: "FFFFFF",
+                                  productBgColor: "FFFFFF",
+                                  sellingPriceColor: "233D4D",
+                                  buttontextcolor: "E23338",
+                                  unitTextcolor: "A19DA3",
+                                  product: state.products[index],
+                                  offerbgcolor: "E3520D",
+                                  buttonBgColor: "FFFFFF",
+                                  productnamecolor: "000000",
+                                  unitbgcolor: "FFFFFF",
+                                  subcategoryRef: state
+                                      .products[index].subCategoryRef.first.id,
+                                  context: context,
+                                ),
+                              ),
                             ),
                           ],
                         ),

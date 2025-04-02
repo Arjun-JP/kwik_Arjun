@@ -16,9 +16,11 @@ import 'package:kwik/bloc/product_details_page/similerproduct_bloc/similar_produ
 import 'package:kwik/bloc/product_details_page/similerproduct_bloc/similar_products_state.dart';
 import 'package:kwik/constants/colors.dart';
 import 'package:kwik/constants/constants.dart';
+import 'package:kwik/models/brand_model.dart';
 import 'package:kwik/models/cart_model.dart';
 import 'package:kwik/models/product_model.dart';
 import 'package:kwik/models/variation_model.dart';
+import 'package:kwik/pages/brand_page/brand_page.dart';
 import 'package:kwik/repositories/recommended_product_repo.dart';
 import 'package:kwik/repositories/sub_category_product_repository.dart';
 
@@ -67,11 +69,25 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
       ],
       child: Scaffold(
         backgroundColor: AppColors.backgroundColorWhite,
-        // appBar: AppBar(
-        //   toolbarHeight: 10,
-        //   foregroundColor: Colors.transparent,
-        //   backgroundColor: Colors.transparent,
-        // ),
+        appBar: AppBar(
+          toolbarHeight: 40,
+          leading: IconButton(
+            icon:
+                const Icon(Icons.arrow_back_ios, color: AppColors.kblackColor),
+            onPressed: () => context.pop(),
+          ),
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.search, color: AppColors.kblackColor),
+              onPressed: () {
+                HapticFeedback.selectionClick();
+                context.push('/searchpage');
+              },
+            ),
+          ],
+          foregroundColor: Colors.transparent,
+          backgroundColor: Colors.transparent,
+        ),
         body: Column(
           children: [
             Expanded(
@@ -92,6 +108,11 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                         }
                       },
                     ),
+                    samebrandproducts(
+                        ctx: context,
+                        brand: widget.product.brandId,
+                        theme: theme),
+                    const SizedBox(height: 15),
                     BlocBuilder<SubcategoryProductBloc,
                         SubcategoryProductState>(builder: (context, state) {
                       if (state is SubcategoryProductLoading) {
@@ -157,73 +178,54 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
           Stack(
             clipBehavior: Clip.none,
             children: [
-              Padding(
-                padding: const EdgeInsets.only(top: 60.0),
-                child: SizedBox(
-                  height: 433,
-                  child: PageView.builder(
-                    controller: _pageController,
-                    onPageChanged: (index) {
-                      setState(() {
-                        _currentIndex = index;
-                      });
-                    },
-                    itemCount: widget.product.productImages.length,
-                    itemBuilder: (context, index) {
-                      return ClipRRect(
-                        borderRadius: BorderRadius.circular(10),
+              SizedBox(
+                height: 433,
+                child: PageView.builder(
+                  controller: _pageController,
+                  onPageChanged: (index) {
+                    setState(() {
+                      _currentIndex = index;
+                    });
+                  },
+                  itemCount: widget.product.productImages.length,
+                  itemBuilder: (context, index) {
+                    return ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: InkWell(
+                        onTap: () {},
                         child: Image.network(
                           widget.product.productImages[index],
                           fit: BoxFit.cover,
                           width: double.infinity,
                         ),
-                      );
-                    },
-                  ),
-                ),
-              ),
-              SafeArea(
-                child: IconButton(
-                  icon: const Icon(Icons.arrow_back_ios,
-                      color: AppColors.kblackColor),
-                  onPressed: () => context.pop(),
-                ),
-              ),
-              SafeArea(
-                child: Align(
-                  alignment: Alignment.topRight,
-                  child: IconButton(
-                    icon:
-                        const Icon(Icons.search, color: AppColors.kblackColor),
-                    onPressed: () {},
-                  ),
+                      ),
+                    );
+                  },
                 ),
               ),
               Positioned.fill(
                 bottom: -10,
                 child: Align(
                   alignment: Alignment.bottomCenter,
-                  child: Expanded(
-                    child: Container(
-                      height: 25,
-                      width: (product.productImages.length * 50) / 3,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
-                          color: AppColors.kwhiteColor),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: List.generate(
-                          product.productImages.length,
-                          (index) => Container(
-                            margin: const EdgeInsets.symmetric(horizontal: 4),
-                            width: _currentIndex == index ? 8 : 6,
-                            height: _currentIndex == index ? 8 : 6,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: _currentIndex == index
-                                  ? AppColors.dotColorSelected
-                                  : AppColors.dotColorUnSelected,
-                            ),
+                  child: Container(
+                    height: 25,
+                    width: (product.productImages.length * 50) / 3,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        color: AppColors.kwhiteColor),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: List.generate(
+                        product.productImages.length,
+                        (index) => Container(
+                          margin: const EdgeInsets.symmetric(horizontal: 4),
+                          width: _currentIndex == index ? 8 : 6,
+                          height: _currentIndex == index ? 8 : 6,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: _currentIndex == index
+                                ? AppColors.dotColorSelected
+                                : AppColors.dotColorUnSelected,
                           ),
                         ),
                       ),
@@ -598,7 +600,6 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                 List<CartProduct> cartItems = [];
 
                 if (state is CartUpdated) {
-                  print(state.cartItems.length);
                   cartItems = state.cartItems;
                 }
                 return cartItems.any((element) =>
@@ -831,6 +832,61 @@ Widget quantitycontrolbutton(
           ),
         )
       ],
+    ),
+  );
+}
+
+Widget samebrandproducts(
+    {required Brand brand,
+    required ThemeData theme,
+    required BuildContext ctx}) {
+  return InkWell(
+    onTap: () {
+      HapticFeedback.mediumImpact();
+      Navigator.of(ctx).push(MaterialPageRoute(
+        builder: (context) => BrandPage(
+          brandid: brand.id,
+        ),
+      ));
+    },
+    child: Container(
+      color: Colors.white,
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        spacing: 15,
+        children: [
+          Card(
+            child: Padding(
+              padding: const EdgeInsets.all(5.0),
+              child: Image.network(
+                height: 40,
+                width: 40,
+                brand.brandImage,
+                fit: BoxFit.contain,
+              ),
+            ),
+          ),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(brand.brandName,
+                  style: theme.textTheme.bodyLarge!
+                      .copyWith(fontSize: 15, color: parseColor("000000"))),
+              Text("Explore all products",
+                  style:
+                      theme.textTheme.bodyMedium!.copyWith(color: Colors.grey)),
+            ],
+          ),
+          const Spacer(),
+          Icon(
+            Icons.keyboard_arrow_right_rounded,
+            size: 30,
+            color: parseColor(brand.color),
+          )
+        ],
+      ),
     ),
   );
 }

@@ -11,6 +11,7 @@ import 'package:kwik/bloc/Search_bloc/Search_bloc.dart';
 import 'package:kwik/bloc/Super%20Saver%20Page%20Bloc/super_saver_ui_bloc/super_saver_ui_bloc.dart';
 import 'package:kwik/bloc/all_sub_category_bloc/all_sub_category_bloc.dart';
 import 'package:kwik/bloc/banner_bloc/banner_bloc.dart';
+import 'package:kwik/bloc/brand_products/brand_products_bloc.dart';
 import 'package:kwik/bloc/category_landing_page_bloc/category_landing_page_bloc.dart';
 import 'package:kwik/bloc/home_page_bloc/category_bloc/category_bloc.dart';
 import 'package:kwik/bloc/home_page_bloc/category_model_13_bloc/category_model_13_bloc.dart';
@@ -41,6 +42,7 @@ import 'package:kwik/models/product_model.dart' show ProductModel;
 import 'package:kwik/models/subcategory_model.dart' show SubCategoryModel;
 import 'package:kwik/repositories/allsubcategory_repo.dart';
 import 'package:kwik/repositories/banner_repository.dart';
+import 'package:kwik/repositories/brand_products_repo.dart';
 import 'package:kwik/repositories/cart_repo.dart';
 import 'package:kwik/repositories/categories_page_ui_repository.dart';
 import 'package:kwik/repositories/category_landing_page_repo.dart';
@@ -359,6 +361,10 @@ class _MyAppState extends State<MyApp> {
         //search bloc
         BlocProvider<SearchBloc>(
             create: (_) => SearchBloc(repository: SearchRepo())),
+
+        //brand page bloc
+        BlocProvider<BrandProductBloc>(
+            create: (_) => BrandProductBloc(BrandProductRepository())),
       ],
       child: MaterialApp.router(
         builder: (context, child) {

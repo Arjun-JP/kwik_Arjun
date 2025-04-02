@@ -1,8 +1,8 @@
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:kwik/models/product_model.dart';
+import 'package:kwik/models/category_model.dart'; // Ensure this is imported
 import 'package:kwik/models/subcategory_model.dart';
 import 'package:kwik/models/warehouse_model.dart';
-
 import '../review_model.dart';
 import '../variation_model.dart';
 
@@ -17,8 +17,9 @@ class ProductModelAdapter extends TypeAdapter<ProductModel> {
       productName: reader.readString(),
       productDescription: reader.readString(),
       productImages: reader.readList().cast<String>(),
-      brandId: reader.read(), // Custom object, so ensure Brand has an adapter
-      categoryRef: reader.read(),
+      brandId: reader.read(), // Ensure Brand has an adapter
+      categoryRef:
+          reader.read() as Category, // Ensure Category is read correctly
       subCategoryRef: reader.readList().cast<SubCategoryModel>(),
       variations: reader.readList().cast<VariationModel>(),
       warehouseRefs: reader.readList().cast<WarehouseModel>(),
@@ -37,7 +38,7 @@ class ProductModelAdapter extends TypeAdapter<ProductModel> {
     writer.writeString(obj.productDescription);
     writer.writeList(obj.productImages);
     writer.write(obj.brandId);
-    writer.write(obj.categoryRef);
+    writer.write(obj.categoryRef); // Ensure Category is written correctly
     writer.writeList(obj.subCategoryRef);
     writer.writeList(obj.variations);
     writer.writeList(obj.warehouseRefs);

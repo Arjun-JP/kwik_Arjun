@@ -23,13 +23,14 @@ class BrandAdapter extends TypeAdapter<Brand> {
       brandDescription: fields[3] as String,
       brandUrl: fields[4] as String,
       createdTime: fields[5] as String,
+      color: fields[6] as String,
     );
   }
 
   @override
   void write(BinaryWriter writer, Brand obj) {
     writer
-      ..writeByte(6)
+      ..writeByte(7)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -41,7 +42,9 @@ class BrandAdapter extends TypeAdapter<Brand> {
       ..writeByte(4)
       ..write(obj.brandUrl)
       ..writeByte(5)
-      ..write(obj.createdTime);
+      ..write(obj.createdTime)
+      ..writeByte(6)
+      ..write(obj.color);
   }
 
   @override
