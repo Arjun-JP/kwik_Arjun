@@ -12,17 +12,17 @@ class ProductModel1GridShimmer extends StatelessWidget {
         Row(
           spacing: 10,
           children: [
-            ProductModel1Shimmer(),
-            ProductModel1Shimmer(),
-            ProductModel1Shimmer(),
+            Expanded(child: ProductModel1Shimmer()),
+            Expanded(child: ProductModel1Shimmer()),
+            Expanded(child: ProductModel1Shimmer()),
           ],
         ),
         Row(
           spacing: 10,
           children: [
-            ProductModel1Shimmer(),
-            ProductModel1Shimmer(),
-            ProductModel1Shimmer(),
+            Expanded(child: ProductModel1Shimmer()),
+            Expanded(child: ProductModel1Shimmer()),
+            Expanded(child: ProductModel1Shimmer()),
           ],
         )
       ],

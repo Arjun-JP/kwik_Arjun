@@ -266,6 +266,7 @@ class _HomePageState extends State<HomePage> {
 
                   {
                     'template': CategoryModel4(
+                      categoryref: uiData["template6"]["category_ref"],
                       buttonbgcolor: uiData["template6"]["buttonbgcolor"],
                       buttontextcolor: uiData["template6"]["buttontextcolor"],
                       offerbgcolor: uiData["template6"]["offerbgcolor"],
@@ -595,21 +596,30 @@ class _HomePageState extends State<HomePage> {
                                         CrossAxisAlignment.start,
                                     mainAxisAlignment: MainAxisAlignment.end,
                                     children: [
-                                      Container(
-                                        decoration: BoxDecoration(
-                                            color: const Color(0xFFCC9320),
-                                            borderRadius:
-                                                BorderRadius.circular(20)),
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 10, vertical: 5),
-                                        child: Text(
-                                          "Less then",
-                                          style: theme.textTheme.bodyMedium!
-                                              .copyWith(
-                                                  fontSize: 10,
-                                                  fontWeight: FontWeight.bold,
-                                                  color:
-                                                      AppColors.textColorWhite),
+                                      InkWell(
+                                        onTap: () {
+                                          // Navigator.of(context)
+                                          //     .push(MaterialPageRoute(
+                                          //   builder: (context) =>
+                                          //       const CategoryModel19Shimmer(),
+                                          // ));
+                                        },
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                              color: const Color(0xFFCC9320),
+                                              borderRadius:
+                                                  BorderRadius.circular(20)),
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 10, vertical: 5),
+                                          child: Text(
+                                            "Less then",
+                                            style: theme.textTheme.bodyMedium!
+                                                .copyWith(
+                                                    fontSize: 10,
+                                                    fontWeight: FontWeight.bold,
+                                                    color: AppColors
+                                                        .textColorWhite),
+                                          ),
                                         ),
                                       ),
                                       Row(

@@ -6,6 +6,7 @@ import 'package:kwik/bloc/home_page_bloc/category_model_1_bloc/category_model1_e
 import 'package:kwik/bloc/home_page_bloc/category_model_1_bloc/category_model1_state.dart';
 import 'package:kwik/constants/colors.dart';
 import 'package:kwik/repositories/category_model_3_repo_home.dart';
+import 'package:kwik/widgets/shimmer/category_shimmer.dart';
 
 class CategoryModel3 extends StatelessWidget {
   final String categoryId;
@@ -41,7 +42,7 @@ class CategoryModel3 extends StatelessWidget {
                 return BlocBuilder<CategoryBlocModel1, CategoryState>(
                   builder: (context, state) {
                     if (state is CategoryLoading) {
-                      return const Center(child: CircularProgressIndicator());
+                      return const Center(child: CategoryShimmer());
                     } else if (state is CategoryLoaded) {
                       var filteredSubCategories = state.subCategories
                           .where((subCategory) =>

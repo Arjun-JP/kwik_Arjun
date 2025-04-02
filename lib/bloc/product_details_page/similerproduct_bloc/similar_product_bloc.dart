@@ -35,7 +35,7 @@ class SubcategoryProductBloc
 
       // Fetch from API if no cache
       final products =
-          await productRepository.getProductsBySubCategory(event.subCategoryId);
+          await productRepository.getProductsBySubCategory(event.CategoryId);
       await box.put(
           _cacheKey,
           products

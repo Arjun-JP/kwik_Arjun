@@ -5,7 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:kwik/bloc/home_page_bloc/category_model_5__Bloc/category_model5__bloc.dart';
 import 'package:kwik/bloc/home_page_bloc/category_model_5__Bloc/category_model5__state.dart';
 import 'package:kwik/widgets/produc_model_1.dart';
-import 'package:kwik/widgets/shimmer/product_model1_list.dart';
+import 'package:kwik/widgets/shimmer/category_model_5_shimmer.dart';
 import '../../../bloc/home_page_bloc/category_model_5__Bloc/category_model5__event.dart';
 import '../../../constants/colors.dart';
 import '../../../repositories/category_subcategory_product_repo.dart';
@@ -99,7 +99,7 @@ class CategoryModel5 extends StatelessWidget {
                   BlocBuilder<CategoryBloc5, CategoryState>(
                     builder: (context, state) {
                       if (state is SubCategoriesLoading) {
-                        return const Center(child: ProductModel1ListShimmer());
+                        return const Center(child: CategoryModel5Shimmer());
                       } else if (state is CategoryErrorState) {
                         return Center(child: Text(state.message));
                       } else if (state is CategoryLoadedState) {
