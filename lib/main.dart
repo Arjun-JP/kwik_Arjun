@@ -28,6 +28,7 @@ import 'package:kwik/bloc/home_page_bloc/category_model_9_bloc/category_model_9_
 import 'package:kwik/bloc/home_Ui_bloc/home_Ui_Bloc.dart';
 import 'package:kwik/bloc/navbar_bloc/navbar_bloc.dart';
 import 'package:kwik/bloc/product_details_page/product_details_bloc/product_details_page_bloc.dart';
+import 'package:kwik/bloc/product_details_page/recommended_products_bloc/recommended_products_bloc.dart';
 import 'package:kwik/bloc/product_details_page/similerproduct_bloc/similar_product_bloc.dart';
 import 'package:kwik/constants/textstyle.dart';
 import 'package:kwik/firebase_options.dart';
@@ -53,6 +54,7 @@ import 'package:kwik/repositories/category_model_8_repo.dart';
 import 'package:kwik/repositories/category_subcategory_product_repo.dart';
 import 'package:kwik/repositories/home_Ui_repository.dart';
 import 'package:kwik/repositories/home_category_repository.dart';
+import 'package:kwik/repositories/recommended_product_repo.dart';
 import 'package:kwik/repositories/search_repo.dart';
 import 'package:kwik/repositories/sub_category_product_repository.dart';
 import 'package:kwik/repositories/super_saver_ui_repo.dart';
@@ -151,6 +153,7 @@ void main() async {
   await Hive.deleteBoxFromDisk('productsallsubcategorypage');
   await Hive.deleteBoxFromDisk('search_productCache');
   await Hive.deleteBoxFromDisk('search_history');
+  await Hive.deleteBoxFromDisk('Recommended_product_cache');
 
 // hive open box
   await Hive.openBox('Supersaver_ui_cache_box');
@@ -192,6 +195,8 @@ void main() async {
   await Hive.openBox('cart');
   await Hive.openBox('search_productCache');
   await Hive.openBox('search_history');
+  await Hive.openBox('Recommended_product_cache');
+
   // await Hive.openBox<List<SubCategoryModel>>('subcategoriesallcategorypage');
   await Hive.openBox<List<ProductModel>>('productsallcategorypage');
   // await Hive.openBox('subcategoriesallcategorypage');
@@ -335,7 +340,9 @@ class _MyAppState extends State<MyApp> {
         BlocProvider<SubcategoryProductBloc>(
           create: (_) => SubcategoryProductBloc(SubcategoryProductRepository()),
         ),
-
+        BlocProvider<RecommendedProductsBloc>(
+          create: (_) => RecommendedProductsBloc(RecommendedProductRepo()),
+        ),
         // Cart bloc
         BlocProvider<CartBloc>(
           create: (_) => CartBloc(cartRepository: CartRepository()),

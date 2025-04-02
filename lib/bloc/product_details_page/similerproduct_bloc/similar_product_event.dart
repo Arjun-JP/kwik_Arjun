@@ -5,14 +5,13 @@ abstract class SubcategoryProductEvent extends Equatable {
 }
 
 class FetchSubcategoryProducts extends SubcategoryProductEvent {
-  final String subCategoryId;
+  final String CategoryId;
   final bool forceRefresh;
 
-  const FetchSubcategoryProducts(this.subCategoryId,
-      {this.forceRefresh = false});
+  const FetchSubcategoryProducts(this.CategoryId, {this.forceRefresh = false});
 
   @override
-  List<Object> get props => [subCategoryId, forceRefresh];
+  List<Object> get props => [CategoryId, forceRefresh];
 }
 
 class ClearSimilarCache extends SubcategoryProductEvent {

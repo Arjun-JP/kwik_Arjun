@@ -10,9 +10,9 @@ class ProductModel1ListShimmer extends StatelessWidget {
     return const Row(
       spacing: 10,
       children: [
-        ProductModel1Shimmer(),
-        ProductModel1Shimmer(),
-        ProductModel1Shimmer(),
+        Expanded(child: ProductModel1Shimmer()),
+        Expanded(child: ProductModel1Shimmer()),
+        Expanded(child: ProductModel1Shimmer()),
       ],
     );
   }

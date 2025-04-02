@@ -1,16 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:kwik/bloc/Cart_bloc/cart_bloc.dart';
+import 'package:kwik/bloc/Cart_bloc/cart_event.dart';
+import 'package:kwik/bloc/Cart_bloc/cart_state.dart';
 import 'package:kwik/bloc/product_details_page/product_details_bloc/product_details_page_bloc.dart';
 import 'package:kwik/bloc/product_details_page/product_details_bloc/product_details_page_event.dart';
 import 'package:kwik/bloc/product_details_page/product_details_bloc/product_details_page_state.dart';
+import 'package:kwik/bloc/product_details_page/recommended_products_bloc/recommended_products_bloc.dart';
+import 'package:kwik/bloc/product_details_page/recommended_products_bloc/recommended_products_event.dart';
+import 'package:kwik/bloc/product_details_page/recommended_products_bloc/recommended_products_state.dart';
 import 'package:kwik/bloc/product_details_page/similerproduct_bloc/similar_product_bloc.dart';
 import 'package:kwik/bloc/product_details_page/similerproduct_bloc/similar_product_event.dart';
 import 'package:kwik/bloc/product_details_page/similerproduct_bloc/similar_products_state.dart';
 import 'package:kwik/constants/colors.dart';
 import 'package:kwik/constants/constants.dart';
+import 'package:kwik/models/cart_model.dart';
 import 'package:kwik/models/product_model.dart';
 import 'package:kwik/models/variation_model.dart';
+import 'package:kwik/repositories/recommended_product_repo.dart';
 import 'package:kwik/repositories/sub_category_product_repository.dart';
 
 import 'package:kwik/widgets/produc_model_1.dart';
@@ -44,10 +53,18 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
   Widget build(BuildContext context) {
     ThemeData theme = Theme.of(context);
 
-    return BlocProvider(
-      create: (context) =>
-          SubcategoryProductBloc(SubcategoryProductRepository())
-            ..add(FetchSubcategoryProducts(widget.subcategoryref)),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) =>
+              SubcategoryProductBloc(SubcategoryProductRepository())
+                ..add(FetchSubcategoryProducts(widget.subcategoryref)),
+        ),
+        BlocProvider(
+          create: (context) => RecommendedProductsBloc(RecommendedProductRepo())
+            ..add(FetchRecommendedProducts(widget.subcategoryref)),
+        )
+      ],
       child: Scaffold(
         backgroundColor: AppColors.backgroundColorWhite,
         // appBar: AppBar(
@@ -92,12 +109,35 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                         return const Center(child: Text("No products found"));
                       }
                     }),
-                    productsYouMightAlsoLike(theme: theme),
+                    BlocBuilder<RecommendedProductsBloc,
+                        RecommendedProductsState>(builder: (context, state) {
+                      if (state is RecommendedProductLoading) {
+                        return const Center(child: CircularProgressIndicator());
+                      } else if (state is RecommendedProductLoaded) {
+                        return productsYouMightAlsoLike(
+                            theme: theme, productlist: state.products);
+                      } else if (state is RecommendedProductError) {
+                        return const Center(child: Text("No data"));
+                      } else {
+                        return const Center(child: Text("No products found"));
+                      }
+                    }),
                   ],
                 ),
               ),
             ),
-            addtocartContainer(theme: theme),
+            BlocBuilder<VariationBloc, VariationState>(
+              builder: (context, state) {
+                if (state is VariationSelected) {
+                  return addtocartContainer(
+                      theme: theme,
+                      selecedvariation: state.selectedVariation,
+                      product: widget.product);
+                } else {
+                  return const SizedBox(); // Return an empty widget if no variation is selected
+                }
+              },
+            ),
           ],
         ),
       ),
@@ -279,7 +319,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                     borderRadius: BorderRadius.circular(10)),
                 collapsedShape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10)),
-                tilePadding: EdgeInsets.zero,
+                tilePadding: const EdgeInsets.symmetric(horizontal: 10),
                 title: const Text(
                   "View product details",
                   style: TextStyle(
@@ -379,6 +419,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                   ),
                 ]),
           ),
+          const SizedBox(height: 10)
         ],
       ),
     );
@@ -398,7 +439,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
             style: theme.textTheme.titleMedium,
           ),
           SizedBox(
-            height: 270,
+            height: 279,
             child: ListView.builder(
                 itemBuilder: (context, index) {
                   return Padding(
@@ -427,7 +468,8 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
     );
   }
 
-  Widget productsYouMightAlsoLike({required ThemeData theme}) {
+  Widget productsYouMightAlsoLike(
+      {required ThemeData theme, required List<ProductModel> productlist}) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10),
       color: AppColors.kwhiteColor,
@@ -444,7 +486,8 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                   return Padding(
                     padding: const EdgeInsets.only(right: 10.0),
                     child: ProductItem(
-                        subcategoryRef: widget.subcategoryref,
+                        subcategoryRef:
+                            productlist[index].subCategoryRef.first.id,
                         productnamecolor: "000000",
                         mrpColor: "A19DA3",
                         offertextcolor: "233D4D",
@@ -456,18 +499,22 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                         unitbgcolor: "FFFFFF",
                         offerbgcolor: "FFFA76",
                         context: context,
-                        product: widget.product),
+                        product: productlist[index]),
                   );
                 },
                 scrollDirection: Axis.horizontal,
-                itemCount: 3),
+                itemCount: productlist.length),
           ),
+          const SizedBox(height: 20)
         ],
       ),
     );
   }
 
-  Widget addtocartContainer({required ThemeData theme}) {
+  Widget addtocartContainer(
+      {required ThemeData theme,
+      required VariationModel selecedvariation,
+      required ProductModel product}) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
       decoration: const BoxDecoration(
@@ -488,18 +535,26 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
               spacing: 0,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  "1 pack (160g - 180g)",
-                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                Text(
+                  product.variations.length > 1
+                      ? "${selecedvariation.qty} ${selecedvariation.unit}"
+                      : "${product.variations.first.qty} ${product.variations.first.unit}",
+                  style: const TextStyle(
+                      fontSize: 14, fontWeight: FontWeight.bold),
                 ),
                 Row(
                   spacing: 5,
                   children: [
-                    const Text("₹66",
-                        style: TextStyle(
+                    Text(
+                        product.variations.length > 1
+                            ? selecedvariation.sellingPrice.toStringAsFixed(1)
+                            : product.variations.first.sellingPrice
+                                .toStringAsFixed(1),
+                        style: const TextStyle(
                             fontSize: 14, fontWeight: FontWeight.bold)),
-                    const Text("MRP ₹160",
-                        style: TextStyle(
+                    Text(
+                        "MRP ${product.variations.length > 1 ? selecedvariation.mrp.toStringAsFixed(1) : product.variations.first.mrp.toStringAsFixed(1)}",
+                        style: const TextStyle(
                             decoration: TextDecoration.lineThrough,
                             decorationColor: AppColors.kgreyColorlite,
                             fontSize: 14,
@@ -511,9 +566,9 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                       decoration: BoxDecoration(
                           color: AppColors.korangeColor,
                           borderRadius: BorderRadius.circular(10)),
-                      child: const Text(
-                        "15% OFF",
-                        style: TextStyle(
+                      child: Text(
+                        "${percentage(product.variations.length > 1 ? selecedvariation.mrp : product.variations.first.mrp, product.variations.length > 1 ? selecedvariation.sellingPrice : product.variations.first.sellingPrice)} % OFF",
+                        style: const TextStyle(
                             fontSize: 10,
                             color: AppColors.textColorWhite,
                             fontWeight: FontWeight.bold),
@@ -538,19 +593,67 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
             flex: 5,
             child: SizedBox(
               height: 50,
-              child: ElevatedButton(
-                onPressed: () {},
-                style: ElevatedButton.styleFrom(
-                  shape: RoundedRectangleBorder(
-                    borderRadius:
-                        BorderRadius.circular(15), // Set border radius here
-                  ),
-                  backgroundColor: AppColors.addToCartBorder,
-                  minimumSize: const Size(152, 48),
-                ),
-                child: const Text("Add to Cart",
-                    style: TextStyle(fontSize: 18, color: Colors.white)),
-              ),
+              child:
+                  BlocBuilder<CartBloc, CartState>(builder: (context, state) {
+                List<CartProduct> cartItems = [];
+
+                if (state is CartUpdated) {
+                  print(state.cartItems.length);
+                  cartItems = state.cartItems;
+                }
+                return cartItems.any((element) =>
+                        element.productRef.id == product.id &&
+                        element.variant.id == selecedvariation.id)
+                    ? quantitycontrolbutton(
+                        theme: theme,
+                        product: product,
+                        ctx: context,
+                        qty: cartItems
+                            .firstWhere((element) =>
+                                element.productRef.id == product.id)
+                            .quantity
+                            .toString(),
+                      )
+                    : ElevatedButton(
+                        onPressed: () {
+                          HapticFeedback.mediumImpact();
+                          final firstVariation = product.variations.first;
+
+                          context.read<CartBloc>().add(
+                                AddToCart(
+                                  cartProduct: CartProduct(
+                                    productRef: product,
+                                    variant: firstVariation,
+                                    quantity: 1,
+                                    pincode: "560003",
+                                    sellingPrice: firstVariation.sellingPrice,
+                                    mrp: firstVariation.mrp,
+                                    buyingPrice: firstVariation.buyingPrice,
+                                    inStock: true,
+                                    variationVisibility: true,
+                                    finalPrice: 0,
+                                    cartAddedDate: DateTime.now(),
+                                  ),
+                                  userId: "s5ZdLnYhnVfAramtr7knGduOI872",
+                                  productRef: product.id,
+                                  variantId: firstVariation.id,
+                                  pincode: "560003",
+                                ),
+                              );
+                        },
+                        style: ElevatedButton.styleFrom(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(
+                                15), // Set border radius here
+                          ),
+                          backgroundColor: AppColors.addToCartBorder,
+                          minimumSize: const Size(152, 48),
+                        ),
+                        child: const Text("Add to Cart",
+                            style:
+                                TextStyle(fontSize: 18, color: Colors.white)),
+                      );
+              }),
             ),
           ),
         ],
@@ -650,6 +753,83 @@ Widget variationItem(
             ],
           ),
         ),
+      ],
+    ),
+  );
+}
+
+Widget quantitycontrolbutton(
+    {required ThemeData theme,
+    required ProductModel product,
+    required BuildContext ctx,
+    required String qty}) {
+  return Container(
+    padding: const EdgeInsets.symmetric(horizontal: 10),
+    decoration: BoxDecoration(
+        color: const Color(0xFFE23338),
+        borderRadius: BorderRadius.circular(10)),
+    child: Row(
+      spacing: 10,
+      children: [
+        InkWell(
+          onTap: () {
+            HapticFeedback.mediumImpact();
+            ctx.read<CartBloc>().add(DecreaseCartQuantity(
+                pincode: "560003",
+                productRef: product.id,
+                userId: "s5ZdLnYhnVfAramtr7knGduOI872",
+                variantId: product.variations.first.id));
+          },
+          child: Expanded(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: SizedBox(
+                  child: Center(
+                      child: Container(
+                width: 20,
+                height: 2,
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(3)),
+              ))),
+            ),
+          ),
+        ),
+        Expanded(
+          child: SizedBox(
+              child: Center(
+            child: Text(
+              qty,
+              style: theme.textTheme.bodyMedium!.copyWith(
+                  color: Colors.white,
+                  fontSize: 18,
+                  fontWeight: FontWeight.w800),
+            ),
+          )),
+        ),
+        InkWell(
+          onTap: () {
+            HapticFeedback.mediumImpact();
+            ctx.read<CartBloc>().add(IncreaseCartQuantity(
+                pincode: "560003",
+                productRef: product.id,
+                userId: "s5ZdLnYhnVfAramtr7knGduOI872",
+                variantId: product.variations.first.id));
+          },
+          child: const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 4),
+            child: Expanded(
+              child: SizedBox(
+                  child: Center(
+                child: Icon(
+                  Icons.add,
+                  size: 28,
+                  color: Colors.white,
+                ),
+              )),
+            ),
+          ),
+        )
       ],
     ),
   );

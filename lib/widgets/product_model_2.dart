@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -8,7 +9,6 @@ import 'package:kwik/bloc/Cart_bloc/cart_state.dart';
 import 'package:kwik/constants/colors.dart';
 import 'package:kwik/models/cart_model.dart';
 import 'package:kwik/models/product_model.dart';
-import 'package:kwik/pages/Home_page/widgets/category_model_4.dart';
 
 class ProductModel2 extends StatelessWidget {
   // final ProductModel product;
@@ -409,4 +409,45 @@ class ZigZagClipper extends CustomClipper<Path> {
 
   @override
   bool shouldReclip(ZigZagClipper oldClipper) => false;
+}
+
+class SmoothJaggedCircleClipper extends CustomClipper<Path> {
+  @override
+  Path getClip(Size size) {
+    Path path = Path();
+    double centerX = size.width / 2;
+    double centerY = size.height / 2;
+    double outerRadius = size.width / 2;
+    double innerRadius = outerRadius * 0.85; // Adjust for smoothness
+    int points = 20; // Number of spikes
+    double angle = (2 * pi) / points;
+
+    for (int i = 0; i < points; i++) {
+      double startRadius = (i % 2 == 0) ? outerRadius : innerRadius;
+      double endRadius = (i % 2 == 0) ? innerRadius : outerRadius;
+
+      double startX = centerX + startRadius * cos(i * angle);
+      double startY = centerY + startRadius * sin(i * angle);
+
+      double endX = centerX + endRadius * cos((i + 1) * angle);
+      double endY = centerY + endRadius * sin((i + 1) * angle);
+
+      double controlX =
+          centerX + (startRadius + endRadius) / 2 * cos((i + 0.5) * angle);
+      double controlY =
+          centerY + (startRadius + endRadius) / 2 * sin((i + 0.5) * angle);
+
+      if (i == 0) {
+        path.moveTo(startX, startY);
+      }
+
+      path.quadraticBezierTo(controlX, controlY, endX, endY);
+    }
+
+    path.close();
+    return path;
+  }
+
+  @override
+  bool shouldReclip(SmoothJaggedCircleClipper oldClipper) => false;
 }

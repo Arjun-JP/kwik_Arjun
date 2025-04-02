@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:kwik/models/product_model.dart';
 import 'package:kwik/widgets/shimmer/shimmer.dart';
 
 class ProductModel1Shimmer extends StatelessWidget {

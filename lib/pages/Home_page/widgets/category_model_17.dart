@@ -38,7 +38,7 @@ class CategoryModel17 extends StatelessWidget {
         ? Container(
             color: parseColor(bgcolor),
             width: double.infinity,
-            height: 365,
+            height: 380,
             padding: const EdgeInsets.symmetric(horizontal: 10),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -98,6 +98,9 @@ class CategoryModel17 extends StatelessWidget {
                         ],
                       )),
                 ),
+                const SizedBox(
+                  height: 15,
+                )
               ],
             ),
           )
