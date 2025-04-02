@@ -24,6 +24,14 @@ class CartPage extends StatefulWidget {
 class _CartPageState extends State<CartPage> {
   final TextEditingController _controller = TextEditingController();
   @override
+  void initState() {
+    // TODO: implement initState
+    context
+        .read<CartBloc>()
+        .add(SyncCartWithServer(userId: "s5ZdLnYhnVfAramtr7knGduOI872"));
+  }
+
+  @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Scaffold(

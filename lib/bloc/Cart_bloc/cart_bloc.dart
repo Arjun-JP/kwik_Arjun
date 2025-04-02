@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive/hive.dart';
 import 'package:kwik/models/cart_model.dart';
@@ -123,8 +125,53 @@ class CartBloc extends Bloc<CartEvent, CartState> {
   Future<void> _onSyncCartWithServer(
       SyncCartWithServer event, Emitter<CartState> emit) async {
     emit(CartLoading());
+
     try {
-      // Implement sync logic here
+      List<Map<String, dynamic>> serverCartData =
+          await cartRepository.getUserCart(userId: event.userId);
+
+      List<CartProduct> serverCartItems = [];
+      print(serverCartData);
+      try {
+        serverCartItems =
+            serverCartData.map((e) => CartProduct.fromJson(e)).toList();
+      } catch (e) {
+        print(e);
+      }
+
+      // Fetch local cart data
+      List<CartProduct> localCartItems =
+          (cartBox.get('cart', defaultValue: []) as List)
+              .map((e) => CartProduct.fromJson(Map<String, dynamic>.from(e)))
+              .toList();
+
+      // If server cart is empty, clear local cart and return empty list
+      if (serverCartItems.isEmpty) {
+        await cartBox.put('cart', []);
+        emit(CartUpdated(message: "Cart is empty", cartItems: []));
+        return;
+      }
+
+      // Check if local and server carts are different
+      bool isDifferent = serverCartItems.length != localCartItems.length ||
+          !serverCartItems.every((serverItem) => localCartItems.any(
+              (localItem) =>
+                  localItem.productRef.id == serverItem.productRef.id &&
+                  localItem.variant.id == serverItem.variant.id &&
+                  localItem.quantity == serverItem.quantity));
+      print("object");
+      // If different, update local storage
+      if (isDifferent) {
+        print("object  in ");
+        await cartBox.put(
+            'cart', serverCartItems.map((e) => e.toJson()).toList());
+      }
+      print("object  in ${serverCartItems.length}");
+      // Always emit CartUpdated, even if local and server carts are the same
+      emit(CartUpdated(
+        message: "Cart synced successfully",
+        cartItems: serverCartItems,
+      ));
     } catch (e) {
       emit(CartError(message: "Error syncing cart: $e"));
     }

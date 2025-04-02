@@ -22,6 +22,9 @@ class Brand {
   @HiveField(5)
   final String createdTime;
 
+  @HiveField(6)
+  final String color;
+
   Brand({
     required this.id,
     required this.brandName,
@@ -29,6 +32,7 @@ class Brand {
     required this.brandDescription,
     required this.brandUrl,
     required this.createdTime,
+    required this.color,
   });
 
   // Factory method to create a Brand from JSON
@@ -40,6 +44,7 @@ class Brand {
       brandDescription: json['brand_des'] ?? '',
       brandUrl: json['brand_url'] ?? '',
       createdTime: json['created_time'] ?? '',
+      color: json['color'] ?? '',
     );
   }
 
@@ -52,6 +57,7 @@ class Brand {
       'brand_des': brandDescription,
       'brand_url': brandUrl,
       'created_time': createdTime,
+      'color': color,
     };
   }
 
@@ -64,6 +70,7 @@ class Brand {
       brandDescription: '',
       brandUrl: '',
       createdTime: DateTime.now().toString(),
+      color: '',
     );
   }
 }

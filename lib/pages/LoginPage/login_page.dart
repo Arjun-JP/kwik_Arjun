@@ -4,6 +4,8 @@ import 'package:go_router/go_router.dart';
 import 'package:kwik/bloc/Auth_bloc/auth_bloc.dart';
 import 'package:kwik/bloc/Auth_bloc/auth_event.dart';
 import 'package:kwik/bloc/Auth_bloc/auth_state.dart';
+import 'package:kwik/bloc/Cart_bloc/cart_bloc.dart';
+import 'package:kwik/bloc/Cart_bloc/cart_event.dart';
 import 'package:kwik/bloc/Categories%20Page%20Bloc/category_model_bloc/category_model_bloc.dart';
 import 'package:kwik/bloc/Categories%20Page%20Bloc/category_model_bloc/category_model_event.dart';
 import 'package:kwik/bloc/category_landing_page_bloc/category_landing_page_bloc.dart';
@@ -188,6 +190,9 @@ class _LoginPageState extends State<LoginPage> {
                               context
                                   .read<HomeUiBloc>()
                                   .add(FetchUiDataEvent());
+                              context.read<CartBloc>().add(SyncCartWithServer(
+                                  userId: "s5ZdLnYhnVfAramtr7knGduOI872"));
+
                               context.go("/home");
                             },
                             child: const Text("Home"))

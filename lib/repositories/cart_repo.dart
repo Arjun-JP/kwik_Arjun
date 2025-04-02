@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:kwik/widgets/shimmer/product_model1_list.dart';
 
 class CartRepository {
   final String baseUrl = "https://kwik-backend.vercel.app/users";
@@ -107,20 +108,38 @@ class CartRepository {
   }
 
   /// 📌 **Fetch User's Cart**
-  Future<dynamic> getUserCart({required String userId}) async {
+  Future<List<Map<String, dynamic>>> getUserCart(
+      {required String userId}) async {
     final url = Uri.parse("$baseUrl/getUserCart/$userId");
-
     try {
+      print("Fetching cart for user: $userId");
       final response = await http.get(url, headers: headers);
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
-        return data; // Return cart data as JSON
+
+        if (data is! Map || !data.containsKey("cartProducts")) {
+          throw Exception(
+              "Unexpected response format: Missing 'cartProducts' key");
+        }
+
+        final cartproductlist = data["cartProducts"];
+
+        if (cartproductlist is List) {
+          // Ensure each item is a Map<String, dynamic>
+          return cartproductlist
+              .whereType<Map<String, dynamic>>() // ✅ Filter valid items
+              .map((e) => Map<String, dynamic>.from(e))
+              .toList();
+        } else {
+          throw Exception(
+              "Unexpected response format: 'cartProducts' is not a List");
+        }
       } else {
         throw Exception("Failed to fetch cart: ${response.body}");
       }
     } catch (e) {
-      throw Exception("Error fetching cart");
+      throw Exception("Error fetching cart: $e");
     }
   }
 }
