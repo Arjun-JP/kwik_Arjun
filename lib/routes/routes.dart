@@ -11,6 +11,7 @@ import 'package:kwik/pages/OtpVerificationPage/otp_verification_page.dart';
 import 'package:kwik/pages/Search%20page/search_page.dart';
 import 'package:kwik/pages/SplashScreen/splash_screen.dart';
 import 'package:kwik/pages/all_subcategory/all_suubcategory.dart';
+import 'package:kwik/pages/brand_page/brand_page.dart';
 import 'package:kwik/pages/cart_page/cart_page.dart';
 import 'package:kwik/pages/category_landing_page/category_landing_page.dart';
 import 'package:kwik/pages/product_details_page/product_details_page.dart';
@@ -136,6 +137,27 @@ final GoRouter router = GoRouter(
           categoryrId: categoryrId,
           selectedsubcategory:
               selectedsubcategory, // Explicitly assign as a named argument
+        );
+      },
+    ),
+    GoRoute(
+      path: '/brand',
+      builder: (context, state) {
+        final brandid = state.uri.queryParameters['brandid'] ?? '';
+        final brandname = state.uri.queryParameters['brandname'] ?? '';
+        final branddes = state.uri.queryParameters['branddes'] ?? '';
+        final brandimageurl = state.uri.queryParameters['brandimageurl'] ?? '';
+        final websiteurl = state.uri.queryParameters['websiteurl'] ?? '';
+        final color = state.uri.queryParameters['color'] ??
+            '000000'; // Default to black if missing
+
+        return BrandPage(
+          brandid: brandid,
+          brandname: brandname,
+          branddes: branddes,
+          brandimageurl: brandimageurl,
+          websiteurl: websiteurl,
+          color: color, // Pass as string
         );
       },
     ),

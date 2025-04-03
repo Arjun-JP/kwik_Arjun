@@ -21,18 +21,22 @@ class BrandProductRepository {
       print(response.statusCode);
       print("Response body: ${response.body}");
 
-      final Map<String, dynamic> jsonData = jsonDecode(response.body);
-
-      if (jsonData.containsKey('data') && jsonData['data'] is List) {
-        print("inside");
-        final List<dynamic> dataList = jsonData['data'];
-        print("got data");
-
-        print(dataList.map((json) => ProductModel.fromJson(json)).toList());
-
-        return dataList.map((json) => ProductModel.fromJson(json)).toList();
+      Map<String, dynamic> bodydata = json.decode(response.body);
+      print("1111");
+      if (bodydata.containsKey("data") && bodydata["data"] is List) {
+        print("2222");
+        List<dynamic> data = bodydata["data"];
+        print("33333");
+        try {
+          print(data.first);
+          List<ProductModel> asd =
+              data.map((json) => ProductModel.fromJson(json)).toList();
+        } catch (e) {
+          print(e);
+        }
+        return data.map((json) => ProductModel.fromJson(json)).toList();
       } else {
-        throw Exception('Failed to fetch brand products');
+        return [];
       }
     } catch (e) {
       throw Exception('Error fetching brand products: $e');

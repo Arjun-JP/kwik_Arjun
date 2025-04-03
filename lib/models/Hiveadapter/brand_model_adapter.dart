@@ -1,104 +1,62 @@
 import 'package:hive/hive.dart';
-
-@HiveType(typeId: 10) // Ensure this typeId is unique in your app
-class Brand {
-  @HiveField(0)
-  final String id;
-
-  @HiveField(1)
-  final String brandName;
-
-  @HiveField(2)
-  final String brandImage;
-
-  @HiveField(3)
-  final String brandDescription;
-
-  @HiveField(4)
-  final String brandUrl;
-
-  @HiveField(5)
-  final String createdTime;
-
-  @HiveField(6)
-  final String color;
-
-  Brand({
-    required this.id,
-    required this.brandName,
-    required this.brandImage,
-    required this.brandDescription,
-    required this.brandUrl,
-    required this.createdTime,
-    required this.color,
-  });
-
-  // Factory method to create a Brand from JSON
-  factory Brand.fromJson(Map<String, dynamic> json) {
-    return Brand(
-      id: json['_id'] ?? '',
-      brandName: json['brand_name'] ?? '',
-      brandImage: json['brand_image'] ?? '',
-      brandDescription: json['brand_des'] ?? '',
-      brandUrl: json['brand_url'] ?? '',
-      createdTime: json['created_time'] ?? '',
-      color: json['color'] ?? '',
-    );
-  }
-
-  // Method to convert Brand instance to JSON
-  Map<String, dynamic> toJson() {
-    return {
-      '_id': id,
-      'brand_name': brandName,
-      'brand_image': brandImage,
-      'brand_des': brandDescription,
-      'brand_url': brandUrl,
-      'created_time': createdTime,
-      'color': color,
-    };
-  }
-
-  // Empty method to return a Brand with default values
-  static Brand empty() {
-    return Brand(
-      id: '',
-      brandName: '',
-      brandImage: '',
-      brandDescription: '',
-      brandUrl: '',
-      createdTime: DateTime.now().toString(),
-      color: '',
-    );
-  }
-}
+import 'package:kwik/models/brand_model.dart';
 
 class BrandAdapter extends TypeAdapter<Brand> {
   @override
-  final int typeId = 10;
+  final int typeId = 10; // Ensure this typeId is unique
 
   @override
   Brand read(BinaryReader reader) {
-    return Brand(
-      id: reader.readString(),
-      brandName: reader.readString(),
-      brandImage: reader.readString(),
-      brandDescription: reader.readString(),
-      brandUrl: reader.readString(),
-      createdTime: reader.readString(),
-      color: reader.readString(),
-    );
+    final numOfFields = reader.readByte();
+    final fields = <int, dynamic>{
+      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
+    };
+    try {
+      return Brand(
+        id: fields[0] as String,
+        brandName: fields[1] as String,
+        brandImage: fields[2] as String,
+        brandDescription: fields[3] as String,
+        brandUrl: fields[4] as String,
+        createdTime: fields[5] as String, // Read createdTime as String
+        color: fields[6] as String,
+      );
+    } catch (e) {
+      print("Error reading Brand from Hive: $e");
+      return Brand(
+          //Return a default brand object in case of error.
+          id: "",
+          brandName: "",
+          brandImage: "",
+          brandDescription: "",
+          brandUrl: "",
+          createdTime: "", // Default createdTime as String
+          color: "");
+    }
   }
 
   @override
   void write(BinaryWriter writer, Brand obj) {
-    writer.writeString(obj.id);
-    writer.writeString(obj.brandName);
-    writer.writeString(obj.brandImage);
-    writer.writeString(obj.brandDescription);
-    writer.writeString(obj.brandUrl);
-    writer.writeString(obj.createdTime);
-    writer.writeString(obj.color);
+    try {
+      writer
+        ..writeByte(7) // Number of fields
+        ..writeByte(0)
+        ..write(obj.id)
+        ..writeByte(1)
+        ..write(obj.brandName)
+        ..writeByte(2)
+        ..write(obj.brandImage)
+        ..writeByte(3)
+        ..write(obj.brandDescription)
+        ..writeByte(4)
+        ..write(obj.brandUrl)
+        ..writeByte(5)
+        ..write(obj.createdTime) // Write createdTime as String
+        ..writeByte(6)
+        ..write(obj.color);
+    } catch (e) {
+      print("Error writing Brand to Hive: $e");
+    }
   }
 
   @override

@@ -97,7 +97,7 @@ class _AllSubcategoryState extends State<AllSubcategory> {
                               ),
                               color: Color.fromARGB(255, 250, 250, 250),
                             ),
-                            height: double.infinity,
+                            height: MediaQuery.of(context).size.height,
                             child: SingleChildScrollView(
                               child: Column(
                                 spacing: 15,
@@ -125,7 +125,7 @@ class _AllSubcategoryState extends State<AllSubcategory> {
                             padding: const EdgeInsets.all(10),
                             color: const Color.fromARGB(255, 255, 255, 255),
                             child: StaggeredGrid.count(
-                              mainAxisSpacing: 10,
+                              mainAxisSpacing: 20,
                               crossAxisSpacing: 10,
                               crossAxisCount: 2,
                               children: List.generate(
@@ -135,29 +135,32 @@ class _AllSubcategoryState extends State<AllSubcategory> {
                                             subcat.id ==
                                             state.selectedSubCategory))
                                     .length,
-                                (index) => ProductItem(
-                                    product: state.products
-                                        .where((product) => product
-                                            .subCategoryRef
-                                            .any((subcat) =>
-                                                subcat.id ==
-                                                state.selectedSubCategory))
-                                        .toList()[index],
-                                    buttonBgColor: "FFFFFF",
-                                    mrpColor: "A19DA3",
-                                    offertextcolor: "000000",
-                                    productBgColor: "FFFFFF",
-                                    productnamecolor: "233D4D",
-                                    sellingPriceColor: "233D4D",
-                                    subcategoryRef:
-                                        widget.selectedsubcategory ??
-                                            state.products[index].subCategoryRef
-                                                .first.id,
-                                    unitTextcolor: "A19DA3",
-                                    unitbgcolor: "00FFFFFF",
-                                    buttontextcolor: "E23338",
-                                    offerbgcolor: "FFFA76",
-                                    context: context),
+                                (index) => SizedBox(
+                                  height: 278,
+                                  child: ProductItem(
+                                      product: state.products
+                                          .where((product) => product
+                                              .subCategoryRef
+                                              .any((subcat) =>
+                                                  subcat.id ==
+                                                  state.selectedSubCategory))
+                                          .toList()[index],
+                                      buttonBgColor: "FFFFFF",
+                                      mrpColor: "A19DA3",
+                                      offertextcolor: "000000",
+                                      productBgColor: "FFFFFF",
+                                      productnamecolor: "233D4D",
+                                      sellingPriceColor: "233D4D",
+                                      subcategoryRef: widget
+                                              .selectedsubcategory ??
+                                          state.products[index].subCategoryRef
+                                              .first.id,
+                                      unitTextcolor: "A19DA3",
+                                      unitbgcolor: "00FFFFFF",
+                                      buttontextcolor: "E23338",
+                                      offerbgcolor: "FFFA76",
+                                      context: context),
+                                ),
                               ),
                             ),
                           ),

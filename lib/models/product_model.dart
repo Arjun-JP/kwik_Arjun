@@ -70,58 +70,134 @@ class ProductModel extends HiveObject {
   });
 
   factory ProductModel.fromJson(Map<String, dynamic> json) {
-    return ProductModel(
-      id: json['_id'] ?? '',
-      productName: json['product_name'] ?? '',
-      productDescription: json['product_des'] ?? '',
-      productImages: List<String>.from(json['product_image'] ?? []),
-      brandId:
-          json['Brand'] != null ? Brand.fromJson(json['Brand']) : Brand.empty(),
-      categoryRef: json['category_ref'] != null
-          ? Category.fromJson(json['category_ref'])
-          : Category.empty(),
-      subCategoryRef: json['sub_category_ref'] != null
-          ? (json['sub_category_ref'] as List<dynamic>)
-              .map((e) => SubCategoryModel.fromJson(e as Map<String, dynamic>))
-              .toList()
-          : [],
-      variations: (json['variations'] as List<dynamic>?)
-              ?.map((e) => VariationModel.fromJson(e))
-              .toList() ??
-          [],
-      warehouseRefs: (json['warehouse_ref'] as List<dynamic>?)
-              ?.map((e) => WarehouseModel.fromJson(e))
-              .toList() ??
-          [],
-      sku: json['sku'] ?? '',
-      productVideo: json['product_video'] ?? '',
-      reviews: (json['review'] as List<dynamic>?)
-              ?.map((e) => ReviewModel.fromJson(e))
-              .toList() ??
-          [],
-      draft: json['draft'] ?? false,
-      createdTime: json['created_time'] ?? '',
-    );
+    try {
+      return ProductModel(
+        id: json['_id'] ?? '',
+        productName: json['product_name'] ?? '',
+        productDescription: json['product_des'] ?? '',
+        productImages: List<String>.from(json['product_image'] ?? []),
+        brandId: _parseBrand(json['Brand']),
+        categoryRef: _parseCategory(json['category_ref']),
+        subCategoryRef: _parseSubCategories(json['sub_category_ref']),
+        variations: _parseVariations(json['variations']),
+        warehouseRefs: _parseWarehouses(json['warehouse_ref']),
+        sku: json['sku'] ?? '',
+        productVideo: json['product_video'] ?? '',
+        reviews: _parseReviews(json['review']),
+        draft: json['draft'] ?? false,
+        createdTime: json['created_time'] ?? '',
+      );
+    } catch (e) {
+      print('Error parsing ProductModel: $e');
+      return ProductModel(
+        id: '',
+        productName: '',
+        productDescription: '',
+        productImages: [],
+        brandId: Brand.empty(),
+        categoryRef: Category.empty(),
+        subCategoryRef: [],
+        variations: [],
+        warehouseRefs: [],
+        sku: '',
+        productVideo: '',
+        reviews: [],
+        draft: false,
+        createdTime: '',
+      );
+    }
   }
 
   Map<String, dynamic> toJson() {
-    return {
-      '_id': id,
-      'product_name': productName,
-      'product_des': productDescription,
-      'product_image': productImages,
-      'Brand': brandId.toJson(),
-      'category_ref': categoryRef.toJson(),
-      'sub_category_ref': subCategoryRef
-          .map((e) => e.toJson())
-          .toList(), // Updated to handle list
-      'variations': variations.map((e) => e.toJson()).toList(),
-      'warehouse_ref': warehouseRefs.map((e) => e.toJson()).toList(),
-      'sku': sku,
-      'product_video': productVideo,
-      'review': reviews.map((e) => e.toJson()).toList(),
-      'draft': draft,
-      'created_time': createdTime,
-    };
+    try {
+      return {
+        '_id': id,
+        'product_name': productName,
+        'product_des': productDescription,
+        'product_image': productImages,
+        'Brand': brandId.toJson(),
+        'category_ref': categoryRef.toJson(),
+        'sub_category_ref': subCategoryRef.map((e) => e.toJson()).toList(),
+        'variations': variations.map((e) => e.toJson()).toList(),
+        'warehouse_ref': warehouseRefs.map((e) => e.toJson()).toList(),
+        'sku': sku,
+        'product_video': productVideo,
+        'review': reviews.map((e) => e.toJson()).toList(),
+        'draft': draft,
+        'created_time': createdTime,
+      };
+    } catch (e) {
+      print('Error converting ProductModel to JSON: $e');
+      return {};
+    }
+  }
+
+  static Brand _parseBrand(dynamic brandJson) {
+    try {
+      return brandJson != null ? Brand.fromJson(brandJson) : Brand.empty();
+    } catch (e) {
+      print('Error parsing Brand: $e');
+      return Brand.empty();
+    }
+  }
+
+  static Category _parseCategory(dynamic categoryJson) {
+    try {
+      return categoryJson != null
+          ? Category.fromJson(categoryJson)
+          : Category.empty();
+    } catch (e) {
+      print('Error parsing Category: $e');
+      return Category.empty();
+    }
+  }
+
+  static List<SubCategoryModel> _parseSubCategories(dynamic subCategoryJson) {
+    try {
+      return subCategoryJson != null
+          ? (subCategoryJson as List<dynamic>)
+              .map((e) => SubCategoryModel.fromJson(e as Map<String, dynamic>))
+              .toList()
+          : [];
+    } catch (e) {
+      print('Error parsing SubCategory: $e');
+      return [];
+    }
+  }
+
+  static List<VariationModel> _parseVariations(dynamic variationsJson) {
+    try {
+      return (variationsJson as List<dynamic>?)
+              ?.map((e) => VariationModel.fromJson(e))
+              .toList() ??
+          [];
+    } catch (e) {
+      print('Error parsing Variations: $e');
+      return [];
+    }
+  }
+
+  static List<WarehouseModel> _parseWarehouses(dynamic warehousesJson) {
+    try {
+      return (warehousesJson as List<dynamic>?)
+              ?.map((e) => WarehouseModel.fromJson(e))
+              .toList() ??
+          [];
+    } catch (e) {
+      print('Error parsing Warehouses: $e');
+      return [];
+    }
+  }
+
+  static List<ReviewModel> _parseReviews(dynamic reviewsJson) {
+    try {
+      return (reviewsJson as List<dynamic>?)
+              ?.map((e) => ReviewModel.fromJson(e))
+              .toList() ??
+          [];
+    } catch (e) {
+      print('Error parsing Reviews: $e');
+      return [];
+    }
   }
 }

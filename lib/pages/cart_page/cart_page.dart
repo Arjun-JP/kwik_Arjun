@@ -71,7 +71,7 @@ class _CartPageState extends State<CartPage> {
                   BlocBuilder<CartBloc, CartState>(builder: (context, state) {
                     return state is CartUpdated
                         ? SizedBox(
-                            height: state.cartItems.length * 111,
+                            height: state.cartItems.length * 92.4,
                             child: ListView.separated(
                               physics: const NeverScrollableScrollPhysics(),
                               itemBuilder: (context, index) => cartproductItem(
@@ -211,14 +211,14 @@ class _CartPageState extends State<CartPage> {
       child: Column(
         children: [
           Row(
-            spacing: 15,
+            spacing: 12,
             children: [
               Expanded(
                 flex: 3,
                 child: Image.network(
                     width: 50,
-                    height: 80,
-                    fit: BoxFit.fill,
+                    height: 50,
+                    fit: BoxFit.contain,
                     cartproduct.productRef.productImages.first),
               ),
               Expanded(
@@ -938,11 +938,11 @@ class _CartPageState extends State<CartPage> {
             children: [
               Text(
                 "To Pay",
-                style: theme.textTheme.bodyMedium!.copyWith(fontSize: 14),
+                style: theme.textTheme.bodyMedium!.copyWith(fontSize: 12),
               ),
               Text(
                 "₹628.0",
-                style: theme.textTheme.titleLarge!.copyWith(fontSize: 18),
+                style: theme.textTheme.titleLarge!.copyWith(fontSize: 16),
               ),
             ],
           ),
@@ -988,14 +988,14 @@ class _CartPageState extends State<CartPage> {
                       textAlign: TextAlign.center,
                       style: theme.textTheme.bodyMedium!.copyWith(
                           fontWeight: FontWeight.w700,
-                          fontSize: 16,
+                          fontSize: 13,
                           color: Colors.white),
                     ),
                     Text(
                       "(On Delivery)",
                       textAlign: TextAlign.center,
                       style: theme.textTheme.bodyMedium!
-                          .copyWith(fontSize: 12, color: Colors.white),
+                          .copyWith(fontSize: 10, color: Colors.white),
                     ),
                   ],
                 ), // Button text

@@ -19,7 +19,6 @@ class CartBloc extends Bloc<CartEvent, CartState> {
   }
 
   Future<void> _onAddToCart(AddToCart event, Emitter<CartState> emit) async {
-    emit(CartLoading());
     try {
       final message = await cartRepository.addToCart(
         userId: event.userId,
@@ -28,19 +27,38 @@ class CartBloc extends Bloc<CartEvent, CartState> {
         pincode: event.pincode,
       );
 
-      List<CartProduct> cartItems =
-          (cartBox.get('cart', defaultValue: []) as List)
-              .map((e) => CartProduct.fromJson(Map<String, dynamic>.from(e)))
-              .toList();
+      if (state is CartUpdated) {
+        final currentState = state as CartUpdated;
+        List<CartProduct> updatedCartItems = List.from(currentState.cartItems);
 
-      cartItems.add(event.cartProduct);
+        int existingIndex = updatedCartItems.indexWhere((item) =>
+            item.productRef.id == event.productRef &&
+            item.variant.id == event.variantId);
 
-      await cartBox.put('cart', cartItems.map((e) => e.toJson()).toList());
+        if (existingIndex == -1) {
+          // Add new product only if it doesn't exist
+          updatedCartItems.add(event.cartProduct);
+        }
 
-      emit(CartUpdated(
-        message: message,
-        cartItems: cartItems,
-      ));
+        // Save to local storage
+        await cartBox.put(
+            'cart', updatedCartItems.map((e) => e.toJson()).toList());
+
+        // Emit updated state
+        emit(CartUpdated(
+          message: message,
+          cartItems: updatedCartItems,
+        ));
+      } else {
+        // If cart is empty, initialize it
+        List<CartProduct> newCart = [event.cartProduct];
+        await cartBox.put('cart', newCart.map((e) => e.toJson()).toList());
+
+        emit(CartUpdated(
+          message: message,
+          cartItems: newCart,
+        ));
+      }
     } catch (e) {
       emit(CartError(message: e.toString()));
     }
@@ -125,13 +143,14 @@ class CartBloc extends Bloc<CartEvent, CartState> {
   Future<void> _onSyncCartWithServer(
       SyncCartWithServer event, Emitter<CartState> emit) async {
     emit(CartLoading());
+    print("loading");
 
     try {
       List<Map<String, dynamic>> serverCartData =
           await cartRepository.getUserCart(userId: event.userId);
 
       List<CartProduct> serverCartItems = [];
-      print(serverCartData);
+      print(serverCartItems);
       try {
         serverCartItems =
             serverCartData.map((e) => CartProduct.fromJson(e)).toList();
@@ -159,14 +178,13 @@ class CartBloc extends Bloc<CartEvent, CartState> {
                   localItem.productRef.id == serverItem.productRef.id &&
                   localItem.variant.id == serverItem.variant.id &&
                   localItem.quantity == serverItem.quantity));
-      print("object");
+
       // If different, update local storage
       if (isDifferent) {
-        print("object  in ");
         await cartBox.put(
             'cart', serverCartItems.map((e) => e.toJson()).toList());
       }
-      print("object  in ${serverCartItems.length}");
+
       // Always emit CartUpdated, even if local and server carts are the same
       emit(CartUpdated(
         message: "Cart synced successfully",

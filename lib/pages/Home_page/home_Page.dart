@@ -85,7 +85,6 @@ class _HomePageState extends State<HomePage> {
     context.read<HomeUiBloc>().add(FetchUiDataEvent());
     BlocProvider.of<CategoryBloc13>(context).add(ClearCacheEventCM13());
     BlocProvider.of<CategoryBlocModel16>(context).add(ClearCacheCM16());
-
     BlocProvider.of<CategoryBloc18>(context).add(ClearCacheEventCM18());
     BlocProvider.of<CategoryBloc19>(context).add(ClearCacheEventCM19());
     BlocProvider.of<SubcategoryProductBloc>(context).add(ClearSimilarCache());
@@ -105,6 +104,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    print("Rebuilding ");
     ThemeData theme = Theme.of(context);
     return NotificationListener<ScrollNotification>(
       onNotification: (scrollNotification) {
@@ -664,7 +664,7 @@ class _HomePageState extends State<HomePage> {
                               Padding(
                                 padding:
                                     const EdgeInsets.only(right: 12.0, top: 12),
-                                child: GestureDetector(
+                                child: InkWell(
                                   onTap: () => context.push('/profile'),
                                   child: CircleAvatar(
                                     radius: 20,
@@ -746,9 +746,9 @@ class SearchBarDelegate extends SliverPersistentHeaderDelegate {
                   height: 20,
                   color: Colors.grey,
                 ),
-                SizedBox(width: 10),
+                const SizedBox(width: 10),
                 AnimatedSwitcher(
-                  duration: Duration(milliseconds: 500),
+                  duration: const Duration(milliseconds: 500),
                   child: Text(
                     'Search "$searchText"',
                     key: ValueKey(searchText),

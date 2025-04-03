@@ -82,7 +82,7 @@ class SupersaverModel2 extends StatelessWidget {
           const SizedBox(height: 10),
           const SizedBox(height: 10),
           SizedBox(
-            height: 275,
+            height: 278,
             width: MediaQuery.of(context).size.width,
             child: ListView.builder(
               scrollDirection: Axis.horizontal,

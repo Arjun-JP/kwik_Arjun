@@ -7,10 +7,8 @@ import 'package:kwik/bloc/home_page_bloc/category_model_12_bloc/category_model_1
 import 'package:kwik/repositories/category_model_12_repo.dart';
 import 'package:kwik/widgets/produc_model_1.dart';
 import 'package:kwik/widgets/shimmer/product_model1_list.dart';
-
 import '../../../bloc/home_page_bloc/category_model_12_bloc/category_model_12_bloc.dart';
 import '../../../constants/colors.dart';
-import '../../../repositories/category_model9_repo.dart';
 
 class CategoryModel12 extends StatelessWidget {
   final String categoryId;

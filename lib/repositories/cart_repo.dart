@@ -17,7 +17,6 @@ class CartRepository {
     required String variant,
     required String pincode,
   }) async {
-    print("Api called");
     final url = Uri.parse("$baseUrl/addtocart");
 
     final Map<String, dynamic> body = {
@@ -26,7 +25,7 @@ class CartRepository {
       "variant": variant,
       "pincode": pincode,
     };
-    print("Api called$body");
+
     try {
       final response = await http.post(
         url,
@@ -96,7 +95,8 @@ class CartRepository {
           "pincode": pincode,
         }),
       );
-
+      print(response.statusCode);
+      print(response.body);
       if (response.statusCode == 201) {
         return "Quantity decreased";
       } else {
@@ -112,9 +112,9 @@ class CartRepository {
       {required String userId}) async {
     final url = Uri.parse("$baseUrl/getUserCart/$userId");
     try {
-      print("Fetching cart for user: $userId");
       final response = await http.get(url, headers: headers);
-
+      print(response.statusCode);
+      print(response.body);
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
 

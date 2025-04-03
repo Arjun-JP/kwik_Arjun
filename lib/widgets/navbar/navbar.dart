@@ -3,6 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:kwik/bloc/Cart_bloc/cart_bloc.dart';
+import 'package:kwik/bloc/Cart_bloc/cart_state.dart';
 import 'package:kwik/bloc/navbar_bloc/navbar_bloc.dart';
 import 'package:kwik/bloc/navbar_bloc/navbar_event.dart';
 import 'package:kwik/bloc/navbar_bloc/navbar_state.dart';
@@ -25,7 +27,7 @@ class Navbar extends StatelessWidget {
               ),
             ),
           ),
-          height: 94,
+          height: 80,
           width: MediaQuery.of(context).size.width,
           child: Padding(
             padding: const EdgeInsets.only(top: 10, right: 6, left: 6),
@@ -41,7 +43,8 @@ class Navbar extends StatelessWidget {
                       "Home",
                       "assets/images/home_selected.svg",
                       "assets/images/home_unselected.svg",
-                      "/home"),
+                      "/home",
+                      null),
                 ),
                 Expanded(
                   flex: 1,
@@ -51,17 +54,24 @@ class Navbar extends StatelessWidget {
                       "Categories",
                       "assets/images/category_selected.svg",
                       "assets/images/category_unselected.svg",
-                      "/category"),
+                      "/category",
+                      null),
                 ),
                 Expanded(
                   flex: 1,
-                  child: _buildNavItem(
-                      context,
-                      3,
-                      "Cart",
-                      "assets/images/cart_selected.svg",
-                      "assets/images/cart_unselected.svg",
-                      "/cart"),
+                  child: BlocBuilder<CartBloc, CartState>(
+                      builder: (context, state) {
+                    return _buildNavItem(
+                        context,
+                        3,
+                        "Cart",
+                        "assets/images/cart_selected.svg",
+                        "assets/images/cart_unselected.svg",
+                        "/cart",
+                        state is CartUpdated
+                            ? state.cartItems.length.toString()
+                            : null);
+                  }),
                 ),
                 Expanded(
                   flex: 1,
@@ -71,19 +81,9 @@ class Navbar extends StatelessWidget {
                       "Offers",
                       "assets/images/supersaver.png",
                       "assets/images/supersaver.png",
-                      "/offer"),
+                      "/offer",
+                      null),
                 ),
-
-                // Expanded(
-                //   flex: 1,
-                //   child: _buildNavItem(
-                //       context,
-                //       4,
-                //       "Profile",
-                //       "assets/images/profile_unselected.svg",
-                //       "assets/images/profile_unselected.svg",
-                //       "/profile"),
-                // ),
               ],
             ),
           ),
@@ -92,104 +92,108 @@ class Navbar extends StatelessWidget {
     );
   }
 
-  Widget _buildNavItem(BuildContext context, int index, String label,
-      String assetPathselected, String assetpathunselected, String route) {
+  Widget _buildNavItem(
+    BuildContext context,
+    int index,
+    String label,
+    String assetPathSelected,
+    String assetPathUnselected,
+    String route,
+    String? cartProductCount,
+  ) {
+    ThemeData theme = Theme.of(context);
+
     return InkWell(
       splashColor: Colors.transparent,
       focusColor: Colors.transparent,
       hoverColor: Colors.transparent,
       highlightColor: Colors.transparent,
-      // overlayColor: Colors.transparent,
-
       onTap: () {
         context.go(route);
         context.read<NavbarBloc>().add(UpdateNavBarIndex(index));
         HapticFeedback.mediumImpact();
       },
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          index != 2
-              ? SvgPicture.asset(
-                  index == context.watch<NavbarBloc>().state.selectedIndex
-                      ? assetPathselected
-                      : assetpathunselected,
-                  fit: BoxFit.contain,
-                  width: 26,
-                  height: 26,
-                )
-              : Container(
-                  decoration: const BoxDecoration(),
-                  width: 60,
-                  height: 60,
-                  child: Image.asset("assets/images/supersaver.svg"),
-                ),
-          const SizedBox(height: 5),
-          index != 2
-              ? Text(
-                  label,
-                  style: TextStyle(
-                    color:
-                        index == context.watch<NavbarBloc>().state.selectedIndex
-                            ? AppColors.buttonColorOrange
-                            : AppColors.textColorblack,
-                    fontSize: 14,
-                    fontWeight:
-                        index == context.watch<NavbarBloc>().state.selectedIndex
-                            ? FontWeight.bold
-                            : FontWeight.normal,
+          Align(
+            alignment: Alignment.center,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                index != 2
+                    ? Stack(
+                        alignment: Alignment.center, // Keeps the icon centered
+                        clipBehavior:
+                            Clip.none, // Prevents clipping of the badge
+                        children: [
+                          SvgPicture.asset(
+                            index ==
+                                    context
+                                        .watch<NavbarBloc>()
+                                        .state
+                                        .selectedIndex
+                                ? assetPathSelected
+                                : assetPathUnselected,
+                            fit: BoxFit.contain,
+                            width: 26,
+                            height: 26,
+                          ),
+                          if (index == 3 &&
+                              cartProductCount != null &&
+                              cartProductCount.isNotEmpty)
+                            Positioned(
+                              top:
+                                  -5, // Move the badge exactly on top of the icon
+                              right: -18, // Center it horizontally
+                              left: 0, // Ensures it's centered above the icon
+                              child: Container(
+                                width: 20,
+                                height: 20,
+                                alignment: Alignment.center,
+                                decoration: const BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: Colors.red,
+                                ),
+                                child: Text(
+                                  cartProductCount,
+                                  style: theme.textTheme.bodyMedium!.copyWith(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w900,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                            ),
+                        ],
+                      )
+                    : Container(
+                        decoration: const BoxDecoration(),
+                        width: 60,
+                        height: 60,
+                        child: Image.asset("assets/images/supersaver.svg"),
+                      ),
+                const SizedBox(height: 5),
+                if (index != 2)
+                  Text(
+                    label,
+                    style: TextStyle(
+                      color: index ==
+                              context.watch<NavbarBloc>().state.selectedIndex
+                          ? AppColors.buttonColorOrange
+                          : AppColors.textColorblack,
+                      fontSize: 14,
+                      fontWeight: index ==
+                              context.watch<NavbarBloc>().state.selectedIndex
+                          ? FontWeight.bold
+                          : FontWeight.normal,
+                    ),
                   ),
-                )
-              : SizedBox(),
-        ],
-      ),
-    );
-  }
-}
-
-Widget _buildCenterNavItem(BuildContext context, int index, String label,
-    String assetPathselected, String assetpathunselected, String route) {
-  return InkWell(
-    splashColor: Colors.transparent,
-    focusColor: Colors.transparent,
-    hoverColor: Colors.transparent,
-    highlightColor: Colors.transparent,
-    // overlayColor: Colors.transparent,
-
-    onTap: () {
-      context.go(route);
-      context.read<NavbarBloc>().add(UpdateNavBarIndex(index));
-    },
-    child: Expanded(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          SvgPicture.asset(
-            index == context.watch<NavbarBloc>().state.selectedIndex
-                ? assetPathselected
-                : assetpathunselected,
-            fit: BoxFit.contain,
-            width: 26,
-            height: 26,
-          ),
-          const SizedBox(height: 5),
-          Text(
-            label,
-            style: TextStyle(
-              color: index == context.watch<NavbarBloc>().state.selectedIndex
-                  ? AppColors.buttonColorOrange
-                  : AppColors.textColorblack,
-              fontSize: 14,
-              fontWeight:
-                  index == context.watch<NavbarBloc>().state.selectedIndex
-                      ? FontWeight.bold
-                      : FontWeight.normal,
+              ],
             ),
           ),
         ],
       ),
-    ),
-  );
+    );
+  }
 }
