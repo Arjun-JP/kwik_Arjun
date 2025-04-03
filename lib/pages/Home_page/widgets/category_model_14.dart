@@ -167,7 +167,7 @@ class CategoryModel14 extends StatelessWidget {
                                               : 3, (index) {
                                         return StaggeredGridTile.extent(
                                           crossAxisCellCount: 1,
-                                          mainAxisExtent: 276,
+                                          mainAxisExtent: 278,
                                           child: ProductItem(
                                             subcategoryRef:
                                                 state.selectedCategoryId,

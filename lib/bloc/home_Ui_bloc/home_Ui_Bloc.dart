@@ -31,7 +31,6 @@ class HomeUiBloc extends Bloc<HomeUiEvent, HomeUiState> {
     "snacks"
   ];
   var random = Random();
-  int _currentIndex = 0;
 
   static const String _cacheKey = 'ui_cache';
 
@@ -70,34 +69,12 @@ class HomeUiBloc extends Bloc<HomeUiEvent, HomeUiState> {
     }
   }
 
-  // void _startSearchTermUpdate() {
-  //   _timer?.cancel();
-  //   _timer = Timer.periodic(Duration(seconds: 2), (timer) {
-  //     _currentIndex = (_currentIndex + 1) % searchSuggestions.length;
-  //     add(UpdateSearchTermEvent(searchSuggestions[_currentIndex]));
-  //   });
-  // }
-
-  // void _onUpdateSearchTerm(
-  //     UpdateSearchTermEvent event, Emitter<HomeUiState> emit) {
-  //   if (state is UiLoaded) {
-  //     final currentState = state as UiLoaded;
-  //     emit(currentState.copyWith(searchterm: event.searchTerm));
-  //   }
-  // }
-
   Future<void> _onClearCache(
       ClearUiCacheEvent event, Emitter<HomeUiState> emit) async {
     var box = await Hive.openBox('ui_cache_box');
     await box.delete(_cacheKey);
     emit(UiInitial());
   }
-
-  // @override
-  // Future<void> close() {
-  //   _timer?.cancel();
-  //   return super.close();
-  // }
 
   Future<void> _onUpdateSearchTerm(
       UpdateSearchTermEvent event, Emitter<HomeUiState> emit) async {

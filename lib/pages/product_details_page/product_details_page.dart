@@ -20,10 +20,8 @@ import 'package:kwik/models/brand_model.dart';
 import 'package:kwik/models/cart_model.dart';
 import 'package:kwik/models/product_model.dart';
 import 'package:kwik/models/variation_model.dart';
-import 'package:kwik/pages/brand_page/brand_page.dart';
 import 'package:kwik/repositories/recommended_product_repo.dart';
 import 'package:kwik/repositories/sub_category_product_repository.dart';
-
 import 'package:kwik/widgets/produc_model_1.dart';
 
 class ProductDetailsPage extends StatefulWidget {
@@ -90,7 +88,9 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
         ),
         body: Column(
           children: [
-            Expanded(
+            SizedBox(
+              height: MediaQuery.of(context).size.height * .78,
+              width: double.infinity,
               child: SingleChildScrollView(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -127,7 +127,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                       } else if (state is SubcategoryProductError) {
                         return Center(child: Text(state.message));
                       } else {
-                        return const Center(child: Text("No products found"));
+                        return const Center(child: Text(""));
                       }
                     }),
                     BlocBuilder<RecommendedProductsBloc,
@@ -138,9 +138,9 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                         return productsYouMightAlsoLike(
                             theme: theme, productlist: state.products);
                       } else if (state is RecommendedProductError) {
-                        return const Center(child: Text("No data"));
+                        return const Center(child: Text(""));
                       } else {
-                        return const Center(child: Text("No products found"));
+                        return const Center(child: Text(""));
                       }
                     }),
                   ],
@@ -518,7 +518,8 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
       required VariationModel selecedvariation,
       required ProductModel product}) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+      height: MediaQuery.of(context).size.height * .1,
+      padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 8),
       decoration: const BoxDecoration(
         color: AppColors.kwhiteColor,
         border: Border(
@@ -843,11 +844,12 @@ Widget samebrandproducts(
   return InkWell(
     onTap: () {
       HapticFeedback.mediumImpact();
-      Navigator.of(ctx).push(MaterialPageRoute(
-        builder: (context) => BrandPage(
-          brandid: brand.id,
-        ),
-      ));
+      GoRouter.of(ctx).push('/brand?brandid=${Uri.encodeComponent(brand.id)}'
+          '&brandname=${Uri.encodeComponent(brand.brandName)}'
+          '&branddes=${Uri.encodeComponent(brand.brandDescription)}'
+          '&brandimageurl=${Uri.encodeComponent(brand.brandImage)}'
+          '&websiteurl=${Uri.encodeComponent(brand.brandUrl)}'
+          '&color=${Uri.encodeComponent(brand.color)}');
     },
     child: Container(
       color: Colors.white,
@@ -880,10 +882,10 @@ Widget samebrandproducts(
             ],
           ),
           const Spacer(),
-          Icon(
+          const Icon(
             Icons.keyboard_arrow_right_rounded,
             size: 30,
-            color: parseColor(brand.color),
+            // color: parseColor(brand.color),
           )
         ],
       ),

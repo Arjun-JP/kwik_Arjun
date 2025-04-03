@@ -160,11 +160,13 @@ class CategoryModel3 extends StatelessWidget {
       required ThemeData theme,
       required String imageurl}) {
     return Column(
-      mainAxisSize: MainAxisSize.max,
+      mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.center,
+      spacing: 3,
       children: [
         Container(
-          margin: const EdgeInsets.all(10),
+          margin: const EdgeInsets.symmetric(horizontal: 10),
           decoration: BoxDecoration(
               color: lightenColor(parseColor(bgcolor), .9),
               borderRadius: BorderRadius.circular(8)),
@@ -179,7 +181,7 @@ class CategoryModel3 extends StatelessWidget {
                   width: 100,
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(8),
-                      color: lightenColor(parseColor(bgcolor), .9),
+                      color: lightenColor(parseColor("bgcolor"), .9),
                       image: DecorationImage(
                           image: NetworkImage(imageurl), fit: BoxFit.contain)),
                 ),
@@ -206,6 +208,7 @@ Widget subcategoryItem(
   return Column(
     mainAxisSize: MainAxisSize.max,
     crossAxisAlignment: CrossAxisAlignment.center,
+    spacing: 3,
     children: [
       Container(
         height: 80,
@@ -216,12 +219,15 @@ Widget subcategoryItem(
             image: DecorationImage(
                 image: NetworkImage(imageurl), fit: BoxFit.contain)),
       ),
-      Text(
-        name,
-        textAlign: TextAlign.center,
-        maxLines: 2,
-        style: theme.textTheme.bodyMedium!.copyWith(
-            fontWeight: FontWeight.w600, color: parseColor(textcolor)),
+      SizedBox(
+        width: 80,
+        child: Text(
+          name,
+          textAlign: TextAlign.center,
+          maxLines: 2,
+          style: theme.textTheme.bodyMedium!.copyWith(
+              fontWeight: FontWeight.w600, color: parseColor(textcolor)),
+        ),
       )
     ],
   );

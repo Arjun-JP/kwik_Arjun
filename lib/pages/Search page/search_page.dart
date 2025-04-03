@@ -7,6 +7,7 @@ import 'package:kwik/bloc/Search_bloc/Search_bloc.dart';
 import 'package:kwik/bloc/Search_bloc/search_event.dart';
 import 'package:kwik/bloc/Search_bloc/search_state.dart';
 import 'package:kwik/constants/colors.dart';
+import 'package:kwik/models/product_model.dart';
 import 'package:kwik/widgets/produc_model_1.dart';
 
 class SearchPage extends StatefulWidget {
@@ -17,12 +18,16 @@ class SearchPage extends StatefulWidget {
 }
 
 class _SearchPageState extends State<SearchPage> {
-  final TextEditingController _searchController = TextEditingController();
-
   @override
   void initState() {
     super.initState();
     context.read<SearchBloc>().add(LoadInitialProducts());
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
   }
 
   void _onSearch() {
@@ -46,164 +51,279 @@ class _SearchPageState extends State<SearchPage> {
     return [];
   }
 
+  final TextEditingController _searchController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     ThemeData theme = Theme.of(context);
     return Scaffold(
       backgroundColor: Colors.white,
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(
-                height: 45,
-                child: TypeAheadField<String>(
-                  builder: (context, controller, focusNode) {
-                    return TextField(
-                      controller: controller,
-                      focusNode: focusNode,
-                      onSubmitted: (_) => _onSearch(),
-                      decoration: InputDecoration(
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: const BorderSide(
-                              color: AppColors.dotColorUnSelected),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        hintText: "Search for \"Iphone\"",
-                        filled: true,
-                        fillColor: AppColors.backgroundColorWhite,
-                        prefixIcon: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: InkWell(
-                            onTap: () => context.pop(),
-                            child: const Icon(
-                              Icons.arrow_back_ios_new_rounded,
-                              size: 20,
-                            ),
-                          ),
-                        ),
-                      ),
-                    );
-                  },
-                  suggestionsCallback: searchProducts,
-                  itemBuilder: (context, suggestion) {
-                    return ListTile(title: Text(suggestion));
-                  },
-                  onSelected: (suggestion) {
-                    _searchController.text = suggestion;
-                    _onSearch();
-                  },
-                ),
-              ),
-              BlocBuilder<SearchBloc, SearchState>(
-                builder: (context, state) {
-                  if (state is ProductLoading) {
-                    return const Center(child: CircularProgressIndicator());
-                  } else if (state is ProductLoaded) {
-                    return Expanded(
-                      child: SingleChildScrollView(
-                        physics: const BouncingScrollPhysics(),
-                        child: Column(
-                          spacing: 10,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const SizedBox(height: 5),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  "Recent search",
-                                  style: theme.textTheme.bodyMedium!.copyWith(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w700),
+      body: GestureDetector(
+        onTap: () {
+          FocusScope.of(context).unfocus();
+        },
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(
+                  height: 45,
+                  child: BlocBuilder<SearchBloc, SearchState>(
+                      builder: (context, state) {
+                    if (state is ProductLoading) {
+                      return const Center(child: CircularProgressIndicator());
+                    } else if (state is ProductLoaded) {
+                      return TypeAheadField<ProductModel>(
+                        // Change to ProductModel type
+                        builder: (context, controller, focusNode) {
+                          return TextField(
+                            controller: controller,
+                            focusNode: focusNode,
+                            onSubmitted: (_) => _onSearch(),
+                            decoration: InputDecoration(
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10),
+                                borderSide: const BorderSide(
+                                  width: 1,
+                                  color: AppColors.dotColorUnSelected,
                                 ),
-                                Text(
-                                  "Clear",
-                                  style: theme.textTheme.bodyMedium!.copyWith(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w500),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: const BorderSide(
+                                  width: .5,
+                                  color: AppColors.dotColorUnSelected,
                                 ),
-                              ],
-                            ),
-                            Row(
-                              spacing: 10,
-                              children: List.generate(
-                                state.searchHistory.length,
-                                (index) => Container(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 20, vertical: 10),
-                                  decoration: BoxDecoration(
-                                      gradient: const LinearGradient(
-                                          begin: Alignment.bottomLeft,
-                                          end: Alignment.topRight,
-                                          stops: [
-                                            .1,
-                                            .3,
-                                            .5,
-                                            .7,
-                                            .9
-                                          ],
-                                          colors: [
-                                            Color.fromARGB(255, 249, 207, 143),
-                                            Color.fromARGB(255, 247, 221, 182),
-                                            Color.fromARGB(255, 248, 224, 188),
-                                            Color.fromARGB(255, 255, 240, 219),
-                                            Color.fromARGB(255, 253, 241, 224),
-                                          ]),
-                                      color: const Color.fromARGB(
-                                          255, 255, 239, 214),
-                                      borderRadius: BorderRadius.circular(10)),
-                                  child: Text(
-                                    state.searchHistory[index],
-                                    style: theme.textTheme.bodyMedium,
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              hintText:
+                                  "Find your essentials...", // Updated hintText
+                              filled: true,
+                              hintStyle: const TextStyle(
+                                color: Colors.blueGrey,
+                                fontSize: 12,
+                                fontWeight: FontWeight.w500,
+                              ),
+                              fillColor: AppColors.backgroundColorWhite,
+                              prefixIcon: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: InkWell(
+                                  onTap: () => context.pop(),
+                                  child: const Icon(
+                                    Icons.arrow_back_ios_new_rounded,
+                                    size: 18,
                                   ),
                                 ),
                               ),
                             ),
-                            const SizedBox(height: 10),
-                            Text(
-                              "Top picks for you",
-                              style: theme.textTheme.bodyMedium!.copyWith(
-                                  fontSize: 16, fontWeight: FontWeight.w700),
+                          );
+                        },
+                        suggestionsCallback: (pattern) async {
+                          return state.products; // Use async for searchProducts
+                        },
+                        itemBuilder: (context, product) {
+                          // Change to ProductModel
+                          return InkWell(
+                            onTap: () => context.push(
+                              '/productdetails',
+                              extra: {
+                                'product': product,
+                                'subcategoryref':
+                                    product.subCategoryRef.first.id,
+                              },
                             ),
-                            const SizedBox(height: 5),
-                            StaggeredGrid.count(
-                              crossAxisCount: 3,
-                              mainAxisSpacing: 30,
-                              crossAxisSpacing: 12,
-                              children: List.generate(
-                                state.products.length,
-                                (index) => ProductItem(
-                                  mrpColor: "A19DA3",
-                                  offertextcolor: "FFFFFF",
-                                  productBgColor: "FFFFFF",
-                                  sellingPriceColor: "233D4D",
-                                  buttontextcolor: "E23338",
-                                  unitTextcolor: "A19DA3",
-                                  product: state.products[index],
-                                  offerbgcolor: "E3520D",
-                                  buttonBgColor: "FFFFFF",
-                                  productnamecolor: "000000",
-                                  unitbgcolor: "FFFFFF",
-                                  subcategoryRef: state
-                                      .products[index].subCategoryRef.first.id,
-                                  context: context,
+                            child: ListTile(
+                              dense: true,
+
+                              leading: Image.network(
+                                product.productImages.first,
+                                width: 50,
+                                height: 50,
+                              ),
+                              trailing: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    "₹ ${product.variations.first.sellingPrice.toStringAsFixed(0)}",
+                                    style: theme.textTheme.bodyMedium!.copyWith(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w800),
+                                  ),
+                                  Text(
+                                    "₹ ${product.variations.first.mrp.toStringAsFixed(0)}",
+                                    style: theme.textTheme.bodyMedium!.copyWith(
+                                        fontSize: 12,
+                                        decoration: TextDecoration.lineThrough,
+                                        color: Colors.grey,
+                                        fontWeight: FontWeight.w800),
+                                  ),
+                                ],
+                              ),
+                              title: Text(
+                                product.productName,
+                                style: theme.textTheme.bodyMedium!.copyWith(
+                                    fontSize: 12, fontWeight: FontWeight.w800),
+                              ),
+                              subtitle: product.productDescription != null
+                                  ? Text(
+                                      product.productDescription,
+                                      //  - \₹${product.variations.first.sellingPrice}', // Assuming sellingPrice is available
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    )
+                                  : Text(
+                                      '\$${product.variations.first.sellingPrice}'), // Assuming sellingPrice is available
+                            ),
+                          );
+                        },
+                        onSelected: (product) {
+                          // Change to ProductModel
+                          _searchController.text =
+                              product.productName; // Use product.name
+                          _onSearch();
+                        },
+                        decorationBuilder: (context, child) => DecoratedBox(
+                          decoration: BoxDecoration(
+                            color: AppColors.backgroundColorWhite,
+                            border: Border.all(
+                              color: AppColors.dotColorUnSelected,
+                              width: 1,
+                            ),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: child,
+                        ),
+                        debounceDuration:
+                            const Duration(milliseconds: 300), // Add debounce
+                        hideOnSelect: true, // Add hideOnSelect if you want it
+                        hideOnUnfocus:
+                            true, // Add hideOnUnfocus if you want it.
+                      );
+                    } else {
+                      return SizedBox();
+                    }
+                  }),
+                ),
+                BlocBuilder<SearchBloc, SearchState>(
+                  builder: (context, state) {
+                    if (state is ProductLoading) {
+                      return const Center(child: CircularProgressIndicator());
+                    } else if (state is ProductLoaded) {
+                      return Expanded(
+                        child: SingleChildScrollView(
+                          physics: const BouncingScrollPhysics(),
+                          child: Column(
+                            spacing: 10,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const SizedBox(height: 5),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    "Recent search",
+                                    style: theme.textTheme.bodyMedium!.copyWith(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w700),
+                                  ),
+                                  Text(
+                                    "Clear",
+                                    style: theme.textTheme.bodyMedium!.copyWith(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w500),
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                spacing: 10,
+                                children: List.generate(
+                                  state.searchHistory.length,
+                                  (index) => Container(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 20, vertical: 10),
+                                    decoration: BoxDecoration(
+                                        gradient: const LinearGradient(
+                                            begin: Alignment.bottomLeft,
+                                            end: Alignment.topRight,
+                                            stops: [
+                                              .1,
+                                              .3,
+                                              .5,
+                                              .7,
+                                              .9
+                                            ],
+                                            colors: [
+                                              Color.fromARGB(
+                                                  255, 249, 207, 143),
+                                              Color.fromARGB(
+                                                  255, 247, 221, 182),
+                                              Color.fromARGB(
+                                                  255, 248, 224, 188),
+                                              Color.fromARGB(
+                                                  255, 255, 240, 219),
+                                              Color.fromARGB(
+                                                  255, 253, 241, 224),
+                                            ]),
+                                        color: const Color.fromARGB(
+                                            255, 255, 239, 214),
+                                        borderRadius:
+                                            BorderRadius.circular(10)),
+                                    child: Text(
+                                      state.searchHistory[index],
+                                      style: theme.textTheme.bodyMedium,
+                                    ),
+                                  ),
                                 ),
                               ),
-                            ),
-                          ],
+                              const SizedBox(height: 10),
+                              Text(
+                                "Top picks for you",
+                                style: theme.textTheme.bodyMedium!.copyWith(
+                                    fontSize: 16, fontWeight: FontWeight.w700),
+                              ),
+                              const SizedBox(height: 5),
+                              StaggeredGrid.count(
+                                crossAxisCount: 3,
+                                mainAxisSpacing: 30,
+                                crossAxisSpacing: 12,
+                                children: List.generate(
+                                  state.products.length,
+                                  (index) => SizedBox(
+                                    height: 278,
+                                    child: ProductItem(
+                                      mrpColor: "A19DA3",
+                                      offertextcolor: "FFFFFF",
+                                      productBgColor: "FFFFFF",
+                                      sellingPriceColor: "233D4D",
+                                      buttontextcolor: "E23338",
+                                      unitTextcolor: "A19DA3",
+                                      product: state.products[index],
+                                      offerbgcolor: "E3520D",
+                                      buttonBgColor: "FFFFFF",
+                                      productnamecolor: "000000",
+                                      unitbgcolor: "FFFFFF",
+                                      subcategoryRef: state.products[index]
+                                          .subCategoryRef.first.id,
+                                      context: context,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                    );
-                  } else if (state is ProductError) {
-                    return const Center(child: Text("Failed to load products"));
-                  }
-                  return Container();
-                },
-              ),
-            ],
+                      );
+                    } else if (state is ProductError) {
+                      return const Center(
+                          child: Text("Failed to load products"));
+                    }
+                    return Container();
+                  },
+                ),
+              ],
+            ),
           ),
         ),
       ),

@@ -171,10 +171,13 @@ class CategoryModel extends StatelessWidget {
           "/allsubcategorypage?categoryId=$categoryID&selectedsubcategory=$subcategoryID"),
       child: Column(
         mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
+        spacing: 3,
         children: [
+          const SizedBox(height: 10),
           Container(
-            margin: const EdgeInsets.all(10),
+            margin: const EdgeInsets.symmetric(horizontal: 10),
             decoration: BoxDecoration(
                 color: lightenColor(parseColor(bgcolor), .9),
                 borderRadius: BorderRadius.circular(8)),
@@ -224,6 +227,7 @@ Widget subcategoryItem(
     child: Column(
       mainAxisSize: MainAxisSize.max,
       crossAxisAlignment: CrossAxisAlignment.center,
+      spacing: 3,
       children: [
         Container(
           height: 80,
@@ -234,7 +238,6 @@ Widget subcategoryItem(
               image: DecorationImage(
                   image: NetworkImage(imageurl), fit: BoxFit.contain)),
         ),
-        const SizedBox(height: 8),
         Text(
           name,
           textAlign: TextAlign.center,

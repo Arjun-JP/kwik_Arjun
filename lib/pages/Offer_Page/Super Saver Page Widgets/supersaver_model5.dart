@@ -85,25 +85,21 @@ class SupersaverModel5 extends StatelessWidget {
                           ? StaggeredGrid.count(
                               crossAxisCount: 3,
                               mainAxisSpacing: 25,
-                              crossAxisSpacing: 25,
+                              crossAxisSpacing: 13,
                               children: List.generate(
                                   state.products.length <= 10
                                       ? state.products.length
                                       : 10, (index) {
                                 return StaggeredGridTile.extent(
                                   crossAxisCellCount: 1,
-                                  mainAxisExtent: 275,
+                                  mainAxisExtent: 278,
                                   child: ProductItem(
                                     subcategoryRef: categoryId,
                                     productnamecolor: subcatColor,
-                                    // bgcolor: "FFFFFF",
                                     product: state.products[index],
-
                                     mrpColor: mrpColor,
-
                                     offertextcolor: offerTextcolor,
                                     buttonBgColor: productBgColor,
-
                                     buttontextcolor: buttontextcolor,
                                     context: context,
                                     productBgColor: productBgColor,
