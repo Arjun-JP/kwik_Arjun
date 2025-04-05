@@ -45,6 +45,8 @@ import 'package:kwik/pages/Home_page/widgets/category_model_4.dart';
 import 'package:kwik/pages/Home_page/widgets/category_model_9.dart';
 import 'package:kwik/pages/Home_page/widgets/descriptive_widget.dart';
 import 'package:kwik/widgets/navbar/navbar.dart';
+import 'package:kwik/widgets/shimmer/all%20subcategory_page%20shimmer.dart';
+import 'package:kwik/widgets/shimmer/main_loading_indicator.dart';
 import '../../bloc/home_page_bloc/category_model_1_bloc/category_model1_event.dart';
 import '../../bloc/home_page_bloc/category_model_2_bloc/category_model2_event.dart';
 import '../../bloc/home_page_bloc/category_model_10_bloc/category_model_10_bloc.dart';
@@ -598,11 +600,11 @@ class _HomePageState extends State<HomePage> {
                                     children: [
                                       InkWell(
                                         onTap: () {
-                                          // Navigator.of(context)
-                                          //     .push(MaterialPageRoute(
-                                          //   builder: (context) =>
-                                          //       const CategoryModel19Shimmer(),
-                                          // ));
+                                          Navigator.of(context)
+                                              .push(MaterialPageRoute(
+                                            builder: (context) =>
+                                                const AllsubcategoryPageshimmer(),
+                                          ));
                                         },
                                         child: Container(
                                           decoration: BoxDecoration(

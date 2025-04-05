@@ -10,22 +10,29 @@ class SearchRepo {
     'api_Secret': "digi9",
   };
   Future<Map<String, dynamic>> searchProducts(
-      String query, String userId, int page, int size) async {
+      String query, String userId) async {
     final response = await http.get(
-        Uri.parse(
-            "$baseUrl/search/product?q=a&userId=67821e97640fb7573f33cba5&page=1&size=20"),
+        Uri.parse("$baseUrl/product/search/product/user/$userId?query=$query"),
         headers: headers);
-
+    print(response.statusCode);
     if (response.statusCode == 200) {
-      List data = jsonDecode(response.body)['allProducts'];
-      List<Map<String, dynamic>> searchHistory =
-          jsonDecode(response.body)['searchHistory'];
-      return {
-        "products": data.map((json) => ProductModel.fromJson(json)).toList(),
-        "searchHistory": searchHistory.map((e) => e["query"]).toList()
-      };
+      final decodedData = jsonDecode(response.body);
+      print(response.body);
+      // Ensure 'allProducts' key exists before parsing
+      if (decodedData.containsKey('data')) {
+        List<dynamic> data = decodedData['data'];
+        print(data);
+        // List<dynamic> searchHistory = decodedData['searchHistory'];
+
+        return {
+          "products": data.map((json) => ProductModel.fromJson(json)).toList(),
+          "searchHistory": []
+        };
+      } else {
+        throw Exception("Key 'allProducts' not found in response");
+      }
     } else {
-      throw Exception("Failed to load products");
+      throw Exception("Failed to load initial products");
     }
   }
 
@@ -44,8 +51,7 @@ class SearchRepo {
         List<dynamic> data = decodedData['allProducts'];
 
         List<dynamic> searchHistory = decodedData['searchHistory'];
-        print(searchHistory);
-        print("repo");
+
         return {
           "products": data.map((json) => ProductModel.fromJson(json)).toList(),
           "searchHistory": searchHistory.map((e) => e["query"]).toList()

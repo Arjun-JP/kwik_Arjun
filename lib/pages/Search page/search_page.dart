@@ -33,8 +33,7 @@ class _SearchPageState extends State<SearchPage> {
   void _onSearch() {
     if (_searchController.text.isNotEmpty) {
       context.read<SearchBloc>().add(
-            SearchProducts(
-                _searchController.text, "67821e97640fb7573f33cba5", 1, 10),
+            SearchProducts(_searchController.text, "67821e97640fb7573f33cba5"),
           );
     }
   }
@@ -42,7 +41,7 @@ class _SearchPageState extends State<SearchPage> {
   Future<List<String>> searchProducts(String query) async {
     if (query.isEmpty) return [];
     final searchBloc = context.read<SearchBloc>();
-    searchBloc.add(SearchProducts(query, "67821e97640fb7573f33cba5", 1, 10));
+    searchBloc.add(SearchProducts(query, "67821e97640fb7573f33cba5"));
     await Future.delayed(const Duration(milliseconds: 500));
     final state = searchBloc.state;
     if (state is ProductLoaded) {
@@ -129,8 +128,7 @@ class _SearchPageState extends State<SearchPage> {
                               '/productdetails',
                               extra: {
                                 'product': product,
-                                'subcategoryref':
-                                    product.subCategoryRef.first.id,
+                                'subcategoryref': "6780ff720bfef51d79df1a06",
                               },
                             ),
                             child: ListTile(

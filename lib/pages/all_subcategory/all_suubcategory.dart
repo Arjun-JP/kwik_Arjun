@@ -9,9 +9,8 @@ import 'package:kwik/bloc/all_sub_category_bloc/all_sub_category_event.dart';
 import 'package:kwik/bloc/all_sub_category_bloc/all_sub_category_state.dart';
 import 'package:kwik/constants/colors.dart';
 import 'package:kwik/models/subcategory_model.dart';
-
 import 'package:kwik/widgets/produc_model_1.dart';
-import 'package:kwik/widgets/shimmer/product_model1_list.dart';
+import 'package:kwik/widgets/shimmer/all%20subcategory_page%20shimmer.dart';
 
 // ignore: must_be_immutable
 class AllSubcategory extends StatefulWidget {
@@ -72,7 +71,7 @@ class _AllSubcategoryState extends State<AllSubcategory> {
           return BlocBuilder<AllSubCategoryBloc, AllSubCategoryState>(
               builder: (context, state) {
             if (state is CategoryLoading) {
-              return const Center(child: ProductModel1ListShimmer());
+              return const Center(child: AllsubcategoryPageshimmer());
             } else if (state is CategoryError) {
               return Center(child: Text(state.message));
             } else if (state is CategoryLoaded) {

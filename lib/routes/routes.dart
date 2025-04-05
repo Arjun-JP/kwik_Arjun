@@ -3,17 +3,22 @@ import 'package:go_router/go_router.dart';
 import 'package:kwik/models/category_model.dart';
 import 'package:kwik/models/product_model.dart';
 import 'package:kwik/pages/Category_page/category_page.dart';
+import 'package:kwik/pages/FAQ_page/faq_questions.dart';
 import 'package:kwik/pages/Home_page/home_Page.dart';
 import 'package:kwik/pages/LoginPage/login_page.dart';
 import 'package:kwik/pages/Offer_Page/offer_page.dart';
 import 'package:kwik/pages/OnboardingScreen/onboarding_screen.dart';
 import 'package:kwik/pages/OtpVerificationPage/otp_verification_page.dart';
+import 'package:kwik/pages/PrivacyPolicy_Page/PrivacyPolicyPage.dart';
 import 'package:kwik/pages/Search%20page/search_page.dart';
 import 'package:kwik/pages/SplashScreen/splash_screen.dart';
+import 'package:kwik/pages/Terms_and_condition/Terms_and_condition.dart';
 import 'package:kwik/pages/all_subcategory/all_suubcategory.dart';
 import 'package:kwik/pages/brand_page/brand_page.dart';
 import 'package:kwik/pages/cart_page/cart_page.dart';
 import 'package:kwik/pages/category_landing_page/category_landing_page.dart';
+import 'package:kwik/pages/help_support/help_and_support.dart';
+import 'package:kwik/pages/order_list_page.dart/order_list.dart.dart';
 import 'package:kwik/pages/product_details_page/product_details_page.dart';
 import 'package:kwik/pages/profile/profile_page.dart';
 
@@ -160,6 +165,38 @@ final GoRouter router = GoRouter(
           color: color, // Pass as string
         );
       },
+    ),
+    GoRoute(
+      path: '/orders',
+      builder: (context, state) => OrderListingPage(),
+    ),
+    GoRoute(
+      path: '/faq', // The path for the FAQ page
+      builder: (BuildContext context, GoRouterState state) {
+        return const FAQPage(); // Return the FAQPage widget
+      },
+    ),
+    GoRoute(
+      path: '/privacy-policy',
+      builder: (context, state) {
+        final text = state.extra as Map<String, String>;
+        return PrivacyPolicyPage(
+          privacyText: text['privacyText'] ?? '',
+        );
+      },
+    ),
+    GoRoute(
+      path: '/terms',
+      name: 'terms',
+      builder: (context, state) {
+        final data = state.extra as Map<String, String>;
+        return TermsAndConditionPage(terms: data['terms'] ?? '');
+      },
+    ),
+    GoRoute(
+      path: '/help',
+      name: 'help',
+      builder: (context, state) => const HelpAndSupportPage(),
     ),
   ],
 );

@@ -22,7 +22,7 @@ class ProductModelAdapter extends TypeAdapter<ProductModel> {
           reader.read() as Category, // Ensure Category is read correctly
       subCategoryRef: reader.readList().cast<SubCategoryModel>(),
       variations: reader.readList().cast<VariationModel>(),
-      warehouseRefs: reader.readList().cast<WarehouseModel>(),
+      warehouseRefs: reader.readList().cast<String>(),
       sku: reader.readString(),
       productVideo: reader.readString(),
       reviews: reader.readList().cast<ReviewModel>(),

@@ -142,9 +142,6 @@ class CartBloc extends Bloc<CartEvent, CartState> {
 
   Future<void> _onSyncCartWithServer(
       SyncCartWithServer event, Emitter<CartState> emit) async {
-    emit(CartLoading());
-    print("loading");
-
     try {
       List<Map<String, dynamic>> serverCartData =
           await cartRepository.getUserCart(userId: event.userId);

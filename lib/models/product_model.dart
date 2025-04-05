@@ -35,7 +35,7 @@ class ProductModel extends HiveObject {
   final List<VariationModel> variations;
 
   @HiveField(8)
-  final List<WarehouseModel> warehouseRefs;
+  final List<String> warehouseRefs;
 
   @HiveField(9)
   final String sku;
@@ -80,7 +80,10 @@ class ProductModel extends HiveObject {
         categoryRef: _parseCategory(json['category_ref']),
         subCategoryRef: _parseSubCategories(json['sub_category_ref']),
         variations: _parseVariations(json['variations']),
-        warehouseRefs: _parseWarehouses(json['warehouse_ref']),
+        warehouseRefs: (json['warehouse_ref'] as List<dynamic>?)
+                ?.map((e) => e.toString())
+                .toList() ??
+            [],
         sku: json['sku'] ?? '',
         productVideo: json['product_video'] ?? '',
         reviews: _parseReviews(json['review']),
@@ -119,7 +122,7 @@ class ProductModel extends HiveObject {
         'category_ref': categoryRef.toJson(),
         'sub_category_ref': subCategoryRef.map((e) => e.toJson()).toList(),
         'variations': variations.map((e) => e.toJson()).toList(),
-        'warehouse_ref': warehouseRefs.map((e) => e.toJson()).toList(),
+        'warehouse_ref': warehouseRefs,
         'sku': sku,
         'product_video': productVideo,
         'review': reviews.map((e) => e.toJson()).toList(),
