@@ -28,6 +28,7 @@ import 'package:kwik/bloc/home_page_bloc/category_model_8_bloc/category_model_8_
 import 'package:kwik/bloc/home_page_bloc/category_model_9_bloc/category_model_9_bloc.dart';
 import 'package:kwik/bloc/home_Ui_bloc/home_Ui_Bloc.dart';
 import 'package:kwik/bloc/navbar_bloc/navbar_bloc.dart';
+import 'package:kwik/bloc/order_bloc/order_bloc.dart';
 import 'package:kwik/bloc/product_details_page/product_details_bloc/product_details_page_bloc.dart';
 import 'package:kwik/bloc/product_details_page/recommended_products_bloc/recommended_products_bloc.dart';
 import 'package:kwik/bloc/product_details_page/similerproduct_bloc/similar_product_bloc.dart';
@@ -56,6 +57,7 @@ import 'package:kwik/repositories/category_model_8_repo.dart';
 import 'package:kwik/repositories/category_subcategory_product_repo.dart';
 import 'package:kwik/repositories/home_Ui_repository.dart';
 import 'package:kwik/repositories/home_category_repository.dart';
+import 'package:kwik/repositories/order_history_repo.dart';
 import 'package:kwik/repositories/recommended_product_repo.dart';
 import 'package:kwik/repositories/search_repo.dart';
 import 'package:kwik/repositories/sub_category_product_repository.dart';
@@ -115,6 +117,7 @@ void main() async {
   Hive.registerAdapter(BrandAdapter());
   Hive.registerAdapter(CartProductAdapter());
 
+  //hive delete box
   await Hive.deleteBoxFromDisk('product_cache');
   await Hive.deleteBoxFromDisk('product_cache_category_model7');
   await Hive.deleteBoxFromDisk('subCategoriesBox'); // Open boxes before usage
@@ -365,6 +368,9 @@ class _MyAppState extends State<MyApp> {
         //brand page bloc
         BlocProvider<BrandProductBloc>(
             create: (_) => BrandProductBloc(BrandProductRepository())),
+
+        BlocProvider<OrderBloc>(
+            create: (_) => OrderBloc(orderRepository: OrderRepository())),
       ],
       child: MaterialApp.router(
         builder: (context, child) {

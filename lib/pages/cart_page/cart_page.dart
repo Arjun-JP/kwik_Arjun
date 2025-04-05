@@ -48,15 +48,21 @@ class _CartPageState extends State<CartPage> {
               style: theme.textTheme.bodyMedium!.copyWith(fontSize: 18),
             ),
             const SizedBox(width: 15),
-            Container(
-              decoration: BoxDecoration(
-                  color: const Color(0xFFFFD93C),
-                  borderRadius: BorderRadius.circular(15)),
-              child: const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 5),
-                child: Text("Saved ₹95"),
-              ),
-            )
+            BlocBuilder<CartBloc, CartState>(builder: (context, state) {
+              return state is CartUpdated
+                  ? Container(
+                      decoration: BoxDecoration(
+                          color: const Color(0xFFFFD93C),
+                          borderRadius: BorderRadius.circular(15)),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 10.0, vertical: 5),
+                        child: Text(
+                            "Saved ₹ ₹${(calculateTotalMRP(state.cartItems) - calculateTotalSellingPrice(state.cartItems)).toStringAsFixed(0)}"),
+                      ),
+                    )
+                  : const SizedBox();
+            })
           ],
         ),
       ),
@@ -97,7 +103,12 @@ class _CartPageState extends State<CartPage> {
                   selectDeliveryType(theme: theme),
                   const SizedBox(height: 15),
                   deliveryInstructions(theme: theme),
-                  billDetails(theme: theme),
+                  BlocBuilder<CartBloc, CartState>(builder: (context, state) {
+                    return billDetails(
+                        theme: theme,
+                        cartproducts:
+                            state is CartUpdated ? state.cartItems : []);
+                  }),
                   const SizedBox(height: 15),
                   addressContainer(theme: theme),
                   const SizedBox(height: 15),
@@ -105,7 +116,11 @@ class _CartPageState extends State<CartPage> {
               ),
             ),
           ),
-          paymentOptions(theme: theme)
+          BlocBuilder<CartBloc, CartState>(builder: (context, state) {
+            return paymentOptions(
+                theme: theme,
+                cartproducts: state is CartUpdated ? state.cartItems : []);
+          })
         ],
       ),
       bottomNavigationBar: const Navbar(),
@@ -607,7 +622,8 @@ class _CartPageState extends State<CartPage> {
     );
   }
 
-  Widget billDetails({required ThemeData theme}) {
+  Widget billDetails(
+      {required ThemeData theme, required List<CartProduct> cartproducts}) {
     return Container(
       padding: const EdgeInsets.only(right: 10, left: 10, top: 30, bottom: 20),
       color: Colors.white,
@@ -616,11 +632,10 @@ class _CartPageState extends State<CartPage> {
         spacing: 10,
         children: [
           Text(
-            "   Bill details",
+            " Bill details",
             style: theme.textTheme.titleLarge!
                 .copyWith(color: const Color(0xFF233D4D)),
           ),
-          const SizedBox(height: 10),
           Row(
             children: [
               Expanded(
@@ -648,7 +663,7 @@ class _CartPageState extends State<CartPage> {
                           borderRadius: BorderRadius.circular(10),
                           color: const Color(0xFFFF9B2E)),
                       child: Text(
-                        "Saved ₹160",
+                        "Saved ₹${(calculateTotalMRP(cartproducts) - calculateTotalSellingPrice(cartproducts)).toStringAsFixed(0)}",
                         style: theme.textTheme.bodyMedium!
                             .copyWith(color: Colors.white),
                       ),
@@ -663,14 +678,14 @@ class _CartPageState extends State<CartPage> {
                   spacing: 10,
                   children: [
                     Text(
-                      "₹793",
+                      "₹${calculateTotalMRP(cartproducts).toStringAsFixed(0)}",
                       style: theme.textTheme.bodyMedium!.copyWith(
                           decoration: TextDecoration.lineThrough,
-                          fontSize: 14,
+                          fontSize: 13,
                           color: const Color(0xFFA19DA3)),
                     ),
                     Text(
-                      "624",
+                      "₹${calculateTotalSellingPrice(cartproducts).toStringAsFixed(0)}",
                       style: theme.textTheme.bodyMedium!.copyWith(
                           fontWeight: FontWeight.w700,
                           fontSize: 14,
@@ -808,7 +823,7 @@ class _CartPageState extends State<CartPage> {
                     .copyWith(fontSize: 18, color: const Color(0xFF233D4D)),
               ),
               Text(
-                "₹628",
+                "₹${calculateTotalSellingPrice(cartproducts).toStringAsFixed(0)}",
                 style: theme.textTheme.bodyLarge!
                     .copyWith(fontSize: 18, color: const Color(0xFF233D4D)),
               ),
@@ -923,7 +938,8 @@ class _CartPageState extends State<CartPage> {
     );
   }
 
-  Widget paymentOptions({required ThemeData theme}) {
+  Widget paymentOptions(
+      {required ThemeData theme, required List<CartProduct> cartproducts}) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       decoration: const BoxDecoration(
@@ -941,7 +957,7 @@ class _CartPageState extends State<CartPage> {
                 style: theme.textTheme.bodyMedium!.copyWith(fontSize: 12),
               ),
               Text(
-                "₹628.0",
+                "₹${calculateTotalSellingPrice(cartproducts).toStringAsFixed(0)}",
                 style: theme.textTheme.titleLarge!.copyWith(fontSize: 16),
               ),
             ],
@@ -1091,4 +1107,20 @@ class _CartPageState extends State<CartPage> {
       );
     });
   }
+}
+
+double calculateTotalSellingPrice(List<CartProduct> cartList) {
+  double total = 0.0;
+  for (var item in cartList) {
+    total += item.sellingPrice * item.quantity;
+  }
+  return total;
+}
+
+double calculateTotalMRP(List<CartProduct> cartList) {
+  double total = 0.0;
+  for (var item in cartList) {
+    total += item.mrp * item.quantity;
+  }
+  return total;
 }

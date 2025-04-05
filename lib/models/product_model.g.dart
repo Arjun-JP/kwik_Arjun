@@ -25,7 +25,7 @@ class ProductModelAdapter extends TypeAdapter<ProductModel> {
       categoryRef: fields[5] as Category,
       subCategoryRef: (fields[6] as List).cast<SubCategoryModel>(),
       variations: (fields[7] as List).cast<VariationModel>(),
-      warehouseRefs: (fields[8] as List).cast<WarehouseModel>(),
+      warehouseRefs: (fields[8] as List).cast<String>(),
       sku: fields[9] as String,
       productVideo: fields[10] as String,
       reviews: (fields[11] as List).cast<ReviewModel>(),

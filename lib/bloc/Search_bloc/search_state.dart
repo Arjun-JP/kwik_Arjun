@@ -16,4 +16,11 @@ class ProductLoaded extends SearchState {
   ProductLoaded({required this.products, required this.searchHistory});
 }
 
+class SearchresultProductLoaded extends SearchState {
+  final List<String> searchHistory;
+  final List<ProductModel> products;
+  SearchresultProductLoaded(
+      {required this.products, required this.searchHistory});
+}
+
 class ProductError extends SearchState {}

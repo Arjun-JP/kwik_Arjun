@@ -12,19 +12,12 @@ class BrandProductBloc extends Bloc<BrandProductEvent, BrandProductState> {
 
   Future<void> _onFetchBrandProducts(
       FetchBrandProducts event, Emitter<BrandProductState> emit) async {
-    print("brand called");
     emit(BrandProductLoading());
     try {
-      print("api called");
-
       final products = await repository.fetchProductsByBrand(event.brandId);
-
-      print("api call completed, products received: $products");
 
       emit(BrandProductLoaded(products));
     } catch (e, stackTrace) {
-      print("Error fetching brand products: $e");
-      print(stackTrace);
       emit(BrandProductError(e.toString()));
     }
   }

@@ -60,13 +60,14 @@ class CategoryModel3 extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const SizedBox(height: 15),
+                            const SizedBox(height: 10),
                             Text(
                               title ?? state.category.name,
                               style: theme.textTheme.titleLarge!.copyWith(
                                   fontWeight: FontWeight.w600,
                                   color: parseColor(titleColor)),
                             ),
+                            const SizedBox(height: 10),
                             SizedBox(
                               width: MediaQuery.of(context).size.width,
                               child: Column(

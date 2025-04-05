@@ -18,21 +18,17 @@ class BrandProductRepository {
 
     try {
       final response = await http.get(url, headers: headers);
-      print(response.statusCode);
-      print("Response body: ${response.body}");
 
       Map<String, dynamic> bodydata = json.decode(response.body);
-      print("1111");
+
       if (bodydata.containsKey("data") && bodydata["data"] is List) {
-        print("2222");
         List<dynamic> data = bodydata["data"];
-        print("33333");
+
         try {
-          print(data.first);
           List<ProductModel> asd =
               data.map((json) => ProductModel.fromJson(json)).toList();
         } catch (e) {
-          print(e);
+          print("error in brand products $e");
         }
         return data.map((json) => ProductModel.fromJson(json)).toList();
       } else {

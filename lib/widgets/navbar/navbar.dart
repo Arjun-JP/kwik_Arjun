@@ -141,7 +141,7 @@ class Navbar extends StatelessWidget {
                           ),
                           if (index == 3 &&
                               cartProductCount != null &&
-                              cartProductCount.isNotEmpty)
+                              cartProductCount != "0")
                             Positioned(
                               top:
                                   -5, // Move the badge exactly on top of the icon
@@ -151,16 +151,29 @@ class Navbar extends StatelessWidget {
                                 width: 20,
                                 height: 20,
                                 alignment: Alignment.center,
-                                decoration: const BoxDecoration(
+                                decoration: BoxDecoration(
+                                  border: Border.all(color: Colors.red),
                                   shape: BoxShape.circle,
-                                  color: Colors.red,
+                                  color: context
+                                              .watch<NavbarBloc>()
+                                              .state
+                                              .selectedIndex ==
+                                          3
+                                      ? Colors.white
+                                      : Colors.red,
                                 ),
                                 child: Text(
                                   cartProductCount,
                                   style: theme.textTheme.bodyMedium!.copyWith(
                                     fontSize: 12,
                                     fontWeight: FontWeight.w900,
-                                    color: Colors.white,
+                                    color: context
+                                                .watch<NavbarBloc>()
+                                                .state
+                                                .selectedIndex ==
+                                            3
+                                        ? Colors.red
+                                        : Colors.white,
                                   ),
                                 ),
                               ),
