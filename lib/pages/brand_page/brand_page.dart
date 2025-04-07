@@ -155,30 +155,27 @@ class _BrandPageState extends State<BrandPage> {
                         }
                         return StaggeredGrid.count(
                           crossAxisCount: 3,
-                          mainAxisSpacing: 25,
+                          mainAxisSpacing: 20,
                           crossAxisSpacing: 10,
                           children: List.generate(
                             state.products.length,
-                            (index) => Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: SizedBox(
-                                height: 278,
-                                child: ProductItem(
-                                  subcategoryRef: state
-                                      .products[index].subCategoryRef.first.id,
-                                  productnamecolor: "000000",
-                                  mrpColor: "A19DA3",
-                                  offertextcolor: "FFFFFF",
-                                  productBgColor: "FFFFFF",
-                                  sellingPriceColor: "000000",
-                                  buttontextcolor: "E23338",
-                                  buttonBgColor: "FFFFFF",
-                                  unitTextcolor: "A19DA3",
-                                  unitbgcolor: "FFFFFF",
-                                  offerbgcolor: "E3520D",
-                                  context: context,
-                                  product: state.products[index],
-                                ),
+                            (index) => SizedBox(
+                              height: 278,
+                              child: ProductItem(
+                                subcategoryRef: state
+                                    .products[index].subCategoryRef.first.id,
+                                productnamecolor: "000000",
+                                mrpColor: "A19DA3",
+                                offertextcolor: "FFFFFF",
+                                productBgColor: "FFFFFF",
+                                sellingPriceColor: "000000",
+                                buttontextcolor: "E23338",
+                                buttonBgColor: "FFFFFF",
+                                unitTextcolor: "A19DA3",
+                                unitbgcolor: "FFFFFF",
+                                offerbgcolor: "E3520D",
+                                context: context,
+                                product: state.products[index],
                               ),
                             ),
                           ),

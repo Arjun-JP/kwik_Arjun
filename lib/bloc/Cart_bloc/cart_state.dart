@@ -13,8 +13,10 @@ class CartLoading extends CartState {}
 class CartUpdated extends CartState {
   final String message;
   final List<CartProduct> cartItems;
+  final Map<String, dynamic> charges;
 
-  CartUpdated({required this.message, required this.cartItems});
+  CartUpdated(
+      {required this.message, required this.cartItems, required this.charges});
 
   @override
   List<Object> get props => [message, cartItems];

@@ -101,134 +101,139 @@ class OrderCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ThemeData theme = Theme.of(context);
-    return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      child: Padding(
-        padding: const EdgeInsets.all(12.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Order Images
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children: List.generate(
-                  orderData.products.length,
-                  (index) => Padding(
-                    padding: const EdgeInsets.only(right: 8.0),
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 10, vertical: 5),
-                      decoration: BoxDecoration(
-                          color: const Color.fromARGB(255, 255, 247, 231),
-                          borderRadius: BorderRadius.circular(10)),
-                      child: Column(
-                        children: [
-                          Image.network(
-                            orderData
-                                .products[index].productRef.productImages.first,
-                            height: 80,
-                            width: 80,
-                            fit: BoxFit.contain,
-                          ),
-                          SizedBox(
-                            width: 100,
-                            child: Text(
-                                orderData
-                                    .products[index].productRef.productName,
-                                textAlign: TextAlign.center,
-                                style: theme.textTheme.bodyMedium!.copyWith(
-                                    color: Colors.black, fontSize: 10)),
-                          ),
-                        ],
+    return InkWell(
+      onTap: () {
+        context.push('/order/${orderData.id}');
+      },
+      child: Card(
+        margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        child: Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Order Images
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: List.generate(
+                    orderData.products.length,
+                    (index) => Padding(
+                      padding: const EdgeInsets.only(right: 8.0),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 10, vertical: 5),
+                        decoration: BoxDecoration(
+                            color: const Color.fromARGB(255, 255, 247, 231),
+                            borderRadius: BorderRadius.circular(10)),
+                        child: Column(
+                          children: [
+                            Image.network(
+                              orderData.products[index].productRef.productImages
+                                  .first,
+                              height: 80,
+                              width: 80,
+                              fit: BoxFit.contain,
+                            ),
+                            SizedBox(
+                              width: 100,
+                              child: Text(
+                                  orderData
+                                      .products[index].productRef.productName,
+                                  textAlign: TextAlign.center,
+                                  style: theme.textTheme.bodyMedium!.copyWith(
+                                      color: Colors.black, fontSize: 10)),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
                 ),
               ),
-            ),
-            const SizedBox(height: 10),
+              const SizedBox(height: 10),
 
-            // Order Status and Total
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  spacing: 2,
-                  children: [
-                    Text(orderData.orderStatus,
-                        style: theme.textTheme.bodyMedium!.copyWith(
-                            fontWeight: FontWeight.w900,
-                            color: orderData.orderStatus == "Order placed"
-                                ? Colors.orange
-                                : orderData.orderStatus == "Delivery failed"
-                                    ? Colors.red
-                                    : orderData.orderStatus == "Delivered"
-                                        ? Colors.green
-                                        : orderData.orderStatus == "Packing"
-                                            ? const Color.fromARGB(
-                                                182, 86, 55, 240)
-                                            : orderData.orderStatus ==
-                                                    "Out for delivery"
-                                                ? Colors.blueGrey
-                                                : Colors.black)),
-                    Text(
-                        "Placed at ${formatIso8601Date(orderData.orderPlacedTime.toIso8601String())}",
-                        style: const TextStyle(color: Colors.grey)),
-                  ],
-                ),
-                Column(
-                  spacing: 5,
-                  children: [
-                    Text(
-                      " ₹${orderData.totalAmount}",
-                      style: const TextStyle(
-                          fontWeight: FontWeight.bold, fontSize: 18),
-                    ),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 15, vertical: 4),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: const Color.fromARGB(255, 249, 200, 54),
-                      ),
-                      child: Text(
-                        "saved  ₹${orderData.totalSaved}",
+              // Order Status and Total
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    spacing: 2,
+                    children: [
+                      Text(orderData.orderStatus,
+                          style: theme.textTheme.bodyMedium!.copyWith(
+                              fontWeight: FontWeight.w900,
+                              color: orderData.orderStatus == "Order placed"
+                                  ? Colors.orange
+                                  : orderData.orderStatus == "Delivery failed"
+                                      ? Colors.red
+                                      : orderData.orderStatus == "Delivered"
+                                          ? Colors.green
+                                          : orderData.orderStatus == "Packing"
+                                              ? const Color.fromARGB(
+                                                  182, 86, 55, 240)
+                                              : orderData.orderStatus ==
+                                                      "Out for delivery"
+                                                  ? Colors.blueGrey
+                                                  : Colors.black)),
+                      Text(
+                          "Placed at ${formatIso8601Date(orderData.orderPlacedTime.toIso8601String())}",
+                          style: const TextStyle(color: Colors.grey)),
+                    ],
+                  ),
+                  Column(
+                    spacing: 5,
+                    children: [
+                      Text(
+                        " ₹${orderData.totalAmount}",
                         style: const TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 12),
+                            fontWeight: FontWeight.bold, fontSize: 18),
                       ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-            const SizedBox(height: 5),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 15, vertical: 4),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: const Color.fromARGB(255, 249, 200, 54),
+                        ),
+                        child: Text(
+                          "saved  ₹${orderData.totalSaved}",
+                          style: const TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 12),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              const SizedBox(height: 5),
 
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                ElevatedButton(
-                  onPressed: () {},
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color.fromARGB(255, 230, 230, 230),
-                    foregroundColor: Colors.black,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  ElevatedButton(
+                    onPressed: () {},
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color.fromARGB(255, 230, 230, 230),
+                      foregroundColor: Colors.black,
+                    ),
+                    child: const Text("Rate Order"),
                   ),
-                  child: const Text("Rate Order"),
-                ),
-                TextButton(
-                  onPressed: () {},
-                  child: const Text(
-                    "Order Again",
-                    style: TextStyle(
-                        color: Colors.pink, fontWeight: FontWeight.bold),
+                  TextButton(
+                    onPressed: () {},
+                    child: const Text(
+                      "Order Again",
+                      style: TextStyle(
+                          color: Colors.pink, fontWeight: FontWeight.bold),
+                    ),
                   ),
-                ),
-              ],
-            ),
-          ],
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );

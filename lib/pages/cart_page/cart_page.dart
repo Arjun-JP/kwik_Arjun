@@ -58,7 +58,7 @@ class _CartPageState extends State<CartPage> {
                         padding: const EdgeInsets.symmetric(
                             horizontal: 10.0, vertical: 5),
                         child: Text(
-                            "Saved ₹ ₹${(calculateTotalMRP(state.cartItems) - calculateTotalSellingPrice(state.cartItems)).toStringAsFixed(0)}"),
+                            "Saved  ₹${(calculateTotalsaved(state.cartItems, state.charges)).toStringAsFixed(0)}"),
                       ),
                     )
                   : const SizedBox();
@@ -104,8 +104,14 @@ class _CartPageState extends State<CartPage> {
                   const SizedBox(height: 15),
                   deliveryInstructions(theme: theme),
                   BlocBuilder<CartBloc, CartState>(builder: (context, state) {
+                    print("changes");
+                    print(state is CartUpdated ? state.charges : {});
+                    print(state is CartUpdated
+                        ? state.charges["delivery_charge"]
+                        : {});
                     return billDetails(
                         theme: theme,
+                        charges: state is CartUpdated ? state.charges : {},
                         cartproducts:
                             state is CartUpdated ? state.cartItems : []);
                   }),
@@ -119,6 +125,7 @@ class _CartPageState extends State<CartPage> {
           BlocBuilder<CartBloc, CartState>(builder: (context, state) {
             return paymentOptions(
                 theme: theme,
+                charges: state is CartUpdated ? state.charges : {},
                 cartproducts: state is CartUpdated ? state.cartItems : []);
           })
         ],
@@ -273,16 +280,17 @@ class _CartPageState extends State<CartPage> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Text(
-                      (cartproduct.quantity * cartproduct.variant.mrp)
-                          .toString(),
+                      "₹ ${(cartproduct.quantity * cartproduct.variant.sellingPrice).toStringAsFixed(0)}",
                       style: theme.textTheme.bodyLarge,
+                      textAlign: TextAlign.center,
                     ),
                     Text(
-                      (cartproduct.quantity * cartproduct.variant.sellingPrice)
-                          .toString(),
+                      "₹ ${(cartproduct.quantity * cartproduct.variant.mrp).toStringAsFixed(0)}",
                       style: theme.textTheme.bodyLarge!.copyWith(
                           color: Colors.grey,
+                          fontSize: 12,
                           decoration: TextDecoration.lineThrough),
+                      textAlign: TextAlign.center,
                     )
                   ],
                 ),
@@ -623,7 +631,9 @@ class _CartPageState extends State<CartPage> {
   }
 
   Widget billDetails(
-      {required ThemeData theme, required List<CartProduct> cartproducts}) {
+      {required ThemeData theme,
+      required List<CartProduct> cartproducts,
+      required Map<String, dynamic> charges}) {
     return Container(
       padding: const EdgeInsets.only(right: 10, left: 10, top: 30, bottom: 20),
       color: Colors.white,
@@ -663,7 +673,7 @@ class _CartPageState extends State<CartPage> {
                           borderRadius: BorderRadius.circular(10),
                           color: const Color(0xFFFF9B2E)),
                       child: Text(
-                        "Saved ₹${(calculateTotalMRP(cartproducts) - calculateTotalSellingPrice(cartproducts)).toStringAsFixed(0)}",
+                        "Saved ₹${(calculateTotalMRP(cartproducts) - calculateTotalSellingPrice(cartproducts, charges)).toStringAsFixed(0)}",
                         style: theme.textTheme.bodyMedium!
                             .copyWith(color: Colors.white),
                       ),
@@ -685,7 +695,7 @@ class _CartPageState extends State<CartPage> {
                           color: const Color(0xFFA19DA3)),
                     ),
                     Text(
-                      "₹${calculateTotalSellingPrice(cartproducts).toStringAsFixed(0)}",
+                      "₹${calculateTotalSellingPrice(cartproducts, charges).toStringAsFixed(0)}",
                       style: theme.textTheme.bodyMedium!.copyWith(
                           fontWeight: FontWeight.w700,
                           fontSize: 14,
@@ -720,18 +730,25 @@ class _CartPageState extends State<CartPage> {
                   spacing: 10,
                   children: [
                     Text(
-                      "₹30",
+                      (charges != {} && charges["delivery_charge"] != 0)
+                          ? ""
+                          : "₹30",
                       style: theme.textTheme.bodyMedium!.copyWith(
                           decoration: TextDecoration.lineThrough,
                           fontSize: 14,
                           color: const Color(0xFFA19DA3)),
                     ),
                     Text(
-                      "FREE",
+                      (charges != {} && charges["delivery_charge"] != 0)
+                          ? "₹${charges["delivery_charge"]}"
+                          : "FREE",
                       style: theme.textTheme.bodyMedium!.copyWith(
                           fontWeight: FontWeight.w700,
                           fontSize: 14,
-                          color: const Color(0xFF7DA5D9)),
+                          color:
+                              (charges != {} && charges["delivery_charge"] != 0)
+                                  ? const Color(0xFF233D4D)
+                                  : const Color(0xFF7DA5D9)),
                     ),
                   ],
                 ),
@@ -762,9 +779,24 @@ class _CartPageState extends State<CartPage> {
                   spacing: 10,
                   children: [
                     Text(
-                      "₹10",
+                      (charges != {} && charges["handling_charge"] != 0)
+                          ? ""
+                          : "₹20",
                       style: theme.textTheme.bodyMedium!.copyWith(
-                          fontSize: 14, color: const Color(0xFF233D4D)),
+                          decoration: TextDecoration.lineThrough,
+                          fontSize: 14,
+                          color: const Color(0xFFA19DA3)),
+                    ),
+                    Text(
+                      (charges != {} && charges["handling_charge"] != 0)
+                          ? "₹${charges["handling_charge"]}"
+                          : "FREE",
+                      style: theme.textTheme.bodyMedium!.copyWith(
+                          fontSize: 14,
+                          color:
+                              (charges != {} && charges["handling_charge"] != 0)
+                                  ? const Color(0xFF233D4D)
+                                  : const Color(0xFF7DA5D9)),
                     ),
                   ],
                 ),
@@ -795,18 +827,25 @@ class _CartPageState extends State<CartPage> {
                   spacing: 10,
                   children: [
                     Text(
-                      "₹40",
+                      (charges != {} && charges["handling_charge"] != 0)
+                          ? ""
+                          : "₹40",
                       style: theme.textTheme.bodyMedium!.copyWith(
                           decoration: TextDecoration.lineThrough,
                           fontSize: 14,
                           color: const Color(0xFFA19DA3)),
                     ),
                     Text(
-                      "FREE",
+                      (charges != {} && charges["handling_charge"] != 0)
+                          ? "₹ ${charges["high_demand_charge"]}"
+                          : "FREE",
                       style: theme.textTheme.bodyMedium!.copyWith(
                           fontWeight: FontWeight.w700,
                           fontSize: 14,
-                          color: const Color(0xFF7DA5D9)),
+                          color: (charges != {} &&
+                                  charges["high_demand_charge"] != 0)
+                              ? const Color(0xFF233D4D)
+                              : const Color(0xFF7DA5D9)),
                     ),
                   ],
                 ),
@@ -823,7 +862,7 @@ class _CartPageState extends State<CartPage> {
                     .copyWith(fontSize: 18, color: const Color(0xFF233D4D)),
               ),
               Text(
-                "₹${calculateTotalSellingPrice(cartproducts).toStringAsFixed(0)}",
+                "₹${calculatetotal(cartproducts, charges).toStringAsFixed(0)}",
                 style: theme.textTheme.bodyLarge!
                     .copyWith(fontSize: 18, color: const Color(0xFF233D4D)),
               ),
@@ -939,7 +978,9 @@ class _CartPageState extends State<CartPage> {
   }
 
   Widget paymentOptions(
-      {required ThemeData theme, required List<CartProduct> cartproducts}) {
+      {required ThemeData theme,
+      required List<CartProduct> cartproducts,
+      required Map<String, dynamic> charges}) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       decoration: const BoxDecoration(
@@ -957,7 +998,7 @@ class _CartPageState extends State<CartPage> {
                 style: theme.textTheme.bodyMedium!.copyWith(fontSize: 12),
               ),
               Text(
-                "₹${calculateTotalSellingPrice(cartproducts).toStringAsFixed(0)}",
+                "₹${calculatetotal(cartproducts, charges).toStringAsFixed(0)}",
                 style: theme.textTheme.titleLarge!.copyWith(fontSize: 16),
               ),
             ],
@@ -968,28 +1009,11 @@ class _CartPageState extends State<CartPage> {
                 onPressed: () {},
 
                 style: ElevatedButton.styleFrom(
-                  elevation: 0,
-                  backgroundColor: const Color(0xFFF9F9FA), // Background color
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 10, vertical: 16), // Padding
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8), // Rounded corners
-                  ),
-                ),
+                  elevation: .1,
 
-                child: Text(
-                  "Pay Online",
-                  style: theme.textTheme.bodyMedium!
-                      .copyWith(fontSize: 14, color: const Color(0xFF3F3F3F)),
-                ), // Button text
-              )),
-          Expanded(
-              flex: 2,
-              child: ElevatedButton(
-                onPressed: () {},
-                style: ElevatedButton.styleFrom(
-                  elevation: 0,
-                  backgroundColor: const Color(0xFFE23338), // Background color
+                  backgroundColor: charges["enable_cod"]
+                      ? const Color.fromARGB(255, 255, 240, 240)
+                      : const Color(0xFFE23338), // Background color
                   padding: const EdgeInsets.symmetric(
                       horizontal: 10, vertical: 5), // Padding
                   shape: RoundedRectangleBorder(
@@ -997,25 +1021,53 @@ class _CartPageState extends State<CartPage> {
                   ),
                 ),
 
-                child: Column(
-                  children: [
-                    Text(
-                      "Pay Cash/UPI",
-                      textAlign: TextAlign.center,
-                      style: theme.textTheme.bodyMedium!.copyWith(
-                          fontWeight: FontWeight.w700,
-                          fontSize: 13,
-                          color: Colors.white),
-                    ),
-                    Text(
-                      "(On Delivery)",
-                      textAlign: TextAlign.center,
-                      style: theme.textTheme.bodyMedium!
-                          .copyWith(fontSize: 10, color: Colors.white),
-                    ),
-                  ],
+                child: Text(
+                  "Pay Online",
+                  style: theme.textTheme.bodyMedium!.copyWith(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w700,
+                      color: charges["enable_cod"]
+                          ? const Color(0xFF3F3F3F)
+                          : Colors.white),
                 ), // Button text
               )),
+          charges["enable_cod"]
+              ? Expanded(
+                  flex: 2,
+                  child: ElevatedButton(
+                    onPressed: () {},
+                    style: ElevatedButton.styleFrom(
+                      elevation: 0,
+                      backgroundColor:
+                          const Color(0xFFE23338), // Background color
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 5), // Padding
+                      shape: RoundedRectangleBorder(
+                        borderRadius:
+                            BorderRadius.circular(8), // Rounded corners
+                      ),
+                    ),
+
+                    child: Column(
+                      children: [
+                        Text(
+                          "Pay Cash/UPI",
+                          textAlign: TextAlign.center,
+                          style: theme.textTheme.bodyMedium!.copyWith(
+                              fontWeight: FontWeight.w700,
+                              fontSize: 13,
+                              color: Colors.white),
+                        ),
+                        Text(
+                          "(On Delivery)",
+                          textAlign: TextAlign.center,
+                          style: theme.textTheme.bodyMedium!
+                              .copyWith(fontSize: 10, color: Colors.white),
+                        ),
+                      ],
+                    ), // Button text
+                  ))
+              : const SizedBox(),
         ],
       ),
     );
@@ -1109,7 +1161,8 @@ class _CartPageState extends State<CartPage> {
   }
 }
 
-double calculateTotalSellingPrice(List<CartProduct> cartList) {
+double calculateTotalSellingPrice(
+    List<CartProduct> cartList, Map<String, dynamic> charges) {
   double total = 0.0;
   for (var item in cartList) {
     total += item.sellingPrice * item.quantity;
@@ -1123,4 +1176,32 @@ double calculateTotalMRP(List<CartProduct> cartList) {
     total += item.mrp * item.quantity;
   }
   return total;
+}
+
+double calculatetotal(
+    List<CartProduct> cartList, Map<String, dynamic> charges) {
+  double total = 0.0;
+  for (var item in cartList) {
+    total += item.sellingPrice * item.quantity +
+        charges["high_demand_charge"] +
+        charges["handling_charge"] +
+        charges["delivery_charge"];
+  }
+  return total;
+}
+
+double calculateTotalsaved(
+    List<CartProduct> cartList, Map<String, dynamic> charges) {
+  double mrp = 0.0;
+  double sellingprice = 0.0;
+  double savedcharges = 0.0;
+  savedcharges = (charges["high_demand_charge"] == 0 ? 40.0 : 0.0) +
+      (charges["handling_charge"] == 0 ? 20.0 : 0.0) +
+      (charges["delivery_charge"] == 0 ? 30.0 : 0.0);
+  print(savedcharges);
+  for (var item in cartList) {
+    mrp += item.mrp * item.quantity;
+    sellingprice += item.sellingPrice * item.quantity;
+  }
+  return (mrp - sellingprice) + savedcharges;
 }
