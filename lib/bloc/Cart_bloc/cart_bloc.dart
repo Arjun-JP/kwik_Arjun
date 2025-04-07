@@ -46,18 +46,13 @@ class CartBloc extends Bloc<CartEvent, CartState> {
 
         // Emit updated state
         emit(CartUpdated(
-          message: message,
-          cartItems: updatedCartItems,
-        ));
+            message: message, cartItems: updatedCartItems, charges: {}));
       } else {
         // If cart is empty, initialize it
         List<CartProduct> newCart = [event.cartProduct];
         await cartBox.put('cart', newCart.map((e) => e.toJson()).toList());
 
-        emit(CartUpdated(
-          message: message,
-          cartItems: newCart,
-        ));
+        emit(CartUpdated(message: message, cartItems: newCart, charges: {}));
       }
     } catch (e) {
       emit(CartError(message: e.toString()));
@@ -91,9 +86,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
 
         // Emit only CartUpdated without CartLoading
         emit(CartUpdated(
-          message: message,
-          cartItems: updatedCartItems,
-        ));
+            message: message, cartItems: updatedCartItems, charges: {}));
       }
     } catch (e) {
       emit(CartError(message: e.toString()));
@@ -131,9 +124,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
         }
 
         emit(CartUpdated(
-          message: message,
-          cartItems: updatedCartItems,
-        ));
+            message: message, cartItems: updatedCartItems, charges: {}));
       }
     } catch (e) {
       emit(CartError(message: e.toString()));
@@ -143,28 +134,38 @@ class CartBloc extends Bloc<CartEvent, CartState> {
   Future<void> _onSyncCartWithServer(
       SyncCartWithServer event, Emitter<CartState> emit) async {
     try {
-      List<Map<String, dynamic>> serverCartData =
+      Map<String, dynamic> serverCartData =
           await cartRepository.getUserCart(userId: event.userId);
 
+      // Convert server cart items
       List<CartProduct> serverCartItems = [];
-      print(serverCartItems);
-      try {
-        serverCartItems =
-            serverCartData.map((e) => CartProduct.fromJson(e)).toList();
-      } catch (e) {
-        print(e);
+      if (serverCartData["cartproducts"] is List) {
+        serverCartItems = (serverCartData["cartproducts"] as List).map((e) {
+          try {
+            return CartProduct.fromJson(e as Map<String, dynamic>);
+          } catch (e) {
+            throw Exception("Failed to parse cart product: $e");
+          }
+        }).toList();
       }
 
       // Fetch local cart data
-      List<CartProduct> localCartItems =
-          (cartBox.get('cart', defaultValue: []) as List)
-              .map((e) => CartProduct.fromJson(Map<String, dynamic>.from(e)))
-              .toList();
+      List<CartProduct> localCartItems = [];
+      final localCartData = cartBox.get('cart', defaultValue: []);
+      if (localCartData is List) {
+        localCartItems = localCartData.map((e) {
+          try {
+            return CartProduct.fromJson(Map<String, dynamic>.from(e));
+          } catch (e) {
+            throw Exception("Failed to parse local cart product: $e");
+          }
+        }).toList();
+      }
 
       // If server cart is empty, clear local cart and return empty list
       if (serverCartItems.isEmpty) {
         await cartBox.put('cart', []);
-        emit(CartUpdated(message: "Cart is empty", cartItems: []));
+        emit(CartUpdated(message: "Cart is empty", cartItems: [], charges: {}));
         return;
       }
 
@@ -186,9 +187,11 @@ class CartBloc extends Bloc<CartEvent, CartState> {
       emit(CartUpdated(
         message: "Cart synced successfully",
         cartItems: serverCartItems,
+        charges: serverCartData[
+            "charges"], // Make sure to include charges in your state
       ));
     } catch (e) {
-      emit(CartError(message: "Error syncing cart: $e"));
+      emit(CartError(message: "Error syncing cart: ${e.toString()}"));
     }
   }
 }

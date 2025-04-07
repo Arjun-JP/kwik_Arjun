@@ -45,8 +45,10 @@ import 'package:kwik/pages/Home_page/widgets/category_model_4.dart';
 import 'package:kwik/pages/Home_page/widgets/category_model_9.dart';
 import 'package:kwik/pages/Home_page/widgets/descriptive_widget.dart';
 import 'package:kwik/widgets/navbar/navbar.dart';
+import 'package:kwik/widgets/shimmer/Search_result_shimmer.dart';
 import 'package:kwik/widgets/shimmer/all%20subcategory_page%20shimmer.dart';
 import 'package:kwik/widgets/shimmer/main_loading_indicator.dart';
+import 'package:kwik/widgets/shimmer/search_page_shimmer.dart';
 import '../../bloc/home_page_bloc/category_model_1_bloc/category_model1_event.dart';
 import '../../bloc/home_page_bloc/category_model_2_bloc/category_model2_event.dart';
 import '../../bloc/home_page_bloc/category_model_10_bloc/category_model_10_bloc.dart';
@@ -111,23 +113,38 @@ class _HomePageState extends State<HomePage> {
     return NotificationListener<ScrollNotification>(
       onNotification: (scrollNotification) {
         if (scrollNotification is ScrollUpdateNotification) {
-          double position = scrollNotification.metrics.pixels;
-          double maxScroll = scrollNotification.metrics.maxScrollExtent;
+          final metrics = scrollNotification.metrics;
+          final position = metrics.pixels;
+          final maxScroll = metrics.maxScrollExtent;
+          final scrollDelta = scrollNotification.scrollDelta;
 
-          if (scrollNotification.scrollDelta! > 0) {
-            // Scrolling down: Hide navbar, but keep it visible at top/bottom
-            if (position > 100 && position < maxScroll - 100) {
+          // Only proceed if we have a valid scroll delta
+          if (scrollDelta == null) return true;
+
+          // Define thresholds
+          const edgeThreshold = 100.0;
+          final nearTop = position <= edgeThreshold;
+          final nearBottom = position >= maxScroll - edgeThreshold;
+
+          // Determine if we're in the middle of the list (not near edges)
+          final inMiddle = !nearTop && !nearBottom;
+
+          // Handle scroll direction with edge cases
+          if (scrollDelta > 0) {
+            // Scrolling down - only hide if we're in the middle
+            if (inMiddle) {
               context
                   .read<NavbarBloc>()
                   .add(const UpdateNavBarVisibility(false));
             }
-          } else if (scrollNotification.scrollDelta! < 0) {
-            // Scrolling up: Show navbar when within 100 pixels from top OR at bottom
-            if (position < 100 || position >= maxScroll - 100) {
-              context
-                  .read<NavbarBloc>()
-                  .add(const UpdateNavBarVisibility(true));
-            }
+          } else if (scrollDelta < 0) {
+            // Scrolling up - always show, but especially when near edges
+            context.read<NavbarBloc>().add(const UpdateNavBarVisibility(true));
+          }
+
+          // Special case: Show navbar when exactly at top or bottom
+          if (position == 0 || position == maxScroll) {
+            context.read<NavbarBloc>().add(const UpdateNavBarVisibility(true));
           }
         }
         return true;
@@ -603,7 +620,7 @@ class _HomePageState extends State<HomePage> {
                                           Navigator.of(context)
                                               .push(MaterialPageRoute(
                                             builder: (context) =>
-                                                const AllsubcategoryPageshimmer(),
+                                                const SearchResultShimmer(),
                                           ));
                                         },
                                         child: Container(
@@ -687,7 +704,7 @@ class _HomePageState extends State<HomePage> {
                             return SliverToBoxAdapter(
                               child: template['template'],
                             );
-                          }).toList(),
+                          }),
                         ],
                       ),
                     ),

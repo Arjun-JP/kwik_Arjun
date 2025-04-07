@@ -15,34 +15,27 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     on<SearchProducts>((event, emit) async {
       emit(ProductLoading());
       try {
-        // Always fetch from API
-        final products =
+        final response =
             await repository.searchProducts(event.query, event.userId);
-        print("bloc");
-        print(products.length);
-        final apiProducts = (products["products"] as List)
+
+        // Parse the products
+        final products = (response['products'] as List)
             .map((e) => ProductModel.fromJson(e as Map<String, dynamic>))
             .toList();
-        // final apiSearchHistory = List<String>.from(products["searchHistory"]);
 
-        // Load local search history from Hive
-        // List<String> searchHistory = [];
-        // final storedHistory = searchHistoryBox.get('history');
-        // if (storedHistory != null && storedHistory is List) {
-        //   searchHistory = storedHistory.cast<String>();
-        // }
+        // Get search history if available
+        final searchHistory =
+            (response['searchHistory'] as List?)?.cast<String>() ?? [];
 
-        // Update history if new term
-        // if (!searchHistory.contains(event.query)) {
-        //   searchHistory.add(event.query);
-        //   await searchHistoryBox.put('history', searchHistory);
-        // }
-        print("bloc search products : ${apiProducts.length}");
+        print("Found ${products.length} products");
+        print("Search history: $searchHistory");
+
         emit(SearchresultProductLoaded(
-          products: [],
-          searchHistory: [],
+          products: products, // Send the actual products, not empty list
+          searchHistory: searchHistory,
         ));
-      } catch (_) {
+      } catch (e) {
+        print("Error in SearchProducts event: $e");
         emit(ProductError());
       }
     });

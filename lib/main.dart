@@ -28,6 +28,7 @@ import 'package:kwik/bloc/home_page_bloc/category_model_8_bloc/category_model_8_
 import 'package:kwik/bloc/home_page_bloc/category_model_9_bloc/category_model_9_bloc.dart';
 import 'package:kwik/bloc/home_Ui_bloc/home_Ui_Bloc.dart';
 import 'package:kwik/bloc/navbar_bloc/navbar_bloc.dart';
+import 'package:kwik/bloc/order%20details%20bloc/order_details_bloc.dart';
 import 'package:kwik/bloc/order_bloc/order_bloc.dart';
 import 'package:kwik/bloc/product_details_page/product_details_bloc/product_details_page_bloc.dart';
 import 'package:kwik/bloc/product_details_page/recommended_products_bloc/recommended_products_bloc.dart';
@@ -57,6 +58,7 @@ import 'package:kwik/repositories/category_model_8_repo.dart';
 import 'package:kwik/repositories/category_subcategory_product_repo.dart';
 import 'package:kwik/repositories/home_Ui_repository.dart';
 import 'package:kwik/repositories/home_category_repository.dart';
+import 'package:kwik/repositories/order_deiails_repo.dart';
 import 'package:kwik/repositories/order_history_repo.dart';
 import 'package:kwik/repositories/recommended_product_repo.dart';
 import 'package:kwik/repositories/search_repo.dart';
@@ -371,6 +373,8 @@ class _MyAppState extends State<MyApp> {
 
         BlocProvider<OrderBloc>(
             create: (_) => OrderBloc(orderRepository: OrderRepository())),
+        BlocProvider<OrderDetailsBloc>(
+            create: (_) => OrderDetailsBloc(OrderDeiailsRepo())),
       ],
       child: MaterialApp.router(
         builder: (context, child) {

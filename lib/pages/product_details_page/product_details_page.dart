@@ -518,8 +518,8 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
       required VariationModel selecedvariation,
       required ProductModel product}) {
     return Container(
-      height: MediaQuery.of(context).size.height * .1,
-      padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 8),
+      // height: MediaQuery.of(context).size.height * .1,
+      padding: const EdgeInsets.symmetric(horizontal: 17, vertical: 3),
       decoration: const BoxDecoration(
         color: AppColors.kwhiteColor,
         border: Border(
@@ -531,6 +531,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        spacing: 15,
         children: [
           Expanded(
             flex: 7,
@@ -595,7 +596,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
           Expanded(
             flex: 5,
             child: SizedBox(
-              height: 50,
+              height: 40,
               child:
                   BlocBuilder<CartBloc, CartState>(builder: (context, state) {
                 List<CartProduct> cartItems = [];
