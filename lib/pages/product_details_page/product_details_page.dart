@@ -4,7 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kwik/bloc/Cart_bloc/cart_bloc.dart';
 import 'package:kwik/bloc/Cart_bloc/cart_event.dart';
-import 'package:kwik/bloc/Cart_bloc/cart_state.dart';
+import 'package:kwik/bloc/Cart_bloc/cart_state.dart'
+    show CartState, CartUpdated;
 import 'package:kwik/bloc/product_details_page/product_details_bloc/product_details_page_bloc.dart';
 import 'package:kwik/bloc/product_details_page/product_details_bloc/product_details_page_event.dart';
 import 'package:kwik/bloc/product_details_page/product_details_bloc/product_details_page_state.dart';
@@ -23,6 +24,7 @@ import 'package:kwik/models/variation_model.dart';
 import 'package:kwik/repositories/recommended_product_repo.dart';
 import 'package:kwik/repositories/sub_category_product_repository.dart';
 import 'package:kwik/widgets/produc_model_1.dart';
+import 'package:kwik/widgets/shimmer/product_model1_list.dart';
 
 class ProductDetailsPage extends StatefulWidget {
   final ProductModel product;
@@ -116,7 +118,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                     BlocBuilder<SubcategoryProductBloc,
                         SubcategoryProductState>(builder: (context, state) {
                       if (state is SubcategoryProductLoading) {
-                        return const Center(child: CircularProgressIndicator());
+                        return const Center(child: ProductModel1ListShimmer());
                       } else if (state is SubcategoryProductLoaded) {
                         return similerproducts(
                             theme: theme,
@@ -133,7 +135,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                     BlocBuilder<RecommendedProductsBloc,
                         RecommendedProductsState>(builder: (context, state) {
                       if (state is RecommendedProductLoading) {
-                        return const Center(child: CircularProgressIndicator());
+                        return const Center(child: ProductModel1ListShimmer());
                       } else if (state is RecommendedProductLoaded) {
                         return productsYouMightAlsoLike(
                             theme: theme, productlist: state.products);
@@ -470,55 +472,12 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
     );
   }
 
-  Widget productsYouMightAlsoLike(
-      {required ThemeData theme, required List<ProductModel> productlist}) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10),
-      color: AppColors.kwhiteColor,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        spacing: 15,
-        children: [
-          const SizedBox(height: 15),
-          Text("You might also like", style: theme.textTheme.titleMedium),
-          SizedBox(
-            height: 280,
-            child: ListView.builder(
-                itemBuilder: (context, index) {
-                  return Padding(
-                    padding: const EdgeInsets.only(right: 10.0),
-                    child: ProductItem(
-                        subcategoryRef:
-                            productlist[index].subCategoryRef.first.id,
-                        productnamecolor: "000000",
-                        mrpColor: "A19DA3",
-                        offertextcolor: "233D4D",
-                        productBgColor: "FFFFFF",
-                        sellingPriceColor: "000000",
-                        buttontextcolor: "E23338",
-                        buttonBgColor: "FFFFFF",
-                        unitTextcolor: "A19DA3",
-                        unitbgcolor: "FFFFFF",
-                        offerbgcolor: "FFFA76",
-                        context: context,
-                        product: productlist[index]),
-                  );
-                },
-                scrollDirection: Axis.horizontal,
-                itemCount: productlist.length),
-          ),
-          const SizedBox(height: 20)
-        ],
-      ),
-    );
-  }
-
   Widget addtocartContainer(
       {required ThemeData theme,
       required VariationModel selecedvariation,
       required ProductModel product}) {
     return Container(
-      // height: MediaQuery.of(context).size.height * .1,
+      width: MediaQuery.of(context).size.width,
       padding: const EdgeInsets.symmetric(horizontal: 17, vertical: 3),
       decoration: const BoxDecoration(
         color: AppColors.kwhiteColor,
@@ -654,7 +613,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                         ),
                         child: const Text("Add to Cart",
                             style:
-                                TextStyle(fontSize: 18, color: Colors.white)),
+                                TextStyle(fontSize: 16, color: Colors.white)),
                       );
               }),
             ),
@@ -774,16 +733,16 @@ Widget quantitycontrolbutton(
     child: Row(
       spacing: 10,
       children: [
-        InkWell(
-          onTap: () {
-            HapticFeedback.mediumImpact();
-            ctx.read<CartBloc>().add(DecreaseCartQuantity(
-                pincode: "560003",
-                productRef: product.id,
-                userId: "s5ZdLnYhnVfAramtr7knGduOI872",
-                variantId: product.variations.first.id));
-          },
-          child: Expanded(
+        Expanded(
+          child: InkWell(
+            onTap: () {
+              HapticFeedback.mediumImpact();
+              ctx.read<CartBloc>().add(DecreaseCartQuantity(
+                  pincode: "560003",
+                  productRef: product.id,
+                  userId: "s5ZdLnYhnVfAramtr7knGduOI872",
+                  variantId: product.variations.first.id));
+            },
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: SizedBox(
@@ -810,18 +769,18 @@ Widget quantitycontrolbutton(
             ),
           )),
         ),
-        InkWell(
-          onTap: () {
-            HapticFeedback.mediumImpact();
-            ctx.read<CartBloc>().add(IncreaseCartQuantity(
-                pincode: "560003",
-                productRef: product.id,
-                userId: "s5ZdLnYhnVfAramtr7knGduOI872",
-                variantId: product.variations.first.id));
-          },
-          child: const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 4),
-            child: Expanded(
+        Expanded(
+          child: InkWell(
+            onTap: () {
+              HapticFeedback.mediumImpact();
+              ctx.read<CartBloc>().add(IncreaseCartQuantity(
+                  pincode: "560003",
+                  productRef: product.id,
+                  userId: "s5ZdLnYhnVfAramtr7knGduOI872",
+                  variantId: product.variations.first.id));
+            },
+            child: const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 4),
               child: SizedBox(
                   child: Center(
                 child: Icon(
@@ -890,6 +849,53 @@ Widget samebrandproducts(
           )
         ],
       ),
+    ),
+  );
+}
+
+Widget productsYouMightAlsoLike(
+    {required ThemeData theme, required List<ProductModel> productlist}) {
+  return Container(
+    padding: const EdgeInsets.symmetric(horizontal: 10),
+    color: AppColors.kwhiteColor,
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SizedBox(height: 15),
+        Text("You might also like", style: theme.textTheme.titleMedium),
+        const SizedBox(height: 15), // Added spacing here instead
+        SizedBox(
+          height: 280,
+          child: ListView.builder(
+            itemBuilder: (context, index) {
+              final product = productlist[index];
+              return Padding(
+                padding: const EdgeInsets.only(right: 10.0),
+                child: ProductItem(
+                  subcategoryRef: product.subCategoryRef.first.id,
+                  productnamecolor: "000000",
+                  mrpColor: "A19DA3",
+                  offertextcolor: "233D4D",
+                  productBgColor: "FFFFFF",
+                  sellingPriceColor: "000000",
+                  buttontextcolor: "E23338",
+                  buttonBgColor: "FFFFFF",
+                  unitTextcolor: "A19DA3",
+                  unitbgcolor: "FFFFFF",
+                  offerbgcolor: "FFFA76",
+                  context: context,
+                  product: product,
+                ),
+              );
+            },
+            scrollDirection: Axis.horizontal,
+            itemCount: productlist.length,
+            itemExtent: 180, // Consider adding fixed width for each item
+            cacheExtent: 300, // Improves scroll performance
+          ),
+        ),
+        const SizedBox(height: 20),
+      ],
     ),
   );
 }

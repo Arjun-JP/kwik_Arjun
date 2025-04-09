@@ -67,103 +67,100 @@ class _CategoriesPageModel6State extends State<CategoriesPageModel6> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: state.categories.map((category) {
                         if (widget.categories.contains(category.id)) {
-                          return Expanded(
-                            child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 10.0),
-                                child: InkWell(
-                                  onTap: () {},
-                                  child: Stack(
-                                    clipBehavior: Clip
-                                        .none, // Allows elements to overflow the container
-                                    children: [
-                                      Container(
-                                        decoration: BoxDecoration(
-                                          borderRadius: const BorderRadius.only(
-                                            bottomRight: Radius.circular(10),
-                                            bottomLeft: Radius.circular(10),
-                                            topLeft: Radius.circular(15),
-                                            topRight: Radius.circular(15),
-                                          ),
-                                          color: parseColor(widget.categoryBG),
+                          return Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 10.0),
+                              child: InkWell(
+                                onTap: () {},
+                                child: Stack(
+                                  clipBehavior: Clip
+                                      .none, // Allows elements to overflow the container
+                                  children: [
+                                    Container(
+                                      decoration: BoxDecoration(
+                                        borderRadius: const BorderRadius.only(
+                                          bottomRight: Radius.circular(10),
+                                          bottomLeft: Radius.circular(10),
+                                          topLeft: Radius.circular(15),
+                                          topRight: Radius.circular(15),
                                         ),
-                                        width: 100,
-                                        child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            Container(
-                                              height: 110,
-                                              decoration: BoxDecoration(
+                                        color: parseColor(widget.categoryBG),
+                                      ),
+                                      width: 100,
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Container(
+                                            height: 110,
+                                            decoration: BoxDecoration(
+                                              color:
+                                                  parseColor(widget.categoryBG),
+                                              borderRadius:
+                                                  BorderRadius.circular(12),
+                                              image: DecorationImage(
+                                                image: NetworkImage(
+                                                    category.imageUrl),
+                                                fit: BoxFit.cover,
+                                              ),
+                                            ),
+                                          ),
+                                          const SizedBox(height: 7),
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                bottom: 8, left: 8, right: 8),
+                                            child: Text(
+                                              category.name,
+                                              maxLines: 2,
+                                              overflow: TextOverflow.ellipsis,
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w700,
                                                 color: parseColor(
-                                                    widget.categoryBG),
-                                                borderRadius:
-                                                    BorderRadius.circular(12),
-                                                image: DecorationImage(
-                                                  image: NetworkImage(
-                                                      category.imageUrl),
-                                                  fit: BoxFit.cover,
-                                                ),
+                                                    widget.categorytitlecolor),
                                               ),
                                             ),
-                                            const SizedBox(height: 7),
-                                            Padding(
-                                              padding: const EdgeInsets.only(
-                                                  bottom: 8, left: 8, right: 8),
-                                              child: Text(
-                                                category.name,
-                                                maxLines: 2,
-                                                overflow: TextOverflow.ellipsis,
-                                                textAlign: TextAlign.center,
-                                                style: TextStyle(
-                                                  fontSize: 14,
-                                                  fontWeight: FontWeight.w700,
-                                                  color: parseColor(widget
-                                                      .categorytitlecolor),
-                                                ),
-                                              ),
-                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    // Positioning the Icon at Bottom-Right and Half Outside
+                                    Positioned(
+                                      bottom:
+                                          -8, // Move it downwards by half of its size (30px / 2)
+                                      right:
+                                          -5, // Slightly move it outside the right boundary
+                                      child: Container(
+                                        padding: const EdgeInsets.all(3),
+                                        decoration: BoxDecoration(
+                                          color: parseColor(widget.iconBGcolor),
+                                          shape: BoxShape.circle,
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color:
+                                                  Colors.black.withOpacity(0.2),
+                                              blurRadius: 4,
+                                              spreadRadius: 2,
+                                              // ignore: prefer_const_constructors
+                                              offset: Offset(2,
+                                                  2), // Adds depth to floating icon
+                                            )
                                           ],
                                         ),
-                                      ),
-                                      // Positioning the Icon at Bottom-Right and Half Outside
-                                      Positioned(
-                                        bottom:
-                                            -8, // Move it downwards by half of its size (30px / 2)
-                                        right:
-                                            -5, // Slightly move it outside the right boundary
-                                        child: Container(
-                                          padding: const EdgeInsets.all(3),
-                                          decoration: BoxDecoration(
-                                            color:
-                                                parseColor(widget.iconBGcolor),
-                                            shape: BoxShape.circle,
-                                            boxShadow: [
-                                              BoxShadow(
-                                                color: Colors.black
-                                                    .withOpacity(0.2),
-                                                blurRadius: 4,
-                                                spreadRadius: 2,
-                                                // ignore: prefer_const_constructors
-                                                offset: Offset(2,
-                                                    2), // Adds depth to floating icon
-                                              )
-                                            ],
-                                          ),
-                                          child: Icon(
-                                            Icons.keyboard_arrow_right_rounded,
-                                            color: parseColor(widget.iconcolor),
-                                            size: 30,
-                                          ),
+                                        child: Icon(
+                                          Icons.keyboard_arrow_right_rounded,
+                                          color: parseColor(widget.iconcolor),
+                                          size: 30,
                                         ),
                                       ),
-                                    ],
-                                  ),
-                                )),
-                          );
+                                    ),
+                                  ],
+                                ),
+                              ));
                         } else {
                           return const SizedBox.shrink();
                         }

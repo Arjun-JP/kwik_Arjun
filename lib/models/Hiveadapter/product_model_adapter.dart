@@ -2,7 +2,6 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:kwik/models/product_model.dart';
 import 'package:kwik/models/category_model.dart'; // Ensure this is imported
 import 'package:kwik/models/subcategory_model.dart';
-import 'package:kwik/models/warehouse_model.dart';
 import '../review_model.dart';
 import '../variation_model.dart';
 

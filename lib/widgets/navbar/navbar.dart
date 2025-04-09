@@ -4,10 +4,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kwik/bloc/Cart_bloc/cart_bloc.dart';
+import 'package:kwik/bloc/Cart_bloc/cart_event.dart' show SyncCartWithServer;
 import 'package:kwik/bloc/Cart_bloc/cart_state.dart';
 import 'package:kwik/bloc/navbar_bloc/navbar_bloc.dart';
 import 'package:kwik/bloc/navbar_bloc/navbar_event.dart';
 import 'package:kwik/bloc/navbar_bloc/navbar_state.dart';
+import 'package:kwik/bloc/product_details_page/recommended_products_bloc/recommended_products_bloc.dart';
+import 'package:kwik/bloc/product_details_page/recommended_products_bloc/recommended_products_event.dart';
 import 'package:kwik/constants/colors.dart';
 
 class Navbar extends StatelessWidget {

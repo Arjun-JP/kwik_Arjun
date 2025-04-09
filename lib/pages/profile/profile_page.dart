@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kwik/constants/doted_devider.dart';
+import 'package:kwik/widgets/logout_bottomsheet.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -958,43 +959,63 @@ Terms of Use
                   ],
                 ),
               ),
-              Container(
-                padding: const EdgeInsets.all(15),
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    color: Colors.white),
-                child: Row(
-                  spacing: 10,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    const Expanded(
-                      flex: 1,
-                      child: Icon(
-                        Icons.chat_outlined,
-                        size: 25,
-                        color: Colors.black,
-                      ),
-                    ),
-                    Expanded(
-                      flex: 5,
-                      child: Text(
-                        "Log Out",
-                        style: theme.textTheme.bodyMedium!
-                            .copyWith(color: Colors.black, fontSize: 16),
-                      ),
-                    ),
-                    const Expanded(
-                      flex: 2,
-                      child: Align(
-                        alignment: Alignment.centerRight,
+              InkWell(
+                onTap: () async {
+                  HapticFeedback.mediumImpact();
+                  await showModalBottomSheet(
+                    isScrollControlled: true,
+                    backgroundColor: Colors.transparent,
+                    enableDrag: false,
+                    context: context,
+                    builder: (context) {
+                      return GestureDetector(
+                        onTap: () => FocusScope.of(context).unfocus(),
+                        child: Padding(
+                          padding: MediaQuery.viewInsetsOf(context),
+                          child: const LogoutBottomSheet(),
+                        ),
+                      );
+                    },
+                  );
+                },
+                child: Container(
+                  padding: const EdgeInsets.all(15),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: Colors.white),
+                  child: Row(
+                    spacing: 10,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      const Expanded(
+                        flex: 1,
                         child: Icon(
-                          Icons.arrow_forward_ios_rounded,
-                          size: 16,
+                          Icons.logout_outlined,
+                          size: 25,
                           color: Colors.black,
                         ),
                       ),
-                    ),
-                  ],
+                      Expanded(
+                        flex: 5,
+                        child: Text(
+                          "Log Out",
+                          style: theme.textTheme.bodyMedium!
+                              .copyWith(color: Colors.black, fontSize: 16),
+                        ),
+                      ),
+                      const Expanded(
+                        flex: 2,
+                        child: Align(
+                          alignment: Alignment.centerRight,
+                          child: Icon(
+                            Icons.arrow_forward_ios_rounded,
+                            size: 16,
+                            color: Colors.black,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               )
             ],

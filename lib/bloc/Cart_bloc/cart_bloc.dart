@@ -46,13 +46,19 @@ class CartBloc extends Bloc<CartEvent, CartState> {
 
         // Emit updated state
         emit(CartUpdated(
-            message: message, cartItems: updatedCartItems, charges: {}));
+            message: message,
+            cartItems: updatedCartItems,
+            charges: currentState.charges));
       } else {
+        final currentState = state as CartUpdated;
         // If cart is empty, initialize it
         List<CartProduct> newCart = [event.cartProduct];
         await cartBox.put('cart', newCart.map((e) => e.toJson()).toList());
 
-        emit(CartUpdated(message: message, cartItems: newCart, charges: {}));
+        emit(CartUpdated(
+            message: message,
+            cartItems: newCart,
+            charges: currentState.charges));
       }
     } catch (e) {
       emit(CartError(message: e.toString()));
@@ -86,7 +92,9 @@ class CartBloc extends Bloc<CartEvent, CartState> {
 
         // Emit only CartUpdated without CartLoading
         emit(CartUpdated(
-            message: message, cartItems: updatedCartItems, charges: {}));
+            message: message,
+            cartItems: updatedCartItems,
+            charges: currentState.charges));
       }
     } catch (e) {
       emit(CartError(message: e.toString()));
@@ -124,7 +132,9 @@ class CartBloc extends Bloc<CartEvent, CartState> {
         }
 
         emit(CartUpdated(
-            message: message, cartItems: updatedCartItems, charges: {}));
+            message: message,
+            cartItems: updatedCartItems,
+            charges: currentState.charges));
       }
     } catch (e) {
       emit(CartError(message: e.toString()));

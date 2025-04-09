@@ -5,6 +5,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:kwik/bloc/Cart_bloc/cart_bloc.dart';
+import 'package:kwik/bloc/Cart_bloc/cart_event.dart';
 import 'package:kwik/bloc/Search_bloc/Search_bloc.dart';
 import 'package:kwik/bloc/Search_bloc/search_event.dart';
 import 'package:kwik/bloc/home_page_bloc/category_model_13_bloc/category_model_13_bloc.dart';
@@ -44,11 +46,14 @@ import 'package:kwik/pages/Home_page/widgets/category_model_3.dart';
 import 'package:kwik/pages/Home_page/widgets/category_model_4.dart';
 import 'package:kwik/pages/Home_page/widgets/category_model_9.dart';
 import 'package:kwik/pages/Home_page/widgets/descriptive_widget.dart';
+import 'package:kwik/widgets/location_permission_bottom_sheet.dart';
 import 'package:kwik/widgets/navbar/navbar.dart';
-import 'package:kwik/widgets/shimmer/Search_result_shimmer.dart';
-import 'package:kwik/widgets/shimmer/all%20subcategory_page%20shimmer.dart';
-import 'package:kwik/widgets/shimmer/main_loading_indicator.dart';
-import 'package:kwik/widgets/shimmer/search_page_shimmer.dart';
+import 'package:permission_handler/permission_handler.dart'
+    show
+        Permission,
+        PermissionActions,
+        PermissionStatusGetters,
+        openAppSettings;
 import '../../bloc/home_page_bloc/category_model_1_bloc/category_model1_event.dart';
 import '../../bloc/home_page_bloc/category_model_2_bloc/category_model2_event.dart';
 import '../../bloc/home_page_bloc/category_model_10_bloc/category_model_10_bloc.dart';
@@ -99,11 +104,63 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     context.read<HomeUiBloc>().add(FetchUiDataEvent());
+    context
+        .read<CartBloc>()
+        .add(SyncCartWithServer(userId: "s5ZdLnYhnVfAramtr7knGduOI872"));
+    checkPermissionAndProceed();
   }
 
   @override
   void dispose() {
     super.dispose();
+  }
+
+  void checkPermissionAndProceed() async {
+    bool hasPermission = await checkLocationPermission();
+    if (hasPermission) {
+    } else {
+      await showModalBottomSheet(
+        isDismissible: false,
+        isScrollControlled: true,
+        backgroundColor: Colors.transparent,
+        enableDrag: false,
+        context: context,
+        builder: (context) {
+          return GestureDetector(
+            onTap: () => FocusScope.of(context).unfocus(),
+            child: Padding(
+              padding: MediaQuery.viewInsetsOf(context),
+              child: const LocationPermissionBottomSheet(),
+            ),
+          );
+        },
+      );
+    }
+  }
+
+  Future<bool> checkLocationPermission() async {
+    // Check current status
+    var status = await Permission.location.status;
+    print("location statis");
+    print(status);
+    // If granted, return true
+    if (status.isGranted) {
+      return true;
+    }
+
+    // If denied (or not yet asked), request it
+    if (status.isDenied || status.isLimited || status.isRestricted) {
+      var result = await Permission.location.request();
+      return result.isGranted;
+    }
+
+    // If permanently denied, open settings
+    if (status.isPermanentlyDenied) {
+      await openAppSettings();
+      return false;
+    }
+
+    return false;
   }
 
   @override
@@ -616,13 +673,7 @@ class _HomePageState extends State<HomePage> {
                                     mainAxisAlignment: MainAxisAlignment.end,
                                     children: [
                                       InkWell(
-                                        onTap: () {
-                                          Navigator.of(context)
-                                              .push(MaterialPageRoute(
-                                            builder: (context) =>
-                                                const SearchResultShimmer(),
-                                          ));
-                                        },
+                                        onTap: () async {},
                                         child: Container(
                                           decoration: BoxDecoration(
                                               color: const Color(0xFFCC9320),

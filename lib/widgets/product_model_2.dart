@@ -359,16 +359,16 @@ class ProductModel2 extends StatelessWidget {
       child: Row(
         spacing: 10,
         children: [
-          InkWell(
-            onTap: () {
-              HapticFeedback.mediumImpact();
-              context.read<CartBloc>().add(DecreaseCartQuantity(
-                  pincode: "560003",
-                  productRef: product.id,
-                  userId: "s5ZdLnYhnVfAramtr7knGduOI872",
-                  variantId: product.variations.first.id));
-            },
-            child: Expanded(
+          Expanded(
+            child: InkWell(
+              onTap: () {
+                HapticFeedback.mediumImpact();
+                context.read<CartBloc>().add(DecreaseCartQuantity(
+                    pincode: "560003",
+                    productRef: product.id,
+                    userId: "s5ZdLnYhnVfAramtr7knGduOI872",
+                    variantId: product.variations.first.id));
+              },
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: SizedBox(
@@ -395,17 +395,17 @@ class ProductModel2 extends StatelessWidget {
               ),
             )),
           ),
-          InkWell(
-            onTap: () {
-              HapticFeedback.mediumImpact();
-              context.read<CartBloc>().add(IncreaseCartQuantity(
-                  pincode: "560003",
-                  productRef: product.id,
-                  userId: "s5ZdLnYhnVfAramtr7knGduOI872",
-                  variantId: product.variations.first.id));
-            },
-            child: const Expanded(
-              child: Padding(
+          Expanded(
+            child: InkWell(
+              onTap: () {
+                HapticFeedback.mediumImpact();
+                context.read<CartBloc>().add(IncreaseCartQuantity(
+                    pincode: "560003",
+                    productRef: product.id,
+                    userId: "s5ZdLnYhnVfAramtr7knGduOI872",
+                    variantId: product.variations.first.id));
+              },
+              child: const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 4),
                 child: SizedBox(
                     child: Center(

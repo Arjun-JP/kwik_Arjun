@@ -18,7 +18,7 @@ import 'package:kwik/pages/brand_page/brand_page.dart';
 import 'package:kwik/pages/cart_page/cart_page.dart';
 import 'package:kwik/pages/category_landing_page/category_landing_page.dart';
 import 'package:kwik/pages/help_support/help_and_support.dart';
-import 'package:kwik/pages/order_details_page.dart';
+import 'package:kwik/pages/Order_details_page/order_details_page.dart';
 import 'package:kwik/pages/order_list_page.dart/order_list.dart.dart';
 import 'package:kwik/pages/product_details_page/product_details_page.dart';
 import 'package:kwik/pages/profile/profile_page.dart';
