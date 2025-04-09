@@ -27,3 +27,33 @@ class OrderError extends OrderState {
   @override
   List<Object> get props => [message];
 }
+
+class Orderagainloading extends OrderState {
+  final List<Order> orders;
+  final String orderid;
+
+  Orderagainloading(this.orders, this.orderid);
+
+  @override
+  List<Object> get props => [orders, orderid];
+}
+
+class Orderagaincompleted extends OrderState {
+  final List<Order> orders;
+  final String orderid;
+
+  Orderagaincompleted(this.orders, this.orderid);
+
+  @override
+  List<Object> get props => [orders, orderid];
+}
+
+class Orderagainfaild extends OrderState {
+  final List<Order> orders;
+  final String orderid;
+
+  Orderagainfaild(this.orders, this.orderid);
+
+  @override
+  List<Object> get props => [orders, orderid];
+}

@@ -3,7 +3,7 @@ import 'package:kwik/models/cart_model.dart';
 class Order {
   String id;
   WarehouseModel warehouseRef;
-  Map<String, dynamic>? userRef; // Added userRef as Map<String, dynamic>?
+  Map<String, dynamic>? userRef;
   List<CartProduct> products;
   Map<String, dynamic>? deliveryBoy;
   String orderStatus;
@@ -25,13 +25,15 @@ class Order {
   String typeOfDelivery;
   DateTime? selectedTimeSlot;
   double deliveryCharge;
+  double? handlingCharge; // ✅ New field
+  double? highDemandCharge; // ✅ New field
   String? deliveryInstructions;
   DateTime createdTime;
 
   Order({
     required this.id,
     required this.warehouseRef,
-    this.userRef, // Added userRef
+    this.userRef,
     required this.products,
     this.deliveryBoy,
     required this.orderStatus,
@@ -53,6 +55,8 @@ class Order {
     required this.typeOfDelivery,
     this.selectedTimeSlot,
     required this.deliveryCharge,
+    this.handlingCharge, // ✅
+    this.highDemandCharge, // ✅
     this.deliveryInstructions,
     required this.createdTime,
   });
@@ -62,9 +66,8 @@ class Order {
       return Order(
         id: json['_id'] ?? '',
         warehouseRef: WarehouseModel.fromJson(json['warehouse_ref']),
-        userRef: json['user_ref'] is Map<String, dynamic>
-            ? json['user_ref']
-            : null, // Added userRef parsing
+        userRef:
+            json['user_ref'] is Map<String, dynamic> ? json['user_ref'] : null,
         products: (json['products'] as List? ?? [])
             .map((e) => CartProduct.fromJson(e))
             .toList(),
@@ -92,6 +95,12 @@ class Order {
         typeOfDelivery: json['type_of_delivery'] ?? 'normal',
         selectedTimeSlot: DateTime.tryParse(json['selected_time_slot'] ?? ''),
         deliveryCharge: (json['delivery_charge'] ?? 0).toDouble(),
+        handlingCharge: json['handling_charge'] != null
+            ? (json['handling_charge'] ?? 0).toDouble()
+            : null,
+        highDemandCharge: json['high_demand_charge'] != null
+            ? (json['high_demand_charge'] ?? 0).toDouble()
+            : null,
         deliveryInstructions: json['delivery_instructions'],
         createdTime:
             DateTime.tryParse(json['created_time'] ?? '') ?? DateTime.now(),
@@ -107,7 +116,7 @@ class Order {
     return {
       '_id': id,
       'warehouse_ref': warehouseRef.toJson(),
-      'user_ref': userRef, // Added userRef to toJson
+      'user_ref': userRef,
       'products': products.map((e) => e.toJson()).toList(),
       'delivery_boy': deliveryBoy,
       'order_status': orderStatus,
@@ -129,6 +138,8 @@ class Order {
       'type_of_delivery': typeOfDelivery,
       'selected_time_slot': selectedTimeSlot?.toIso8601String(),
       'delivery_charge': deliveryCharge,
+      'handling_charge': handlingCharge, // ✅ New field
+      'high_demand_charge': highDemandCharge, // ✅ New field
       'delivery_instructions': deliveryInstructions,
       'created_time': createdTime.toIso8601String(),
     };

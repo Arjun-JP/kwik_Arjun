@@ -14,6 +14,8 @@ import 'package:kwik/bloc/all_sub_category_bloc/all_sub_category_bloc.dart';
 import 'package:kwik/bloc/banner_bloc/banner_bloc.dart';
 import 'package:kwik/bloc/brand_products/brand_products_bloc.dart';
 import 'package:kwik/bloc/category_landing_page_bloc/category_landing_page_bloc.dart';
+import 'package:kwik/bloc/get_appdata_bloc/get_appdata_bloc.dart';
+import 'package:kwik/bloc/get_appdata_bloc/get_appdata_event.dart';
 import 'package:kwik/bloc/home_page_bloc/category_bloc/category_bloc.dart';
 import 'package:kwik/bloc/home_page_bloc/category_model_13_bloc/category_model_13_bloc.dart';
 import 'package:kwik/bloc/home_page_bloc/category_model_14_bloc/category_model_14_bloc.dart';
@@ -57,6 +59,7 @@ import 'package:kwik/repositories/category_model_3_repo_home.dart';
 import 'package:kwik/repositories/category_model_6_repo.dart';
 import 'package:kwik/repositories/category_model_8_repo.dart';
 import 'package:kwik/repositories/category_subcategory_product_repo.dart';
+import 'package:kwik/repositories/get_app_data_repo.dart';
 import 'package:kwik/repositories/home_Ui_repository.dart';
 import 'package:kwik/repositories/home_category_repository.dart';
 import 'package:kwik/repositories/order_deiails_repo.dart';
@@ -377,6 +380,10 @@ class _MyAppState extends State<MyApp> {
             create: (_) => OrderBloc(orderRepository: OrderRepository())),
         BlocProvider<OrderDetailsBloc>(
             create: (_) => OrderDetailsBloc(OrderDeiailsRepo())),
+        //appdata bloc
+
+        BlocProvider<GetAppdataBloc>(
+            create: (_) => GetAppdataBloc(GetAppDataRepo())),
       ],
       child: MaterialApp.router(
         builder: (context, child) {
