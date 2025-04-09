@@ -9,6 +9,7 @@ import 'package:kwik/constants/colors.dart';
 import 'package:kwik/constants/constants.dart';
 import 'package:kwik/models/cart_model.dart';
 import 'package:kwik/models/product_model.dart';
+import 'package:kwik/widgets/select_Varrient_bottom_sheet.dart';
 
 class ProductItem extends StatelessWidget {
   final String subcategoryRef;
@@ -63,78 +64,80 @@ class ProductItem extends StatelessWidget {
                 'subcategoryref': subcategoryRef,
               },
             ),
-            child: SizedBox(
-              child: Stack(
-                children: [
-                  Container(
-                    width: 120,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      spacing: 3,
-                      children: [
-                        Container(
-                          height: 170,
-                          decoration: BoxDecoration(
-                            color: parseColor("F9F9F9"),
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: Container(
-                            width: 120,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              image: DecorationImage(
-                                image: NetworkImage(product.productImages[0]),
-                                fit: BoxFit.contain,
-                              ),
-                            ),
-                          ),
+            child: Stack(
+              children: [
+                Container(
+                  width: 120,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    spacing: 3,
+                    children: [
+                      Container(
+                        height: 170,
+                        decoration: BoxDecoration(
+                          color: parseColor("F9F9F9"),
+                          borderRadius: BorderRadius.circular(10),
                         ),
-                        const SizedBox(height: 1),
-                        SizedBox(
+                        child: Container(
                           width: 120,
-                          child: Text(
-                            product.productName,
-                            textAlign: TextAlign.left,
-                            maxLines: 2,
-                            style: theme.textTheme.bodyMedium!.copyWith(
-                              color: parseColor(productnamecolor),
-                              fontWeight: FontWeight.w600,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            image: DecorationImage(
+                              image: NetworkImage(product.productImages[0]),
+                              fit: BoxFit.contain,
                             ),
                           ),
                         ),
-                        Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Container(
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: unitbgcolor == "FFFFFF" ||
-                                          unitbgcolor == "00FFFFFF"
-                                      ? 0
-                                      : 10,
-                                  vertical: 1),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(8),
-                                color: parseColor(unitbgcolor),
-                              ),
-                              child: Text(
-                                "${product.variations.first.qty}  ${product.variations.first.unit}",
-                                style: theme.textTheme.bodyMedium!.copyWith(
-                                  color: parseColor(unitTextcolor),
-                                  fontWeight: FontWeight.w600,
-                                ),
+                      ),
+                      const SizedBox(height: 1),
+                      SizedBox(
+                        width: 120,
+                        child: Text(
+                          product.productName,
+                          textAlign: TextAlign.left,
+                          maxLines: 2,
+                          style: theme.textTheme.bodyMedium!.copyWith(
+                            color: parseColor(productnamecolor),
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Container(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: unitbgcolor == "FFFFFF" ||
+                                        unitbgcolor == "00FFFFFF"
+                                    ? 0
+                                    : 10,
+                                vertical: 1),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(8),
+                              color: parseColor(unitbgcolor),
+                            ),
+                            child: Text(
+                              "${product.variations.first.qty}  ${product.variations.first.unit}",
+                              style: theme.textTheme.bodyMedium!.copyWith(
+                                color: parseColor(unitTextcolor),
+                                fontWeight: FontWeight.w600,
                               ),
                             ),
-                          ],
-                        ),
-                        const Spacer(),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Column(
+                          ),
+                        ],
+                      ),
+                      const Spacer(),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(
+                            flex: 2,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
                                   "₹ 45",
@@ -152,7 +155,10 @@ class ProductItem extends StatelessWidget {
                                 )
                               ],
                             ),
-                            SizedBox(
+                          ),
+                          Expanded(
+                            flex: 4,
+                            child: SizedBox(
                               height: 30,
                               child: cartItems.any((element) =>
                                       element.productRef.id == product.id)
@@ -168,39 +174,66 @@ class ProductItem extends StatelessWidget {
                                     )
                                   : (product.variations.isNotEmpty
                                       ? ElevatedButton(
-                                          onPressed: () {
+                                          onPressed: () async {
                                             HapticFeedback.mediumImpact();
                                             final firstVariation =
                                                 product.variations.first;
-                                            print("add to cart clicked");
-                                            context.read<CartBloc>().add(
-                                                  AddToCart(
-                                                    cartProduct: CartProduct(
-                                                      productRef: product,
-                                                      variant: firstVariation,
-                                                      quantity: 1,
-                                                      pincode: "560003",
-                                                      sellingPrice:
-                                                          firstVariation
-                                                              .sellingPrice,
-                                                      mrp: firstVariation.mrp,
-                                                      buyingPrice:
-                                                          firstVariation
-                                                              .buyingPrice,
-                                                      inStock: true,
-                                                      variationVisibility: true,
-                                                      finalPrice: 0,
-                                                      cartAddedDate:
-                                                          DateTime.now(),
+
+                                            if (product.variations.length > 1) {
+                                              await showModalBottomSheet(
+                                                isScrollControlled: true,
+                                                backgroundColor:
+                                                    Colors.transparent,
+                                                enableDrag: false,
+                                                context: context,
+                                                builder: (context) {
+                                                  return GestureDetector(
+                                                    onTap: () =>
+                                                        FocusScope.of(context)
+                                                            .unfocus(),
+                                                    child: Padding(
+                                                      padding: MediaQuery
+                                                          .viewInsetsOf(
+                                                              context),
+                                                      child:
+                                                          SelectVarrientBottomSheet(
+                                                        product: product,
+                                                      ),
                                                     ),
-                                                    userId:
-                                                        "s5ZdLnYhnVfAramtr7knGduOI872",
-                                                    productRef: product.id,
-                                                    variantId:
-                                                        firstVariation.id,
-                                                    pincode: "560003",
-                                                  ),
-                                                );
+                                                  );
+                                                },
+                                              );
+                                            } else {
+                                              context.read<CartBloc>().add(
+                                                    AddToCart(
+                                                      cartProduct: CartProduct(
+                                                        productRef: product,
+                                                        variant: firstVariation,
+                                                        quantity: 1,
+                                                        pincode: "560003",
+                                                        sellingPrice:
+                                                            firstVariation
+                                                                .sellingPrice,
+                                                        mrp: firstVariation.mrp,
+                                                        buyingPrice:
+                                                            firstVariation
+                                                                .buyingPrice,
+                                                        inStock: true,
+                                                        variationVisibility:
+                                                            true,
+                                                        finalPrice: 0,
+                                                        cartAddedDate:
+                                                            DateTime.now(),
+                                                      ),
+                                                      userId:
+                                                          "s5ZdLnYhnVfAramtr7knGduOI872",
+                                                      productRef: product.id,
+                                                      variantId:
+                                                          firstVariation.id,
+                                                      pincode: "560003",
+                                                    ),
+                                                  );
+                                            }
                                           },
                                           style: ElevatedButton.styleFrom(
                                             backgroundColor:
@@ -230,53 +263,53 @@ class ProductItem extends StatelessWidget {
                                           ),
                                         )
                                       : const SizedBox()), // Return empty widget if no variations
-                            )
-                          ],
+                            ),
+                          )
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                ClipPath(
+                  clipper: ZigZagClipper(),
+                  child: Container(
+                    width: 40,
+                    height: 50,
+                    decoration: BoxDecoration(
+                      color: parseColor(offerbgcolor),
+                      borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(10),
+                      ),
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          "${percentage(product.variations.first.mrp, product.variations.first.sellingPrice)}"
+                          " "
+                          "%",
+                          textAlign: TextAlign.center,
+                          style: theme.textTheme.bodyMedium!.copyWith(
+                            color: parseColor(offertextcolor),
+                            fontSize: 11,
+                            fontFamily: "Inter",
+                            fontWeight: FontWeight.w900,
+                          ),
+                        ),
+                        Text(
+                          "OFF",
+                          textAlign: TextAlign.center,
+                          style: theme.textTheme.bodyMedium!.copyWith(
+                            color: parseColor(offertextcolor),
+                            fontSize: 10,
+                            fontFamily: "Inter",
+                          ),
                         ),
                       ],
                     ),
                   ),
-                  ClipPath(
-                    clipper: ZigZagClipper(),
-                    child: Container(
-                      width: 40,
-                      height: 50,
-                      decoration: BoxDecoration(
-                        color: parseColor(offerbgcolor),
-                        borderRadius: const BorderRadius.only(
-                          topLeft: Radius.circular(10),
-                        ),
-                      ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            "${percentage(product.variations.first.mrp, product.variations.first.sellingPrice)}"
-                            " "
-                            "%",
-                            textAlign: TextAlign.center,
-                            style: theme.textTheme.bodyMedium!.copyWith(
-                              color: parseColor(offertextcolor),
-                              fontSize: 11,
-                              fontFamily: "Inter",
-                              fontWeight: FontWeight.w900,
-                            ),
-                          ),
-                          Text(
-                            "OFF",
-                            textAlign: TextAlign.center,
-                            style: theme.textTheme.bodyMedium!.copyWith(
-                              color: parseColor(offertextcolor),
-                              fontSize: 10,
-                              fontFamily: "Inter",
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
           product.variations.first.stock.first.stockQty == 0
@@ -308,23 +341,25 @@ class ProductItem extends StatelessWidget {
       required ProductModel product,
       required String qty}) {
     return Container(
+      height: 30,
+      padding: const EdgeInsets.symmetric(horizontal: 5),
       decoration: BoxDecoration(
           color: const Color(0xFFE23338),
           borderRadius: BorderRadius.circular(10)),
       child: Row(
         spacing: 2,
         children: [
-          InkWell(
-            onTap: () {
-              HapticFeedback.mediumImpact();
-              context.read<CartBloc>().add(DecreaseCartQuantity(
-                  pincode: "560003",
-                  productRef: product.id,
-                  userId: "s5ZdLnYhnVfAramtr7knGduOI872",
-                  variantId: product.variations.first.id));
-            },
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
+          Expanded(
+            flex: 3,
+            child: InkWell(
+              onTap: () {
+                HapticFeedback.mediumImpact();
+                context.read<CartBloc>().add(DecreaseCartQuantity(
+                    pincode: "560003",
+                    productRef: product.id,
+                    userId: "s5ZdLnYhnVfAramtr7knGduOI872",
+                    variantId: product.variations.first.id));
+              },
               child: SizedBox(
                   child: Center(
                       child: Container(
@@ -336,35 +371,41 @@ class ProductItem extends StatelessWidget {
               ))),
             ),
           ),
-          SizedBox(
-              child: Center(
-            child: Text(
-              qty,
-              style: theme.textTheme.bodyMedium!.copyWith(
-                  color: Colors.white,
-                  fontSize: 14,
-                  fontWeight: FontWeight.w800),
-            ),
-          )),
-          InkWell(
-            onTap: () {
-              HapticFeedback.mediumImpact();
-              context.read<CartBloc>().add(IncreaseCartQuantity(
-                  pincode: "560003",
-                  productRef: product.id,
-                  userId: "s5ZdLnYhnVfAramtr7knGduOI872",
-                  variantId: product.variations.first.id));
-            },
-            child: const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 4),
-              child: SizedBox(
-                  child: Center(
-                child: Icon(
-                  Icons.add,
-                  size: 20,
-                  color: Colors.white,
-                ),
-              )),
+          Expanded(
+            flex: 2,
+            child: SizedBox(
+                child: Center(
+              child: Text(
+                qty,
+                style: theme.textTheme.bodyMedium!.copyWith(
+                    color: Colors.white,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w800),
+              ),
+            )),
+          ),
+          Expanded(
+            flex: 3,
+            child: InkWell(
+              onTap: () {
+                HapticFeedback.mediumImpact();
+                context.read<CartBloc>().add(IncreaseCartQuantity(
+                    pincode: "560003",
+                    productRef: product.id,
+                    userId: "s5ZdLnYhnVfAramtr7knGduOI872",
+                    variantId: product.variations.first.id));
+              },
+              child: const Padding(
+                padding: EdgeInsets.symmetric(vertical: 4),
+                child: SizedBox(
+                    child: Center(
+                  child: Icon(
+                    Icons.add,
+                    size: 20,
+                    color: Colors.white,
+                  ),
+                )),
+              ),
             ),
           )
         ],

@@ -53,7 +53,8 @@ class _OrderListingPageState extends State<OrderListingPage> {
                         ),
                       ),
                     )),
-                    bottomCartBanner(theme: theme, ctx: context),
+
+                    // bottomCartBanner(theme: theme, ctx: context),
                   ],
                 )
               : const SizedBox();
@@ -61,36 +62,36 @@ class _OrderListingPageState extends State<OrderListingPage> {
   }
 }
 
-Widget bottomCartBanner({required ThemeData theme, required BuildContext ctx}) {
-  return SafeArea(
-    child: Padding(
-      padding: const EdgeInsets.only(left: 15.0, right: 15),
-      child: Column(
-        children: [
-          const SizedBox(height: 8),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.buttonColorOrange,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30)),
-              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
-            ),
-            onPressed: () {
-              ctx.go('/home');
-            },
-            child: const Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text("Order Again",
-                    style: TextStyle(fontSize: 16, color: Colors.white)),
-              ],
-            ),
-          ),
-        ],
-      ),
-    ),
-  );
-}
+// Widget bottomCartBanner({required ThemeData theme, required BuildContext ctx}) {
+//   return SafeArea(
+//     child: Padding(
+//       padding: const EdgeInsets.only(left: 15.0, right: 15),
+//       child: Column(
+//         children: [
+//           const SizedBox(height: 8),
+//           ElevatedButton(
+//             style: ElevatedButton.styleFrom(
+//               backgroundColor: AppColors.buttonColorOrange,
+//               shape: RoundedRectangleBorder(
+//                   borderRadius: BorderRadius.circular(30)),
+//               padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
+//             ),
+//             onPressed: () {
+//               ctx.go('/home');
+//             },
+//             child: const Row(
+//               mainAxisAlignment: MainAxisAlignment.center,
+//               children: [
+//                 Text("Order Again",
+//                     style: TextStyle(fontSize: 16, color: Colors.white)),
+//               ],
+//             ),
+//           ),
+//         ],
+//       ),
+//     ),
+//   );
+// }
 
 class OrderCard extends StatelessWidget {
   final Order orderData;

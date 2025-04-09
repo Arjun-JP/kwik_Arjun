@@ -155,11 +155,16 @@ class _SearchPageState extends State<SearchPage> {
         if (pattern.isEmpty) return [];
         final state = context.read<SearchBloc>().state;
         if (state is SearchresultProductLoaded) {
-          return state.products
+          final filteredProducts = state.products
               .where((product) => product.productName
                   .toLowerCase()
                   .contains(pattern.toLowerCase()))
               .toList();
+
+          final result = filteredProducts.length > 10
+              ? filteredProducts.sublist(0, 10)
+              : filteredProducts;
+          return result;
         }
         return [];
       },

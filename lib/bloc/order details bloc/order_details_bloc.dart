@@ -13,10 +13,9 @@ class OrderDetailsBloc extends Bloc<OrderDetailsEvent, OrderDetailsState> {
       try {
         final orderdata =
             await orderRepository.getorderdetails(orderID: event.orderId);
-        print("order api called");
+
         Order order = Order.fromJson(orderdata["data"]);
-        print("order parsed");
-        print(order.id);
+
         emit(OrderDetailsLoaded(order));
       } catch (e) {
         emit(OrderDetailsError('Failed to fetch order: ${e.toString()}'));

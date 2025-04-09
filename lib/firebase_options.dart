@@ -64,7 +64,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '760883509884',
     projectId: 'kwikgroceries-8a11e',
     storageBucket: 'kwikgroceries-8a11e.firebasestorage.app',
-    iosBundleId: 'com.example.kwik',
+    iosBundleId: 'com.digi9.kwik',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
@@ -73,7 +73,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '760883509884',
     projectId: 'kwikgroceries-8a11e',
     storageBucket: 'kwikgroceries-8a11e.firebasestorage.app',
-    iosBundleId: 'com.example.kwik',
+    iosBundleId: 'com.digi9.kwik',
   );
 
   static const FirebaseOptions windows = FirebaseOptions(
@@ -85,5 +85,4 @@ class DefaultFirebaseOptions {
     storageBucket: 'kwikgroceries-8a11e.firebasestorage.app',
     measurementId: 'G-QMD6Q2ZDXF',
   );
-
 }
