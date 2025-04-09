@@ -13,3 +13,12 @@ class FetchOrders extends OrderEvent {
   @override
   List<Object> get props => [userId];
 }
+
+class Orderagain extends OrderEvent {
+  final String userId;
+  final String orderid;
+  Orderagain({required this.userId, required this.orderid});
+
+  @override
+  List<Object> get props => [userId, orderid];
+}

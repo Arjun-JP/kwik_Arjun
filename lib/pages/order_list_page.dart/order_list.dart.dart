@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:kwik/bloc/Cart_bloc/cart_bloc.dart';
+import 'package:kwik/bloc/Cart_bloc/cart_event.dart';
+import 'package:kwik/bloc/navbar_bloc/navbar_bloc.dart';
+import 'package:kwik/bloc/navbar_bloc/navbar_event.dart';
 import 'package:kwik/bloc/order_bloc/order_bloc.dart';
 import 'package:kwik/bloc/order_bloc/order_event.dart';
 import 'package:kwik/bloc/order_bloc/order_state.dart';
 import 'package:kwik/constants/colors.dart';
 import 'package:kwik/constants/format_time.dart';
 import 'package:kwik/models/order_model.dart';
+import 'package:kwik/widgets/shimmer/order_list_page_shimmer.dart';
 
 class OrderListingPage extends StatefulWidget {
   @override
@@ -38,59 +43,91 @@ class _OrderListingPageState extends State<OrderListingPage> {
         ),
         body: BlocBuilder<OrderBloc, OrderState>(builder: (context, state) {
           print(state is OrderLoaded ? state.orders.length : "0");
-          return state is OrderLoaded
-              ? Column(
-                  children: [
-                    Expanded(
-                        child: SingleChildScrollView(
-                      child: Column(
-                        children: List.generate(
-                          state.orders.length,
-                          (index) => OrderCard(
-                            orderData: state.orders[index],
-                            theme: theme,
-                          ),
-                        ),
+          if (state is OrderLoading) {
+            return const OrderListPageShimmer();
+          }
+          if (state is OrderLoaded) {
+            return Column(
+              children: [
+                Expanded(
+                    child: SingleChildScrollView(
+                  child: Column(
+                    children: List.generate(
+                      state.orders.length,
+                      (index) => OrderCard(
+                        orderData: state.orders[index],
+                        theme: theme,
                       ),
-                    )),
+                    ),
+                  ),
+                )),
 
-                    // bottomCartBanner(theme: theme, ctx: context),
-                  ],
-                )
-              : const SizedBox();
+                // bottomCartBanner(theme: theme, ctx: context),
+              ],
+            );
+          } else if (state is Orderagainloading) {
+            return Column(
+              children: [
+                Expanded(
+                    child: SingleChildScrollView(
+                  child: Column(
+                    children: List.generate(
+                      state.orders.length,
+                      (index) => OrderCard(
+                        orderData: state.orders[index],
+                        theme: theme,
+                      ),
+                    ),
+                  ),
+                )),
+
+                // bottomCartBanner(theme: theme, ctx: context),
+              ],
+            );
+          } else if (state is Orderagaincompleted) {
+            return Column(
+              children: [
+                Expanded(
+                    child: SingleChildScrollView(
+                  child: Column(
+                    children: List.generate(
+                      state.orders.length,
+                      (index) => OrderCard(
+                        orderData: state.orders[index],
+                        theme: theme,
+                      ),
+                    ),
+                  ),
+                )),
+
+                // bottomCartBanner(theme: theme, ctx: context),
+              ],
+            );
+          } else if (state is Orderagainfaild) {
+            return Column(
+              children: [
+                Expanded(
+                    child: SingleChildScrollView(
+                  child: Column(
+                    children: List.generate(
+                      state.orders.length,
+                      (index) => OrderCard(
+                        orderData: state.orders[index],
+                        theme: theme,
+                      ),
+                    ),
+                  ),
+                )),
+
+                // bottomCartBanner(theme: theme, ctx: context),
+              ],
+            );
+          }
+          return const SizedBox();
         }));
   }
 }
 
-// Widget bottomCartBanner({required ThemeData theme, required BuildContext ctx}) {
-//   return SafeArea(
-//     child: Padding(
-//       padding: const EdgeInsets.only(left: 15.0, right: 15),
-//       child: Column(
-//         children: [
-//           const SizedBox(height: 8),
-//           ElevatedButton(
-//             style: ElevatedButton.styleFrom(
-//               backgroundColor: AppColors.buttonColorOrange,
-//               shape: RoundedRectangleBorder(
-//                   borderRadius: BorderRadius.circular(30)),
-//               padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
-//             ),
-//             onPressed: () {
-//               ctx.go('/home');
-//             },
-//             child: const Row(
-//               mainAxisAlignment: MainAxisAlignment.center,
-//               children: [
-//                 Text("Order Again",
-//                     style: TextStyle(fontSize: 16, color: Colors.white)),
-//               ],
-//             ),
-//           ),
-//         ],
-//       ),
-//     ),
-//   );
 // }
 
 class OrderCard extends StatelessWidget {
@@ -223,12 +260,59 @@ class OrderCard extends StatelessWidget {
                     ),
                     child: const Text("Rate Order"),
                   ),
-                  TextButton(
-                    onPressed: () {},
-                    child: const Text(
-                      "Order Again",
-                      style: TextStyle(
-                          color: Colors.pink, fontWeight: FontWeight.bold),
+                  BlocListener<OrderBloc, OrderState>(
+                    listenWhen: (previous, current) => current
+                        is Orderagaincompleted, // only listen for this state
+                    listener: (context, state) {
+                      if (state is Orderagaincompleted) {
+                        context.read<CartBloc>().add(SyncCartWithServer(
+                            userId: "s5ZdLnYhnVfAramtr7knGduOI872"));
+                        context
+                            .read<NavbarBloc>()
+                            .add(const UpdateNavBarIndex(3));
+                        context.go('/cart');
+                      }
+                    },
+                    child: BlocBuilder<OrderBloc, OrderState>(
+                      builder: (context, state) {
+                        if (state is Orderagainloading &&
+                            state.orderid == orderData.id) {
+                          return const SizedBox(
+                            height: 35,
+                            child: CircularProgressIndicator(
+                              color: AppColors.buttonColorOrange,
+                            ),
+                          );
+                        } else if (state is Orderagainfaild) {
+                          return TextButton(
+                            onPressed: () {
+                              context.read<OrderBloc>().add(Orderagain(
+                                  orderid: orderData.id,
+                                  userId: "s5ZdLnYhnVfAramtr7knGduOI872"));
+                            },
+                            child: const Text(
+                              "Order Again",
+                              style: TextStyle(
+                                  color: Colors.pink,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          );
+                        }
+
+                        return TextButton(
+                          onPressed: () {
+                            context.read<OrderBloc>().add(Orderagain(
+                                orderid: orderData.id,
+                                userId: "s5ZdLnYhnVfAramtr7knGduOI872"));
+                          },
+                          child: const Text(
+                            "Order Again",
+                            style: TextStyle(
+                                color: Colors.pink,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        );
+                      },
                     ),
                   ),
                 ],

@@ -890,7 +890,7 @@ Widget productsYouMightAlsoLike(
             },
             scrollDirection: Axis.horizontal,
             itemCount: productlist.length,
-            itemExtent: 180, // Consider adding fixed width for each item
+            itemExtent: 135, // Consider adding fixed width for each item
             cacheExtent: 300, // Improves scroll performance
           ),
         ),

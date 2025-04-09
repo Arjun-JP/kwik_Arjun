@@ -35,6 +35,6 @@ String formatIso8601Date(String isoDateString) {
     return '${day}th ${month} ${year}, ${hour}:${minute.toString().padLeft(2, '0')} ${amPm}';
   } catch (e) {
     print('Error formatting date: $e');
-    return 'Invalid Date';
+    return 'Not Updated';
   }
 }

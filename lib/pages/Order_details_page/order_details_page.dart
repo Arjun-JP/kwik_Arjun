@@ -4,7 +4,14 @@ import 'package:go_router/go_router.dart';
 import 'package:kwik/bloc/order%20details%20bloc/order_details_bloc.dart';
 import 'package:kwik/bloc/order%20details%20bloc/order_details_event.dart';
 import 'package:kwik/bloc/order%20details%20bloc/order_details_state.dart';
+import 'package:kwik/bloc/order_bloc/order_bloc.dart';
+import 'package:kwik/bloc/order_bloc/order_event.dart';
+import 'package:kwik/constants/colors.dart';
+import 'package:kwik/constants/format_time.dart';
+import 'package:kwik/models/cart_model.dart';
 import 'package:kwik/models/order_model.dart';
+import 'package:kwik/widgets/shimmer/orderdetails_page_shimmer.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 // ignore: use_key_in_widget_constructors
 class OrderDetailsPage extends StatefulWidget {
@@ -29,9 +36,9 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
         builder: (context, state) {
       return Scaffold(
           appBar: AppBar(
-            title: const Text(
-              'Order #{order.id}',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            title: Text(
+              'Order #${state is OrderDetailsLoaded ? state.order.id : ""}',
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             centerTitle: false,
             leading: InkWell(
@@ -39,7 +46,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                 child: const Icon(Icons.arrow_back_ios_new_rounded)),
           ),
           body: (state is OrderDetailsLoading)
-              ? const CircularProgressIndicator()
+              ? const OrderdetailsPageShimmer()
               : (state is OrderDetailsLoaded)
                   ? SingleChildScrollView(
                       padding: const EdgeInsets.all(16),
@@ -59,6 +66,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                               theme: theme, orderdata: state.order),
                           const SizedBox(height: 24),
                           _buildActionButtons(theme: theme),
+                          const SizedBox(height: 35),
                         ],
                       ),
                     )
@@ -109,17 +117,27 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                 orderdata.products[index].productRef.productName,
                 maxLines: 2,
               ),
-              subtitle: Text(
-                orderdata.products[index].productRef.productDescription,
-                maxLines: 3,
+              subtitle: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    orderdata.products[index].productRef.productDescription,
+                    maxLines: 2,
+                  ),
+                  Text(
+                    " ${orderdata.products[index].variant.qty} ${orderdata.products[index].variant.unit} x ${orderdata.products[index].quantity} unit",
+                    maxLines: 2,
+                  ),
+                ],
               ),
               trailing: Column(
                 children: [
                   Text(
-                    "₹ ${orderdata.products[index].variant.sellingPrice}",
+                    "₹ ${(orderdata.products[index].variant.sellingPrice) * (orderdata.products[index].quantity)}",
                     style: theme.textTheme.bodyLarge,
                   ),
-                  Text("₹ ${orderdata.products[index].variant.mrp}",
+                  Text(
+                      "₹ ${(orderdata.products[index].variant.mrp) * (orderdata.products[index].quantity)}",
                       style: theme.textTheme.bodyMedium!
                           .copyWith(decoration: TextDecoration.lineThrough))
                 ],
@@ -150,20 +168,6 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
               ],
             ),
           ),
-          // Column(
-          //   crossAxisAlignment: CrossAxisAlignment.end,
-          //   children: [
-          //     Text(
-          //       '₹${item.totalAmount}',
-          //       style: theme.textTheme.bodyLarge,
-          //     ),
-          //     if (item.id != item.id)
-          //       Text(
-          //         '¥${item.id}',
-          //         style: theme.textTheme.bodyLarge,
-          //       ),
-          //   ],
-          // ),
         ],
       ),
     );
@@ -185,27 +189,28 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
           ],
         ),
         const SizedBox(height: 12),
-        _buildBillRow(
-            'Item Total',
-            '₹ ${orderdata.totalAmount} ¥{order.gst.toStringAsFixed(2)}',
-            theme),
+        _buildBillRow('ItemS Total',
+            '₹ ${calculateTotalSellingPrice(orderdata.products)}', theme),
+        _buildBillRow('Delivery charge',
+            '₹${orderdata.deliveryCharge.toStringAsFixed(2)} ', theme),
         _buildBillRow('Handling Charge',
-            '¥{order.handlingCharge.toStringAsFixed(2)}', theme),
-        _buildBillRow('Delivery Fee',
-            '¥{order.deliveryFee.toStringAsFixed(2)} ¥0', theme),
+            '₹${orderdata.handlingCharge!.toStringAsFixed(2)}', theme),
+        _buildBillRow('High demand surge charge',
+            '₹${orderdata.highDemandCharge!.toStringAsFixed(2)} ', theme),
         const Divider(height: 24),
-        const Row(
+        Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text('Total Bill', style: TextStyle(fontWeight: FontWeight.bold)),
+            const Text('Total Bill',
+                style: TextStyle(fontWeight: FontWeight.bold)),
             Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Text(
-                  '¥{order.total.toStringAsFixed(2)} ¥{(order.total - order.discount).toStringAsFixed(2)}',
-                  style: TextStyle(fontWeight: FontWeight.bold),
+                  '₹${orderdata.totalAmount.toStringAsFixed(2)} ',
+                  style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
-                Text(
+                const Text(
                   'Incl. all taxes and charges',
                   style: TextStyle(color: Colors.grey, fontSize: 12),
                 ),
@@ -214,16 +219,27 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
           ],
         ),
         const SizedBox(height: 8),
-        const Text(
-          'SAVED ¥{order.discount.toStringAsFixed(2)}',
-          style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            const Text(
+              'SAVED ',
+              style:
+                  TextStyle(color: Colors.green, fontWeight: FontWeight.bold),
+            ),
+            Text(
+              "₹${orderdata.totalSaved}",
+              style: const TextStyle(
+                  color: Colors.green, fontWeight: FontWeight.bold),
+            ),
+          ],
         ),
         const SizedBox(height: 16),
-        TextButton(
-          onPressed: () {},
-          style: TextButton.styleFrom(),
-          child: const Text('Download Invoice / Credit Note'),
-        ),
+        // TextButton(
+        //   onPressed: () {},
+        //   style: TextButton.styleFrom(),
+        //   child: const Text('Download Invoice / Credit Note'),
+        // ),
       ],
     );
   }
@@ -252,31 +268,77 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
         const Text('Order Details',
             style: TextStyle(fontWeight: FontWeight.bold)),
         const SizedBox(height: 12),
-        _buildDetailRow('Order ID', '#{order.id}'),
+        _buildDetailRow('Order ID', orderdata.id),
         const SizedBox(height: 16),
-        const Text('Receiver Details',
-            style: TextStyle(fontWeight: FontWeight.bold)),
-        const SizedBox(height: 8),
-        const Text("order.customer.name"),
-        const Text("order.customer.phone"),
         const SizedBox(height: 16),
         const Text('Delivery Address',
             style: TextStyle(fontWeight: FontWeight.bold)),
         const SizedBox(height: 8),
-        const Text("order.customer.address"),
+        Text(
+          orderdata.userAddress.addressType,
+          style: theme.textTheme.bodyMedium,
+        ),
+        Text(
+          orderdata.userAddress.floor,
+          style: theme.textTheme.bodyMedium,
+        ),
+        Text(
+          orderdata.userAddress.flatNoName,
+          style: theme.textTheme.bodyMedium,
+        ),
+        Text(
+          orderdata.userAddress.landmark,
+          style: theme.textTheme.bodyMedium,
+        ),
+        Text(
+          orderdata.userAddress.phoneNo,
+          style: theme.textTheme.bodyMedium,
+        ),
+        Text(
+          orderdata.userAddress.pincode,
+          style: theme.textTheme.bodyMedium,
+        ),
         const SizedBox(height: 16),
         _buildDetailRow(
-          'Order Placed',
-          " order.orderDate",
+          'Order Placed at',
+          formatIso8601Date(orderdata.orderPlacedTime != null
+              ? orderdata.orderPlacedTime.toIso8601String()
+              : ""),
         ),
-        _buildDetailRow('Order Arrived at', " order.deliveryDate"),
+        _buildDetailRow(
+            'Order Arrived at',
+            formatIso8601Date(orderdata.completedTime != null
+                ? orderdata.completedTime!.toIso8601String()
+                : "")),
         const SizedBox(height: 16),
-        const Text(
-          'Need help with this order?',
-          style: TextStyle(fontWeight: FontWeight.bold),
+        InkWell(
+          onTap: () => openWhatsAppChat(),
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 8),
+            width: MediaQuery.of(context).size.width,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              color: const Color.fromARGB(255, 255, 233, 227),
+            ),
+            child: const Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Need help with this order?',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    SizedBox(height: 2),
+                    Text('Find your issue or reach out via chat'),
+                  ],
+                ),
+                Icon(Icons.question_answer_rounded)
+              ],
+            ),
+          ),
         ),
-        const SizedBox(height: 8),
-        const Text('Find your issue or reach out via chat'),
       ],
     );
   }
@@ -298,25 +360,56 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
     return Row(
       children: [
         Expanded(
-          child: OutlinedButton(
+          child: ElevatedButton(
             onPressed: () {},
             style: OutlinedButton.styleFrom(
-              padding: const EdgeInsets.symmetric(vertical: 16),
+              backgroundColor: AppColors.buttonColorOrange,
+              padding: const EdgeInsets.symmetric(vertical: 10),
             ),
-            child: const Text('Rate Order'),
+            child: Text(
+              'Rate Order',
+              style: theme.textTheme.bodyLarge!.copyWith(color: Colors.white),
+            ),
           ),
         ),
         const SizedBox(width: 16),
         Expanded(
           child: ElevatedButton(
-            onPressed: () {},
+            onPressed: () {
+              context.read<OrderBloc>().add(Orderagain(
+                  orderid: widget.orderID,
+                  userId: "s5ZdLnYhnVfAramtr7knGduOI872"));
+            },
             style: ElevatedButton.styleFrom(
-              padding: const EdgeInsets.symmetric(vertical: 16),
+              elevation: 0,
+              backgroundColor: Colors.white,
+              padding: const EdgeInsets.symmetric(vertical: 10),
             ),
-            child: const Text('Order Again'),
+            child: Text('Order Again',
+                style: theme.textTheme.bodyLarge!
+                    .copyWith(color: AppColors.buttonColorOrange)),
           ),
         ),
       ],
     );
+  }
+}
+
+double calculateTotalSellingPrice(List<CartProduct> cartList) {
+  double total = 0.0;
+  for (var item in cartList) {
+    total += item.sellingPrice * item.quantity;
+  }
+  return total;
+}
+
+Future<void> openWhatsAppChat() async {
+  const whatsappUrl = 'https://wa.me/+918547062699';
+  final uri = Uri.parse(whatsappUrl);
+
+  if (await canLaunchUrl(uri)) {
+    await launchUrl(uri, mode: LaunchMode.externalApplication);
+  } else {
+    throw 'Could not launch WhatsApp';
   }
 }

@@ -17,6 +17,7 @@ import 'package:kwik/constants/doted_devider.dart';
 import 'package:kwik/models/cart_model.dart';
 import 'package:kwik/models/product_model.dart';
 import 'package:kwik/pages/product_details_page/product_details_page.dart';
+
 import 'package:kwik/widgets/produc_model_1.dart';
 import 'package:kwik/widgets/shimmer/product_model1_list.dart';
 import '../../widgets/navbar/navbar.dart';

@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
+import 'package:kwik/bloc/order_bloc/order_event.dart';
 import '../models/order_model.dart';
 
 class OrderRepository {
@@ -18,9 +19,6 @@ class OrderRepository {
         headers: headers,
       );
 
-      print('📡 Response Status Code: ${response.statusCode}');
-      print('📦 Response Body: ${response.body}');
-
       if (response.statusCode == 200) {
         final decoded = json.decode(response.body);
 
@@ -28,19 +26,15 @@ class OrderRepository {
           if (decoded.containsKey('data') && decoded['data'] is List) {
             final List<dynamic> jsonResponse = decoded['data'];
 
-            // Debug print to check structure
-            print('✅ Parsed Data Type: ${jsonResponse.runtimeType}');
-            print('📋 Parsed Orders Preview: ${jsonResponse.take(1)}');
-
             return jsonResponse
                 .map((data) => Order.fromJson(data as Map<String, dynamic>))
                 .toList();
           } else {
-            throw FormatException(
+            throw const FormatException(
                 "Key 'data' not found or not a List in the response JSON.");
           }
         } else {
-          throw FormatException(
+          throw const FormatException(
               "Expected a JSON object but got something else.");
         }
       } else {
@@ -50,17 +44,44 @@ class OrderRepository {
         );
       }
     } on FormatException catch (e) {
-      print('❌ Format error: $e');
       rethrow;
     } on HttpException catch (e) {
-      print('❌ HTTP error: $e');
       rethrow;
     } on SocketException {
-      print('❌ Network error: No Internet connection');
       throw Exception('No Internet connection');
     } catch (e, stacktrace) {
-      print('❌ Unknown error: $e');
-      print('📌 Stacktrace: $stacktrace');
+      throw Exception('Unexpected error occurred: $e');
+    }
+  }
+
+  Future<bool> orderagain(
+      {required String userId, required String orderID}) async {
+    print(orderID);
+    print(userId);
+    try {
+      final response = await http.post(Uri.parse('$baseUrl/users/orderAgain'),
+          headers: headers,
+          body: jsonEncode({"orderId": orderID, "userId": userId}));
+      print(response.statusCode);
+      print(response.body);
+      if (response.statusCode == 200) {
+        final decoded = json.decode(response.body);
+
+        print(decoded);
+        return true;
+      } else {
+        throw HttpException(
+          'Server responded with status code ${response.statusCode}',
+          uri: Uri.parse('$baseUrl/order/user/$userId'),
+        );
+      }
+    } on FormatException catch (e) {
+      rethrow;
+    } on HttpException catch (e) {
+      rethrow;
+    } on SocketException {
+      throw Exception('No Internet connection');
+    } catch (e, stacktrace) {
       throw Exception('Unexpected error occurred: $e');
     }
   }
