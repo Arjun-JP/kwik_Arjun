@@ -23,6 +23,7 @@ import 'package:kwik/pages/Order_details_page/order_details_page.dart';
 import 'package:kwik/pages/order_list_page.dart/order_list.dart.dart';
 import 'package:kwik/pages/product_details_page/product_details_page.dart';
 import 'package:kwik/pages/profile/profile_page.dart';
+import 'package:kwik/pages/subcategory_products/subcategory_products.dart';
 
 final GoRouter router = GoRouter(
   initialLocation: '/splashScreen', // Set the home page as the default page
@@ -211,6 +212,18 @@ final GoRouter router = GoRouter(
     GoRoute(
       path: '/network-error',
       builder: (context, state) => const NetworkErrorPage(),
+    ),
+    GoRoute(
+      path: '/subcategory-products',
+      builder: (context, state) {
+        final subcategoryId = state.uri.queryParameters['subcategoryid'] ?? '';
+        final subcatName = state.uri.queryParameters['subcatname'] ?? '';
+
+        return SubcategoryProductsPage(
+          subcategoryid: subcategoryId,
+          subcatname: subcatName,
+        );
+      },
     ),
   ],
 );

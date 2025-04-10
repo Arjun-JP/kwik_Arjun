@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:go_router/go_router.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 import '../../../bloc/banner_bloc/banner_bloc.dart';
@@ -91,13 +92,20 @@ class _BannerModel1State extends State<BannerModel1> {
                                   return ClipRRect(
                                     borderRadius: BorderRadius.circular(
                                         widget.borderradious),
-                                    child: Container(
-                                      width: double.infinity,
-                                      decoration: BoxDecoration(
-                                        image: DecorationImage(
-                                          image:
-                                              NetworkImage(banner.bannerImage),
-                                          fit: BoxFit.fill,
+                                    child: InkWell(
+                                      onTap: () {
+                                        context.push(
+                                          '/subcategory-products?subcategoryid=${filteredBanners[index].subCategoryRef}&subcatname=Dry%20Fruits',
+                                        );
+                                      },
+                                      child: Container(
+                                        width: double.infinity,
+                                        decoration: BoxDecoration(
+                                          image: DecorationImage(
+                                            image: NetworkImage(
+                                                banner.bannerImage),
+                                            fit: BoxFit.fill,
+                                          ),
                                         ),
                                       ),
                                     ),
