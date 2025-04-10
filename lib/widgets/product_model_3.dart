@@ -58,7 +58,7 @@ Widget productModel3(
                 spacing: 5,
                 children: [
                   Container(
-                    height: 125,
+                    height: 120,
                     width: 110,
                     decoration: BoxDecoration(
                       color: parseColor(productcolor),
@@ -83,7 +83,9 @@ Widget productModel3(
                           child: Padding(
                             padding: const EdgeInsets.all(5.0),
                             child: Text(
-                              "${product.variations.first.qty} ${product.variations.first.unit}",
+                              product.variations.length > 1
+                                  ? "${product.variations.length} options"
+                                  : "${product.variations.first.qty} ${product.variations.first.unit}",
                               style: TextStyle(
                                   fontSize: 12,
                                   color: parseColor(unitTextcolor)),
@@ -103,6 +105,7 @@ Widget productModel3(
                           fontSize: 12, fontWeight: FontWeight.w500),
                     ),
                   ),
+                  const Spacer(),
                   const SizedBox(
                       child: Row(
                     children: [
@@ -137,10 +140,12 @@ Widget productModel3(
                     mainAxisAlignment: MainAxisAlignment.start,
                     spacing: 8,
                     children: [
-                      Text(product.variations.first.buyingPrice.toString(),
+                      Text(
+                          product.variations.first.buyingPrice
+                              .toStringAsFixed(1),
                           style: theme.textTheme.bodyMedium!
                               .copyWith(color: parseColor(sellingpricecolor))),
-                      Text(product.variations.first.mrp.toString(),
+                      Text(product.variations.first.mrp.toStringAsFixed(1),
                           style: theme.textTheme.bodyMedium!.copyWith(
                               decoration: TextDecoration.lineThrough,
                               color: parseColor(mrpColor)))

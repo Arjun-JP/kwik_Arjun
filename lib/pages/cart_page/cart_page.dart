@@ -87,6 +87,9 @@ class _CartPageState extends State<CartPage> {
         if (state is CartLoading) {
           return const Center(child: CircularProgressIndicator());
         } else if (state is CartError) {
+          context
+              .read<CartBloc>()
+              .add(SyncCartWithServer(userId: "s5ZdLnYhnVfAramtr7knGduOI872"));
           return const Center(child: Text("Error: state.error"));
         } else if (state is CartInitial) {
           // Trigger loading when in initial state

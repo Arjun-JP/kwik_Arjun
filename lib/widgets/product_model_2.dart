@@ -105,13 +105,14 @@ class ProductModel2 extends StatelessWidget {
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   Text(
-                                    product.variations.first.mrp.toString(),
+                                    "₹${product.variations.first.sellingPrice.toStringAsFixed(0)}",
                                     style: TextStyle(
                                         fontSize: 22,
                                         fontWeight: FontWeight.w900,
                                         color: parseColor(sellingpricecolor)),
                                   ),
-                                  Text("MRP ₹150",
+                                  Text(
+                                      "MRP ${product.variations.first.mrp.toStringAsFixed(0)}",
                                       style: TextStyle(
                                           fontSize: 16,
                                           fontWeight: FontWeight.w900,
@@ -136,10 +137,10 @@ class ProductModel2 extends StatelessWidget {
                                         image: DecorationImage(
                                             image: NetworkImage(
                                                 product.productImages.first),
-                                            fit: BoxFit.cover)),
+                                            fit: BoxFit.contain)),
                                   ),
                                   Align(
-                                    alignment: const Alignment(-.8, .9),
+                                    alignment: const Alignment(-.99, .9),
                                     child: ClipPath(
                                       clipper: SmoothJaggedCircleClipper(),
                                       child: Container(
@@ -162,6 +163,7 @@ class ProductModel2 extends StatelessWidget {
                                                       color: parseColor(
                                                           offertextcolor),
                                                       fontFamily: "Inter",
+                                                      fontSize: 10,
                                                       fontWeight:
                                                           FontWeight.w900),
                                             ),
@@ -171,6 +173,7 @@ class ProductModel2 extends StatelessWidget {
                                               style: theme.textTheme.bodyMedium!
                                                   .copyWith(
                                                 fontSize: 10,
+                                                fontWeight: FontWeight.w900,
                                                 color:
                                                     parseColor(offertextcolor2),
                                                 fontFamily: "Inter",
@@ -212,7 +215,9 @@ class ProductModel2 extends StatelessWidget {
                         right: 10,
                       ),
                       child: Text(
-                        "500 g",
+                        product.variations.length > 1
+                            ? "${product.variations.length} options"
+                            : "${product.variations.first.qty} ${product.variations.first.unit}",
                         textAlign: TextAlign.start,
                         maxLines: 2,
                         style: theme.textTheme.bodyMedium!.copyWith(
