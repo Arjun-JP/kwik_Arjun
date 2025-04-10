@@ -121,7 +121,9 @@ class ProductItem extends StatelessWidget {
                               color: parseColor(unitbgcolor),
                             ),
                             child: Text(
-                              "${product.variations.first.qty}  ${product.variations.first.unit}",
+                              product.variations.length > 1
+                                  ? "${product.variations.length} options"
+                                  : "${product.variations.first.qty}  ${product.variations.first.unit}",
                               style: theme.textTheme.bodyMedium!.copyWith(
                                 color: parseColor(unitTextcolor),
                                 fontWeight: FontWeight.w600,
@@ -140,14 +142,14 @@ class ProductItem extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  "₹ 45",
+                                  "₹${product.variations.first.mrp.toStringAsFixed(0)}",
                                   style: theme.textTheme.bodyMedium!.copyWith(
                                     color: parseColor(mrpColor),
                                     decoration: TextDecoration.lineThrough,
                                   ),
                                 ),
                                 Text(
-                                  "₹ 85",
+                                  "₹${product.variations.first.sellingPrice.toStringAsFixed(0)}",
                                   style: theme.textTheme.bodyMedium!.copyWith(
                                     color: parseColor(sellingPriceColor),
                                     fontWeight: FontWeight.w600,

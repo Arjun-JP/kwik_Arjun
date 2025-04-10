@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kwik/constants/colors.dart';
-import 'package:kwik/widgets/produc_model_1.dart';
+import 'package:kwik/widgets/product_model_2.dart';
+import 'package:kwik/widgets/shimmer/supersaver_model4_shimmer.dart';
 
 import '../../../bloc/Super Saver Page Bloc/supersaver_model4_bloc/supersaver_model4_bloc.dart';
 import '../../../repositories/sub_category_product_repository.dart';
@@ -22,9 +22,11 @@ class SupersaverModel4 extends StatelessWidget {
   final String addButtonColor;
   final String ratingBgColor;
   final String ratingTextColor;
-
   final String seeAllButtonBG;
   final String seeAllButtontext;
+  final bool showCategory;
+  final String bannerimage;
+  final String title;
   const SupersaverModel4(
       {super.key,
       required this.subCategoryId,
@@ -41,309 +43,147 @@ class SupersaverModel4 extends StatelessWidget {
       required this.ratingBgColor,
       required this.seeAllButtonBG,
       required this.seeAllButtontext,
-      required this.ratingTextColor});
+      required this.ratingTextColor,
+      required this.showCategory,
+      required this.title,
+      required this.bannerimage});
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) =>
-          SupersaverModel4Bloc(repository: SubcategoryProductRepository())
-            ..add(FetchSubCategoryProductsSS4(subCategoryId)),
-      child: BlocBuilder<SupersaverModel4Bloc, SupersaverModel4State>(
-        builder: (context, state) {
-          if (state is SupersaverModel4Loading) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (state is SupersaverModel4Loaded) {
-            return Container(
-              color: parseColor(bgColor),
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text(
-                    "SUPER SAVER",
-                    style: TextStyle(
-                      color: parseColor(titleColor),
-                      fontSize: 25,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  Text(
-                    "SPECIAL TODAY OFFER",
-                    style: TextStyle(
-                      color: parseColor(titleColor),
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 30),
-                  StaggeredGrid.count(
-                    crossAxisCount: 3,
-                    mainAxisSpacing: 18,
-                    crossAxisSpacing: 12,
-                    children: List.generate(
-                      state.products.length > 6 ? 6 : state.products.length,
-                      (index) {
-                        return ProductItem(
-                          subcategoryRef: subCategoryId,
-                          productnamecolor: "000000",
-                          product: state.products[index],
-                          buttontextcolor: ratingBgColor,
-                          context: context,
-                          mrpColor: mrpTextColor,
-                          productBgColor: mrpBgColor,
-                          buttonBgColor: productColor,
-                          offerbgcolor: ratingBgColor,
-                          sellingPriceColor: sellTextColor,
-                          unitTextcolor: offertextcolor,
-                          unitbgcolor: "00FFFFFF",
-                          offertextcolor: "000000",
-                        );
-                      },
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  InkWell(
-                    onTap: () => context.push(
-                        "/allsubcategorypage?categoryId=${state.products.first.categoryRef.catref}&selectedsubcategory=$subCategoryId"),
-                    child: Container(
-                      width: MediaQuery.of(context).size.width,
-                      height: 48,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: parseColor(seeAllButtonBG),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
+    return showCategory
+        ? Container(
+            height: 752,
+            width: double.infinity,
+            color: Colors.amber,
+            child: BlocProvider(
+              create: (context) => SupersaverModel4Bloc(
+                  repository: SubcategoryProductRepository())
+                ..add(FetchSubCategoryProductsSS4(subCategoryId)),
+              child: BlocBuilder<SupersaverModel4Bloc, SupersaverModel4State>(
+                builder: (context, state) {
+                  if (state is SupersaverModel4Loading) {
+                    return const Center(child: SupersaverModel4Shimmer());
+                  } else if (state is SupersaverModel4Loaded) {
+                    return Container(
+                      color: parseColor(bgColor),
+                      width: double.infinity,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          Expanded(
-                            flex: 5,
-                            child: Align(
-                              alignment: Alignment.centerRight,
-                              child: Text('See all products',
-                                  style: TextStyle(
-                                      color: parseColor(seeAllButtontext),
-                                      fontSize: 18)),
+                          Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: Text(
+                              title,
+                              maxLines: 1,
+                              style: TextStyle(
+                                  color: parseColor(titleColor),
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w800),
                             ),
                           ),
-                          Expanded(
-                            flex: 2,
-                            child: Align(
-                              alignment: Alignment.centerRight,
-                              child: Padding(
-                                padding: const EdgeInsets.only(right: 14.0),
-                                child: Icon(Icons.arrow_forward,
-                                    color: parseColor(seeAllButtontext)),
+                          Image.network(
+                            bannerimage,
+                            height: 250,
+                            width: double.infinity,
+                            fit: BoxFit.fitWidth,
+                          ),
+                          const SizedBox(height: 10),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 10),
+                            child: SizedBox(
+                              height: 355,
+                              width: MediaQuery.of(context).size.width,
+                              child: ListView.builder(
+                                scrollDirection: Axis.horizontal,
+                                itemCount: state.products.length > 5
+                                    ? 5
+                                    : state.products.length,
+                                itemBuilder: (context, index) {
+                                  final product = state.products[index];
+                                  return ProductModel2(
+                                      product: product,
+                                      subcategoryref:
+                                          product.subCategoryRef.first.id,
+                                      productcolor: "000000",
+                                      sellingpricecolor: "FFFFFF",
+                                      mrpColor: "FFFFFF",
+                                      offertextcolor: "FFFFFF",
+                                      productBgColor: "DF2401",
+                                      buttontextcolor: "E23338",
+                                      unitbgcolor: "FFFFFF",
+                                      unitTextcolor: "A19DA3",
+                                      context: context,
+                                      offertextcolor2: "FFFFFF",
+                                      offerbordercolor: "FCFF3B",
+                                      buttonbgcolor: "FFFFFF",
+                                      offerbgcolor1: "DF2401",
+                                      offerbgcolor2: "2DB164");
+                                },
                               ),
                             ),
                           ),
+                          const SizedBox(height: 20),
+                          InkWell(
+                            onTap: () => context.push(
+                                "/allsubcategorypage?categoryId=${state.products.first.categoryRef.catref}&selectedsubcategory=$subCategoryId"),
+                            child: Container(
+                              margin:
+                                  const EdgeInsets.symmetric(horizontal: 10),
+                              width: MediaQuery.of(context).size.width,
+                              height: 48,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                color: lightenColor(
+                                    parseColor(seeAllButtonBG), .8),
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Expanded(
+                                    flex: 5,
+                                    child: Align(
+                                      alignment: Alignment.centerRight,
+                                      child: Text('See all products',
+                                          style: TextStyle(
+                                              color:
+                                                  parseColor(seeAllButtontext),
+                                              fontSize: 18)),
+                                    ),
+                                  ),
+                                  Expanded(
+                                    flex: 2,
+                                    child: Align(
+                                      alignment: Alignment.centerRight,
+                                      child: Padding(
+                                        padding:
+                                            const EdgeInsets.only(right: 14.0),
+                                        child: Icon(Icons.arrow_forward,
+                                            color:
+                                                parseColor(seeAllButtontext)),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 10)
                         ],
                       ),
-                    ),
-                  ),
-                ],
+                    );
+                  } else if (state is SupersaverModel4Error) {
+                    return Center(child: Text(state.message));
+                  }
+                  return Container(
+                    height: 199,
+                    width: 200,
+                    color: Colors.black,
+                  );
+                },
               ),
-            );
-          } else if (state is SupersaverModel4Error) {
-            return Center(child: Text(state.message));
-          }
-          return const SizedBox();
-        },
-      ),
-    );
+            ),
+          )
+        : const SizedBox();
   }
-}
-
-Widget productItem({
-  required String imageurl,
-  required String price,
-  required String mrp,
-  required String productColor,
-  required String mrpTextColor,
-  required String mrpBgColor,
-  required String sellPriceBgColor,
-  required String sellTextColor,
-  required String offerbgcolor,
-  required String offertextcolor,
-  required String addButtonColor,
-  required String ratingBgColor,
-  required String ratingTextColor,
-  required String title,
-}) {
-  return Stack(children: [
-    Container(
-      padding: const EdgeInsets.only(top: 5, bottom: 5),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(8),
-        color: parseColor(productColor),
-      ),
-      child: Column(
-        children: [
-          Image.network(
-            imageurl,
-            fit: BoxFit.cover,
-            height: 80,
-          ),
-          Container(
-            padding: EdgeInsets.all(5),
-            width: double.infinity,
-            color: parseColor('ffffff'),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Container(
-                  padding: EdgeInsets.all(2),
-                  decoration: BoxDecoration(
-                    color: parseColor(addButtonColor).withOpacity(0.2),
-                    borderRadius: const BorderRadius.all(Radius.circular(5)),
-                  ),
-                  child: Text(
-                    '1L',
-                    style: TextStyle(
-                      color: parseColor(mrpTextColor),
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-                Container(
-                  decoration: BoxDecoration(
-                    color: parseColor(ratingBgColor),
-                    borderRadius: const BorderRadius.all(Radius.circular(5)),
-                  ),
-                  child: RichText(
-                    textAlign: TextAlign.center,
-                    text: TextSpan(
-                      children: [
-                        WidgetSpan(
-                          alignment: PlaceholderAlignment.middle,
-                          child: Icon(Icons.star,
-                              color: parseColor(ratingTextColor)),
-                          style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold,
-                              color: parseColor(ratingTextColor)),
-                        ),
-                        TextSpan(
-                          text: "4.2",
-                          style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold,
-                              color: parseColor(ratingTextColor)),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Container(
-            color: parseColor('ffffff'),
-            width: double.infinity,
-            height: 40,
-            child: Text(
-              title,
-              textAlign: TextAlign.left,
-              maxLines: 2,
-              overflow: TextOverflow.visible,
-              softWrap: true,
-              style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold,
-                  color: parseColor('000000')),
-            ),
-          ),
-          Container(
-            width: double.infinity,
-            color: parseColor(sellPriceBgColor),
-            child: Text(
-              textAlign: TextAlign.center,
-              price,
-              style: TextStyle(
-                  color: parseColor(sellTextColor),
-                  fontWeight: FontWeight.bold),
-            ),
-          ),
-          Container(
-            width: double.infinity,
-            color: parseColor(mrpBgColor),
-            child: Text(
-              mrp,
-              style: TextStyle(
-                color: parseColor(mrpTextColor),
-                fontWeight: FontWeight.bold,
-                decoration: TextDecoration.lineThrough,
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ),
-        ],
-      ),
-    ),
-    Positioned(
-      top: 10,
-      right: 10,
-      child: Image.asset(
-        'assets/images/vegicon.png',
-        height: 20,
-        width: 20,
-      ),
-    ),
-    Positioned(
-      left: 10,
-      child: Container(
-        width: 30,
-        height: 30,
-        decoration: BoxDecoration(
-            color: parseColor(offerbgcolor),
-            borderRadius: const BorderRadius.only(
-                bottomLeft: Radius.circular(10),
-                bottomRight: Radius.circular(10))),
-        child: Center(
-          child: FittedBox(
-            fit: BoxFit.fitHeight,
-            child: Text(
-              "17% \nOFF",
-              style: TextStyle(
-                  color: parseColor(offertextcolor),
-                  fontSize: 12,
-                  fontWeight: FontWeight.w800),
-            ),
-          ),
-        ),
-      ),
-    ),
-    Positioned(
-      top: 50,
-      right: 8,
-      child: Container(
-        height: 35,
-        padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 15),
-        decoration: BoxDecoration(
-          color: lightenColor(parseColor(addButtonColor), .8),
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: parseColor(addButtonColor)),
-          boxShadow: [
-            BoxShadow(
-              color: parseColor(addButtonColor).withOpacity(0.2),
-              blurRadius: 4,
-              spreadRadius: 2,
-              offset: const Offset(2, 2), // Adds a floating effect
-            ),
-          ],
-        ),
-        child: Center(
-          child: Text(
-            "Add",
-            style: TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.w800,
-              color: parseColor(addButtonColor),
-            ),
-          ),
-        ),
-      ),
-    ),
-  ]);
 }

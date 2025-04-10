@@ -146,6 +146,8 @@ class _OfferPageState extends State<OfferPage> {
                     },
                     {
                       'template': SupersaverModel1(
+                        showCategory: uiData["template2"]["show_Category"],
+                        title: uiData["template2"]["title"],
                         seeAllButtonBG: uiData["template2"]["seeAllButtonBG"],
                         seeAllButtontext: uiData["template2"]
                             ["seeAllButtontext"],
@@ -161,6 +163,8 @@ class _OfferPageState extends State<OfferPage> {
                     },
                     {
                       'template': SupersaverModel2(
+                        showCategory: uiData["template3"]["show_Category"],
+                        topbanner: uiData["template3"]["topbanner"],
                         title: uiData["template3"]["title"],
                         subcategoryid: uiData["template3"]["subcategoryid"],
                         titleColor: uiData["template3"]["titleColor"],
@@ -184,6 +188,7 @@ class _OfferPageState extends State<OfferPage> {
                     },
                     {
                       'template': SupersaverModel3(
+                        showCategory: uiData["template4"]["show_Category"],
                         categoryID: uiData["template4"]["categoryID"],
                         title: uiData["template4"]["title"],
                         titleColor: uiData["template4"]["titleColor"],
@@ -207,6 +212,8 @@ class _OfferPageState extends State<OfferPage> {
                     },
                     {
                       'template': SupersaverModel4(
+                        title: uiData["template5"]["title"],
+                        showCategory: uiData["template5"]["show_Category"],
                         addButtonColor: uiData["template5"]["addButtonColor"],
                         offertextcolor: uiData["template5"]["offertextcolor"],
                         offerbgcolor: uiData["template5"]["offerbgcolor"],
@@ -224,13 +231,16 @@ class _OfferPageState extends State<OfferPage> {
                         seeAllButtonBG: uiData["template5"]["seeAllButtonBG"],
                         seeAllButtontext: uiData["template5"]
                             ["seeAllButtontext"],
+                        bannerimage: uiData["template5"]["topbanner"],
                       ),
                       'order': uiData["template5"]["ui_order_number"]
                     },
                     {
                       'template': SupersaverModel5(
+                        showCategory: uiData["template6"]["show_Category"],
                         maincategories: List<String>.from(
                             uiData["template6"]["maincategories"]),
+                        topbanner: uiData["template6"]["topbanner"],
                         categoryId: uiData["template6"]["categoryId"],
                         bgcolor: uiData["template6"]["bgcolor"],
                         titleColor: uiData["template6"]["titleColor"],
@@ -304,21 +314,31 @@ class _OfferPageState extends State<OfferPage> {
                                           CrossAxisAlignment.start,
                                       mainAxisAlignment: MainAxisAlignment.end,
                                       children: [
-                                        Container(
-                                          decoration: BoxDecoration(
-                                              color: Colors.white,
-                                              borderRadius:
-                                                  BorderRadius.circular(20)),
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 10, vertical: 4),
-                                          child: Text(
-                                            "Less then",
-                                            style: theme.textTheme.bodyMedium!
-                                                .copyWith(
-                                                    fontSize: 11,
-                                                    fontWeight: FontWeight.w900,
-                                                    color: const Color(
-                                                        0xFF219f52)),
+                                        InkWell(
+                                          onTap: () {
+                                            // Navigator.of(context)
+                                            //     .push(MaterialPageRoute(
+                                            //   builder: (context) =>
+                                            //       SupersaverModel5Shimmer(),
+                                            // ));
+                                          },
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                                color: Colors.white,
+                                                borderRadius:
+                                                    BorderRadius.circular(20)),
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 10, vertical: 4),
+                                            child: Text(
+                                              "Less then",
+                                              style: theme.textTheme.bodyMedium!
+                                                  .copyWith(
+                                                      fontSize: 11,
+                                                      fontWeight:
+                                                          FontWeight.w900,
+                                                      color: const Color(
+                                                          0xFF219f52)),
+                                            ),
                                           ),
                                         ),
                                         Row(
