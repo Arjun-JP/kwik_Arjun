@@ -45,7 +45,7 @@ class CategoryModel2 extends StatelessWidget {
                       return Container(
                         color: parseColor(bgcolor),
                         width: double.infinity,
-                        height: 360,
+                        height: 364,
                         padding: const EdgeInsets.symmetric(horizontal: 10),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.start,
@@ -54,7 +54,7 @@ class CategoryModel2 extends StatelessWidget {
                             const SizedBox(height: 15),
                             Text(title ?? state.category.name,
                                 style: theme.textTheme.titleLarge!.copyWith(
-                                    fontWeight: FontWeight.w600,
+                                    fontWeight: FontWeight.w800,
                                     color: parseColor(titleColor))),
                             const SizedBox(height: 12),
                             SizedBox(
@@ -114,7 +114,7 @@ Widget subcategoryItem(
     crossAxisAlignment: CrossAxisAlignment.center,
     children: [
       Container(
-        height: 98,
+        height: 94,
         width: 100,
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(8),

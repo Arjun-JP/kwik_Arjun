@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 import 'package:kwik/bloc/Cart_bloc/cart_bloc.dart';
 import 'package:kwik/bloc/Cart_bloc/cart_event.dart';
 import 'package:kwik/bloc/Cart_bloc/cart_state.dart';
@@ -9,12 +8,17 @@ import 'package:kwik/constants/colors.dart';
 import 'package:kwik/constants/doted_devider.dart';
 import 'package:kwik/models/cart_model.dart';
 import 'package:kwik/models/product_model.dart';
-import 'package:kwik/models/variation_model.dart';
-import 'package:kwik/pages/product_details_page/product_details_page.dart';
 
 class SelectVarrientBottomSheet extends StatefulWidget {
   final ProductModel product;
-  const SelectVarrientBottomSheet({super.key, required this.product});
+  final String buttonBgColor;
+  final String buttontextcolor;
+
+  const SelectVarrientBottomSheet(
+      {super.key,
+      required this.product,
+      required this.buttonBgColor,
+      required this.buttontextcolor});
 
   @override
   State<SelectVarrientBottomSheet> createState() =>
@@ -30,15 +34,15 @@ class _SelectVarrientBottomSheetState extends State<SelectVarrientBottomSheet> {
     return Container(
         // height: MediaQuery.of(context).size.height * .26,
         width: MediaQuery.of(context).size.width,
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
             color: Colors.white,
             border: Border(
               top: BorderSide(
-                color: Color.fromARGB(255, 166, 28, 28), // Choose your color
+                color: parseColor(widget.buttonBgColor), // Choose your color
                 width: 2.0, // Thickness of the border
               ),
             ),
-            borderRadius: BorderRadius.only(
+            borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(18), topRight: Radius.circular(18))),
         child: Padding(
             padding:
@@ -102,6 +106,8 @@ class _SelectVarrientBottomSheetState extends State<SelectVarrientBottomSheet> {
                                       theme: theme,
                                       product: widget.product,
                                       ctx: context,
+                                      buttonbgcolor: widget.buttonBgColor,
+                                      buttontextcolor: widget.buttontextcolor,
                                       qty: cartItems
                                           .firstWhere((element) =>
                                               element.productRef.id ==
@@ -146,13 +152,15 @@ class _SelectVarrientBottomSheetState extends State<SelectVarrientBottomSheet> {
                                               15), // Set border radius here
                                         ),
                                         backgroundColor:
-                                            AppColors.addToCartBorder,
+                                            parseColor(widget.buttonBgColor),
                                         minimumSize: const Size(152, 48),
                                       ),
-                                      child: const Text("Add",
+                                      child: Text("Add",
                                           style: TextStyle(
-                                              fontSize: 16,
-                                              color: Colors.white)),
+                                            fontSize: 16,
+                                            color: parseColor(
+                                                widget.buttontextcolor),
+                                          )),
                                     );
                             }),
                           ),
@@ -164,4 +172,80 @@ class _SelectVarrientBottomSheetState extends State<SelectVarrientBottomSheet> {
                   itemCount: widget.product.variations.length),
             )));
   }
+}
+
+Widget quantitycontrolbutton(
+    {required ThemeData theme,
+    required ProductModel product,
+    required String buttonbgcolor,
+    required String buttontextcolor,
+    required BuildContext ctx,
+    required String qty}) {
+  return Container(
+    padding: const EdgeInsets.symmetric(horizontal: 10),
+    decoration: BoxDecoration(
+        color: parseColor(buttonbgcolor),
+        borderRadius: BorderRadius.circular(10)),
+    child: Row(
+      spacing: 10,
+      children: [
+        Expanded(
+          child: InkWell(
+            onTap: () {
+              HapticFeedback.mediumImpact();
+              ctx.read<CartBloc>().add(DecreaseCartQuantity(
+                  pincode: "560003",
+                  productRef: product.id,
+                  userId: "s5ZdLnYhnVfAramtr7knGduOI872",
+                  variantId: product.variations.first.id));
+            },
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: SizedBox(
+                  child: Center(
+                      child: Container(
+                width: 20,
+                height: 2,
+                decoration: BoxDecoration(
+                    color: parseColor(buttontextcolor),
+                    borderRadius: BorderRadius.circular(3)),
+              ))),
+            ),
+          ),
+        ),
+        Expanded(
+          child: SizedBox(
+              child: Center(
+            child: Text(
+              qty,
+              style: theme.textTheme.bodyMedium!.copyWith(
+                  color: parseColor(buttontextcolor),
+                  fontSize: 18,
+                  fontWeight: FontWeight.w800),
+            ),
+          )),
+        ),
+        Expanded(
+          child: InkWell(
+            onTap: () {
+              HapticFeedback.mediumImpact();
+              ctx.read<CartBloc>().add(IncreaseCartQuantity(
+                  pincode: "560003",
+                  productRef: product.id,
+                  userId: "s5ZdLnYhnVfAramtr7knGduOI872",
+                  variantId: product.variations.first.id));
+            },
+            child: SizedBox(
+                child: Center(
+              child: Icon(
+                Icons.add,
+                size: 28,
+                color: parseColor(buttontextcolor),
+              ),
+            )),
+          ),
+        )
+      ],
+    ),
+  );
 }

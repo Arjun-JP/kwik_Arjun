@@ -109,48 +109,45 @@ class CartRepository {
 
   /// 📌 **Fetch User's Cart**
   Future<Map<String, dynamic>> getUserCart({required String userId}) async {
-  final url = Uri.parse("$baseUrl/getUserCart/$userId");
-  try {
-    final response = await http.get(url, headers: headers);
-    print(response.statusCode);
-    print(response.body);
-    
-    if (response.statusCode == 200) {
-      final data = jsonDecode(response.body) as Map<String, dynamic>;
+    final url = Uri.parse("$baseUrl/getUserCart/$userId");
+    try {
+      final response = await http.get(url, headers: headers);
 
-      // Check if the response has the expected structure
-      if (!data.containsKey("cartProducts")) {
-        throw Exception("Unexpected response format: Missing 'cartProducts' key");
-      }
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body) as Map<String, dynamic>;
 
-      if (!data.containsKey("charges")) {
-        throw Exception("Unexpected response format: Missing 'charges' key");
-      }
-
-      final cartProductList = data["cartProducts"];
-      final charges = data["charges"];
-
-      if (cartProductList is! List) {
-        throw Exception("Unexpected response format: 'cartProducts' is not a List");
-      }
-
-      // Validate and convert each item in the list
-      final validatedList = cartProductList.map((item) {
-        if (item is! Map<String, dynamic>) {
-          throw Exception("Unexpected item format in cartProducts");
+        // Check if the response has the expected structure
+        if (!data.containsKey("cartProducts")) {
+          throw Exception(
+              "Unexpected response format: Missing 'cartProducts' key");
         }
-        return Map<String, dynamic>.from(item);
-      }).toList();
 
-      return {
-        "cartproducts": validatedList,
-        "charges": charges
-      };
-    } else {
-      throw Exception("Failed to fetch cart: ${response.body}");
+        if (!data.containsKey("charges")) {
+          throw Exception("Unexpected response format: Missing 'charges' key");
+        }
+
+        final cartProductList = data["cartProducts"];
+        final charges = data["charges"];
+        print("charges while syncing cart $charges");
+        if (cartProductList is! List) {
+          throw Exception(
+              "Unexpected response format: 'cartProducts' is not a List");
+        }
+
+        // Validate and convert each item in the list
+        final validatedList = cartProductList.map((item) {
+          if (item is! Map<String, dynamic>) {
+            throw Exception("Unexpected item format in cartProducts");
+          }
+          return Map<String, dynamic>.from(item);
+        }).toList();
+
+        return {"cartproducts": validatedList, "charges": charges};
+      } else {
+        throw Exception("Failed to fetch cart: ${response.body}");
+      }
+    } catch (e) {
+      throw Exception("Error fetching cart: $e");
     }
-  } catch (e) {
-    throw Exception("Error fetching cart: $e");
   }
-}
 }

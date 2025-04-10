@@ -112,9 +112,9 @@ class Navbar extends StatelessWidget {
       hoverColor: Colors.transparent,
       highlightColor: Colors.transparent,
       onTap: () {
+        HapticFeedback.mediumImpact();
         context.go(route);
         context.read<NavbarBloc>().add(UpdateNavBarIndex(index));
-        HapticFeedback.mediumImpact();
       },
       child: Column(
         children: [

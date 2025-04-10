@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:kwik/models/category_model.dart';
 import 'package:kwik/models/product_model.dart';
 import 'package:kwik/pages/Category_page/category_page.dart';
+import 'package:kwik/pages/Error_pages/network_error_page.dart';
 import 'package:kwik/pages/FAQ_page/faq_questions.dart';
 import 'package:kwik/pages/Home_page/home_Page.dart';
 import 'package:kwik/pages/LoginPage/login_page.dart';
@@ -206,6 +207,10 @@ final GoRouter router = GoRouter(
         final orderId = state.pathParameters['orderId']!;
         return OrderDetailsPage(orderID: orderId);
       },
+    ),
+    GoRoute(
+      path: '/network-error',
+      builder: (context, state) => const NetworkErrorPage(),
     ),
   ],
 );

@@ -77,7 +77,7 @@ class CategoryModel7 extends StatelessWidget {
             style: TextStyle(
                 color: parseColor(titleColor),
                 fontSize: 18,
-                fontWeight: FontWeight.bold),
+                fontWeight: FontWeight.w800),
           ),
           const SizedBox(height: 10),
           const SizedBox(height: 10),

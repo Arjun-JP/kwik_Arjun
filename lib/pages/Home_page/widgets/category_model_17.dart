@@ -47,7 +47,7 @@ class CategoryModel17 extends StatelessWidget {
                 const SizedBox(height: 20),
                 Text(title,
                     style: theme.textTheme.titleLarge!.copyWith(
-                        fontWeight: FontWeight.w600,
+                        fontWeight: FontWeight.w800,
                         color: parseColor(titleColor))),
                 const SizedBox(height: 20),
                 Padding(

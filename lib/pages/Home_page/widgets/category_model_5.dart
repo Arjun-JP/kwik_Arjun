@@ -85,7 +85,7 @@ class CategoryModel5 extends StatelessWidget {
                           categoryName,
                           style: theme.textTheme.titleLarge!.copyWith(
                               color: parseColor(titleColor),
-                              fontWeight: FontWeight.w600),
+                              fontWeight: FontWeight.w800),
                         ),
                       ),
                       Expanded(
@@ -269,7 +269,7 @@ Widget subcategoryItem(
         Column(
           children: [
             Container(
-              height: 80,
+              height: 75,
               width: 80,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(8),
@@ -284,6 +284,7 @@ Widget subcategoryItem(
             Text(
               name,
               textAlign: TextAlign.center,
+              maxLines: 2,
               style: theme.textTheme.bodyMedium!.copyWith(
                 color: parseColor(textcolor),
                 fontWeight:

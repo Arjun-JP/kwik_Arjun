@@ -90,7 +90,7 @@ class CategoryModel4 extends StatelessWidget {
                                       style: TextStyle(
                                           color: parseColor("2C8E55"),
                                           fontSize: 18,
-                                          fontWeight: FontWeight.w900),
+                                          fontWeight: FontWeight.w800),
                                     ),
                                     const SizedBox(height: 5),
                                     Text(

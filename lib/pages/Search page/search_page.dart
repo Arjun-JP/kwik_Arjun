@@ -209,15 +209,18 @@ class _SearchPageState extends State<SearchPage> {
               style: theme.textTheme.bodyMedium!
                   .copyWith(fontSize: 12, fontWeight: FontWeight.w800),
             ),
-            subtitle: product.productDescription != null
+            subtitle: product.variations.length > 1
                 ? Text(
-                    product.productDescription,
-                    //  - \₹${product.variations.first.sellingPrice}', // Assuming sellingPrice is available
+                    "${product.variations.length} Variations",
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   )
                 : Text(
-                    '\$${product.variations.first.sellingPrice}'), // Assuming sellingPrice is available
+                    "${product.variations.first.qty} ${product.variations.first.unit}",
+                    //  - \₹${product.variations.first.sellingPrice}', // Assuming sellingPrice is available
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ), // Assuming sellingPrice is available
           ),
         );
       },

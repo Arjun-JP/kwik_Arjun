@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:kwik/constants/colors.dart';
 import 'package:kwik/models/product_model.dart';
+import 'package:kwik/widgets/product_model_3.dart';
 import 'package:kwik/widgets/shimmer/product_model1_list.dart';
 import '../../../bloc/home_page_bloc/category_model_10_bloc/category_model_10_bloc.dart';
 import '../../../bloc/home_page_bloc/category_model_10_bloc/category_model_10_event.dart';
@@ -42,6 +43,7 @@ class CategoryModel10 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    ThemeData theme = Theme.of(context);
     return showcategory
         ? BlocProvider(
             create: (context) =>
@@ -53,7 +55,7 @@ class CategoryModel10 extends StatelessWidget {
                 if (state is CategoryModel10Loading) {
                   return const Center(child: ProductModel1ListShimmer());
                 } else if (state is CategoryModel10Loaded) {
-                  return _buildCategoryModel10(state.products, context);
+                  return _buildCategoryModel10(theme, state.products, context);
                 } else if (state is CategoryModel10Error) {
                   return Center(child: Text('Error: ${state.message}'));
                 }
@@ -65,7 +67,7 @@ class CategoryModel10 extends StatelessWidget {
   }
 
   Widget _buildCategoryModel10(
-      List<ProductModel> products, BuildContext context) {
+      ThemeData theme, List<ProductModel> products, BuildContext context) {
     return Container(
       color: parseColor(bgcolor),
       width: double.infinity,
@@ -84,7 +86,7 @@ class CategoryModel10 extends StatelessWidget {
                   style: TextStyle(
                       color: parseColor(titleColor),
                       fontSize: 24,
-                      fontWeight: FontWeight.w700),
+                      fontWeight: FontWeight.w800),
                 ),
               ),
               Expanded(
@@ -95,22 +97,30 @@ class CategoryModel10 extends StatelessWidget {
           ),
           const SizedBox(height: 10),
           SizedBox(
-            height: 248,
+            height: 258,
             width: MediaQuery.of(context).size.width,
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
               itemCount: products.length > 5 ? 5 : products.length,
               itemBuilder: (context, index) {
                 final product = products[index];
-                return productsWidget(
-                    bgColor: prodoductbgcolor,
-                    product: product,
-                    productBackgroundColor: prodoductbgcolor,
-                    producttextcolor: productTextColor,
-                    crosscolor: crosscolor,
-                    mrpColor: mrpcolor,
-                    sellingPriceColor: sellingpricecolor,
-                    cartButtontextColor: cartbuttontextcolor);
+                return productModel3(
+                  buttontextcolor: seeAllButtontext,
+                  seeAllButtonBG: seeAllButtonBG,
+                  seeAllButtontext: seeAllButtontext,
+                  productBgColor: prodoductbgcolor,
+                  context: context,
+                  offerBGcolor: "000000",
+                  offertextcolor: "FFFFFF",
+                  productcolor: "FFFFFF",
+                  sellingpricecolor: sellingpricecolor,
+                  theme: theme,
+                  product: product,
+                  unitTextcolor: "000000",
+                  unitbgcolor: "FFFFFF",
+                  mrpColor: mrpcolor,
+                  sellingPriceColor: sellingpricecolor,
+                );
               },
             ),
           ),
@@ -155,101 +165,101 @@ class CategoryModel10 extends StatelessWidget {
   }
 }
 
-Widget productsWidget(
-    {required String producttextcolor,
-    required ProductModel product,
-    required String productBackgroundColor,
-    required String bgColor,
-    required String crosscolor,
-    required String mrpColor,
-    required String sellingPriceColor,
-    required String cartButtontextColor}) {
-  return Padding(
-    padding: const EdgeInsets.only(right: 8.0),
-    child: Stack(
-      clipBehavior:
-          Clip.none, // Ensure the offer goes outside the product container
-      children: [
-        Container(
-          width: 150,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20),
-            color: const Color.fromARGB(255, 236, 253, 255),
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Container(
-                height: 190,
-                width: 150,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
-                  color: const Color.fromARGB(255, 236, 253, 255),
-                ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(12),
-                  child: Image.network(
-                    product.productImages.first,
-                    fit: BoxFit.contain,
-                    colorBlendMode: BlendMode.color,
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 8, right: 8, bottom: 5),
-                child: Row(
-                  children: [
-                    Expanded(
-                      flex: 5,
-                      child: Column(
-                        children: [
-                          const Text(
-                            "₹ 50",
-                            style: TextStyle(
-                                fontSize: 18, fontWeight: FontWeight.w700),
-                          ),
-                          Text("₹ 75",
-                              style: TextStyle(
-                                  decoration: TextDecoration.lineThrough,
-                                  decorationColor:
-                                      parseColor("A19DA3"), // Change line color
-                                  decorationThickness: 2,
-                                  fontSize: 12,
-                                  color: parseColor("A19DA3"),
-                                  fontWeight: FontWeight.w500))
-                        ],
-                      ),
-                    ),
-                    const SizedBox(width: 2),
-                    Expanded(
-                      flex: 7,
-                      child: ElevatedButton(
-                        onPressed: () {},
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: parseColor("E23338"),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                        ),
-                        child: Text(
-                          'Add',
-                          style: TextStyle(
-                            color: parseColor("FFFFFF"),
-                            fontWeight: FontWeight.w800,
-                            fontSize: 13,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
-    ),
-  );
-}
+// Widget productsWidget(
+//     {required String producttextcolor,
+//     required ProductModel product,
+//     required String productBackgroundColor,
+//     required String bgColor,
+//     required String crosscolor,
+//     required String mrpColor,
+//     required String sellingPriceColor,
+//     required String cartButtontextColor}) {
+//   return Padding(
+//     padding: const EdgeInsets.only(right: 8.0),
+//     child: Stack(
+//       clipBehavior:
+//           Clip.none, // Ensure the offer goes outside the product container
+//       children: [
+//         Container(
+//           width: 150,
+//           decoration: BoxDecoration(
+//             borderRadius: BorderRadius.circular(20),
+//             color: const Color.fromARGB(255, 236, 253, 255),
+//           ),
+//           child: Column(
+//             mainAxisSize: MainAxisSize.max,
+//             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//             crossAxisAlignment: CrossAxisAlignment.center,
+//             children: [
+//               Container(
+//                 height: 190,
+//                 width: 150,
+//                 decoration: BoxDecoration(
+//                   borderRadius: BorderRadius.circular(12),
+//                   color: const Color.fromARGB(255, 236, 253, 255),
+//                 ),
+//                 child: ClipRRect(
+//                   borderRadius: BorderRadius.circular(12),
+//                   child: Image.network(
+//                     product.productImages.first,
+//                     fit: BoxFit.contain,
+//                     colorBlendMode: BlendMode.color,
+//                   ),
+//                 ),
+//               ),
+//               Padding(
+//                 padding: const EdgeInsets.only(left: 8, right: 8, bottom: 5),
+//                 child: Row(
+//                   children: [
+//                     Expanded(
+//                       flex: 5,
+//                       child: Column(
+//                         children: [
+//                           const Text(
+//                             "₹ 50",
+//                             style: TextStyle(
+//                                 fontSize: 18, fontWeight: FontWeight.w700),
+//                           ),
+//                           Text("₹ 75",
+//                               style: TextStyle(
+//                                   decoration: TextDecoration.lineThrough,
+//                                   decorationColor:
+//                                       parseColor("A19DA3"), // Change line color
+//                                   decorationThickness: 2,
+//                                   fontSize: 12,
+//                                   color: parseColor("A19DA3"),
+//                                   fontWeight: FontWeight.w500))
+//                         ],
+//                       ),
+//                     ),
+//                     const SizedBox(width: 2),
+//                     Expanded(
+//                       flex: 7,
+//                       child: ElevatedButton(
+//                         onPressed: () {},
+//                         style: ElevatedButton.styleFrom(
+//                           backgroundColor: parseColor("E23338"),
+//                           shape: RoundedRectangleBorder(
+//                             borderRadius: BorderRadius.circular(12),
+//                           ),
+//                         ),
+//                         child: Text(
+//                           'Add',
+//                           style: TextStyle(
+//                             color: parseColor("FFFFFF"),
+//                             fontWeight: FontWeight.w800,
+//                             fontSize: 13,
+//                           ),
+//                         ),
+//                       ),
+//                     ),
+//                   ],
+//                 ),
+//               ),
+//             ],
+//           ),
+//         ),
+//       ],
+//     ),
+//   );
+// }

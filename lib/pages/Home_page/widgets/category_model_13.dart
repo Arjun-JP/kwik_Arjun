@@ -67,7 +67,7 @@ class CategoryModel13 extends StatelessWidget {
                       style: TextStyle(
                         color: parseColor(titleColor),
                         fontSize: 18,
-                        fontWeight: FontWeight.bold,
+                        fontWeight: FontWeight.w800,
                       ),
                     ),
                   ),
