@@ -60,7 +60,7 @@ class _CategoryModel1State extends State<CategoryModel1> {
                             widget.title,
                             style: theme.textTheme.titleLarge!.copyWith(
                                 color: parseColor(widget.titlecolor),
-                                fontWeight: FontWeight.w600),
+                                fontWeight: FontWeight.w800),
                           ),
                           const SizedBox(height: 10),
                           SingleChildScrollView(

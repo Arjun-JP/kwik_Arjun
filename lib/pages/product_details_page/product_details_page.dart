@@ -553,7 +553,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
             ),
           ),
           Expanded(
-            flex: 5,
+            flex: 3,
             child: SizedBox(
               height: 40,
               child:
@@ -611,7 +611,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                           backgroundColor: AppColors.addToCartBorder,
                           minimumSize: const Size(152, 48),
                         ),
-                        child: const Text("Add to Cart",
+                        child: const Text("Add ",
                             style:
                                 TextStyle(fontSize: 16, color: Colors.white)),
                       );
@@ -743,18 +743,14 @@ Widget quantitycontrolbutton(
                   userId: "s5ZdLnYhnVfAramtr7knGduOI872",
                   variantId: product.variations.first.id));
             },
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: SizedBox(
-                  child: Center(
-                      child: Container(
-                width: 20,
-                height: 2,
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(3)),
-              ))),
-            ),
+            child: SizedBox(
+                child: Center(
+                    child: Container(
+              width: 20,
+              height: 2,
+              decoration: BoxDecoration(
+                  color: Colors.white, borderRadius: BorderRadius.circular(3)),
+            ))),
           ),
         ),
         Expanded(
@@ -779,17 +775,14 @@ Widget quantitycontrolbutton(
                   userId: "s5ZdLnYhnVfAramtr7knGduOI872",
                   variantId: product.variations.first.id));
             },
-            child: const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 4),
-              child: SizedBox(
-                  child: Center(
-                child: Icon(
-                  Icons.add,
-                  size: 28,
-                  color: Colors.white,
-                ),
-              )),
-            ),
+            child: const SizedBox(
+                child: Center(
+              child: Icon(
+                Icons.add,
+                size: 28,
+                color: Colors.white,
+              ),
+            )),
           ),
         )
       ],
@@ -890,7 +883,7 @@ Widget productsYouMightAlsoLike(
             },
             scrollDirection: Axis.horizontal,
             itemCount: productlist.length,
-            itemExtent: 135, // Consider adding fixed width for each item
+            itemExtent: 130, // Consider adding fixed width for each item
             cacheExtent: 300, // Improves scroll performance
           ),
         ),

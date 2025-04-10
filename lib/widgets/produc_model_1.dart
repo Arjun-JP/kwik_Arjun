@@ -77,7 +77,7 @@ class ProductItem extends StatelessWidget {
                     spacing: 3,
                     children: [
                       Container(
-                        height: 170,
+                        height: 160,
                         decoration: BoxDecoration(
                           color: parseColor("F9F9F9"),
                           borderRadius: BorderRadius.circular(10),
@@ -163,6 +163,8 @@ class ProductItem extends StatelessWidget {
                               child: cartItems.any((element) =>
                                       element.productRef.id == product.id)
                                   ? quantitycontrolbutton(
+                                      buttonbgcolor: buttontextcolor,
+                                      buttontextcolor: buttonBgColor,
                                       theme: theme,
                                       product: product,
                                       qty: cartItems
@@ -198,6 +200,10 @@ class ProductItem extends StatelessWidget {
                                                       child:
                                                           SelectVarrientBottomSheet(
                                                         product: product,
+                                                        buttonBgColor:
+                                                            buttontextcolor,
+                                                        buttontextcolor:
+                                                            buttonBgColor,
                                                       ),
                                                     ),
                                                   );
@@ -291,7 +297,7 @@ class ProductItem extends StatelessWidget {
                           textAlign: TextAlign.center,
                           style: theme.textTheme.bodyMedium!.copyWith(
                             color: parseColor(offertextcolor),
-                            fontSize: 11,
+                            fontSize: 10,
                             fontFamily: "Inter",
                             fontWeight: FontWeight.w900,
                           ),
@@ -338,13 +344,15 @@ class ProductItem extends StatelessWidget {
 
   Widget quantitycontrolbutton(
       {required ThemeData theme,
+      required String buttonbgcolor,
+      required String buttontextcolor,
       required ProductModel product,
       required String qty}) {
     return Container(
       height: 30,
       padding: const EdgeInsets.symmetric(horizontal: 5),
       decoration: BoxDecoration(
-          color: const Color(0xFFE23338),
+          color: parseColor(buttonbgcolor),
           borderRadius: BorderRadius.circular(10)),
       child: Row(
         spacing: 2,
@@ -366,7 +374,7 @@ class ProductItem extends StatelessWidget {
                 width: 12,
                 height: 2,
                 decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: parseColor(buttontextcolor),
                     borderRadius: BorderRadius.circular(3)),
               ))),
             ),
@@ -378,7 +386,7 @@ class ProductItem extends StatelessWidget {
               child: Text(
                 qty,
                 style: theme.textTheme.bodyMedium!.copyWith(
-                    color: Colors.white,
+                    color: parseColor(buttontextcolor),
                     fontSize: 14,
                     fontWeight: FontWeight.w800),
               ),
@@ -395,14 +403,14 @@ class ProductItem extends StatelessWidget {
                     userId: "s5ZdLnYhnVfAramtr7knGduOI872",
                     variantId: product.variations.first.id));
               },
-              child: const Padding(
-                padding: EdgeInsets.symmetric(vertical: 4),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 4),
                 child: SizedBox(
                     child: Center(
                   child: Icon(
                     Icons.add,
                     size: 20,
-                    color: Colors.white,
+                    color: parseColor(buttontextcolor),
                   ),
                 )),
               ),

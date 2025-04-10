@@ -64,12 +64,12 @@ class CategoryModel6 extends StatelessWidget {
                       style: TextStyle(
                         color: parseColor(titleColor),
                         fontSize: 18,
-                        fontWeight: FontWeight.bold,
+                        fontWeight: FontWeight.w800,
                       ),
                     ),
                     const SizedBox(height: 12),
                     SizedBox(
-                      height: 170,
+                      height: 230,
                       width: MediaQuery.of(context).size.width,
                       child: ListView.builder(
                         scrollDirection: Axis.horizontal,
@@ -115,20 +115,19 @@ Widget subcategoryItem(
     children: [
       Padding(
         padding: const EdgeInsets.only(right: 15.0),
-        child: SizedBox(
-          height: 170,
-          width: 140,
+        child: Container(
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(25),
+              border: Border.all(color: Colors.blue, width: 3)),
+          height: 220,
+          width: 170,
           child: Stack(
             children: [
               Container(
-                height: 170,
-                width: 150,
+                height: 220,
+                width: 170,
                 decoration: BoxDecoration(
-                  borderRadius: const BorderRadius.only(
-                      topLeft: Radius.circular(25),
-                      topRight: Radius.circular(25),
-                      bottomLeft: Radius.circular(25),
-                      bottomRight: Radius.circular(25)),
+                  borderRadius: BorderRadius.circular(21),
                   color: parseColor(bgcolor),
                   image: DecorationImage(
                     image: NetworkImage(imageurl),

@@ -55,10 +55,12 @@ class CartBloc extends Bloc<CartEvent, CartState> {
         List<CartProduct> newCart = [event.cartProduct];
         await cartBox.put('cart', newCart.map((e) => e.toJson()).toList());
 
-        emit(CartUpdated(
-            message: message,
-            cartItems: newCart,
-            charges: currentState.charges));
+        emit(CartUpdated(message: message, cartItems: newCart, charges: const {
+          "enable_cod": true,
+          "delivery_charge": 2,
+          "handling_charge": 1,
+          "high_demand_charge": 3
+        }));
       }
     } catch (e) {
       emit(CartError(message: e.toString()));
@@ -175,7 +177,10 @@ class CartBloc extends Bloc<CartEvent, CartState> {
       // If server cart is empty, clear local cart and return empty list
       if (serverCartItems.isEmpty) {
         await cartBox.put('cart', []);
-        emit(CartUpdated(message: "Cart is empty", cartItems: [], charges: {}));
+        emit(CartUpdated(
+            message: "Cart is empty",
+            cartItems: [],
+            charges: serverCartData["charges"]));
         return;
       }
 

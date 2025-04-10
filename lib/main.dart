@@ -36,6 +36,7 @@ import 'package:kwik/bloc/order_bloc/order_bloc.dart';
 import 'package:kwik/bloc/product_details_page/product_details_bloc/product_details_page_bloc.dart';
 import 'package:kwik/bloc/product_details_page/recommended_products_bloc/recommended_products_bloc.dart';
 import 'package:kwik/bloc/product_details_page/similerproduct_bloc/similar_product_bloc.dart';
+import 'package:kwik/constants/network_check.dart';
 import 'package:kwik/constants/textstyle.dart';
 import 'package:kwik/firebase_options.dart';
 import 'package:kwik/models/Hiveadapter/brand_model_adapter.dart';
@@ -233,6 +234,21 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   final GoRouter _router = router;
+  @override
+  void initState() {
+    super.initState();
+    // Wait for context to be ready
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      NetworkMonitor().startMonitoring(context);
+    });
+  }
+
+  @override
+  void dispose() {
+    NetworkMonitor().dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(

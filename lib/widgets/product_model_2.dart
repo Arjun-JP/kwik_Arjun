@@ -10,6 +10,7 @@ import 'package:kwik/constants/colors.dart';
 import 'package:kwik/constants/constants.dart';
 import 'package:kwik/models/cart_model.dart';
 import 'package:kwik/models/product_model.dart';
+import 'package:kwik/widgets/select_Varrient_bottom_sheet.dart';
 
 class ProductModel2 extends StatelessWidget {
   // final ProductModel product;
@@ -229,6 +230,8 @@ class ProductModel2 extends StatelessWidget {
                       child: cartItems.any(
                               (element) => element.productRef.id == product.id)
                           ? quantitycontrolbutton(
+                              buttonbgcolor: buttontextcolor,
+                              buttontext: buttonbgcolor,
                               theme: theme,
                               product: product,
                               qty: cartItems
@@ -260,34 +263,67 @@ class ProductModel2 extends StatelessWidget {
                                   height: 35,
                                   width: 154,
                                   child: ElevatedButton(
-                                    onPressed: () {
-                                      context.read<CartBloc>().add(
-                                            AddToCart(
-                                              cartProduct: CartProduct(
-                                                productRef: product,
-                                                variant:
-                                                    product.variations.first,
-                                                quantity: 1,
-                                                pincode: "560003",
-                                                sellingPrice: product.variations
-                                                    .first.sellingPrice,
-                                                mrp: product
-                                                    .variations.first.mrp,
-                                                buyingPrice: product.variations
-                                                    .first.buyingPrice,
-                                                inStock: true,
-                                                variationVisibility: true,
-                                                finalPrice: 0,
-                                                cartAddedDate: DateTime.now(),
+                                    onPressed: () async {
+                                      if (product.variations.length > 1) {
+                                        await showModalBottomSheet(
+                                          isScrollControlled: true,
+                                          backgroundColor: Colors.transparent,
+                                          enableDrag: false,
+                                          context: context,
+                                          builder: (context) {
+                                            return GestureDetector(
+                                              onTap: () =>
+                                                  FocusScope.of(context)
+                                                      .unfocus(),
+                                              child: Padding(
+                                                padding:
+                                                    MediaQuery.viewInsetsOf(
+                                                        context),
+                                                child:
+                                                    SelectVarrientBottomSheet(
+                                                  buttonBgColor:
+                                                      buttontextcolor,
+                                                  buttontextcolor:
+                                                      buttonbgcolor,
+                                                  product: product,
+                                                ),
                                               ),
-                                              userId:
-                                                  "s5ZdLnYhnVfAramtr7knGduOI872",
-                                              productRef: product.id,
-                                              variantId:
-                                                  product.variations.first.id,
-                                              pincode: "560003",
-                                            ),
-                                          );
+                                            );
+                                          },
+                                        );
+                                      } else {
+                                        context.read<CartBloc>().add(
+                                              AddToCart(
+                                                cartProduct: CartProduct(
+                                                  productRef: product,
+                                                  variant:
+                                                      product.variations.first,
+                                                  quantity: 1,
+                                                  pincode: "560003",
+                                                  sellingPrice: product
+                                                      .variations
+                                                      .first
+                                                      .sellingPrice,
+                                                  mrp: product
+                                                      .variations.first.mrp,
+                                                  buyingPrice: product
+                                                      .variations
+                                                      .first
+                                                      .buyingPrice,
+                                                  inStock: true,
+                                                  variationVisibility: true,
+                                                  finalPrice: 0,
+                                                  cartAddedDate: DateTime.now(),
+                                                ),
+                                                userId:
+                                                    "s5ZdLnYhnVfAramtr7knGduOI872",
+                                                productRef: product.id,
+                                                variantId:
+                                                    product.variations.first.id,
+                                                pincode: "560003",
+                                              ),
+                                            );
+                                      }
                                     },
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor:
@@ -349,12 +385,14 @@ class ProductModel2 extends StatelessWidget {
 
   Widget quantitycontrolbutton(
       {required ThemeData theme,
+      required String buttonbgcolor,
+      required String buttontext,
       required ProductModel product,
       required String qty}) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3.2),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
       decoration: BoxDecoration(
-          color: const Color(0xFFE23338),
+          color: parseColor(buttonbgcolor),
           borderRadius: BorderRadius.circular(8)),
       child: Row(
         spacing: 10,
@@ -369,18 +407,20 @@ class ProductModel2 extends StatelessWidget {
                     userId: "s5ZdLnYhnVfAramtr7knGduOI872",
                     variantId: product.variations.first.id));
               },
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: SizedBox(
-                    child: Center(
-                        child: Container(
-                  width: 12,
-                  height: 2,
-                  decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(3)),
-                ))),
-              ),
+              child: SizedBox(
+                  height: 24,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        width: 12,
+                        height: 2,
+                        decoration: BoxDecoration(
+                            color: parseColor(buttontext),
+                            borderRadius: BorderRadius.circular(3)),
+                      ),
+                    ],
+                  )),
             ),
           ),
           Expanded(
@@ -389,7 +429,7 @@ class ProductModel2 extends StatelessWidget {
               child: Text(
                 qty,
                 style: theme.textTheme.bodyMedium!.copyWith(
-                    color: Colors.white,
+                    color: parseColor(buttontext),
                     fontSize: 14,
                     fontWeight: FontWeight.w800),
               ),
@@ -405,17 +445,14 @@ class ProductModel2 extends StatelessWidget {
                     userId: "s5ZdLnYhnVfAramtr7knGduOI872",
                     variantId: product.variations.first.id));
               },
-              child: const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 4),
-                child: SizedBox(
-                    child: Center(
-                  child: Icon(
-                    Icons.add,
-                    size: 20,
-                    color: Colors.white,
-                  ),
-                )),
-              ),
+              child: SizedBox(
+                  child: Center(
+                child: Icon(
+                  Icons.add,
+                  size: 20,
+                  color: parseColor(buttontext),
+                ),
+              )),
             ),
           )
         ],
