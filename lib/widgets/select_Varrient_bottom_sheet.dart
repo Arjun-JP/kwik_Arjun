@@ -335,7 +335,7 @@ Widget quantitycontrolbutton(
         color: parseColor(buttonbgcolor),
         borderRadius: BorderRadius.circular(10)),
     child: Row(
-      spacing: 10,
+      spacing: 3,
       children: [
         Expanded(
           child: InkWell(

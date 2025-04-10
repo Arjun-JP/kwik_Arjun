@@ -36,6 +36,7 @@ import 'package:kwik/bloc/order_bloc/order_bloc.dart';
 import 'package:kwik/bloc/product_details_page/product_details_bloc/product_details_page_bloc.dart';
 import 'package:kwik/bloc/product_details_page/recommended_products_bloc/recommended_products_bloc.dart';
 import 'package:kwik/bloc/product_details_page/similerproduct_bloc/similar_product_bloc.dart';
+import 'package:kwik/bloc/subcategory_product_bloc/subcategory_product_bloc.dart';
 import 'package:kwik/constants/network_check.dart';
 import 'package:kwik/constants/textstyle.dart';
 import 'package:kwik/firebase_options.dart';
@@ -68,6 +69,7 @@ import 'package:kwik/repositories/order_history_repo.dart';
 import 'package:kwik/repositories/recommended_product_repo.dart';
 import 'package:kwik/repositories/search_repo.dart';
 import 'package:kwik/repositories/sub_category_product_repository.dart';
+import 'package:kwik/repositories/subcategory_product_repo.dart';
 import 'package:kwik/repositories/super_saver_ui_repo.dart';
 import 'package:kwik/routes/routes.dart';
 import 'package:kwik/widgets/Error_widget.dart';
@@ -400,6 +402,11 @@ class _MyAppState extends State<MyApp> {
 
         BlocProvider<GetAppdataBloc>(
             create: (_) => GetAppdataBloc(GetAppDataRepo())),
+
+//subcategory product page
+        BlocProvider<SubcategoryProductBlocSubcategory>(
+            create: (_) =>
+                SubcategoryProductBlocSubcategory(SubcategProductRepository())),
       ],
       child: MaterialApp.router(
         builder: (context, child) {
