@@ -52,7 +52,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyA2uFclqIT0ie1gWtqperj9Chzv5JiGH1Q',
-    appId: '1:760883509884:android:72dc47cc5a47c01cc4a7f9',
+    appId: '1:760883509884:android:bc9a078d4b64643cc4a7f9',
     messagingSenderId: '760883509884',
     projectId: 'kwikgroceries-8a11e',
     storageBucket: 'kwikgroceries-8a11e.firebasestorage.app',
@@ -60,19 +60,23 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyDkGgYbhB1iHhWA2lTPHBYSycLm8yV1aI4',
-    appId: '1:760883509884:ios:3f246c3bff5937aec4a7f9',
+    appId: '1:760883509884:ios:b1d63b641cf421e2c4a7f9',
     messagingSenderId: '760883509884',
     projectId: 'kwikgroceries-8a11e',
     storageBucket: 'kwikgroceries-8a11e.firebasestorage.app',
+    androidClientId: '760883509884-4to8e72dp414gp6ajdc75s0r8et10mh9.apps.googleusercontent.com',
+    iosClientId: '760883509884-qvn353fqq34pfq5mhk8mq2cj7r958o4d.apps.googleusercontent.com',
     iosBundleId: 'com.digi9.kwik',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
     apiKey: 'AIzaSyDkGgYbhB1iHhWA2lTPHBYSycLm8yV1aI4',
-    appId: '1:760883509884:ios:3f246c3bff5937aec4a7f9',
+    appId: '1:760883509884:ios:b1d63b641cf421e2c4a7f9',
     messagingSenderId: '760883509884',
     projectId: 'kwikgroceries-8a11e',
     storageBucket: 'kwikgroceries-8a11e.firebasestorage.app',
+    androidClientId: '760883509884-4to8e72dp414gp6ajdc75s0r8et10mh9.apps.googleusercontent.com',
+    iosClientId: '760883509884-qvn353fqq34pfq5mhk8mq2cj7r958o4d.apps.googleusercontent.com',
     iosBundleId: 'com.digi9.kwik',
   );
 
@@ -85,4 +89,5 @@ class DefaultFirebaseOptions {
     storageBucket: 'kwikgroceries-8a11e.firebasestorage.app',
     measurementId: 'G-QMD6Q2ZDXF',
   );
+
 }

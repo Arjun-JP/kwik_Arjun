@@ -23,7 +23,7 @@ class _SplashScreenState extends State<SplashScreen> {
     final deviceheight = MediaQuery.of(context).size.height; //678
 
     Future<void> toOnboardScreen() async {
-      context.go('/home');
+      context.go('/onboardingScreen');
 
       await showModalBottomSheet(
         isDismissible: false,

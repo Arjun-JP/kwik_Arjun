@@ -33,6 +33,9 @@ class _SelectVarrientBottomSheetState extends State<SelectVarrientBottomSheet> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final filtredvariations = widget.product.variations
+        .where((element) => element.stock.isNotEmpty)
+        .toList();
     return Column(
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.end,
@@ -85,235 +88,273 @@ class _SelectVarrientBottomSheetState extends State<SelectVarrientBottomSheet> {
                     ),
                     const SizedBox(height: 10),
                     SizedBox(
-                      height: widget.product.variations.length * 100,
+                      height: filtredvariations.length * 100,
                       child: ListView.separated(
                           itemBuilder: (context, index) {
-                            return Stack(
-                              children: [
-                                Container(
-                                  decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(
-                                        25,
-                                      )),
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 15, vertical: 5),
-                                  child: Row(
-                                    children: [
-                                      Expanded(
-                                        flex: 2,
-                                        child: Image.network(
-                                          widget.product.productImages.first,
-                                          width: 80,
-                                          height: 80,
+                            return Opacity(
+                              opacity: filtredvariations[index]
+                                          .stock
+                                          .first
+                                          .stockQty ==
+                                      0
+                                  ? 0.5
+                                  : 1,
+                              child: Stack(
+                                children: [
+                                  Container(
+                                    decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(
+                                          25,
+                                        )),
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 15, vertical: 5),
+                                    child: Row(
+                                      children: [
+                                        Expanded(
+                                          flex: 2,
+                                          child: Image.network(
+                                            widget.product.productImages.first,
+                                            width: 80,
+                                            height: 80,
+                                          ),
                                         ),
-                                      ),
-                                      Expanded(
-                                        flex: 4,
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceAround,
-                                          spacing: 5,
-                                          children: [
-                                            Text(
-                                              "${widget.product.variations[index].qty} ${widget.product.variations[index].unit}",
-                                              maxLines: 1,
-                                              style: theme.textTheme.bodyMedium!
-                                                  .copyWith(
-                                                      fontSize: 14,
-                                                      fontWeight:
-                                                          FontWeight.bold),
-                                            ),
-                                            Column(
-                                              children: [
-                                                Text(
-                                                    "₹${widget.product.variations[index].sellingPrice}",
+                                        Expanded(
+                                          flex: 4,
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceAround,
+                                            spacing: 5,
+                                            children: [
+                                              Text(
+                                                "${filtredvariations[index].qty} ${filtredvariations[index].unit}",
+                                                maxLines: 1,
+                                                style: theme
+                                                    .textTheme.bodyMedium!
+                                                    .copyWith(
+                                                        fontSize: 14,
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                              ),
+                                              Column(
+                                                children: [
+                                                  Text(
+                                                      "₹${filtredvariations[index].sellingPrice}",
+                                                      style: theme
+                                                          .textTheme.bodyMedium!
+                                                          .copyWith(
+                                                              fontSize: 14,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w800)),
+                                                  Text(
+                                                    "₹${filtredvariations[index].mrp}",
                                                     style: theme
                                                         .textTheme.bodyMedium!
                                                         .copyWith(
-                                                            fontSize: 14,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .w800)),
-                                                Text(
-                                                  "₹${widget.product.variations[index].mrp}",
-                                                  style: theme
-                                                      .textTheme.bodyMedium!
-                                                      .copyWith(
-                                                          decoration:
-                                                              TextDecoration
-                                                                  .lineThrough,
-                                                          color:
-                                                              Colors.blueGrey),
-                                                ),
-                                              ],
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      Expanded(
-                                        flex: 2,
-                                        child: SizedBox(
-                                          height: 40,
-                                          child:
-                                              BlocBuilder<CartBloc, CartState>(
-                                                  builder: (context, state) {
-                                            List<CartProduct> cartItems = [];
-
-                                            if (state is CartUpdated) {
-                                              cartItems = state.cartItems;
-                                            }
-                                            return cartItems.any((element) =>
-                                                    element.productRef.id ==
-                                                        widget.product.id &&
-                                                    element.variant.id ==
-                                                        widget
-                                                            .product
-                                                            .variations[index]
-                                                            .id)
-                                                ? quantitycontrolbutton(
-                                                    theme: theme,
-                                                    product: widget.product,
-                                                    ctx: context,
-                                                    buttonbgcolor:
-                                                        widget.buttonBgColor,
-                                                    buttontextcolor:
-                                                        widget.buttontextcolor,
-                                                    qty: cartItems
-                                                        .firstWhere((element) =>
-                                                            element.productRef
-                                                                .id ==
-                                                            widget.product.id)
-                                                        .quantity
-                                                        .toString(),
-                                                  )
-                                                : ElevatedButton(
-                                                    onPressed: () {
-                                                      HapticFeedback
-                                                          .mediumImpact();
-                                                      final firstVariation =
-                                                          widget.product
-                                                                  .variations[
-                                                              index];
-
-                                                      context
-                                                          .read<CartBloc>()
-                                                          .add(
-                                                            AddToCart(
-                                                              cartProduct:
-                                                                  CartProduct(
-                                                                productRef:
-                                                                    widget
-                                                                        .product,
-                                                                variant:
-                                                                    firstVariation,
-                                                                quantity: 1,
-                                                                pincode:
-                                                                    "560003",
-                                                                sellingPrice:
-                                                                    firstVariation
-                                                                        .sellingPrice,
-                                                                mrp:
-                                                                    firstVariation
-                                                                        .mrp,
-                                                                buyingPrice:
-                                                                    firstVariation
-                                                                        .buyingPrice,
-                                                                inStock: true,
-                                                                variationVisibility:
-                                                                    true,
-                                                                finalPrice: 0,
-                                                                cartAddedDate:
-                                                                    DateTime
-                                                                        .now(),
-                                                              ),
-                                                              userId:
-                                                                  "s5ZdLnYhnVfAramtr7knGduOI872",
-                                                              productRef: widget
-                                                                  .product.id,
-                                                              variantId:
-                                                                  firstVariation
-                                                                      .id,
-                                                              pincode: "560003",
-                                                            ),
-                                                          );
-                                                    },
-                                                    style: ElevatedButton
-                                                        .styleFrom(
-                                                      shape:
-                                                          RoundedRectangleBorder(
-                                                        borderRadius:
-                                                            BorderRadius.circular(
-                                                                15), // Set border radius here
-                                                      ),
-                                                      backgroundColor:
-                                                          parseColor(widget
-                                                              .buttonBgColor),
-                                                      minimumSize:
-                                                          const Size(152, 48),
-                                                    ),
-                                                    child: Text("Add",
-                                                        style: TextStyle(
-                                                          fontSize: 12,
-                                                          color: parseColor(widget
-                                                              .buttontextcolor),
-                                                        )),
-                                                  );
-                                          }),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                ClipPath(
-                                  clipper: ZigZagClipper(),
-                                  child: Container(
-                                    width: 45,
-                                    height: 50,
-                                    decoration: BoxDecoration(
-                                      color: parseColor("E3520D"),
-                                      borderRadius: const BorderRadius.only(
-                                        topLeft: Radius.circular(10),
-                                      ),
-                                    ),
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Text(
-                                          "${percentage(widget.product.variations[index].mrp, widget.product.variations[index].sellingPrice)}"
-                                          " "
-                                          "%",
-                                          textAlign: TextAlign.center,
-                                          style: theme.textTheme.bodyMedium!
-                                              .copyWith(
-                                            color: parseColor("FFFFFF"),
-                                            fontSize: 10,
-                                            fontFamily: "Inter",
-                                            fontWeight: FontWeight.w900,
+                                                            decoration:
+                                                                TextDecoration
+                                                                    .lineThrough,
+                                                            color: Colors
+                                                                .blueGrey),
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
                                           ),
                                         ),
-                                        Text(
-                                          "OFF",
-                                          textAlign: TextAlign.center,
-                                          style: theme.textTheme.bodyMedium!
-                                              .copyWith(
-                                            color: parseColor("FFFFFF"),
-                                            fontSize: 10,
-                                            fontFamily: "Inter",
+                                        Expanded(
+                                          flex: 2,
+                                          child: SizedBox(
+                                            height: 40,
+                                            child: BlocBuilder<CartBloc,
+                                                    CartState>(
+                                                builder: (context, state) {
+                                              List<CartProduct> cartItems = [];
+
+                                              if (state is CartUpdated) {
+                                                cartItems = state.cartItems;
+                                              }
+                                              return cartItems.any((element) =>
+                                                      element.productRef.id ==
+                                                          widget.product.id &&
+                                                      element.variant.id ==
+                                                          widget
+                                                              .product
+                                                              .variations[index]
+                                                              .id)
+                                                  ? quantitycontrolbutton(
+                                                      variationid: widget
+                                                          .product
+                                                          .variations[index]
+                                                          .id,
+                                                      theme: theme,
+                                                      product: widget.product,
+                                                      ctx: context,
+                                                      buttonbgcolor:
+                                                          widget.buttonBgColor,
+                                                      buttontextcolor: widget
+                                                          .buttontextcolor,
+                                                      qty: cartItems
+                                                          .firstWhere(
+                                                              (element) =>
+                                                                  element
+                                                                      .productRef
+                                                                      .id ==
+                                                                  widget.product
+                                                                      .id)
+                                                          .quantity
+                                                          .toString(),
+                                                    )
+                                                  : ElevatedButton(
+                                                      onPressed: () {
+                                                        HapticFeedback
+                                                            .mediumImpact();
+                                                        final firstVariation =
+                                                            widget.product
+                                                                    .variations[
+                                                                index];
+                                                        print(
+                                                            firstVariation.qty);
+                                                        print(index);
+                                                        if (widget
+                                                                .product
+                                                                .variations[
+                                                                    index]
+                                                                .stock
+                                                                .first
+                                                                .stockQty ==
+                                                            0) {
+                                                          HapticFeedback
+                                                              .heavyImpact();
+                                                          print("out of stock");
+                                                        } else {
+                                                          print(
+                                                              "out of stock still in else condation");
+                                                          context
+                                                              .read<CartBloc>()
+                                                              .add(
+                                                                AddToCart(
+                                                                  cartProduct:
+                                                                      CartProduct(
+                                                                    productRef:
+                                                                        widget
+                                                                            .product,
+                                                                    variant:
+                                                                        firstVariation,
+                                                                    quantity: 1,
+                                                                    pincode:
+                                                                        "560003",
+                                                                    sellingPrice:
+                                                                        firstVariation
+                                                                            .sellingPrice,
+                                                                    mrp: firstVariation
+                                                                        .mrp,
+                                                                    buyingPrice:
+                                                                        firstVariation
+                                                                            .buyingPrice,
+                                                                    inStock:
+                                                                        true,
+                                                                    variationVisibility:
+                                                                        true,
+                                                                    finalPrice:
+                                                                        0,
+                                                                    cartAddedDate:
+                                                                        DateTime
+                                                                            .now(),
+                                                                  ),
+                                                                  userId:
+                                                                      "s5ZdLnYhnVfAramtr7knGduOI872",
+                                                                  productRef:
+                                                                      widget
+                                                                          .product
+                                                                          .id,
+                                                                  variantId:
+                                                                      firstVariation
+                                                                          .id,
+                                                                  pincode:
+                                                                      "560003",
+                                                                ),
+                                                              );
+                                                        }
+                                                      },
+                                                      style: ElevatedButton
+                                                          .styleFrom(
+                                                        shape:
+                                                            RoundedRectangleBorder(
+                                                          borderRadius:
+                                                              BorderRadius.circular(
+                                                                  15), // Set border radius here
+                                                        ),
+                                                        backgroundColor:
+                                                            parseColor(widget
+                                                                .buttonBgColor),
+                                                        minimumSize:
+                                                            const Size(152, 48),
+                                                      ),
+                                                      child: Text("Add",
+                                                          style: TextStyle(
+                                                            fontSize: 12,
+                                                            color: parseColor(widget
+                                                                .buttontextcolor),
+                                                          )),
+                                                    );
+                                            }),
                                           ),
                                         ),
                                       ],
                                     ),
                                   ),
-                                ),
-                              ],
+                                  ClipPath(
+                                    clipper: ZigZagClipper(),
+                                    child: Container(
+                                      width: 45,
+                                      height: 50,
+                                      decoration: BoxDecoration(
+                                        color: parseColor("E3520D"),
+                                        borderRadius: const BorderRadius.only(
+                                          topLeft: Radius.circular(10),
+                                        ),
+                                      ),
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Text(
+                                            "${percentage(filtredvariations[index].mrp, filtredvariations[index].sellingPrice)}"
+                                            " "
+                                            "%",
+                                            textAlign: TextAlign.center,
+                                            style: theme.textTheme.bodyMedium!
+                                                .copyWith(
+                                              color: parseColor("FFFFFF"),
+                                              fontSize: 10,
+                                              fontFamily: "Inter",
+                                              fontWeight: FontWeight.w900,
+                                            ),
+                                          ),
+                                          Text(
+                                            "OFF",
+                                            textAlign: TextAlign.center,
+                                            style: theme.textTheme.bodyMedium!
+                                                .copyWith(
+                                              color: parseColor("FFFFFF"),
+                                              fontSize: 10,
+                                              fontFamily: "Inter",
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
                             );
                           },
                           separatorBuilder: (context, index) => const SizedBox(
                                 height: 10,
                               ),
-                          itemCount: widget.product.variations.length),
+                          itemCount: filtredvariations.length),
                     ),
                   ],
                 ))),
@@ -324,6 +365,7 @@ class _SelectVarrientBottomSheetState extends State<SelectVarrientBottomSheet> {
 
 Widget quantitycontrolbutton(
     {required ThemeData theme,
+    required String variationid,
     required ProductModel product,
     required String buttonbgcolor,
     required String buttontextcolor,
@@ -345,7 +387,7 @@ Widget quantitycontrolbutton(
                   pincode: "560003",
                   productRef: product.id,
                   userId: "s5ZdLnYhnVfAramtr7knGduOI872",
-                  variantId: product.variations.first.id));
+                  variantId: variationid));
             },
             child: SizedBox(
                 child: Center(
@@ -378,7 +420,7 @@ Widget quantitycontrolbutton(
                   pincode: "560003",
                   productRef: product.id,
                   userId: "s5ZdLnYhnVfAramtr7knGduOI872",
-                  variantId: product.variations.first.id));
+                  variantId: variationid));
             },
             child: SizedBox(
                 child: Center(

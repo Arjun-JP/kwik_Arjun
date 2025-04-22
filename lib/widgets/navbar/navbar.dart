@@ -4,13 +4,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kwik/bloc/Cart_bloc/cart_bloc.dart';
-import 'package:kwik/bloc/Cart_bloc/cart_event.dart' show SyncCartWithServer;
 import 'package:kwik/bloc/Cart_bloc/cart_state.dart';
 import 'package:kwik/bloc/navbar_bloc/navbar_bloc.dart';
 import 'package:kwik/bloc/navbar_bloc/navbar_event.dart';
 import 'package:kwik/bloc/navbar_bloc/navbar_state.dart';
-import 'package:kwik/bloc/product_details_page/recommended_products_bloc/recommended_products_bloc.dart';
-import 'package:kwik/bloc/product_details_page/recommended_products_bloc/recommended_products_event.dart';
 import 'package:kwik/constants/colors.dart';
 
 class Navbar extends StatelessWidget {
@@ -18,80 +15,82 @@ class Navbar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<NavbarBloc, NavbarState>(
-      builder: (context, state) {
-        return Container(
-          decoration: const BoxDecoration(
-            color: Colors.white,
-            border: Border(
-              top: BorderSide(
-                color: AppColors.buttonColorOrange, // Border color
-                width: .3, // Border width
+    return SafeArea(
+      child: BlocBuilder<NavbarBloc, NavbarState>(
+        builder: (context, state) {
+          return Container(
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              border: Border(
+                top: BorderSide(
+                  color: AppColors.buttonColorOrange, // Border color
+                  width: .3, // Border width
+                ),
               ),
             ),
-          ),
-          height: 80,
-          width: MediaQuery.of(context).size.width,
-          child: Padding(
-            padding: const EdgeInsets.only(top: 10, right: 6, left: 6),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Expanded(
-                  flex: 1,
-                  child: _buildNavItem(
-                      context,
-                      0,
-                      "Home",
-                      "assets/images/home_selected.svg",
-                      "assets/images/home_unselected.svg",
-                      "/home",
-                      null),
-                ),
-                Expanded(
-                  flex: 1,
-                  child: _buildNavItem(
-                      context,
-                      1,
-                      "Categories",
-                      "assets/images/category_selected.svg",
-                      "assets/images/category_unselected.svg",
-                      "/category",
-                      null),
-                ),
-                Expanded(
-                  flex: 1,
-                  child: BlocBuilder<CartBloc, CartState>(
-                      builder: (context, state) {
-                    return _buildNavItem(
+            height: 66,
+            width: MediaQuery.of(context).size.width,
+            child: Padding(
+              padding: const EdgeInsets.only(top: 10, right: 6, left: 6),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Expanded(
+                    flex: 1,
+                    child: _buildNavItem(
                         context,
-                        3,
-                        "Cart",
-                        "assets/images/cart_selected.svg",
-                        "assets/images/cart_unselected.svg",
-                        "/cart",
-                        state is CartUpdated
-                            ? state.cartItems.length.toString()
-                            : null);
-                  }),
-                ),
-                Expanded(
-                  flex: 1,
-                  child: _buildNavItem(
-                      context,
-                      2,
-                      "Offers",
-                      "assets/images/supersaver.png",
-                      "assets/images/supersaver.png",
-                      "/offer",
-                      null),
-                ),
-              ],
+                        0,
+                        "Home",
+                        "assets/images/home_selected.svg",
+                        "assets/images/home_unselected.svg",
+                        "/home",
+                        null),
+                  ),
+                  Expanded(
+                    flex: 1,
+                    child: _buildNavItem(
+                        context,
+                        1,
+                        "Categories",
+                        "assets/images/category_selected.svg",
+                        "assets/images/category_unselected.svg",
+                        "/category",
+                        null),
+                  ),
+                  Expanded(
+                    flex: 1,
+                    child: BlocBuilder<CartBloc, CartState>(
+                        builder: (context, state) {
+                      return _buildNavItem(
+                          context,
+                          3,
+                          "Cart",
+                          "assets/images/cart_selected.svg",
+                          "assets/images/cart_unselected.svg",
+                          "/cart",
+                          state is CartUpdated
+                              ? state.cartItems.length.toString()
+                              : null);
+                    }),
+                  ),
+                  Expanded(
+                    flex: 1,
+                    child: _buildNavItem(
+                        context,
+                        2,
+                        "Offers",
+                        "assets/images/supersaver.png",
+                        "assets/images/supersaver.png",
+                        "/offer",
+                        null),
+                  ),
+                ],
+              ),
             ),
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 
@@ -185,8 +184,8 @@ class Navbar extends StatelessWidget {
                       )
                     : Container(
                         decoration: const BoxDecoration(),
-                        width: 60,
-                        height: 60,
+                        width: 50,
+                        height: 50,
                         child: Image.asset("assets/images/supersaver.svg"),
                       ),
                 const SizedBox(height: 5),

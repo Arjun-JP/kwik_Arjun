@@ -15,7 +15,6 @@ import 'package:kwik/bloc/banner_bloc/banner_bloc.dart';
 import 'package:kwik/bloc/brand_products/brand_products_bloc.dart';
 import 'package:kwik/bloc/category_landing_page_bloc/category_landing_page_bloc.dart';
 import 'package:kwik/bloc/get_appdata_bloc/get_appdata_bloc.dart';
-import 'package:kwik/bloc/get_appdata_bloc/get_appdata_event.dart';
 import 'package:kwik/bloc/home_page_bloc/category_bloc/category_bloc.dart';
 import 'package:kwik/bloc/home_page_bloc/category_model_13_bloc/category_model_13_bloc.dart';
 import 'package:kwik/bloc/home_page_bloc/category_model_14_bloc/category_model_14_bloc.dart';
@@ -46,7 +45,6 @@ import 'package:kwik/models/Hiveadapter/review_model_adapter.dart';
 import 'package:kwik/models/Hiveadapter/stock_model_adapter.dart';
 import 'package:kwik/models/cart_model.dart';
 import 'package:kwik/models/product_model.dart' show ProductModel;
-import 'package:kwik/models/subcategory_model.dart' show SubCategoryModel;
 import 'package:kwik/repositories/allsubcategory_repo.dart';
 import 'package:kwik/repositories/banner_repository.dart';
 import 'package:kwik/repositories/brand_products_repo.dart';
@@ -94,6 +92,7 @@ import 'models/Hiveadapter/warehouse_model_adapter.dart';
 import 'repositories/category_model2_repository.dart';
 import 'repositories/category_model9_repo.dart';
 import 'repositories/category_model_10_repo.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -221,8 +220,10 @@ void main() async {
     DeviceOrientation.portraitDown,
   ]);
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   // debugPrintScheduleFrameStacks:
   // true;
+  WidgetsFlutterBinding.ensureInitialized();
 
   runApp(const MyApp());
 }
@@ -424,4 +425,9 @@ class _MyAppState extends State<MyApp> {
       ),
     );
   }
+}
+
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  print("Handling a background message: ${message.messageId}");
+  // Process your data here
 }

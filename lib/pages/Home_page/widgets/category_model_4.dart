@@ -88,7 +88,7 @@ class CategoryModel4 extends StatelessWidget {
                                     Text(
                                       title, // Display section title
                                       style: TextStyle(
-                                          color: parseColor("2C8E55"),
+                                          color: parseColor(titleColor),
                                           fontSize: 18,
                                           fontWeight: FontWeight.w800),
                                     ),

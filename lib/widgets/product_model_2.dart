@@ -69,6 +69,9 @@ class ProductModel2 extends StatelessWidget {
                 extra: {
                   'product': product,
                   'subcategoryref': subcategoryref,
+                  'buttonbg':
+                      parseColor(buttontextcolor), // example color as a string
+                  'buttontext': parseColor(buttonbgcolor)
                 },
               ),
               child: SizedBox(
@@ -296,7 +299,10 @@ class ProductModel2 extends StatelessWidget {
                                             );
                                           },
                                         );
-                                      } else {
+                                      } else if (product.variations == 1 &&
+                                          product.variations.first.stock.first
+                                                  .stockQty !=
+                                              0) {
                                         context.read<CartBloc>().add(
                                               AddToCart(
                                                 cartProduct: CartProduct(
@@ -328,6 +334,8 @@ class ProductModel2 extends StatelessWidget {
                                                 pincode: "560003",
                                               ),
                                             );
+                                      } else {
+                                        HapticFeedback.heavyImpact();
                                       }
                                     },
                                     style: ElevatedButton.styleFrom(
@@ -340,9 +348,10 @@ class ProductModel2 extends StatelessWidget {
                                       ),
                                     ),
                                     child: Text(
-                                      product.variations.first.stock.first
-                                                  .stockQty ==
-                                              0
+                                      product.variations.length == 1 &&
+                                              product.variations.first.stock
+                                                      .first.stockQty ==
+                                                  0
                                           ? "Out of stock"
                                           : 'Add to Cart',
                                       style: TextStyle(
@@ -361,27 +370,6 @@ class ProductModel2 extends StatelessWidget {
                 ),
               ),
             ),
-            product.variations.first.stock.first.stockQty == 0
-                ? Container(
-                    margin: const EdgeInsets.only(bottom: 15),
-                    width: 154,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      color: const Color.fromARGB(255, 158, 158, 158)
-                          .withOpacity(.2),
-                    ),
-                    child: Center(
-                      child: Padding(
-                        padding: const EdgeInsets.only(top: 130.0),
-                        child: Text(
-                          "out of stock",
-                          style: theme.textTheme.bodyMedium!.copyWith(
-                              color: Colors.red, fontWeight: FontWeight.w800),
-                        ),
-                      ),
-                    ),
-                  )
-                : const SizedBox()
           ],
         ),
       );

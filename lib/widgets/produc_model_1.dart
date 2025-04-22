@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -62,6 +64,9 @@ class ProductItem extends StatelessWidget {
               extra: {
                 'product': product,
                 'subcategoryref': subcategoryRef,
+                'buttonbg':
+                    parseColor(buttontextcolor), // example color as a string
+                'buttontext': parseColor(buttonBgColor),
               },
             ),
             child: Stack(
@@ -79,7 +84,7 @@ class ProductItem extends StatelessWidget {
                       Container(
                         height: 160,
                         decoration: BoxDecoration(
-                          color: parseColor("F9F9F9"),
+                          color: parseColor(productBgColor),
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: Container(
@@ -111,10 +116,7 @@ class ProductItem extends StatelessWidget {
                         children: [
                           Container(
                             padding: EdgeInsets.symmetric(
-                                horizontal: unitbgcolor == "FFFFFF" ||
-                                        unitbgcolor == "00FFFFFF"
-                                    ? 0
-                                    : 10,
+                                horizontal: unitbgcolor == "00FFFFFF" ? 0 : 10,
                                 vertical: 1),
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(8),
@@ -211,7 +213,12 @@ class ProductItem extends StatelessWidget {
                                                   );
                                                 },
                                               );
-                                            } else {
+                                            } else if (product
+                                                        .variations.length ==
+                                                    1 &&
+                                                product.variations.first.stock
+                                                        .first.stockQty !=
+                                                    0) {
                                               context.read<CartBloc>().add(
                                                     AddToCart(
                                                       cartProduct: CartProduct(
@@ -241,6 +248,8 @@ class ProductItem extends StatelessWidget {
                                                       pincode: "560003",
                                                     ),
                                                   );
+                                            } else {
+                                              HapticFeedback.heavyImpact();
                                             }
                                           },
                                           style: ElevatedButton.styleFrom(
@@ -256,11 +265,16 @@ class ProductItem extends StatelessWidget {
                                             padding: const EdgeInsets.all(0),
                                           ),
                                           child: Text(
-                                            product.variations.first.stock.first
-                                                        .stockQty !=
-                                                    0
-                                                ? 'Add'
-                                                : "No stock",
+                                            product.variations.length == 1 &&
+                                                    product
+                                                            .variations
+                                                            .first
+                                                            .stock
+                                                            .first
+                                                            .stockQty ==
+                                                        0
+                                                ? 'No stock'
+                                                : "Add",
                                             style: theme.textTheme.bodyMedium!
                                                 .copyWith(
                                               color:
@@ -320,25 +334,6 @@ class ProductItem extends StatelessWidget {
               ],
             ),
           ),
-          product.variations.first.stock.first.stockQty == 0
-              ? Container(
-                  width: 120,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    color: Colors.grey.withOpacity(.2),
-                  ),
-                  child: Center(
-                    child: Padding(
-                      padding: const EdgeInsets.only(top: 30.0),
-                      child: Text(
-                        "out of stock",
-                        style: theme.textTheme.bodyMedium!.copyWith(
-                            color: Colors.red, fontWeight: FontWeight.w800),
-                      ),
-                    ),
-                  ),
-                )
-              : const SizedBox()
         ],
       );
     });
@@ -354,6 +349,7 @@ class ProductItem extends StatelessWidget {
       height: 30,
       padding: const EdgeInsets.symmetric(horizontal: 5),
       decoration: BoxDecoration(
+          border: Border.all(color: parseColor(buttonbgcolor), width: .5),
           color: parseColor(buttonbgcolor),
           borderRadius: BorderRadius.circular(10)),
       child: Row(

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kwik/bloc/Cart_bloc/cart_bloc.dart';
 import 'package:kwik/bloc/Cart_bloc/cart_event.dart';
@@ -29,9 +30,15 @@ import 'package:kwik/widgets/shimmer/product_model1_list.dart';
 class ProductDetailsPage extends StatefulWidget {
   final ProductModel product;
   final String subcategoryref;
+  final Color buttonbg;
+  final Color buttontext;
 
   const ProductDetailsPage(
-      {super.key, required this.product, required this.subcategoryref});
+      {super.key,
+      required this.product,
+      required this.subcategoryref,
+      required this.buttonbg,
+      required this.buttontext});
 
   @override
   State<ProductDetailsPage> createState() => _ProductDetailsPageState();
@@ -77,13 +84,19 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
             onPressed: () => context.pop(),
           ),
           actions: [
-            IconButton(
-              icon: const Icon(Icons.search, color: AppColors.kblackColor),
-              onPressed: () {
-                HapticFeedback.selectionClick();
-                context.push('/searchpage');
-              },
-            ),
+            InkWell(
+                onTap: () {
+                  HapticFeedback.selectionClick();
+                  context.push('/searchpage');
+                },
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 15.0),
+                  child: SvgPicture.asset(
+                    "assets/images/search_icon.svg",
+                    height: 25,
+                    width: 25,
+                  ),
+                ))
           ],
           foregroundColor: Colors.transparent,
           backgroundColor: Colors.transparent,
@@ -171,6 +184,9 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
       {required ThemeData theme,
       required ProductModel product,
       required VariationModel selectedvariation}) {
+    final filtredvariations = product.variations
+        .where((element) => element.stock.isNotEmpty)
+        .toList();
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 0.0),
       child: Column(
@@ -242,7 +258,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
             child:
                 Text(product.productName, style: theme.textTheme.titleMedium),
           ),
-          product.variations.length > 1
+          filtredvariations.length > 1
               ? Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 10),
                   child: SizedBox(
@@ -251,16 +267,16 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                       scrollDirection: Axis.horizontal,
                       child: Row(
                         children: List.generate(
-                          product.variations.length,
+                          filtredvariations.length,
                           (index) => InkWell(
                             onTap: () {
                               context.read<VariationBloc>().add(
                                   SelectVariationEvent(
-                                      product.variations[index]));
+                                      filtredvariations[index]));
                             },
                             child: variationItem(
                                 theme: theme,
-                                variation: product.variations[index],
+                                variation: filtredvariations[index],
                                 selectedvariationid: selectedvariation.id),
                           ),
                         ),
@@ -270,8 +286,8 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                 )
               : Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 10),
-                  child: Text("${product.variations.first.qty} "
-                      "${product.variations.first.unit}"),
+                  child: Text("${filtredvariations.first.qty} "
+                      "${filtredvariations.first.unit}"),
                 ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -279,13 +295,13 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
               mainAxisAlignment: MainAxisAlignment.start,
               spacing: 10,
               children: [
-                product.variations.length == 1
-                    ? Text("₹" "${product.variations.first.sellingPrice} ",
+                filtredvariations.length == 1
+                    ? Text("₹" "${filtredvariations.first.sellingPrice} ",
                         style: const TextStyle(
                             fontSize: 16, fontWeight: FontWeight.bold))
                     : const SizedBox(),
-                product.variations.length == 1
-                    ? Text("₹" "${product.variations.first.mrp} ",
+                filtredvariations.length == 1
+                    ? Text("₹" "${filtredvariations.first.mrp} ",
                         style: const TextStyle(
                             decoration: TextDecoration.lineThrough,
                             decorationColor: AppColors.kgreyColorlite,
@@ -293,7 +309,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                             fontWeight: FontWeight.bold,
                             color: AppColors.textColorDimGrey))
                     : const SizedBox(),
-                product.variations.length == 1
+                filtredvariations.length == 1
                     ? Container(
                         padding: const EdgeInsets.symmetric(
                             horizontal: 8, vertical: 4),
@@ -301,7 +317,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                             color: AppColors.korangeColor,
                             borderRadius: BorderRadius.circular(10)),
                         child: Text(
-                          "${percentage(product.variations.first.mrp, product.variations.first.sellingPrice)}"
+                          "${percentage(filtredvariations.first.mrp, filtredvariations.first.sellingPrice)}"
                           " OFF",
                           style: const TextStyle(
                               fontSize: 14,
@@ -553,7 +569,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
             ),
           ),
           Expanded(
-            flex: 3,
+            flex: 4,
             child: SizedBox(
               height: 40,
               child:
@@ -567,6 +583,9 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                         element.productRef.id == product.id &&
                         element.variant.id == selecedvariation.id)
                     ? quantitycontrolbutton(
+                        buttontextcolor: widget.buttontext,
+                        buttonbgcolor: widget.buttonbg,
+                        variationID: selecedvariation.id,
                         theme: theme,
                         product: product,
                         ctx: context,
@@ -579,41 +598,50 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                     : ElevatedButton(
                         onPressed: () {
                           HapticFeedback.mediumImpact();
-                          final firstVariation = product.variations.first;
-
-                          context.read<CartBloc>().add(
-                                AddToCart(
-                                  cartProduct: CartProduct(
-                                    productRef: product,
-                                    variant: firstVariation,
-                                    quantity: 1,
+                          if (selecedvariation.stock.first.stockQty == 0) {
+                            HapticFeedback.heavyImpact();
+                          } else {
+                            context.read<CartBloc>().add(
+                                  AddToCart(
+                                    cartProduct: CartProduct(
+                                      productRef: product,
+                                      variant: selecedvariation,
+                                      quantity: 1,
+                                      pincode: "560003",
+                                      sellingPrice:
+                                          selecedvariation.sellingPrice,
+                                      mrp: selecedvariation.mrp,
+                                      buyingPrice: selecedvariation.buyingPrice,
+                                      inStock: true,
+                                      variationVisibility: true,
+                                      finalPrice: 0,
+                                      cartAddedDate: DateTime.now(),
+                                    ),
+                                    userId: "s5ZdLnYhnVfAramtr7knGduOI872",
+                                    productRef: product.id,
+                                    variantId: selecedvariation.id,
                                     pincode: "560003",
-                                    sellingPrice: firstVariation.sellingPrice,
-                                    mrp: firstVariation.mrp,
-                                    buyingPrice: firstVariation.buyingPrice,
-                                    inStock: true,
-                                    variationVisibility: true,
-                                    finalPrice: 0,
-                                    cartAddedDate: DateTime.now(),
                                   ),
-                                  userId: "s5ZdLnYhnVfAramtr7knGduOI872",
-                                  productRef: product.id,
-                                  variantId: firstVariation.id,
-                                  pincode: "560003",
-                                ),
-                              );
+                                );
+                          }
                         },
                         style: ElevatedButton.styleFrom(
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(
-                                15), // Set border radius here
+                                8), // Set border radius here
                           ),
-                          backgroundColor: AppColors.addToCartBorder,
+                          side: BorderSide(color: widget.buttontext, width: .8),
+                          backgroundColor: widget.buttonbg,
                           minimumSize: const Size(152, 48),
                         ),
-                        child: const Text("Add ",
-                            style:
-                                TextStyle(fontSize: 16, color: Colors.white)),
+                        child: Text(
+                            selecedvariation.stock.first.stockQty == 0
+                                ? "No Stock"
+                                : "Add ",
+                            style: TextStyle(
+                                fontSize: 16,
+                                color: widget.buttontext,
+                                fontWeight: FontWeight.w700)),
                       );
               }),
             ),
@@ -722,14 +750,16 @@ Widget variationItem(
 
 Widget quantitycontrolbutton(
     {required ThemeData theme,
+    required variationID,
+    required buttontextcolor,
+    required buttonbgcolor,
     required ProductModel product,
     required BuildContext ctx,
     required String qty}) {
   return Container(
     padding: const EdgeInsets.symmetric(horizontal: 10),
     decoration: BoxDecoration(
-        color: const Color(0xFFE23338),
-        borderRadius: BorderRadius.circular(10)),
+        color: buttonbgcolor, borderRadius: BorderRadius.circular(10)),
     child: Row(
       spacing: 10,
       children: [
@@ -741,7 +771,7 @@ Widget quantitycontrolbutton(
                   pincode: "560003",
                   productRef: product.id,
                   userId: "s5ZdLnYhnVfAramtr7knGduOI872",
-                  variantId: product.variations.first.id));
+                  variantId: variationID));
             },
             child: SizedBox(
                 child: Center(
@@ -749,7 +779,8 @@ Widget quantitycontrolbutton(
               width: 20,
               height: 2,
               decoration: BoxDecoration(
-                  color: Colors.white, borderRadius: BorderRadius.circular(3)),
+                  color: buttontextcolor,
+                  borderRadius: BorderRadius.circular(3)),
             ))),
           ),
         ),
@@ -759,7 +790,7 @@ Widget quantitycontrolbutton(
             child: Text(
               qty,
               style: theme.textTheme.bodyMedium!.copyWith(
-                  color: Colors.white,
+                  color: buttontextcolor,
                   fontSize: 18,
                   fontWeight: FontWeight.w800),
             ),
@@ -773,14 +804,14 @@ Widget quantitycontrolbutton(
                   pincode: "560003",
                   productRef: product.id,
                   userId: "s5ZdLnYhnVfAramtr7knGduOI872",
-                  variantId: product.variations.first.id));
+                  variantId: variationID));
             },
-            child: const SizedBox(
+            child: SizedBox(
                 child: Center(
               child: Icon(
                 Icons.add,
                 size: 28,
-                color: Colors.white,
+                color: buttontextcolor,
               ),
             )),
           ),

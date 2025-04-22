@@ -478,6 +478,7 @@ class _HomePageState extends State<HomePage> {
                       sellingPriceColor: uiData["template14"]
                           ["sellingPriceColor"],
                       buttontextcolor: uiData["template14"]["buttontextcolor"],
+                      buttonbgcolor: uiData["template14"]["btton_bg_color"],
                       offerTextcolor: uiData["template14"]["offerTextcolor"],
                       offerbgcolor: uiData["template14"]["offerBGcolor"],
                       unitTextcolor: uiData["template14"]["unitTextcolor"],
@@ -495,6 +496,7 @@ class _HomePageState extends State<HomePage> {
                           uiData["template15"]["sub_categories"]),
                       categoryId: uiData["template15"]["category_ref"],
                       bgcolor: uiData["template15"]["background_color"],
+                      bgcolor2: uiData["template15"]["bgcolor2"],
                       titleColor: uiData["template15"]["titleColor"],
                       subcatColor: uiData["template15"]["subcat_color"],
                       offerBGcolor: uiData["template15"]["offer_bg_color"],
@@ -506,6 +508,15 @@ class _HomePageState extends State<HomePage> {
                       categoryName: uiData["template15"]["category_name"],
                       brandImage: uiData["template15"]["brand_image"],
                       indicatercolor: uiData["template15"]["indicatercolor"],
+                      buttonbgcolor: uiData["template15"]["buttonbgcolor"],
+                      buttontextcolor: uiData["template15"]["buttontextcolor"],
+                      offertextcolor: uiData["template15"]["offertextcolor"],
+                      unitbgcolor: uiData["template15"]["unitbgcolor"],
+                      unitcolor: uiData["template15"]["unit_text_color"],
+                      subcatbgcolor: uiData["template15"]["subcatbgcolor"],
+                      seeallbgclr: uiData["template15"]["seeallbgclr"],
+                      seealltextcolor: uiData["template15"]["seealltextcolor"],
+                      showcategory: uiData["template15"]["show_Category"],
                     ),
                     'order': uiData["template15"]["ui_order_number"]
                   },
@@ -528,6 +539,7 @@ class _HomePageState extends State<HomePage> {
                       sellingPriceColor: uiData["template16"]
                           ["sellingPriceColor"],
                       buttontextcolor: uiData["template16"]["buttontextcolor"],
+                      buttonbgcolor: uiData["template16"]["buttonbgcolor"],
                       offerTextcolor: uiData["template16"]["offerTextcolor"],
                       unitTextcolor: uiData["template16"]["unitTextcolor"],
                       unitbgcolor: uiData["template16"]["unitbgcolor"],
@@ -547,6 +559,8 @@ class _HomePageState extends State<HomePage> {
                       categoryId: uiData["template17"]["category"],
                       bgcolor: uiData["template17"]["background_color"],
                       titleColor: uiData["template17"]["titleColor"],
+                      subcattitleColor: uiData["template17"]
+                          ["subcattitleColor"],
                       showcategory: uiData["template17"]["show_Category"],
                     ),
                     'order': uiData["template17"]["ui_order_number"]
@@ -581,8 +595,10 @@ class _HomePageState extends State<HomePage> {
                           ["categorytitlecolor"],
                       offertextcolor1: uiData["template19"]["offertextcolor1"],
                       offertextcolor2: uiData["template19"]["offertextcolor2"],
-                      seeallbuttonbgcolor: "000000",
-                      seeallbuttontextcolor: "FFFFFF",
+                      seeallbuttonbgcolor: uiData["template19"]
+                          ["seeallbuttonbg"],
+                      seeallbuttontextcolor: uiData["template19"]
+                          ["seeallbuttontext"],
                     ),
                     'order': uiData["template19"]["ui_order_number"]
                   },

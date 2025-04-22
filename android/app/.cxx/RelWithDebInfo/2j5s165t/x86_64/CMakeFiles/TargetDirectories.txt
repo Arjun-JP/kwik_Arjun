@@ -1,0 +1,2 @@
+/Users/arjun/Desktop/kwik/Kwik/kwik_Arjun/android/app/.cxx/RelWithDebInfo/2j5s165t/x86_64/CMakeFiles/edit_cache.dir
+/Users/arjun/Desktop/kwik/Kwik/kwik_Arjun/android/app/.cxx/RelWithDebInfo/2j5s165t/x86_64/CMakeFiles/rebuild_cache.dir

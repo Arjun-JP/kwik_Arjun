@@ -26,6 +26,14 @@ class SupersaverModel3 extends StatelessWidget {
   final String image;
   final String categoryID;
   final bool showCategory;
+  final String offertextcolor;
+  final String offerbgcolor;
+  final String cartbuttonbg;
+  final String producttextcolor;
+  final String unitcolor;
+  final String offerbordercolor;
+  final String offerbgcolor2;
+  final String offertextcolor2;
 
   const SupersaverModel3({
     super.key,
@@ -43,6 +51,14 @@ class SupersaverModel3 extends StatelessWidget {
     required this.image,
     required this.categoryID,
     required this.showCategory,
+    required this.offertextcolor,
+    required this.offerbgcolor,
+    required this.cartbuttonbg,
+    required this.producttextcolor,
+    required this.unitcolor,
+    required this.offerbordercolor,
+    required this.offerbgcolor2,
+    required this.offertextcolor2,
   });
 
   @override
@@ -110,20 +126,20 @@ class SupersaverModel3 extends StatelessWidget {
                 return ProductModel2(
                     product: product,
                     subcategoryref: product.subCategoryRef.first.id,
-                    productcolor: "000000",
-                    sellingpricecolor: "FFFFFF",
-                    mrpColor: "FFFFFF",
-                    offertextcolor: "FFFFFF",
-                    productBgColor: "DF2401",
-                    buttontextcolor: "E23338",
-                    unitbgcolor: "FFFFFF",
-                    unitTextcolor: "A19DA3",
+                    productcolor: producttextcolor,
+                    sellingpricecolor: sellingpricecolor,
+                    mrpColor: mrpcolor,
+                    offertextcolor: offertextcolor,
+                    productBgColor: prodoductbgcolor,
+                    buttontextcolor: cartbuttontextcolor,
+                    unitbgcolor: unitcolor,
+                    unitTextcolor: unitcolor,
                     context: context,
-                    offertextcolor2: "FFFFFF",
-                    offerbordercolor: "FCFF3B",
-                    buttonbgcolor: "FFFFFF",
-                    offerbgcolor1: "DF2401",
-                    offerbgcolor2: "2DB164");
+                    offertextcolor2: offertextcolor2,
+                    offerbordercolor: offerbordercolor,
+                    buttonbgcolor: cartbuttonbg,
+                    offerbgcolor1: offerbgcolor,
+                    offerbgcolor2: offerbgcolor2);
               },
             ),
           ),
