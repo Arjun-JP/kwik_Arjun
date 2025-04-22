@@ -183,31 +183,44 @@ class _OfferPageState extends State<OfferPage> {
                         seeAllButtonBG: uiData["template3"]["seeAllButtonBG"],
                         seeAllButtontext: uiData["template3"]
                             ["seeAllButtontext"],
+                        buttonbgcolor: uiData["template3"]["buttonbgcolor"],
+                        unitTextcolor: uiData["template3"]["unitTextcolor"],
+                        unitbgcolor: uiData["template3"]["unitbgcolor"],
                       ),
                       'order': uiData["template3"]["ui_order_number"],
                     },
                     {
                       'template': SupersaverModel3(
-                        showCategory: uiData["template4"]["show_Category"],
-                        categoryID: uiData["template4"]["categoryID"],
-                        title: uiData["template4"]["title"],
-                        titleColor: uiData["template4"]["titleColor"],
-                        bgcolor: uiData["template4"]["background_color"],
-                        image: uiData["template4"]["image"],
-                        cartbuttontextcolor: uiData["template4"]
-                            ["cartbuttontextcolor"],
-                        mrpcolor: uiData["template4"]["mrpcolor"],
-                        crosscolor: uiData["template4"]["crosscolor"],
-                        prodoductbgcolor: uiData["template4"]
-                            ["prodoductbgcolor"],
-                        productTextColor: uiData["template4"]
-                            ["productTextColor"],
-                        sellingpricecolor: uiData["template4"]
-                            ["sellingpricecolor"],
-                        seeAllButtonBG: uiData["template4"]["seeAllButtonBG"],
-                        seeAllButtontext: uiData["template4"]
-                            ["seeAllButtontext"],
-                      ),
+                          showCategory: uiData["template4"]["show_Category"],
+                          categoryID: uiData["template4"]["categoryID"],
+                          title: uiData["template4"]["title"],
+                          titleColor: uiData["template4"]["titleColor"],
+                          bgcolor: uiData["template4"]["background_color"],
+                          image: uiData["template4"]["image"],
+                          cartbuttontextcolor: uiData["template4"]
+                              ["cartbuttontextcolor"],
+                          mrpcolor: uiData["template4"]["mrpcolor"],
+                          crosscolor: uiData["template4"]["crosscolor"],
+                          prodoductbgcolor: uiData["template4"]
+                              ["prodoductbgcolor"],
+                          productTextColor: uiData["template4"]
+                              ["productTextColor"],
+                          sellingpricecolor: uiData["template4"]
+                              ["sellingpricecolor"],
+                          seeAllButtonBG: uiData["template4"]["seeAllButtonBG"],
+                          seeAllButtontext: uiData["template4"]
+                              ["seeAllButtontext"],
+                          cartbuttonbg: uiData["template4"]["cartbuttonbg"],
+                          offerbgcolor2: uiData["template4"]["offerbgcolor2"],
+                          offerbgcolor: uiData["template4"]["offerbgcolor"],
+                          offerbordercolor: uiData["template4"]
+                              ["offerbordercolor"],
+                          offertextcolor: uiData["template4"]["offertextcolor"],
+                          producttextcolor: uiData["template4"]
+                              ["producttextcolor"],
+                          unitcolor: uiData["template4"]["unitcolor"],
+                          offertextcolor2: uiData["template4"]
+                              ["offertextcolor2"]),
                       'order': uiData["template4"]["ui_order_number"]
                     },
                     {

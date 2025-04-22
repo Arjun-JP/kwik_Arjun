@@ -40,6 +40,9 @@ Widget productModel3(
         extra: {
           'product': product,
           'subcategoryref': product.subCategoryRef.first.id,
+          'buttonbg': lightenColor(
+              parseColor(buttontextcolor), .9), // example color as a string
+          'buttontext': parseColor(buttontextcolor),
         },
       ),
       child: SizedBox(
@@ -246,7 +249,9 @@ Widget productModel3(
                                   );
                                 },
                               );
-                            } else {
+                            } else if (product.variations.length == 1 &&
+                                product.variations.first.stock.first.stockQty !=
+                                    0) {
                               context.read<CartBloc>().add(
                                     AddToCart(
                                       cartProduct: CartProduct(
@@ -270,6 +275,8 @@ Widget productModel3(
                                       pincode: "560003",
                                     ),
                                   );
+                            } else {
+                              HapticFeedback.heavyImpact();
                             }
                           },
                           child: Container(
@@ -284,8 +291,10 @@ Widget productModel3(
                             ),
                             child: Center(
                               child: Text(
-                                product.variations.first.stock.first.stockQty ==
-                                        0
+                                product.variations.length == 1 &&
+                                        product.variations.first.stock.first
+                                                .stockQty ==
+                                            0
                                     ? "No stock"
                                     : "Add",
                                 style: TextStyle(

@@ -102,20 +102,26 @@ final GoRouter router = GoRouter(
     GoRoute(
       path: '/productdetails',
       builder: (BuildContext context, GoRouterState state) {
-        final extraData =
-            state.extra as Map<String, dynamic>?; // Cast extra as a Map
+        final extraData = state.extra as Map<String, dynamic>?;
+
         if (extraData == null ||
             !extraData.containsKey('product') ||
-            !extraData.containsKey('subcategoryref')) {
+            !extraData.containsKey('subcategoryref') ||
+            !extraData.containsKey('buttonbg') ||
+            !extraData.containsKey('buttontext')) {
           throw Exception("Missing required parameters");
         }
+
         final product = extraData['product'] as ProductModel;
-        final subcategoryref =
-            extraData['subcategoryref']; // Adjust type if needed
+        final subcategoryref = extraData['subcategoryref'] as String;
+        final buttonbg = extraData['buttonbg'] as Color;
+        final buttontext = extraData['buttontext'] as Color;
 
         return ProductDetailsPage(
           product: product,
           subcategoryref: subcategoryref,
+          buttonbg: buttonbg,
+          buttontext: buttontext,
         );
       },
     ),

@@ -26,6 +26,10 @@ class SupersaverModel2 extends StatelessWidget {
   final String title;
   final String topbanner;
   final bool showCategory;
+
+  final String buttonbgcolor;
+  final String unitTextcolor;
+  final String unitbgcolor;
   const SupersaverModel2({
     super.key,
     required this.bgcolor,
@@ -43,6 +47,9 @@ class SupersaverModel2 extends StatelessWidget {
     required this.title,
     required this.topbanner,
     required this.showCategory,
+    required this.buttonbgcolor,
+    required this.unitTextcolor,
+    required this.unitbgcolor,
   });
 
   @override
@@ -110,18 +117,18 @@ class SupersaverModel2 extends StatelessWidget {
                     padding: const EdgeInsets.only(right: 15),
                     child: ProductItem(
                       subcategoryRef: subcategoryid,
-                      productnamecolor: "233D4D",
+                      productnamecolor: productTextColor,
                       product: product,
                       productBgColor: prodoductbgcolor,
-                      buttontextcolor: "E23338",
+                      buttontextcolor: cartbuttontextcolor,
                       context: context,
-                      offertextcolor: "FFFFFF",
-                      buttonBgColor: "FFFFFF",
-                      offerbgcolor: "2DB164",
-                      unitTextcolor: "A19DA3",
-                      unitbgcolor: "FFFFFF",
-                      mrpColor: "A19DA3",
-                      sellingPriceColor: "233D4D",
+                      offertextcolor: offerTextcolor,
+                      buttonBgColor: buttonbgcolor,
+                      offerbgcolor: offerBGcolor,
+                      unitTextcolor: unitTextcolor,
+                      unitbgcolor: unitbgcolor,
+                      mrpColor: mrpcolor,
+                      sellingPriceColor: sellingpricecolor,
                     ),
                   );
                 },
@@ -138,7 +145,7 @@ class SupersaverModel2 extends StatelessWidget {
               height: 48,
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
-                  color: lightenColor(parseColor("8CCA97"), .8)),
+                  color: lightenColor(parseColor(seeAllButtonBG), .8)),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [

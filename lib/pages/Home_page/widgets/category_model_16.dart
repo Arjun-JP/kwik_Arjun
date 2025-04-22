@@ -20,6 +20,7 @@ class CategoryModel16 extends StatelessWidget {
   final String offerbgcolor;
   final String offertext1;
   final String offertext2;
+  final String subcattitleColor;
 
   const CategoryModel16({
     super.key,
@@ -33,6 +34,7 @@ class CategoryModel16 extends StatelessWidget {
     required this.offertext1,
     required this.offertext2,
     required this.subcategroylist,
+    required this.subcattitleColor,
   });
 
   @override
@@ -105,8 +107,8 @@ class CategoryModel16 extends StatelessWidget {
                                           offertext1: offertext1,
                                           offertext2: offertext2,
                                           name: filtredsubcat[index].name,
-                                          bgcolor: state.category.color,
-                                          textcolor: titleColor,
+                                          bgcolor: categorybgcolor,
+                                          textcolor: subcattitleColor,
                                           imageurl:
                                               filtredsubcat[index].imageUrl,
                                           theme: theme),
@@ -153,7 +155,7 @@ Widget subcategoryItem(
               height: 140,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(20),
-                color: parseColor("FFFFFF"),
+                color: parseColor(bgcolor),
                 // image: DecorationImage(
                 //     image: NetworkImage(imageurl), fit: BoxFit.fill)
               ),
@@ -162,7 +164,7 @@ Widget subcategoryItem(
               alignment: Alignment.topCenter,
               child: Container(
                 decoration: BoxDecoration(
-                    color: parseColor('FFD62C'),
+                    color: parseColor(offerbgcolor),
                     borderRadius: const BorderRadius.only(
                         bottomLeft: Radius.circular(10),
                         bottomRight: Radius.circular(10))),

@@ -17,6 +17,7 @@ class CategoryModel12 extends StatelessWidget {
   final String offerbgcolor;
   final List<String> maincategories;
   final String offerTextcolor;
+  final String buttonbgcolor;
   final String producttextcolor;
   final String productBgColor;
   final String mrpColor;
@@ -46,7 +47,7 @@ class CategoryModel12 extends StatelessWidget {
     required this.topimage,
     required this.showcategory,
     required this.producttextcolor,
-    required this.offerbgcolor,
+    required this.offerbgcolor, required this.buttonbgcolor,
   });
 
   @override
@@ -101,13 +102,14 @@ class CategoryModel12 extends StatelessWidget {
                                             context: context,
                                             mrpColor: mrpColor,
                                             offertextcolor: offerTextcolor,
-                                            buttontextcolor: buttontextcolor,
+                                          
                                             productBgColor: productBgColor,
                                             sellingPriceColor:
                                                 sellingPriceColor,
                                             unitTextcolor: unitTextcolor,
                                             unitbgcolor: unitbgcolor,
-                                            buttonBgColor: seeAllButtonBG,
+                                              buttontextcolor: buttontextcolor,
+                                            buttonBgColor: buttonbgcolor,
                                             offerbgcolor: offerbgcolor,
                                           ));
                                     }),
@@ -132,7 +134,7 @@ class CategoryModel12 extends StatelessWidget {
                       height: 48,
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10),
-                          color: lightenColor(parseColor("E23338"), .8)),
+                          color: lightenColor(parseColor(seeAllButtonBG), .8)),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -142,7 +144,7 @@ class CategoryModel12 extends StatelessWidget {
                               alignment: Alignment.centerRight,
                               child: Text('See all products',
                                   style: TextStyle(
-                                      color: parseColor("#E23338"),
+                                      color: parseColor(seeAllButtontext),
                                       fontSize: 18)),
                             ),
                           ),
@@ -154,7 +156,7 @@ class CategoryModel12 extends StatelessWidget {
                                 padding: const EdgeInsets.only(right: 14.0),
                                 child: Icon(
                                   Icons.arrow_forward,
-                                  color: parseColor("#E23338"),
+                                  color: parseColor(seeAllButtontext),
                                 ),
                               ),
                             ),
