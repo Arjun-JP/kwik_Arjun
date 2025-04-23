@@ -31,15 +31,17 @@ class _LocationPermissionBottomSheetState
     // If permission is granted, get the current position
     if (permission == LocationPermission.whileInUse ||
         permission == LocationPermission.always) {
-      Position position = await Geolocator.getCurrentPosition(
-          desiredAccuracy: LocationAccuracy.high);
+      // Position position = await Geolocator.getCurrentPosition(
+      //     desiredAccuracy: LocationAccuracy.high);
 
-      // Use the coordinates to get the city name
-      List<Placemark> placemarks = await GeocodingPlatform.instance!
-          .placemarkFromCoordinates(position.latitude, position.longitude);
+      // // Use the coordinates to get the city name
+      // List<Placemark> placemarks = await GeocodingPlatform.instance!
+      //     .placemarkFromCoordinates(position.latitude, position.longitude);
       context.pop();
       // Extract city name
-    } else {}
+    } else {
+      context.pop();
+    }
   }
 
   @override

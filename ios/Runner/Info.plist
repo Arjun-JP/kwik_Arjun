@@ -2,110 +2,167 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>BGTaskSchedulerPermittedIdentifiers</key>
-	<array>
-		<string>task-identifier</string>
-		<string>be.tramckrijte.workmanagerExample.iOSBackgroundAppRefresh</string>
-	</array>
-	<key>CADisableMinimumFrameDurationOnPhone</key>
-	<true/>
-	<key>CFBundleDevelopmentRegion</key>
-	<string>$(DEVELOPMENT_LANGUAGE)</string>
-	<key>CFBundleDisplayName</key>
-	<string>Kwik</string>
-	<key>CFBundleExecutable</key>
-	<string>$(EXECUTABLE_NAME)</string>
-	<key>CFBundleIdentifier</key>
-	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
-	<key>CFBundleInfoDictionaryVersion</key>
-	<string>6.0</string>
-	<key>CFBundleName</key>
-	<string>your_app</string>
-	<key>CFBundlePackageType</key>
-	<string>APPL</string>
-	<key>CFBundleShortVersionString</key>
-	<string>$(FLUTTER_BUILD_NAME)</string>
-	<key>CFBundleSignature</key>
-	<string>????</string>
-	<key>CFBundleURLTypes</key>
-	<array>
-		<dict>
-			<key>CFBundleTypeRole</key>
-			<string>Editor</string>
-			<key>CFBundleURLSchemes</key>
-			<array>
-				<string>com.googleusercontent.apps.760883509884-qvn353fqq34pfq5mhk8mq2cj7r958o4d</string>
-			</array>
-		</dict>
-		<dict>
-			<key>CFBundleTypeRole</key>
-			<string>Editor</string>
-			<key>CFBundleURLName</key>
-			<string>com.digi9.kwik</string>
-			<key>CFBundleURLSchemes</key>
-			<array>
-				<string>app-1-760883509884-ios-b1d63b641cf421e2c4a7f9</string>
-			</array>
-		</dict>
-		<dict>
-			<key>CFBundleTypeRole</key>
-			<string>Editor</string>
-			<key>CFBundleURLName</key>
-			<string>Bundle ID</string>
-			<key>CFBundleURLSchemes</key>
-			<array>
-				<string>com.digi9.kwik</string>
-			</array>
-		</dict>
-	</array>
-	<key>CFBundleVersion</key>
-	<string>$(FLUTTER_BUILD_NUMBER)</string>
-	<key>FirebaseAppDelegateProxyEnabled</key>
-	<true/>
-	<key>GoogleSignInReversedClientId</key>
-	<string>com.googleusercontent.apps.760883509884-qvn353fqq34pfq5mhk8mq2cj7r958o4d</string>
-	<key>LSApplicationQueriesSchemes</key>
-	<array>
-		<string>https</string>
-		<string>whatsapp</string>
-		<string>tel</string>
-	</array>
-	<key>LSRequiresIPhoneOS</key>
-	<true/>
-	<key>NSCameraUsageDescription</key>
-	<string>This app does not use the camera, but access is required due to external library dependencies.</string>
-	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>Needed to determine cellular network status</string>
-	<key>NSLocationAlwaysUsageDescription</key>
-	<string>We need your location to fetch the city name and create personalized stories just for you.</string>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>We need your location to fetch the city name and create personalized stories just for you.</string>
-	<key>NSUserTrackingUsageDescription</key>
-	<string>This identifier will be used to uniquely identify your device for login verification.</string>
-	<key>UIApplicationSupportsIndirectInputEvents</key>
-	<true/>
-	<key>UIBackgroundModes</key>
-	<array>
-		<string>remote-notification</string>
-		<string>fetch</string>
-		<string>processing</string>
-	</array>
-	<key>UILaunchStoryboardName</key>
-	<string>LaunchScreen</string>
-	<key>UIMainStoryboardFile</key>
-	<string>Main</string>
-	<key>UISupportedInterfaceOrientations</key>
-	<array>
-		<string>UIInterfaceOrientationPortrait</string>
-		<string>UIInterfaceOrientationLandscapeLeft</string>
-		<string>UIInterfaceOrientationLandscapeRight</string>
-	</array>
-	<key>UISupportedInterfaceOrientations~ipad</key>
-	<array>
-		<string>UIInterfaceOrientationPortrait</string>
-		<string>UIInterfaceOrientationPortraitUpsideDown</string>
-		<string>UIInterfaceOrientationLandscapeLeft</string>
-		<string>UIInterfaceOrientationLandscapeRight</string>
-	</array>
+    <!-- App Configuration -->
+    <key>BGTaskSchedulerPermittedIdentifiers</key>
+    <array>
+        <string>task-identifier</string>
+        <string>be.tramckrijte.workmanagerExample.iOSBackgroundAppRefresh</string>
+    </array>
+    <key>CADisableMinimumFrameDurationOnPhone</key>
+    <true/>
+    <key>CFBundleDevelopmentRegion</key>
+    <string>$(DEVELOPMENT_LANGUAGE)</string>
+    <key>CFBundleDisplayName</key>
+    <string>Kwik</string>
+    <key>CFBundleExecutable</key>
+    <string>$(EXECUTABLE_NAME)</string>
+    <key>CFBundleIdentifier</key>
+    <string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+    <key>CFBundleInfoDictionaryVersion</key>
+    <string>6.0</string>
+    <key>CFBundleName</key>
+    <string>your_app</string>
+    <key>CFBundlePackageType</key>
+    <string>APPL</string>
+    <key>CFBundleShortVersionString</key>
+    <string>$(FLUTTER_BUILD_NAME)</string>
+    <key>CFBundleSignature</key>
+    <string>????</string>
+    
+    <!-- URL Schemes for Deep Linking -->
+    <key>CFBundleURLTypes</key>
+    <array>
+        <dict>
+            <key>CFBundleTypeRole</key>
+            <string>Editor</string>
+            <key>CFBundleURLSchemes</key>
+            <array>
+                <string>com.googleusercontent.apps.760883509884-qvn353fqq34pfq5mhk8mq2cj7r958o4d</string>
+            </array>
+        </dict>
+        <dict>
+            <key>CFBundleTypeRole</key>
+            <string>Editor</string>
+            <key>CFBundleURLName</key>
+            <string>com.digi9.kwik</string>
+            <key>CFBundleURLSchemes</key>
+            <array>
+                <string>app-1-760883509884-ios-b1d63b641cf421e2c4a7f9</string>
+            </array>
+        </dict>
+        <dict>
+            <key>CFBundleTypeRole</key>
+            <string>Editor</string>
+            <key>CFBundleURLName</key>
+            <string>Bundle ID</string>
+            <key>CFBundleURLSchemes</key>
+            <array>
+                <string>com.digi9.kwik</string>
+            </array>
+        </dict>
+    </array>
+    
+    <key>CFBundleVersion</key>
+    <string>$(FLUTTER_BUILD_NUMBER)</string>
+    
+    <!-- Firebase Configuration -->
+    <key>FirebaseAppDelegateProxyEnabled</key>
+    <true/>
+    <key>GoogleSignInReversedClientId</key>
+    <string>com.googleusercontent.apps.760883509884-qvn353fqq34pfq5mhk8mq2cj7r958o4d</string>
+    
+    <!-- Notification Permissions -->
+    <key>NSUserNotificationAlertStyle</key>
+    <string>banner</string>
+    <key>NSUserNotificationUsageDescription</key>
+    <string>We send notifications for order updates and promotions</string>
+    <key>UNUserNotificationCenterDelegate</key>
+    <string>AppDelegate</string>
+    
+    <!-- App Transport Security -->
+    <key>LSApplicationQueriesSchemes</key>
+    <array>
+        <string>https</string>
+        <string>whatsapp</string>
+        <string>tel</string>
+        <string>googlechrome</string>
+        <string>comgooglemaps</string>
+        <string>firebase</string>
+    </array>
+    
+    <key>LSRequiresIPhoneOS</key>
+    <true/>
+    
+    <key>NSAppTransportSecurity</key>
+    <dict>
+        <key>NSAllowsArbitraryLoads</key>
+        <true/>
+        <key>NSExceptionDomains</key>
+        <dict>
+            <key>firebaseio.com</key>
+            <dict>
+                <key>NSIncludesSubdomains</key>
+                <true/>
+                <key>NSThirdPartyExceptionRequiresForwardSecrecy</key>
+                <false/>
+            </dict>
+            <key>google.com</key>
+            <dict>
+                <key>NSIncludesSubdomains</key>
+                <true/>
+                <key>NSThirdPartyExceptionRequiresForwardSecrecy</key>
+                <false/>
+            </dict>
+            <key>googleapis.com</key>
+            <dict>
+                <key>NSIncludesSubdomains</key>
+                <true/>
+                <key>NSThirdPartyExceptionRequiresForwardSecrecy</key>
+                <false/>
+            </dict>
+        </dict>
+    </dict>
+    
+    <!-- Permission Descriptions -->
+    <key>NSCameraUsageDescription</key>
+    <string>This app does not use the camera, but access is required due to external library dependencies.</string>
+    <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+    <string>Needed to determine cellular network status</string>
+    <key>NSLocationAlwaysUsageDescription</key>
+    <string>We need your location to fetch the city name and create personalized stories just for you.</string>
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>We need your location to fetch the city name and create personalized stories just for you.</string>
+    <key>NSUserTrackingUsageDescription</key>
+    <string>This identifier will be used to uniquely identify your device for login verification.</string>
+    
+    <!-- App Behavior -->
+    <key>UIApplicationSupportsIndirectInputEvents</key>
+    <true/>
+    
+    <key>UIBackgroundModes</key>
+    <array>
+        <string>remote-notification</string>
+        <string>fetch</string>
+    </array>
+    
+    <key>UILaunchStoryboardName</key>
+    <string>LaunchScreen</string>
+    <key>UIMainStoryboardFile</key>
+    <string>Main</string>
+    
+    <!-- Supported Orientations -->
+    <key>UISupportedInterfaceOrientations</key>
+    <array>
+        <string>UIInterfaceOrientationPortrait</string>
+        <string>UIInterfaceOrientationLandscapeLeft</string>
+        <string>UIInterfaceOrientationLandscapeRight</string>
+    </array>
+    <key>UISupportedInterfaceOrientations~ipad</key>
+    <array>
+        <string>UIInterfaceOrientationPortrait</string>
+        <string>UIInterfaceOrientationPortraitUpsideDown</string>
+        <string>UIInterfaceOrientationLandscapeLeft</string>
+        <string>UIInterfaceOrientationLandscapeRight</string>
+    </array>
 </dict>
 </plist>

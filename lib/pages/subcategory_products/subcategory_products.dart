@@ -10,6 +10,7 @@ import 'package:kwik/bloc/subcategory_product_bloc/subcategory_product_state.dar
 import 'package:kwik/constants/colors.dart';
 import 'package:kwik/pages/Home_page/widgets/descriptive_widget.dart';
 import 'package:kwik/widgets/produc_model_1.dart';
+import 'package:kwik/widgets/shimmer/product1_grid_Shimnmer.dart';
 
 class SubcategoryProductsPage extends StatefulWidget {
   final String subcategoryid;
@@ -95,7 +96,7 @@ class _SubcategoryProductsPageState extends State<SubcategoryProductsPage> {
                       SubcategoryProductStatesubcategory>(
                     builder: (context, state) {
                       if (state is SubcategoryProductLoadingsubcategory) {
-                        return const Center(child: CircularProgressIndicator());
+                        return const Center(child: ProductModel1GridShimmer());
                       } else if (state is SubcategoryProductLoadedsubcategory) {
                         if (state.products.isEmpty) {
                           return const Center(

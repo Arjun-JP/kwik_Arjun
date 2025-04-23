@@ -6,7 +6,11 @@ import 'package:go_router/go_router.dart';
 import 'package:kwik/bloc/Super%20Saver%20Page%20Bloc/super_saver_ui_bloc/super_saver_ui_bloc.dart';
 import 'package:kwik/bloc/Super%20Saver%20Page%20Bloc/super_saver_ui_bloc/super_saver_ui_event.dart';
 import 'package:kwik/bloc/Super%20Saver%20Page%20Bloc/super_saver_ui_bloc/super_saver_ui_state.dart';
-import 'package:kwik/bloc/home_page_bloc/category_model_1_bloc/category_model1_bloc.dart';
+import 'package:kwik/bloc/Super%20Saver%20Page%20Bloc/supersaver_model1_bloc/supersaver_model1_bloc.dart';
+import 'package:kwik/bloc/Super%20Saver%20Page%20Bloc/supersaver_model2_bloc/supersaver_model2_bloc.dart';
+import 'package:kwik/bloc/Super%20Saver%20Page%20Bloc/supersaver_model4_bloc/supersaver_model4_bloc.dart';
+import 'package:kwik/bloc/home_page_bloc/category_model_10_bloc/category_model_10_bloc.dart';
+import 'package:kwik/bloc/home_page_bloc/category_model_10_bloc/category_model_10_event.dart';
 import 'package:kwik/bloc/home_page_bloc/category_model_2_bloc/category_model2_bloc.dart';
 import 'package:kwik/bloc/home_page_bloc/category_model_5__Bloc/category_model5__bloc.dart';
 import 'package:kwik/bloc/home_page_bloc/category_model_5__Bloc/category_model5__event.dart';
@@ -36,13 +40,15 @@ class OfferPage extends StatefulWidget {
 class _OfferPageState extends State<OfferPage> {
   Future<void> _onRefresh() async {
     context.read<SuperSaverUiBloc>().add(ClearUiCacheEvent());
-    BlocProvider.of<CategoryBlocModel1>(context).add(ClearCache());
-    BlocProvider.of<CategoryBlocModel2>(context).add(ClearCacheCM2());
+    BlocProvider.of<SupersaverModel1BlocBloc>(context)
+        .add(ClearCacheSuperSave1());
+    BlocProvider.of<SupersaverModel2Bloc>(context).add(ClearsubcatSS());
 
-    BlocProvider.of<CategoryBloc5>(context).add(ClearCacheEventCM5());
+    BlocProvider.of<CategoryModel10Bloc>(context)
+        .add(Clearsubcatproduct10Cache());
 
-    BlocProvider.of<CategoryBloc9>(context).add(ClearCacheEventCM9());
-
+    BlocProvider.of<SupersaverModel4Bloc>(context).add(ClearsubcatCacheSS4());
+//,,,,,SupersaverModel5Bloc
     context.read<SuperSaverUiBloc>().add(FetchUiDataEvent());
   }
 
