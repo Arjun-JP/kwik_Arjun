@@ -1,33 +1,52 @@
 import 'package:equatable/equatable.dart';
-import 'package:kwik/models/address_model.dart';
+import 'package:kwik/models/address_model.dart' as AddressModel;
+import 'package:kwik/models/order_model.dart';
 
 abstract class AddressState extends Equatable {
+  const AddressState();
+
   @override
-  List<Object?> get props => [];
+  List<Object> get props => [];
 }
 
-// State when no addresses exist, only warehouse info is available
-class AddressInitial extends AddressState {
-  final String warehouseId;
+class AddressInitial extends AddressState {}
 
-  AddressInitial(this.warehouseId);
+class AddressLoading extends AddressState {}
+
+class LocationSearchResults extends AddressState {
+  final List<Location> locations;
+  final List<String> addresses;
+
+  const LocationSearchResults(this.locations, this.addresses);
 
   @override
-  List<Object?> get props => [warehouseId];
+  List<Object> get props => [locations, addresses];
 }
 
-// State when at least one address exists
-class AddressAdded extends AddressState {
-  final List<AddressModel> addresses;
-  final AddressModel defaultAddress;
-  final String warehouseId;
+class LocationSelected extends AddressState {
+  final Location selectedLocation;
+  final String selectedAddress;
 
-  AddressAdded({
-    required this.addresses,
-    required this.defaultAddress,
-    required this.warehouseId,
-  });
+  const LocationSelected(this.selectedLocation, this.selectedAddress);
 
   @override
-  List<Object?> get props => [addresses, defaultAddress, warehouseId];
+  List<Object> get props => [selectedLocation, selectedAddress];
+}
+
+class AddressSaved extends AddressState {
+  final AddressModel.AddressModel address;
+
+  const AddressSaved(this.address);
+
+  @override
+  List<Object> get props => [address];
+}
+
+class AddressError extends AddressState {
+  final String message;
+
+  const AddressError(this.message);
+
+  @override
+  List<Object> get props => [message];
 }

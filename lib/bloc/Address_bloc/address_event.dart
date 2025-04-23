@@ -1,51 +1,40 @@
 import 'package:equatable/equatable.dart';
-import 'package:kwik/models/address_model.dart';
+import 'package:kwik/models/address_model.dart' as AddressModel;
+import 'package:kwik/models/order_model.dart';
 
 abstract class AddressEvent extends Equatable {
-  @override
-  List<Object?> get props => [];
-}
-
-// Fetch addresses from the server
-class FetchAddresses extends AddressEvent {}
-
-// Add a new address
-class AddAddress extends AddressEvent {
-  final AddressModel address;
-  final String userID;
-
-  AddAddress({required this.address, required this.userID});
+  const AddressEvent();
 
   @override
-  List<Object?> get props => [address, userID];
+  List<Object> get props => [];
 }
 
-// Edit an existing address
-class EditAddress extends AddressEvent {
-  final AddressModel updatedAddress;
+class SearchLocation extends AddressEvent {
+  final String query;
 
-  EditAddress(this.updatedAddress);
+  const SearchLocation(this.query);
 
   @override
-  List<Object?> get props => [updatedAddress];
+  List<Object> get props => [query];
 }
 
-// Delete an address
-class DeleteAddress extends AddressEvent {
-  final AddressModel address;
+class SelectLocation extends AddressEvent {
+  final Location location;
+  final String address;
 
-  DeleteAddress(this.address);
+  const SelectLocation(this.location, this.address);
 
   @override
-  List<Object?> get props => [address];
+  List<Object> get props => [location, address];
 }
 
-// Set an address as default
-class SetDefaultAddress extends AddressEvent {
-  final AddressModel address;
+class SaveAddress extends AddressEvent {
+  final AddressModel.AddressModel address;
 
-  SetDefaultAddress(this.address);
+  const SaveAddress(this.address);
 
   @override
-  List<Object?> get props => [address];
+  List<Object> get props => [address];
 }
+
+class GetCurrentLocation extends AddressEvent {}
