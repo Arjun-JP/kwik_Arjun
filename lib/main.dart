@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:kwik/bloc/Address_bloc/Address_bloc.dart';
 import 'package:kwik/bloc/Auth_bloc/auth_bloc.dart';
 import 'package:kwik/bloc/Cart_bloc/cart_bloc.dart';
 import 'package:kwik/bloc/Categories%20Page%20Bloc/category_model_bloc/category_model_bloc.dart';
@@ -60,6 +61,7 @@ import 'package:kwik/repositories/category_model_6_repo.dart';
 import 'package:kwik/repositories/category_model_8_repo.dart';
 import 'package:kwik/repositories/category_subcategory_product_repo.dart';
 import 'package:kwik/repositories/get_app_data_repo.dart';
+import 'package:kwik/repositories/googlemap_service.dart';
 import 'package:kwik/repositories/home_Ui_repository.dart';
 import 'package:kwik/repositories/home_category_repository.dart';
 import 'package:kwik/repositories/order_deiails_repo.dart';
@@ -408,6 +410,8 @@ class _MyAppState extends State<MyApp> {
         BlocProvider<SubcategoryProductBlocSubcategory>(
             create: (_) =>
                 SubcategoryProductBlocSubcategory(SubcategProductRepository())),
+        BlocProvider<AddressBloc>(
+            create: (_) => AddressBloc(GoogleMapsService())),
       ],
       child: MaterialApp.router(
         builder: (context, child) {
