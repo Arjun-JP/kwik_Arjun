@@ -16,6 +16,7 @@ import 'package:kwik/constants/colors.dart';
 import 'package:kwik/constants/doted_devider.dart';
 import 'package:kwik/models/cart_model.dart';
 import 'package:kwik/models/product_model.dart';
+import 'package:kwik/models/wishlist_model.dart';
 import 'package:kwik/pages/product_details_page/product_details_page.dart';
 import 'package:kwik/widgets/produc_model_1.dart';
 import 'package:kwik/widgets/shimmer/product_model1_list.dart';
@@ -108,6 +109,65 @@ class _CartPageState extends State<CartPage> {
                     children: [
                       deliveryContainer(theme: theme),
                       deliveryTimeContainer(theme: theme),
+                      const SizedBox(
+                        height: 15,
+                      ),
+                      state.wishlist.isNotEmpty
+                          ? Align(
+                              alignment: Alignment.centerLeft,
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 10.0, vertical: 5),
+                                child: Text(
+                                  "Saved by You, Craved by Many",
+                                  textAlign: TextAlign.left,
+                                  style: theme.textTheme.bodyLarge,
+                                ),
+                              ),
+                            )
+                          : const SizedBox(),
+                      //wishlist  products
+                      state.wishlist.isNotEmpty
+                          ? Container(
+                              color: Colors.white,
+                              padding: const EdgeInsets.all(10),
+                              child: ListView.separated(
+                                shrinkWrap: true,
+                                physics: const NeverScrollableScrollPhysics(),
+                                itemBuilder: (context, index) =>
+                                    wishlistProductItem(
+                                        wishlistproduct: state.wishlist[index],
+                                        theme: theme,
+                                        qty: state.cartItems[index].quantity
+                                            .toString()),
+                                separatorBuilder: (context, index) =>
+                                    const Padding(
+                                  padding:
+                                      EdgeInsets.symmetric(horizontal: 10.0),
+                                  child: DottedDivider(
+                                    color: Color.fromARGB(255, 198, 198, 198),
+                                  ),
+                                ),
+                                itemCount: state.cartItems.length,
+                              ),
+                            )
+                          : const SizedBox(),
+                      const SizedBox(
+                        height: 15,
+                      ),
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 10.0, vertical: 5),
+                          child: Text(
+                            "Picked by You, Packed for You",
+                            textAlign: TextAlign.left,
+                            style: theme.textTheme.bodyLarge,
+                          ),
+                        ),
+                      ),
+                      //cart products
                       ListView.separated(
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
@@ -206,6 +266,9 @@ class _CartPageState extends State<CartPage> {
                                 textAlign: TextAlign.center,
                                 style: theme.textTheme.bodyLarge,
                               ),
+                            ),
+                            const SizedBox(
+                              height: 15,
                             ),
                             SizedBox(
                               height: 390,
@@ -452,6 +515,126 @@ class _CartPageState extends State<CartPage> {
                 ],
               ),
             ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget wishlistProductItem({
+    required ThemeData theme,
+    required WishlistItem wishlistproduct,
+    required String qty,
+  }) {
+    return InkWell(
+      onTap: () => context.push(
+        '/productdetails',
+        extra: {
+          'product': wishlistproduct.productRef,
+          'subcategoryref': wishlistproduct.productRef.subCategoryRef.first.id,
+        },
+      ),
+      child: Container(
+        width: MediaQuery.of(context).size.width,
+        padding: const EdgeInsets.all(15),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(15),
+          color: const Color(0xFFFFF9C4),
+        ),
+        child: Row(
+          spacing: 15,
+          children: [
+            // Image Column
+            Expanded(
+              flex: 2,
+              child: SizedBox(
+                width: 50,
+                height: 50,
+                child: Image.network(
+                  wishlistproduct.productRef.productImages.first,
+                  fit: BoxFit.contain,
+                ),
+              ),
+            ),
+
+            // Product Info Column
+            Expanded(
+              flex: 5,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    wishlistproduct.productRef.productName,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: theme.textTheme.bodyMedium,
+                  ),
+                  const SizedBox(height: 3),
+                  Text(
+                    "${wishlistproduct.productRef.variations.length} Variations",
+                    style: theme.textTheme.bodySmall,
+                  ),
+                  const SizedBox(height: 3),
+                ],
+              ),
+            ),
+            // Spacing between items
+
+            // add to cxart button
+
+            // Spacing between items
+
+            // Price Column
+            Expanded(
+              flex: 2,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Text(
+                    "₹${wishlistproduct.productRef.variations.first.mrp.toStringAsFixed(0)}",
+                    style: theme.textTheme.bodyLarge,
+                  ),
+                  Text(
+                    "₹${wishlistproduct.productRef.variations.first.sellingPrice.toStringAsFixed(0)}",
+                    style: theme.textTheme.bodyLarge!.copyWith(
+                      color: Colors.grey,
+                      fontSize: 12,
+                      decoration: TextDecoration.lineThrough,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Expanded(
+                flex: 3,
+                child: SizedBox(
+                  height: 40,
+                  child: ElevatedButton(
+                    onPressed: () {},
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor:
+                          const Color(0xFFE23338), // background color
+                      foregroundColor: Colors.white,
+                      // text color
+                      side: const BorderSide(
+                          color: Color(0xFFE23338), width: 1), // border
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(
+                            8), // optional: rounded corners
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 0), // optional: spacing
+                    ),
+                    child: Text(
+                      "Add",
+                      style: theme.textTheme.bodyLarge
+                          ?.copyWith(color: Colors.white),
+                    ),
+                  ),
+                )),
           ],
         ),
       ),
@@ -1318,6 +1501,25 @@ class _CartPageState extends State<CartPage> {
         ),
       );
     });
+  }
+
+  whishlistcontainer(
+      {required ThemeData theme, required List<WishlistItem> wishlist}) {
+    return Container(
+      padding: const EdgeInsets.all(15),
+      color: Colors.amber,
+      child: Column(
+        children: List.generate(
+          wishlist.length,
+          (index) {
+            return ListTile(
+              leading:
+                  Image.network(wishlist[index].productRef.productImages.first),
+            );
+          },
+        ),
+      ),
+    );
   }
 }
 

@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:kwik/models/cart_model.dart';
+import 'package:kwik/models/wishlist_model.dart';
 
 abstract class CartState extends Equatable {
   @override
@@ -14,12 +15,16 @@ class CartUpdated extends CartState {
   final String message;
   final List<CartProduct> cartItems;
   final Map<String, dynamic> charges;
+  final List<WishlistItem> wishlist;
 
   CartUpdated(
-      {required this.message, required this.cartItems, required this.charges});
+      {required this.wishlist,
+      required this.message,
+      required this.cartItems,
+      required this.charges});
 
   @override
-  List<Object> get props => [message, cartItems];
+  List<Object> get props => [message, cartItems, wishlist];
 }
 
 class CartSynced extends CartState {

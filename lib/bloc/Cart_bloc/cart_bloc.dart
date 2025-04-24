@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive/hive.dart';
 import 'package:kwik/models/cart_model.dart';
+import 'package:kwik/models/wishlist_model.dart';
 import 'package:kwik/repositories/cart_repo.dart';
 import 'cart_event.dart';
 import 'cart_state.dart';
@@ -47,6 +48,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
         // Emit updated state
         emit(CartUpdated(
             message: message,
+            wishlist: [],
             cartItems: updatedCartItems,
             charges: currentState.charges));
       } else {
@@ -55,12 +57,16 @@ class CartBloc extends Bloc<CartEvent, CartState> {
         List<CartProduct> newCart = [event.cartProduct];
         await cartBox.put('cart', newCart.map((e) => e.toJson()).toList());
 
-        emit(CartUpdated(message: message, cartItems: newCart, charges: const {
-          "enable_cod": true,
-          "delivery_charge": 2,
-          "handling_charge": 1,
-          "high_demand_charge": 3
-        }));
+        emit(CartUpdated(
+            message: message,
+            cartItems: newCart,
+            wishlist: [],
+            charges: const {
+              "enable_cod": true,
+              "delivery_charge": 2,
+              "handling_charge": 1,
+              "high_demand_charge": 3
+            }));
       }
     } catch (e) {
       emit(CartError(message: e.toString()));
@@ -95,6 +101,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
         // Emit only CartUpdated without CartLoading
         emit(CartUpdated(
             message: message,
+            wishlist: [],
             cartItems: updatedCartItems,
             charges: currentState.charges));
       }
@@ -135,6 +142,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
 
         emit(CartUpdated(
             message: message,
+            wishlist: [],
             cartItems: updatedCartItems,
             charges: currentState.charges));
       }
@@ -148,6 +156,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
     try {
       Map<String, dynamic> serverCartData =
           await cartRepository.getUserCart(userId: event.userId);
+      print("%%%%%%%%%%");
 
       // Convert server cart items
       List<CartProduct> serverCartItems = [];
@@ -160,7 +169,21 @@ class CartBloc extends Bloc<CartEvent, CartState> {
           }
         }).toList();
       }
+// Convert server cart items
+      List<WishlistItem> serverwishlistItems = [];
 
+      if (serverCartData["wishlist"] is List) {
+        print(serverwishlistItems.length);
+        print(serverCartData["wishlist"].runtimeType);
+        print(serverCartData["wishlist"].toString());
+        serverwishlistItems = (serverCartData["wishlist"] as List).map((e) {
+          try {
+            return WishlistItem.fromJson(e as Map<String, dynamic>);
+          } catch (e) {
+            throw Exception("Failed to parse wishlist : $e");
+          }
+        }).toList();
+      }
       // Fetch local cart data
       List<CartProduct> localCartItems = [];
       final localCartData = cartBox.get('cart', defaultValue: []);
@@ -180,6 +203,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
         emit(CartUpdated(
             message: "Cart is empty",
             cartItems: [],
+            wishlist: serverwishlistItems ?? [],
             charges: serverCartData["charges"]));
         return;
       }
@@ -202,6 +226,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
       emit(CartUpdated(
         message: "Cart synced successfully",
         cartItems: serverCartItems,
+        wishlist: serverwishlistItems,
         charges: serverCartData[
             "charges"], // Make sure to include charges in your state
       ));

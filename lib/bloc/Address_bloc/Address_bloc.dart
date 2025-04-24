@@ -5,10 +5,13 @@ import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:kwik/bloc/Address_bloc/address_event.dart';
 import 'package:kwik/bloc/Address_bloc/address_state.dart';
+import 'package:kwik/models/googlemap_place_model.dart';
 import 'package:kwik/models/order_model.dart' as Location;
+import 'package:kwik/repositories/googlemap_service.dart';
 
 class AddressBloc extends Bloc<AddressEvent, AddressState> {
-  AddressBloc() : super(AddressInitial()) {
+  final GoogleMapsService repository;
+  AddressBloc(this.repository) : super(AddressInitial()) {
     on<SearchLocation>(_onSearchLocation);
     on<SelectLocation>(_onSelectLocation);
     on<SaveAddress>(_onSaveAddress);
@@ -22,28 +25,21 @@ class AddressBloc extends Bloc<AddressEvent, AddressState> {
     emit(AddressLoading());
     try {
       if (event.query.isEmpty) {
-        emit(AddressError('Please enter a location'));
+        emit(const AddressError('Please enter a location'));
         return;
       }
 
-      final locations = await locationFromAddress(event.query);
-      if (locations.isEmpty) {
-        emit(AddressError('No locations found'));
+      List<GoogleMapPlace> lovationlist =
+          await repository.searchPlaces(event.query);
+
+      if (lovationlist.isEmpty) {
+        emit(const AddressError('No locations found'));
         return;
       }
-
-      final locationModels = locations
-          .map((location) => Location.Location(
-                lat: location.latitude,
-                lang: location.longitude,
-              ))
-          .toList();
-
-      final addresses = locations
-          .map((location) => event.query) // Using the query as address
-          .toList();
-
-      emit(LocationSearchResults(locationModels, addresses));
+      print(event.query);
+      // print(lovationlist.map((e) => e.name).toList());
+      // print(lovationlist.first.toJson());
+      emit(LocationSearchResults(lovationlist));
     } catch (e) {
       emit(AddressError('Failed to search location: $e'));
     }
@@ -84,7 +80,7 @@ class AddressBloc extends Bloc<AddressEvent, AddressState> {
     try {
       bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
       if (!serviceEnabled) {
-        emit(AddressError('Location services are disabled'));
+        emit(const AddressError('Location services are disabled'));
         return;
       }
 
@@ -92,13 +88,13 @@ class AddressBloc extends Bloc<AddressEvent, AddressState> {
       if (permission == LocationPermission.denied) {
         permission = await Geolocator.requestPermission();
         if (permission == LocationPermission.denied) {
-          emit(AddressError('Location permissions are denied'));
+          emit(const AddressError('Location permissions are denied'));
           return;
         }
       }
 
       if (permission == LocationPermission.deniedForever) {
-        emit(AddressError(
+        emit(const AddressError(
             'Location permissions are permanently denied, we cannot request permissions.'));
         return;
       }
@@ -110,7 +106,7 @@ class AddressBloc extends Bloc<AddressEvent, AddressState> {
       );
 
       if (placemarks.isEmpty) {
-        emit(AddressError('No address found for current location'));
+        emit(const AddressError('No address found for current location'));
         return;
       }
 

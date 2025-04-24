@@ -32,6 +32,7 @@ import 'package:kwik/bloc/home_Ui_bloc/home_Ui_State.dart';
 import 'package:kwik/bloc/navbar_bloc/navbar_bloc.dart';
 import 'package:kwik/bloc/product_details_page/similerproduct_bloc/similar_product_bloc.dart';
 import 'package:kwik/bloc/product_details_page/similerproduct_bloc/similar_product_event.dart';
+import 'package:kwik/pages/Address_management/location_search_page.dart';
 import 'package:kwik/pages/Home_page/widgets/banner_model.dart';
 import 'package:kwik/pages/Home_page/widgets/category_model_10.dart';
 import 'package:kwik/pages/Home_page/widgets/category_model_12.dart';
@@ -708,24 +709,34 @@ class _HomePageState extends State<HomePage> {
                                           ),
                                         ),
                                       ),
-                                      Row(
-                                        children: [
-                                          Text("30 min delivery",
-                                              style: theme.textTheme.titleLarge!
-                                                  .copyWith(
-                                                      fontSize: 24,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      color: AppColors
-                                                          .textColorblack)),
-                                          IconButton(
-                                              onPressed: () {},
-                                              icon: SvgPicture.asset(
-                                                "assets/images/appbar_arrow.svg",
-                                                width: 30,
-                                                height: 30,
-                                              ))
-                                        ],
+                                      InkWell(
+                                        onTap: () {
+                                          Navigator.of(context)
+                                              .push(MaterialPageRoute(
+                                            builder: (context) =>
+                                                LocationSearchPage(),
+                                          ));
+                                        },
+                                        child: Row(
+                                          children: [
+                                            Text("30 min delivery",
+                                                style: theme
+                                                    .textTheme.titleLarge!
+                                                    .copyWith(
+                                                        fontSize: 24,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        color: AppColors
+                                                            .textColorblack)),
+                                            IconButton(
+                                                onPressed: () {},
+                                                icon: SvgPicture.asset(
+                                                  "assets/images/appbar_arrow.svg",
+                                                  width: 30,
+                                                  height: 30,
+                                                ))
+                                          ],
+                                        ),
                                       ),
                                       Row(
                                         children: [

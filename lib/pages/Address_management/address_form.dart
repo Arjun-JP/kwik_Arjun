@@ -1,13 +1,19 @@
 // lib/features/address/presentation/pages/address_form_page.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:kwik/bloc/Address_bloc/Address_bloc.dart';
 import 'package:kwik/bloc/Address_bloc/address_event.dart';
 import 'package:kwik/bloc/Address_bloc/address_state.dart';
 import 'package:kwik/models/address_model.dart';
 
 class AddressFormPage extends StatefulWidget {
-  const AddressFormPage({super.key});
+  final String selectedaddress;
+  final LatLng latlanglocation;
+  const AddressFormPage(
+      {super.key,
+      required this.selectedaddress,
+      required this.latlanglocation});
 
   @override
   State<AddressFormPage> createState() => _AddressFormPageState();

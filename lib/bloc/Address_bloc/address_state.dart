@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:kwik/models/address_model.dart' as AddressModel;
+import 'package:kwik/models/googlemap_place_model.dart';
 import 'package:kwik/models/order_model.dart';
 
 abstract class AddressState extends Equatable {
@@ -14,13 +15,12 @@ class AddressInitial extends AddressState {}
 class AddressLoading extends AddressState {}
 
 class LocationSearchResults extends AddressState {
-  final List<Location> locations;
-  final List<String> addresses;
+  final List<GoogleMapPlace> placelist;
 
-  const LocationSearchResults(this.locations, this.addresses);
+  const LocationSearchResults(this.placelist);
 
   @override
-  List<Object> get props => [locations, addresses];
+  List<Object> get props => [placelist];
 }
 
 class LocationSelected extends AddressState {
