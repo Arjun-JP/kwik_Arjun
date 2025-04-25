@@ -125,7 +125,7 @@ class _AddadressState extends State<MapPage> {
         child: _buildSearchBar(),
       ),
       Positioned(
-        bottom: 10,
+        bottom: 35,
         right: 15,
         left: 15,
         child: _showDraggedAddress(),
@@ -235,25 +235,19 @@ class _AddadressState extends State<MapPage> {
                 height: 35,
                 child: ElevatedButton(
                   onPressed: () {
-                    print("bttonclicked");
                     Navigator.of(context).push(MaterialPageRoute(
                       builder: (context) => AddressFormPage(
                         latlanglocation: _draggedLatlng,
                         selectedaddress: _draggedAddress,
                       ),
                     ));
-                    //  Pass the address and LatLng back
-                    Navigator.pop(context, {
-                      'address': _draggedAddress,
-                      'latlng': _draggedLatlng,
-                    });
                   },
                   style: ElevatedButton.styleFrom(
                     foregroundColor: Colors.white,
                     backgroundColor: const Color.fromARGB(255, 1, 170, 97),
                   ),
                   child: Text(
-                    'Confirm Address',
+                    'Confirm Location',
                     style: theme.textTheme.bodyLarge!
                         .copyWith(color: Colors.white),
                   ),

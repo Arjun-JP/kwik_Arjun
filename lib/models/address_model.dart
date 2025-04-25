@@ -9,6 +9,7 @@ class AddressModel {
   final String? landmark;
   final String phoneNo;
   final String pincode;
+  final String? id;
 
   AddressModel({
     required this.location,
@@ -19,6 +20,7 @@ class AddressModel {
     this.landmark,
     required this.phoneNo,
     required this.pincode,
+    this.id,
   });
 
   factory AddressModel.fromJson(Map<String, dynamic> json) {
@@ -31,6 +33,7 @@ class AddressModel {
       landmark: json['landmark'],
       phoneNo: json['phone_no'] ?? '',
       pincode: json['pincode'] ?? '',
+      id: json['_id'],
     );
   }
 
@@ -44,6 +47,7 @@ class AddressModel {
       'landmark': landmark,
       'phone_no': phoneNo,
       'pincode': pincode,
+      '_id': id,
     };
   }
 }

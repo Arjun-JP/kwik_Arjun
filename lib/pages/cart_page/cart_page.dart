@@ -4,6 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dash/flutter_dash.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:kwik/bloc/Address_bloc/Address_bloc.dart';
+import 'package:kwik/bloc/Address_bloc/address_state.dart';
 import 'package:kwik/bloc/Cart_bloc/cart_bloc.dart';
 import 'package:kwik/bloc/Cart_bloc/cart_event.dart';
 import 'package:kwik/bloc/Cart_bloc/cart_state.dart';
@@ -17,6 +19,7 @@ import 'package:kwik/constants/doted_devider.dart';
 import 'package:kwik/models/cart_model.dart';
 import 'package:kwik/models/product_model.dart';
 import 'package:kwik/models/wishlist_model.dart';
+import 'package:kwik/pages/Address_management/location_search_page.dart';
 import 'package:kwik/pages/product_details_page/product_details_page.dart';
 import 'package:kwik/widgets/produc_model_1.dart';
 import 'package:kwik/widgets/shimmer/product_model1_list.dart';
@@ -1247,73 +1250,67 @@ class _CartPageState extends State<CartPage> {
   }
 
   Widget addressContainer({required ThemeData theme}) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
-      color: Colors.white,
-      child: Row(
-        spacing: 5,
-        children: [
-          Expanded(
-              flex: 2, child: SvgPicture.asset("assets/images/home_logo.svg")),
-          Expanded(
-            flex: 8,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Delivering to Home",
-                  style: theme.textTheme.titleLarge!.copyWith(fontSize: 18),
+    return BlocBuilder<AddressBloc, AddressState>(builder: (context, state) {
+      if (state is LocationSearchResults) {
+        return Container(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+          color: Colors.white,
+          child: Row(
+            spacing: 5,
+            children: [
+              Expanded(
+                  flex: 2,
+                  child: SvgPicture.asset("assets/images/home_logo.svg")),
+              Expanded(
+                flex: 8,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Delivering to ${state.selecteaddress!.addressType}",
+                      style: theme.textTheme.titleLarge!.copyWith(fontSize: 12),
+                    ),
+                    Text(
+                      "${state.selecteaddress!.floor}, ${state.selecteaddress!.flatNoName}, ${state.selecteaddress!.area}, ${state.selecteaddress!.landmark}, ${state.selecteaddress!.pincode},\n${state.selecteaddress!.phoneNo}",
+                      style: theme.textTheme.bodyMedium!.copyWith(
+                          fontSize: 12, color: const Color(0xFFA19DA3)),
+                    ),
+                  ],
                 ),
-                Text(
-                  "j236, Flat No 7, Sukantanagar, Saltlake",
-                  style: theme.textTheme.bodyMedium!
-                      .copyWith(fontSize: 14, color: const Color(0xFFA19DA3)),
-                ),
-                Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(5),
-                      border: Border.all(color: const Color(0xFFD0CED1))),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    spacing: 5,
-                    children: [
-                      const Icon(
-                        Icons.location_on,
-                        size: 14,
-                        color: Color(0xFF75868F),
-                      ),
-                      Text(
-                        "3kms away",
-                        style: theme.textTheme.bodyMedium!.copyWith(
-                            fontSize: 14, color: const Color(0xFF75868F)),
-                      ),
-                    ],
-                  ),
-                )
-              ],
-            ),
-          ),
-          Expanded(
-            flex: 2,
-            child: Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                color: const Color(0xFFD0F1C5),
               ),
-              padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
-              child: Center(
-                  child: Text(
-                "Change",
-                style: theme.textTheme.bodyMedium!
-                    .copyWith(color: const Color(0xFF328616)),
-              )),
-            ),
-          )
-        ],
-      ),
-    );
+              Expanded(
+                flex: 2,
+                child: InkWell(
+                  onTap: () {
+                    HapticFeedback.mediumImpact();
+                    Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => const LocationSearchPage(),
+                    ));
+                  },
+                  child: Container(
+                    height: 30,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: const Color(0xFFD0F1C5),
+                    ),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+                    child: Center(
+                        child: Text(
+                      "Change",
+                      style: theme.textTheme.bodyMedium!.copyWith(
+                          fontSize: 10, color: const Color(0xFF328616)),
+                    )),
+                  ),
+                ),
+              )
+            ],
+          ),
+        );
+      } else {
+        return const SizedBox();
+      }
+    });
   }
 
   Widget paymentOptions(

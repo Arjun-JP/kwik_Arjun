@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously, use_full_hex_values_for_flutter_colors
+
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -5,6 +7,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:kwik/bloc/Address_bloc/Address_bloc.dart';
+import 'package:kwik/bloc/Address_bloc/address_event.dart';
+import 'package:kwik/bloc/Address_bloc/address_state.dart';
 import 'package:kwik/bloc/Cart_bloc/cart_bloc.dart';
 import 'package:kwik/bloc/Cart_bloc/cart_event.dart';
 import 'package:kwik/bloc/Search_bloc/Search_bloc.dart';
@@ -49,6 +54,7 @@ import 'package:kwik/pages/Home_page/widgets/category_model_9.dart';
 import 'package:kwik/pages/Home_page/widgets/descriptive_widget.dart';
 import 'package:kwik/widgets/location_permission_bottom_sheet.dart';
 import 'package:kwik/widgets/navbar/navbar.dart';
+import 'package:kwik/widgets/shimmer/shimmer.dart';
 import 'package:permission_handler/permission_handler.dart'
     show
         Permission,
@@ -105,9 +111,11 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     context.read<HomeUiBloc>().add(FetchUiDataEvent());
+
     context
         .read<CartBloc>()
         .add(SyncCartWithServer(userId: "s5ZdLnYhnVfAramtr7knGduOI872"));
+    context.read<AddressBloc>().add(const GetsavedAddressEvent());
     checkPermissionAndProceed();
   }
 
@@ -142,8 +150,7 @@ class _HomePageState extends State<HomePage> {
   Future<bool> checkLocationPermission() async {
     // Check current status
     var status = await Permission.location.status;
-    print("location statis");
-    print(status);
+
     // If granted, return true
     if (status.isGranted) {
       return true;
@@ -166,7 +173,6 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    print("Rebuilding ");
     ThemeData theme = Theme.of(context);
     return NotificationListener<ScrollNotification>(
       onNotification: (scrollNotification) {
@@ -711,10 +717,11 @@ class _HomePageState extends State<HomePage> {
                                       ),
                                       InkWell(
                                         onTap: () {
+                                          HapticFeedback.mediumImpact();
                                           Navigator.of(context)
                                               .push(MaterialPageRoute(
                                             builder: (context) =>
-                                                LocationSearchPage(),
+                                                const LocationSearchPage(),
                                           ));
                                         },
                                         child: Row(
@@ -729,7 +736,14 @@ class _HomePageState extends State<HomePage> {
                                                         color: AppColors
                                                             .textColorblack)),
                                             IconButton(
-                                                onPressed: () {},
+                                                onPressed: () {
+                                                  HapticFeedback.mediumImpact();
+                                                  Navigator.of(context)
+                                                      .push(MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        const LocationSearchPage(),
+                                                  ));
+                                                },
                                                 icon: SvgPicture.asset(
                                                   "assets/images/appbar_arrow.svg",
                                                   width: 30,
@@ -738,19 +752,41 @@ class _HomePageState extends State<HomePage> {
                                           ],
                                         ),
                                       ),
-                                      Row(
-                                        children: [
-                                          SvgPicture.asset(
-                                              "assets/images/addresshome_icon.svg"),
-                                          Text(
-                                              " J236, Kadampukur village, Newtown...",
-                                              maxLines: 1,
-                                              style: theme.textTheme.bodyMedium!
-                                                  .copyWith(
-                                                      fontSize: 12,
-                                                      color: AppColors
-                                                          .textColorblack)),
-                                        ],
+                                      InkWell(
+                                        onTap: () {
+                                          HapticFeedback.mediumImpact();
+                                          Navigator.of(context)
+                                              .push(MaterialPageRoute(
+                                            builder: (context) =>
+                                                const LocationSearchPage(),
+                                          ));
+                                        },
+                                        child: Row(
+                                          spacing: 8,
+                                          children: [
+                                            SvgPicture.asset(
+                                                "assets/images/addresshome_icon.svg"),
+                                            BlocBuilder<AddressBloc,
+                                                    AddressState>(
+                                                builder: (context, state) {
+                                              if (state
+                                                  is LocationSearchResults) {
+                                                return Text(
+                                                    "${state.currentlocationaddress.characters.take(35).string}...",
+                                                    maxLines: 1,
+                                                    style: theme
+                                                        .textTheme.bodyMedium!
+                                                        .copyWith(
+                                                            fontSize: 12,
+                                                            color: AppColors
+                                                                .textColorblack));
+                                              } else {
+                                                return const Shimmer(
+                                                    width: 200, height: 12);
+                                              }
+                                            }),
+                                          ],
+                                        ),
                                       ),
                                     ],
                                   ),

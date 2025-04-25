@@ -1,11 +1,14 @@
 // lib/features/address/presentation/pages/address_form_page.dart
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:kwik/bloc/Address_bloc/Address_bloc.dart';
 import 'package:kwik/bloc/Address_bloc/address_event.dart';
 import 'package:kwik/bloc/Address_bloc/address_state.dart';
+import 'package:kwik/constants/colors.dart';
 import 'package:kwik/models/address_model.dart';
+import 'package:kwik/models/order_model.dart' show Location;
 
 class AddressFormPage extends StatefulWidget {
   final String selectedaddress;
@@ -52,9 +55,15 @@ class _AddressFormPageState extends State<AddressFormPage> {
 
   @override
   Widget build(BuildContext context) {
+    ThemeData theme = Theme.of(context);
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text('Add Address'),
+        centerTitle: false,
+        title: Text(
+          'Add more address details',
+          style: theme.textTheme.bodyLarge,
+        ),
       ),
       body: BlocListener<AddressBloc, AddressState>(
         listener: (context, state) {
@@ -66,148 +75,307 @@ class _AddressFormPageState extends State<AddressFormPage> {
             );
           }
         },
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(16.0),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
           child: Form(
             key: _formKey,
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                TextFormField(
-                  controller: _flatNoNameController,
-                  decoration: const InputDecoration(
-                    labelText: 'Flat/Building Name',
-                    border: OutlineInputBorder(),
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      spacing: 15,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Save address as *',
+                          style: theme.textTheme.bodyMedium!.copyWith(
+                              color: const Color.fromARGB(255, 128, 127, 127)),
+                        ),
+                        Row(
+                          spacing: 7,
+                          children:
+                              ["Home", "Work", "Hotel", "Other"].map((type) {
+                            return InkWell(
+                              onTap: () {
+                                HapticFeedback.lightImpact;
+                                setState(() {
+                                  _addressType = type;
+                                });
+                              },
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 8, vertical: 4),
+                                decoration: BoxDecoration(
+                                    color: _addressType == type
+                                        ? const Color.fromARGB(
+                                            255, 240, 255, 240)
+                                        : Colors.white,
+                                    border: Border.all(
+                                        color: _addressType == type
+                                            ? Colors.green
+                                            : const Color.fromARGB(
+                                                255, 206, 206, 206)),
+                                    borderRadius: BorderRadius.circular(8)),
+                                child: Row(
+                                  spacing: 5,
+                                  children: [
+                                    Icon(
+                                      type == "Home"
+                                          ? Icons.home_outlined
+                                          : type == "Work"
+                                              ? Icons.work_history_outlined
+                                              : type == "Hotel"
+                                                  ? Icons.domain_add
+                                                  : Icons.location_on_outlined,
+                                      size: 15,
+                                      color:
+                                          const Color.fromARGB(255, 2, 118, 6),
+                                    ),
+                                    Text(
+                                      type,
+                                      style: theme.textTheme.bodySmall!
+                                          .copyWith(
+                                              color: const Color.fromARGB(
+                                                  255, 24, 24, 24),
+                                              fontWeight: FontWeight.w500),
+                                    )
+                                  ],
+                                ),
+                              ),
+                            );
+                          }).toList(),
+                        ),
+                        TextFormField(
+                          style: theme.textTheme.bodyMedium!
+                              .copyWith(fontSize: 12),
+                          controller: _flatNoNameController,
+                          decoration: InputDecoration(
+                            contentPadding: const EdgeInsets.symmetric(
+                              vertical: 0, // top & bottom padding
+                              horizontal: 10, // left & right padding
+                            ),
+                            labelText: 'Flat / House no / Building Name *',
+                            labelStyle: theme.textTheme.bodyMedium!.copyWith(
+                                color:
+                                    const Color.fromARGB(255, 128, 127, 127)),
+                            enabledBorder: const OutlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: Color.fromARGB(255, 203, 203, 203))),
+                            focusedBorder: const OutlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: Color(0xffFC5B00), width: .2)),
+                            border: const OutlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: Color.fromARGB(255, 128, 127, 127))),
+                          ),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter flat/building name';
+                            }
+                            return null;
+                          },
+                        ),
+                        TextFormField(
+                          style: theme.textTheme.bodyMedium!
+                              .copyWith(fontSize: 12),
+                          controller: _floorController,
+                          decoration: InputDecoration(
+                            contentPadding: const EdgeInsets.symmetric(
+                              vertical: 0, // top & bottom padding
+                              horizontal: 10, // left & right padding
+                            ),
+                            labelText: 'Floor (optional)',
+                            labelStyle: theme.textTheme.bodyMedium!.copyWith(
+                                color:
+                                    const Color.fromARGB(255, 128, 127, 127)),
+                            enabledBorder: const OutlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: Color.fromARGB(255, 203, 203, 203))),
+                            focusedBorder: const OutlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: Color(0xffFC5B00), width: .2)),
+                            border: const OutlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: Color.fromARGB(255, 128, 127, 127))),
+                          ),
+                        ),
+                        TextFormField(
+                          style: theme.textTheme.bodyMedium!.copyWith(
+                            fontSize: 12,
+                          ),
+                          controller: _areaController,
+                          decoration: InputDecoration(
+                            contentPadding: const EdgeInsets.symmetric(
+                              vertical: 0, // top & bottom padding
+                              horizontal: 10, // left & right padding
+                            ),
+                            labelText: 'Area / Sector / Locality *',
+                            labelStyle: theme.textTheme.bodyMedium!.copyWith(
+                                color:
+                                    const Color.fromARGB(255, 128, 127, 127)),
+                            enabledBorder: const OutlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: Color.fromARGB(255, 203, 203, 203))),
+                            focusedBorder: const OutlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: Color(0xffFC5B00), width: .2)),
+                            border: const OutlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: Color.fromARGB(255, 128, 127, 127))),
+                          ),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter your area/street';
+                            }
+                            return null;
+                          },
+                        ),
+                        TextFormField(
+                          style: theme.textTheme.bodyMedium!
+                              .copyWith(fontSize: 12),
+                          controller: _landmarkController,
+                          decoration: InputDecoration(
+                            contentPadding: const EdgeInsets.symmetric(
+                              vertical: 0, // top & bottom padding
+                              horizontal: 10, // left & right padding
+                            ),
+                            labelText: 'Landmark (Optional)',
+                            labelStyle: theme.textTheme.bodyMedium!.copyWith(
+                                color:
+                                    const Color.fromARGB(255, 128, 127, 127)),
+                            enabledBorder: const OutlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: Color.fromARGB(255, 203, 203, 203))),
+                            focusedBorder: const OutlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: Color(0xffFC5B00), width: .2)),
+                            border: const OutlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: Color.fromARGB(255, 128, 127, 127))),
+                          ),
+                        ),
+                        TextFormField(
+                          style: theme.textTheme.bodyMedium!
+                              .copyWith(fontSize: 12),
+                          controller: _phoneNoController,
+                          decoration: InputDecoration(
+                            contentPadding: const EdgeInsets.symmetric(
+                              vertical: 0, // top & bottom padding
+                              horizontal: 10, // left & right padding
+                            ),
+                            suffixIcon: const Icon(Icons.phone_android_rounded,
+                                size: 18,
+                                color: Color.fromARGB(255, 128, 127, 127)),
+                            labelText: 'Phone Number',
+                            labelStyle: theme.textTheme.bodyMedium!.copyWith(
+                                color:
+                                    const Color.fromARGB(255, 128, 127, 127)),
+                            enabledBorder: const OutlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: Color.fromARGB(255, 203, 203, 203))),
+                            focusedBorder: const OutlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: Color(0xffFC5B00), width: .2)),
+                            border: const OutlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: Color.fromARGB(255, 128, 127, 127))),
+                          ),
+                          keyboardType: TextInputType.phone,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter your phone number';
+                            }
+                            if (value.length != 10) {
+                              return 'Please enter a valid 10-digit phone number';
+                            }
+                            return null;
+                          },
+                        ),
+                        TextFormField(
+                          controller: _pincodeController,
+                          style: theme.textTheme.bodyMedium!
+                              .copyWith(fontSize: 12),
+                          decoration: InputDecoration(
+                            contentPadding: const EdgeInsets.symmetric(
+                              vertical: 0, // top & bottom padding
+                              horizontal: 10, // left & right padding
+                            ),
+                            labelText: 'Pincode',
+                            labelStyle: theme.textTheme.bodyMedium!.copyWith(
+                                color:
+                                    const Color.fromARGB(255, 128, 127, 127)),
+                            enabledBorder: const OutlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: Color.fromARGB(255, 203, 203, 203))),
+                            focusedBorder: const OutlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: Color(0xffFC5B00), width: .2)),
+                            border: const OutlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: Color.fromARGB(255, 128, 127, 127))),
+                          ),
+                          keyboardType: TextInputType.number,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter your pincode';
+                            }
+                            if (value.length != 6) {
+                              return 'Please enter a valid 6-digit pincode';
+                            }
+                            return null;
+                          },
+                        ),
+                      ],
+                    ),
                   ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter flat/building name';
-                    }
-                    return null;
-                  },
                 ),
-                const SizedBox(height: 16),
-                TextFormField(
-                  controller: _floorController,
-                  decoration: const InputDecoration(
-                    labelText: 'Floor (Optional)',
-                    border: OutlineInputBorder(),
-                  ),
-                ),
-                const SizedBox(height: 16),
-                TextFormField(
-                  controller: _areaController,
-                  decoration: const InputDecoration(
-                    labelText: 'Area/Street',
-                    border: OutlineInputBorder(),
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter your area/street';
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 16),
-                TextFormField(
-                  controller: _landmarkController,
-                  decoration: const InputDecoration(
-                    labelText: 'Landmark (Optional)',
-                    border: OutlineInputBorder(),
-                  ),
-                ),
-                const SizedBox(height: 16),
-                TextFormField(
-                  controller: _phoneNoController,
-                  decoration: const InputDecoration(
-                    labelText: 'Phone Number',
-                    border: OutlineInputBorder(),
-                  ),
-                  keyboardType: TextInputType.phone,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter your phone number';
-                    }
-                    if (value.length != 10) {
-                      return 'Please enter a valid 10-digit phone number';
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 16),
-                TextFormField(
-                  controller: _pincodeController,
-                  decoration: const InputDecoration(
-                    labelText: 'Pincode',
-                    border: OutlineInputBorder(),
-                  ),
-                  keyboardType: TextInputType.number,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter your pincode';
-                    }
-                    if (value.length != 6) {
-                      return 'Please enter a valid 6-digit pincode';
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 16),
-                const Text(
-                  'Save address as',
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                Row(
-                  children: ['Home', 'Work', 'Other'].map((type) {
-                    return Expanded(
-                      child: RadioListTile<String>(
-                        title: Text(type),
-                        value: type,
-                        groupValue: _addressType,
-                        onChanged: (value) {
-                          setState(() {
-                            _addressType = value!;
-                          });
-                        },
-                        dense: true,
-                        contentPadding: EdgeInsets.zero,
+                SafeArea(
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        // if (_formKey.currentState!.validate()) {
+
+                        final AddressModel address = AddressModel(
+                          location: Location(
+                              lat: widget.latlanglocation.latitude,
+                              lang: widget.latlanglocation.longitude),
+                          addressType: _addressType,
+                          flatNoName: _flatNoNameController.text,
+                          floor: _floorController.text.isEmpty
+                              ? null
+                              : _floorController.text,
+                          area: _areaController.text,
+                          landmark: _landmarkController.text.isEmpty
+                              ? null
+                              : _landmarkController.text,
+                          phoneNo: _phoneNoController.text,
+                          pincode: _pincodeController.text,
+                        );
+                        context.read<AddressBloc>().add(AddanewAddressEvent(
+                            address, "67821e97640fb7573f33cba5"));
+
+                        // } else {
+                        //   print("validation faild ${_formKey.currentState}");
+                        // }
+                      },
+                      style: ElevatedButton.styleFrom(
+                        foregroundColor: Colors.white,
+                        backgroundColor: const Color.fromARGB(255, 1, 170, 97),
+                        padding: const EdgeInsets.symmetric(vertical: 8),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
                       ),
-                    );
-                  }).toList(),
-                ),
-                const SizedBox(height: 24),
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      if (_formKey.currentState!.validate()) {
-                        final state = context.read<AddressBloc>().state;
-                        if (state is LocationSelected) {
-                          final address = AddressModel(
-                            location: state.selectedLocation,
-                            addressType: _addressType,
-                            flatNoName: _flatNoNameController.text,
-                            floor: _floorController.text.isEmpty
-                                ? null
-                                : _floorController.text,
-                            area: _areaController.text,
-                            landmark: _landmarkController.text.isEmpty
-                                ? null
-                                : _landmarkController.text,
-                            phoneNo: _phoneNoController.text,
-                            pincode: _pincodeController.text,
-                          );
-                          context.read<AddressBloc>().add(SaveAddress(address));
-                        }
-                      }
-                    },
-                    style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8.0),
+                      child: Text(
+                        'Save Address',
+                        style: theme.textTheme.bodyLarge!.copyWith(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w500,
+                            fontSize: 16),
                       ),
                     ),
-                    child: const Text('Save Address'),
                   ),
                 ),
               ],

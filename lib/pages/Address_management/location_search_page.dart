@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -7,8 +8,11 @@ import 'package:kwik/bloc/Address_bloc/address_event.dart';
 import 'package:kwik/bloc/Address_bloc/address_state.dart';
 import 'package:kwik/constants/colors.dart';
 import 'package:kwik/constants/doted_devider.dart';
+import 'package:kwik/models/address_model.dart';
 import 'package:kwik/models/googlemap_place_model.dart';
 import 'package:kwik/pages/Address_management/map.dart';
+import 'package:http/http.dart' as http;
+import 'package:kwik/widgets/change_defaultaddress_bottomsheet.dart';
 
 class LocationSearchPage extends StatefulWidget {
   const LocationSearchPage({super.key});
@@ -24,11 +28,19 @@ class _LocationSearchPageState extends State<LocationSearchPage> {
   final FocusNode _searchFocusNode = FocusNode();
   GoogleMapPlace? selectedplace;
   List<GoogleMapPlace> suggestions = [];
+
   @override
   void dispose() {
     _searchController.dispose();
     _searchFocusNode.dispose();
     super.dispose();
+  }
+
+  @override
+  void initState() {
+    context.read<AddressBloc>().add(const GetsavedAddressEvent());
+
+    super.initState();
   }
 
   @override
@@ -65,7 +77,7 @@ class _LocationSearchPageState extends State<LocationSearchPage> {
                       spacing: 15,
                       children: [
                         SizedBox(
-                          height: 40,
+                          height: 45,
                           child: BlocBuilder<AddressBloc, AddressState>(
                               builder: (context, state) {
                             if (state is LocationSearchResults) {
@@ -81,7 +93,6 @@ class _LocationSearchPageState extends State<LocationSearchPage> {
                               focusNode: _searchFocusNode,
                               suggestionsCallback: (pattern) async {
                                 if (pattern.isNotEmpty) {
-                                  print("suggestion call abck called");
                                   context
                                       .read<AddressBloc>()
                                       .add(SearchLocation(pattern));
@@ -112,30 +123,36 @@ class _LocationSearchPageState extends State<LocationSearchPage> {
                                     focusedBorder: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(10),
                                       borderSide: const BorderSide(
-                                        width: 1,
-                                        color: AppColors.dotColorUnSelected,
+                                        width: .1,
+                                        color: Color.fromARGB(255, 255, 94, 0),
                                       ),
                                     ),
                                     enabledBorder: OutlineInputBorder(
                                       borderSide: const BorderSide(
-                                        width: .5,
-                                        color: AppColors.dotColorUnSelected,
+                                        width: .1,
+                                        color: Color.fromARGB(255, 255, 94, 0),
                                       ),
                                       borderRadius: BorderRadius.circular(10),
                                     ),
                                     hintStyle: const TextStyle(
-                                      color: Color.fromARGB(255, 18, 23, 25),
+                                      color: Color.fromARGB(255, 114, 114, 114),
                                       fontSize: 14,
                                       fontWeight: FontWeight.w400,
                                     ),
                                     fillColor: AppColors.backgroundColorWhite,
-                                    hintText:
-                                        "Search for area, street  name...",
-                                    prefixIcon: const Icon(Icons.search),
+                                    hintText: "Search for area, street name...",
+                                    prefixIcon: const Icon(
+                                      Icons.search,
+                                      color: Color.fromARGB(255, 114, 114, 114),
+                                    ),
                                     suffixIcon:
                                         _searchController.text.isNotEmpty
                                             ? IconButton(
-                                                icon: const Icon(Icons.clear),
+                                                icon: const Icon(
+                                                  Icons.clear,
+                                                  color: Color.fromARGB(
+                                                      255, 114, 114, 114),
+                                                ),
                                                 onPressed: () {
                                                   _searchController.clear();
                                                 },
@@ -239,8 +256,28 @@ class _LocationSearchPageState extends State<LocationSearchPage> {
                             );
                           }),
                         ),
-                        currentlocationContainer(theme: theme),
-                        savedaddressContainer(theme: theme),
+                        BlocBuilder<AddressBloc, AddressState>(
+                            builder: (context, state) {
+                          if (state is LocationSearchResults) {
+                            return currentlocationContainer(
+                                theme: theme,
+                                address: state.currentlocationaddress,
+                                placeID: state.currentplaceID);
+                          } else {
+                            return currentlocationContainer(
+                                theme: theme,
+                                address: "Select from map",
+                                placeID: "");
+                          }
+                        }),
+                        savedaddressContainer(
+                            selecetdaddress: state is LocationSearchResults
+                                ? state.selecteaddress
+                                : null,
+                            theme: theme,
+                            savedaddress: state is LocationSearchResults
+                                ? state.addresslist
+                                : []),
                       ],
                     ),
                   ),
@@ -260,11 +297,16 @@ class _LocationSearchPageState extends State<LocationSearchPage> {
                                     )));
                       },
                       style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.buttonColorOrange,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8.0),
                         ),
                       ),
-                      child: const Text('Confirm Location'),
+                      child: Text(
+                        'Select from Map',
+                        style: theme.textTheme.bodyLarge!
+                            .copyWith(color: Colors.white),
+                      ),
                     ),
                   ),
                 ),
@@ -276,7 +318,10 @@ class _LocationSearchPageState extends State<LocationSearchPage> {
     );
   }
 
-  Widget currentlocationContainer({required ThemeData theme}) {
+  Widget currentlocationContainer(
+      {required ThemeData theme,
+      required String placeID,
+      required String address}) {
     return Card(
       elevation: .5,
       color: Colors.white,
@@ -290,6 +335,14 @@ class _LocationSearchPageState extends State<LocationSearchPage> {
           spacing: 10,
           children: [
             ListTile(
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => MapPage(
+                              initialPlaceId: placeID,
+                            )));
+              },
               dense: true,
               leading: Container(
                 decoration: BoxDecoration(
@@ -320,7 +373,7 @@ class _LocationSearchPageState extends State<LocationSearchPage> {
                     ),
                   ),
                   Text(
-                    "place.description",
+                    address ?? "Select from map",
                     style: theme.textTheme.bodyMedium!.copyWith(
                         fontSize: 12,
                         color: const Color.fromARGB(255, 156, 154, 154),
@@ -334,6 +387,14 @@ class _LocationSearchPageState extends State<LocationSearchPage> {
               color: Color.fromARGB(255, 195, 195, 196),
             ),
             ListTile(
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => MapPage(
+                              initialPlaceId: placeID ?? "",
+                            )));
+              },
               dense: true,
               leading: Container(
                 decoration: BoxDecoration(
@@ -366,7 +427,10 @@ class _LocationSearchPageState extends State<LocationSearchPage> {
     );
   }
 
-  Widget savedaddressContainer({required ThemeData theme}) {
+  Widget savedaddressContainer(
+      {required ThemeData theme,
+      required List<AddressModel> savedaddress,
+      AddressModel? selecetdaddress}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       spacing: 10,
@@ -379,61 +443,223 @@ class _LocationSearchPageState extends State<LocationSearchPage> {
             color: const Color.fromARGB(255, 84, 84, 84),
           ),
         ),
-        Column(
-          children: List.generate(
-            5,
-            (index) => Card(
-              color: Colors.white,
-              elevation: .5,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 5),
-                child: ListTile(
-                  dense: true,
-                  leading: Container(
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(15),
-                        color: const Color.fromARGB(255, 232, 232, 232)),
-                    child: const Padding(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 10.0, vertical: 10),
-                      child: Icon(
-                        Icons.home_outlined,
-                        color: Color.fromARGB(255, 255, 94, 0),
+        BlocBuilder<AddressBloc, AddressState>(builder: (context, state) {
+          if (state is LocationSearchResults) {
+            return Column(
+              children: List.generate(
+                savedaddress.length,
+                (index) => Card(
+                  color: Colors.white,
+                  elevation: .5,
+                  child: Padding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 0, vertical: 5),
+                    child: ListTile(
+                      onTap: () async {
+                        print(state is LocationSearchResults
+                            ? state.selecteaddress?.addressType
+                            : "khsdbf");
+                        HapticFeedback.mediumImpact();
+                        await showModalBottomSheet(
+                          isScrollControlled: true,
+                          backgroundColor: Colors.transparent,
+                          enableDrag: false,
+                          context: context,
+                          builder: (context) {
+                            return GestureDetector(
+                              onTap: () => FocusScope.of(context).unfocus(),
+                              child: Padding(
+                                padding: MediaQuery.viewInsetsOf(context),
+                                child: ChangeDefaultaddressBottomsheet(
+                                  selectedaddress: savedaddress[index],
+                                ),
+                              ),
+                            );
+                          },
+                        );
+                      },
+                      dense: true,
+                      leading: Container(
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(15),
+                            color: const Color.fromARGB(255, 244, 244, 244)),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 10.0, vertical: 10),
+                          child: Icon(
+                            (savedaddress[index].addressType) == "Home"
+                                ? Icons.home_outlined
+                                : (savedaddress[index].addressType) == "Work"
+                                    ? Icons.work_history_outlined
+                                    : (savedaddress[index].addressType) ==
+                                            "Hotel"
+                                        ? Icons.domain_add
+                                        : Icons.location_on_outlined,
+                            color: const Color.fromARGB(255, 255, 94, 0),
+                          ),
+                        ),
+                      ),
+                      trailing: const Icon(
+                        Icons.keyboard_arrow_right_rounded,
+                        color: Color.fromARGB(255, 66, 143, 68),
+                      ),
+                      title: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Text(
+                                savedaddress[index].addressType,
+                                style: theme.textTheme.bodyMedium!.copyWith(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w800,
+                                  color: const Color.fromARGB(255, 0, 0, 0),
+                                ),
+                              ),
+                              selecetdaddress == savedaddress[index]
+                                  ? Text(
+                                      "   ( ${selecetdaddress == savedaddress[index] ? "Default address" : ""} )",
+                                      style:
+                                          theme.textTheme.bodyMedium!.copyWith(
+                                        fontSize: 10,
+                                        fontWeight: FontWeight.w500,
+                                        color: const Color.fromARGB(
+                                            255, 255, 94, 0),
+                                      ),
+                                    )
+                                  : const SizedBox(),
+                            ],
+                          ),
+                          Text(
+                            "${savedaddress[index].floor}, ${savedaddress[index].flatNoName}, ${savedaddress[index].area}, ${savedaddress[index].landmark}, ${savedaddress[index].pincode},\n ${savedaddress[index].phoneNo}",
+                            style: theme.textTheme.bodyMedium!.copyWith(
+                                fontSize: 12,
+                                color: const Color.fromARGB(255, 78, 78, 78),
+                                fontWeight: FontWeight.w500),
+                            maxLines: 3,
+                          ),
+                        ],
                       ),
                     ),
                   ),
-                  trailing: const Icon(
-                    Icons.keyboard_arrow_right_rounded,
-                    color: Color.fromARGB(255, 66, 143, 68),
-                  ),
-                  title: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Home",
-                        style: theme.textTheme.bodyMedium!.copyWith(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w800,
-                          color: const Color.fromARGB(255, 0, 0, 0),
-                        ),
-                      ),
-                      Text(
-                        "No. 20,E184 3rd cross, Patelappa Layout, Nagashetty Halli, R.M.V 2nd Stage, Bengaluru 560094",
-                        style: theme.textTheme.bodyMedium!.copyWith(
-                            fontSize: 12,
-                            color: const Color.fromARGB(255, 78, 78, 78),
-                            fontWeight: FontWeight.w500),
-                        maxLines: 3,
-                      ),
-                    ],
-                  ),
                 ),
               ),
-            ),
-          ),
-        )
+            );
+          } else {
+            return const Center(
+              child: Text("No Address added yet"),
+            );
+          }
+        })
       ],
     );
   }
+
+  // Future<Map<String, dynamic>?> getPlaceDetailsFromCurrentLocation() async {
+  //   // Replace YOUR_API_KEY with your actual Google Maps API key
+  //   const String apiKey = 'AIzaSyAPLvvnotvyrbkQVynYChnZhyrgSWAjO1k';
+
+  //   try {
+  //     // 1. Get the device's current location using geolocator
+  //     LocationPermission permission = await Geolocator.checkPermission();
+  //     if (permission == LocationPermission.denied) {
+  //       permission = await Geolocator.requestPermission();
+  //       if (permission == LocationPermission.denied) {
+  //         // Location permissions are denied, handle the error appropriately.
+  //         print('Location permissions are denied.');
+  //         return null;
+  //       }
+  //     }
+
+  //     if (permission == LocationPermission.deniedForever) {
+  //       // Permissions are denied forever, handle the error.
+  //       print(
+  //           'Location permissions are permanently denied, we cannot request them.');
+  //       return null;
+  //     }
+
+  //     Position position = await Geolocator.getCurrentPosition(
+  //         desiredAccuracy: LocationAccuracy.high);
+
+  //     // 2. Construct the URL for the Google Maps Geocoding API (Reverse Geocoding)
+  //     final String url =
+  //         'https://maps.googleapis.com/maps/api/geocode/json?latlng=${position.latitude},${position.longitude}&key=$apiKey';
+
+  //     // 3. Make the API request using the http package
+  //     final response = await http.get(Uri.parse(url));
+
+  //     // 4. Check the response status code
+  //     if (response.statusCode == 200) {
+  //       // 5. Decode the JSON response
+  //       final Map<String, dynamic> data = json.decode(response.body);
+
+  //       // 6. Check the API status in the response
+  //       if (data['status'] == 'OK') {
+  //         // 7. Extract the relevant information from the results
+  //         final List<dynamic> results = data['results'];
+  //         if (results.isNotEmpty) {
+  //           // We take the first result as it is the most relevant
+  //           final Map<String, dynamic> firstResult = results[0];
+
+  //           // Create a map to hold the place details.  Customize this as needed.
+  //           Map<String, dynamic> placeDetails = {
+  //             'place_id': firstResult['place_id'],
+  //             'formatted_address': firstResult['formatted_address'],
+  //             // You can add more fields here, for example:
+  //             // 'address_components': firstResult['address_components'],
+  //             // 'geometry': firstResult['geometry'],
+  //             // 'types': firstResult['types'],
+  //           };
+
+  //           print(placeDetails);
+  //           return placeDetails;
+  //         } else {
+  //           print('No results found for the given location.');
+  //           return null; // Or throw an exception if you prefer.
+  //         }
+  //       } else {
+  //         print('Google Maps API error: ${data['status']}');
+  //         return null; // Or throw an exception.
+  //       }
+  //     } else {
+  //       print(
+  //           'Failed to fetch place details. HTTP status code: ${response.statusCode}');
+  //       return null; // Or throw an exception.
+  //     }
+  //   } catch (e) {
+  //     // Handle any exceptions that occur during the process
+  //     print('Error getting place details: $e');
+  //     return null; // Or rethrow the exception if you want the caller to handle it.
+  //   }
+  // }
+
+  // Future<void> _loadPlaceDetails() async {
+  //   try {
+  //     Map<String, dynamic>? placeDetails =
+  //         await getPlaceDetailsFromCurrentLocation();
+  //     if (placeDetails != null) {
+  //       setState(() {
+  //         currentlocationPlaceID =
+  //             placeDetails['place_id'] ?? ""; //added null check.
+  //         currentlocationaddress =
+  //             placeDetails['formatted_address'] ?? ""; //added null check
+  //       });
+  //     } else {
+  //       // Handle the error:  show a message to the user, etc.
+  //       print('Failed to get place details');
+  //       //  You might want to set some default values in the state
+  //       setState(() {
+  //         currentlocationPlaceID = "";
+  //         currentlocationaddress = "";
+  //       });
+  //     }
+  //   } catch (e) {
+  //     print('Exception occurred: $e');
+  //     setState(() {
+  //       currentlocationPlaceID = "";
+  //       currentlocationaddress = "";
+  //     });
+  //   }
+  // }
 }
