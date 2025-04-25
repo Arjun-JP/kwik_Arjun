@@ -1,3 +1,5 @@
+// ignore_for_file: must_be_immutable
+
 import 'package:equatable/equatable.dart';
 import 'package:kwik/models/address_model.dart' as AddressModel;
 import 'package:kwik/models/googlemap_place_model.dart';
@@ -16,11 +18,21 @@ class AddressLoading extends AddressState {}
 
 class LocationSearchResults extends AddressState {
   final List<GoogleMapPlace> placelist;
+  final List<AddressModel.AddressModel> addresslist;
+  final String currentplaceID;
+  final String currentlocationaddress;
+  AddressModel.AddressModel? selecteaddress;
 
-  const LocationSearchResults(this.placelist);
+  LocationSearchResults(this.placelist, this.addresslist, this.currentplaceID,
+      this.currentlocationaddress, this.selecteaddress);
 
   @override
-  List<Object> get props => [placelist];
+  List<Object> get props => [
+        placelist,
+        addresslist,
+        currentplaceID,
+        currentlocationaddress,
+      ];
 }
 
 class LocationSelected extends AddressState {

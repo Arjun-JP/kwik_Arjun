@@ -12,34 +12,66 @@ class AddressRepository {
   };
 
   Future<List<AddressModel>> getAddressesFromServer() async {
-    final url = Uri.parse('$baseUrl/address/get');
+    final url = Uri.parse('$baseUrl/users/s5ZdLnYhnVfAramtr7knGduOI872');
 
     try {
       final response = await http.get(url, headers: headers);
-      Map<String, dynamic> body = json.decode(response.body);
+      print(response.body);
+      final Map<String, dynamic> body = json.decode(response.body);
 
-      if (body.containsKey("data") && body["data"] is List) {
-        List<dynamic> data = body["data"];
-        return data.map((json) => AddressModel.fromJson(json)).toList();
-      } else {
-        return [];
+      // Check if the response contains the user data and addresses
+      if (body.containsKey("user") && body["user"] is Map) {
+        final Map<String, dynamic> userData = body["user"];
+
+        // Check if Address array exists in user data
+        if (userData.containsKey("Address") && userData["Address"] is List) {
+          List<dynamic> addressesJson = userData["Address"];
+          print(addressesJson);
+          // Parse each address JSON to AddressModel
+          return addressesJson.map((addressJson) {
+            return AddressModel.fromJson(addressJson);
+          }).toList();
+        }
       }
+
+      // Return empty list if no addresses found
+      return [];
     } catch (e) {
       throw Exception("Error fetching addresses: $e");
     }
   }
 
-  Future<void> addAddress(AddressModel address, userID) async {
+  Future<void> addAddress(AddressModel address, String userID) async {
     final url = Uri.parse('$baseUrl/users/addAddress/$userID');
     try {
-      final response = await http.post(
+      // Create the request body with the Address nested object
+      final requestBody = {
+        "Address": {
+          "Location": {
+            "lat": address.location.lat,
+            "lang": address.location.lang,
+          },
+          "address_type": address.addressType,
+          "flat_no_name": address.flatNoName,
+          "floor": address.floor,
+          "area": address.area,
+          "landmark": address.landmark,
+          "phone_no": address.phoneNo,
+          "pincode": address.pincode,
+        }
+      };
+
+      final response = await http.put(
+        // Changed from post to put
         url,
         headers: headers,
-        body: json.encode(address.toJson()),
+        body: json.encode(requestBody),
       );
-
+      print(response.statusCode);
+      print(response.body);
       if (response.statusCode != 200) {
-        throw Exception('Failed to add address');
+        throw Exception(
+            'Failed to add address. Status code: ${response.statusCode}');
       }
     } catch (e) {
       throw Exception("Error adding address: $e");
@@ -106,6 +138,28 @@ class AddressRepository {
       }
     } catch (e) {
       throw Exception('Error fetching warehouse reference: $e');
+    }
+  }
+
+  Future<void> getwarehousedetails(
+      String pincode, String destinationLat, String destinationLon) async {
+    final url = Uri.parse('$baseUrl/warehouse/warehouseServiceStatus');
+    try {
+      final response = await http.post(
+        url,
+        headers: headers,
+        body: json.encode({
+          "pincode": pincode,
+          "destinationLat": destinationLat,
+          "destinationLon": destinationLon
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        throw Exception('Failed to add address');
+      }
+    } catch (e) {
+      throw Exception("Error adding address: $e");
     }
   }
 }

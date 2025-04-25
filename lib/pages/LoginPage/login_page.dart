@@ -192,7 +192,7 @@ class _LoginPageState extends State<LoginPage> {
                                   .add(FetchUiDataEvent());
                               context.read<CartBloc>().add(SyncCartWithServer(
                                   userId: "s5ZdLnYhnVfAramtr7knGduOI872"));
-
+                              // context.go('/OtpVerificationPage/123456');
                               context.go("/home");
                             },
                             child: const Text("Home"))

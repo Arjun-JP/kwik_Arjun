@@ -9,6 +9,13 @@ abstract class AddressEvent extends Equatable {
   List<Object> get props => [];
 }
 
+class GetsavedAddressEvent extends AddressEvent {
+  const GetsavedAddressEvent();
+
+  @override
+  List<Object> get props => [];
+}
+
 class SearchLocation extends AddressEvent {
   final String query;
 
@@ -16,6 +23,35 @@ class SearchLocation extends AddressEvent {
 
   @override
   List<Object> get props => [query];
+}
+
+class AddanewAddressEvent extends AddressEvent {
+  final AddressModel.AddressModel address;
+  final String userID;
+
+  const AddanewAddressEvent(this.address, this.userID);
+
+  @override
+  List<Object> get props => [address, userID];
+}
+
+class GetWarehousedetailsEvent extends AddressEvent {
+  final String pincode;
+  final Location location;
+
+  const GetWarehousedetailsEvent(this.pincode, this.location);
+
+  @override
+  List<Object> get props => [pincode, location];
+}
+
+class UpdateselectedaddressEvent extends AddressEvent {
+  final AddressModel.AddressModel address;
+
+  const UpdateselectedaddressEvent(this.address);
+
+  @override
+  List<Object> get props => [address];
 }
 
 class SelectLocation extends AddressEvent {

@@ -46,6 +46,7 @@ import 'package:kwik/models/Hiveadapter/review_model_adapter.dart';
 import 'package:kwik/models/Hiveadapter/stock_model_adapter.dart';
 import 'package:kwik/models/cart_model.dart';
 import 'package:kwik/models/product_model.dart' show ProductModel;
+import 'package:kwik/repositories/address_repo.dart';
 import 'package:kwik/repositories/allsubcategory_repo.dart';
 import 'package:kwik/repositories/banner_repository.dart';
 import 'package:kwik/repositories/brand_products_repo.dart';
@@ -411,7 +412,8 @@ class _MyAppState extends State<MyApp> {
             create: (_) =>
                 SubcategoryProductBlocSubcategory(SubcategProductRepository())),
         BlocProvider<AddressBloc>(
-            create: (_) => AddressBloc(GoogleMapsService())),
+            create: (_) =>
+                AddressBloc(GoogleMapsService(), AddressRepository())),
       ],
       child: MaterialApp.router(
         builder: (context, child) {
