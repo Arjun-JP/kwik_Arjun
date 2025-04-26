@@ -383,7 +383,8 @@ class ProductModel2 extends StatelessWidget {
       required ProductModel product,
       required String qty}) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+      height: 35,
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
       decoration: BoxDecoration(
           color: parseColor(buttonbgcolor),
           borderRadius: BorderRadius.circular(8)),
@@ -423,7 +424,7 @@ class ProductModel2 extends StatelessWidget {
                 qty,
                 style: theme.textTheme.bodyMedium!.copyWith(
                     color: parseColor(buttontext),
-                    fontSize: 14,
+                    fontSize: 15,
                     fontWeight: FontWeight.w800),
               ),
             )),

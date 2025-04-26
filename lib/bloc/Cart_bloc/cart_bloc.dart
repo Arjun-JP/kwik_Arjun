@@ -156,7 +156,6 @@ class CartBloc extends Bloc<CartEvent, CartState> {
     try {
       Map<String, dynamic> serverCartData =
           await cartRepository.getUserCart(userId: event.userId);
-      print("%%%%%%%%%%");
 
       // Convert server cart items
       List<CartProduct> serverCartItems = [];
@@ -173,9 +172,6 @@ class CartBloc extends Bloc<CartEvent, CartState> {
       List<WishlistItem> serverwishlistItems = [];
 
       if (serverCartData["wishlist"] is List) {
-        print(serverwishlistItems.length);
-        print(serverCartData["wishlist"].runtimeType);
-        print(serverCartData["wishlist"].toString());
         serverwishlistItems = (serverCartData["wishlist"] as List).map((e) {
           try {
             return WishlistItem.fromJson(e as Map<String, dynamic>);

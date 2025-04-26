@@ -224,7 +224,7 @@ class _CartPageState extends State<CartPage> {
                       }),
                       const SizedBox(height: 15),
                       addressContainer(theme: theme),
-                      const SizedBox(height: 15),
+                      const SizedBox(height: 25),
                     ],
                   ),
                 ),
@@ -583,38 +583,10 @@ class _CartPageState extends State<CartPage> {
                 ],
               ),
             ),
-            // Spacing between items
-
-            // add to cxart button
-
-            // Spacing between items
-
-            // Price Column
-            Expanded(
-              flex: 2,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Text(
-                    "₹${wishlistproduct.productRef.variations.first.mrp.toStringAsFixed(0)}",
-                    style: theme.textTheme.bodyLarge,
-                  ),
-                  Text(
-                    "₹${wishlistproduct.productRef.variations.first.sellingPrice.toStringAsFixed(0)}",
-                    style: theme.textTheme.bodyLarge!.copyWith(
-                      color: Colors.grey,
-                      fontSize: 12,
-                      decoration: TextDecoration.lineThrough,
-                    ),
-                  ),
-                ],
-              ),
-            ),
             Expanded(
                 flex: 3,
                 child: SizedBox(
-                  height: 40,
+                  height: 30,
                   child: ElevatedButton(
                     onPressed: () {},
                     style: ElevatedButton.styleFrom(
@@ -638,6 +610,27 @@ class _CartPageState extends State<CartPage> {
                     ),
                   ),
                 )),
+            Expanded(
+              flex: 2,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Text(
+                    "₹${wishlistproduct.productRef.variations.first.mrp.toStringAsFixed(0)}",
+                    style: theme.textTheme.bodyLarge,
+                  ),
+                  Text(
+                    "₹${wishlistproduct.productRef.variations.first.sellingPrice.toStringAsFixed(0)}",
+                    style: theme.textTheme.bodyLarge!.copyWith(
+                      color: Colors.grey,
+                      fontSize: 12,
+                      decoration: TextDecoration.lineThrough,
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ],
         ),
       ),
@@ -986,7 +979,7 @@ class _CartPageState extends State<CartPage> {
           Text(
             " Bill details",
             style: theme.textTheme.titleLarge!
-                .copyWith(color: const Color(0xFF233D4D)),
+                .copyWith(color: const Color(0xFF233D4D), fontSize: 16),
           ),
           Row(
             children: [
@@ -1013,7 +1006,7 @@ class _CartPageState extends State<CartPage> {
                           horizontal: 10, vertical: 5),
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10),
-                          color: const Color(0xFFFF9B2E)),
+                          color: const Color.fromARGB(255, 109, 205, 125)),
                       child: Text(
                         "Saved ₹${(calculateTotalMRP(cartproducts) - calculateTotalSellingPrice(cartproducts, charges)).toStringAsFixed(0)}",
                         style: theme.textTheme.bodyMedium!
@@ -1252,61 +1245,89 @@ class _CartPageState extends State<CartPage> {
   Widget addressContainer({required ThemeData theme}) {
     return BlocBuilder<AddressBloc, AddressState>(builder: (context, state) {
       if (state is LocationSearchResults) {
-        return Container(
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
-          color: Colors.white,
-          child: Row(
-            spacing: 5,
-            children: [
-              Expanded(
-                  flex: 2,
-                  child: SvgPicture.asset("assets/images/home_logo.svg")),
-              Expanded(
-                flex: 8,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+        return state.selecteaddress != null
+            ? Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+                color: Colors.white,
+                child: Row(
+                  spacing: 5,
                   children: [
-                    Text(
-                      "Delivering to ${state.selecteaddress!.addressType}",
-                      style: theme.textTheme.titleLarge!.copyWith(fontSize: 12),
+                    Expanded(
+                        flex: 2,
+                        child: SvgPicture.asset("assets/images/home_logo.svg")),
+                    Expanded(
+                      flex: 8,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Delivering to ${state.selecteaddress!.addressType}",
+                            style: theme.textTheme.titleLarge!
+                                .copyWith(fontSize: 12),
+                          ),
+                          Text(
+                            "${state.selecteaddress!.floor}, ${state.selecteaddress!.flatNoName}, ${state.selecteaddress!.area}, ${state.selecteaddress!.landmark}, ${state.selecteaddress!.pincode},\n${state.selecteaddress!.phoneNo}",
+                            style: theme.textTheme.bodyMedium!.copyWith(
+                                fontSize: 12, color: const Color(0xFFA19DA3)),
+                          ),
+                        ],
+                      ),
                     ),
-                    Text(
-                      "${state.selecteaddress!.floor}, ${state.selecteaddress!.flatNoName}, ${state.selecteaddress!.area}, ${state.selecteaddress!.landmark}, ${state.selecteaddress!.pincode},\n${state.selecteaddress!.phoneNo}",
-                      style: theme.textTheme.bodyMedium!.copyWith(
-                          fontSize: 12, color: const Color(0xFFA19DA3)),
-                    ),
+                    Expanded(
+                      flex: 2,
+                      child: InkWell(
+                        onTap: () {
+                          HapticFeedback.mediumImpact();
+                          Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => const LocationSearchPage(),
+                          ));
+                        },
+                        child: Container(
+                          height: 30,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            color: const Color(0xFFD0F1C5),
+                          ),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 5, vertical: 5),
+                          child: Center(
+                              child: Text(
+                            "Change",
+                            style: theme.textTheme.bodyMedium!.copyWith(
+                                fontSize: 10, color: const Color(0xFF328616)),
+                          )),
+                        ),
+                      ),
+                    )
                   ],
                 ),
-              ),
-              Expanded(
-                flex: 2,
-                child: InkWell(
-                  onTap: () {
-                    HapticFeedback.mediumImpact();
-                    Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => const LocationSearchPage(),
-                    ));
-                  },
-                  child: Container(
-                    height: 30,
-                    decoration: BoxDecoration(
+              )
+            : InkWell(
+                onTap: () {
+                  // Navigator.of(context).push(MaterialPageRoute(
+                  //   builder: (context) => const LocationSearchPage(),
+                  // ));
+                  print(state);
+                  if (state is LocationSearchResults) {
+                    print(state.selecteaddress);
+                  }
+                },
+                child: Container(
+                  width: double.infinity,
+                  decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10),
-                      color: const Color(0xFFD0F1C5),
+                      color: Colors.white),
+                  padding: const EdgeInsets.symmetric(vertical: 25),
+                  child: Center(
+                    child: Text(
+                      "Select Address",
+                      style: theme.textTheme.bodyLarge!
+                          .copyWith(color: Colors.deepOrange),
                     ),
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-                    child: Center(
-                        child: Text(
-                      "Change",
-                      style: theme.textTheme.bodyMedium!.copyWith(
-                          fontSize: 10, color: const Color(0xFF328616)),
-                    )),
                   ),
                 ),
-              )
-            ],
-          ),
-        );
+              );
       } else {
         return const SizedBox();
       }
@@ -1422,7 +1443,8 @@ class _CartPageState extends State<CartPage> {
         cartItems = state.cartItems;
       }
       return Container(
-        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 5),
+        height: 30,
+        padding: const EdgeInsets.symmetric(vertical: 1, horizontal: 3),
         decoration: BoxDecoration(
             color: const Color(0xFFE23338),
             borderRadius: BorderRadius.circular(10)),

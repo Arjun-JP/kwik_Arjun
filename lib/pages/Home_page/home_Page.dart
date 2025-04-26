@@ -110,12 +110,13 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+    context.read<AddressBloc>().add(const GetsavedAddressEvent());
     context.read<HomeUiBloc>().add(FetchUiDataEvent());
 
     context
         .read<CartBloc>()
         .add(SyncCartWithServer(userId: "s5ZdLnYhnVfAramtr7knGduOI872"));
-    context.read<AddressBloc>().add(const GetsavedAddressEvent());
+
     checkPermissionAndProceed();
   }
 

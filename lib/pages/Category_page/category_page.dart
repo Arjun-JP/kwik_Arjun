@@ -3,11 +3,16 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:kwik/bloc/Address_bloc/Address_bloc.dart';
+import 'package:kwik/bloc/Address_bloc/address_event.dart';
+import 'package:kwik/bloc/Address_bloc/address_state.dart';
 import 'package:kwik/bloc/Categories%20Page%20Bloc/category_model_bloc/category_model_bloc.dart';
 import 'package:kwik/bloc/navbar_bloc/navbar_bloc.dart';
+import 'package:kwik/pages/Address_management/location_search_page.dart';
 import 'package:kwik/pages/Category_page/Categories%20Page%20Widgets/category_model.dart';
 import 'package:kwik/pages/Home_page/widgets/descriptive_widget.dart';
 import 'package:kwik/widgets/navbar/navbar.dart';
+import 'package:kwik/widgets/shimmer/shimmer.dart';
 import '../../bloc/Categories Page Bloc/categories_UI_bloc/categories_ui_bloc.dart';
 import '../../bloc/Categories Page Bloc/categories_page_model1/categories_page_model1_bloc.dart';
 import 'package:kwik/bloc/Categories%20Page%20Bloc/category_model_bloc/category_model_event.dart';
@@ -34,6 +39,7 @@ class _CategoryPageState extends State<CategoryPage> {
   void initState() {
     super.initState();
     context.read<CategoriesUiBloc>().add(FetchCatUiDataEvent());
+    context.read<AddressBloc>().add(const GetsavedAddressEvent());
   }
 
   @override
@@ -260,38 +266,78 @@ class _CategoryPageState extends State<CategoryPage> {
                                                       AppColors.textColorWhite),
                                         ),
                                       ),
-                                      Row(
-                                        children: [
-                                          Text("30 min delivery",
-                                              style: theme.textTheme.titleLarge!
-                                                  .copyWith(
-                                                      fontSize: 24,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      color: AppColors
-                                                          .textColorblack)),
-                                          IconButton(
-                                              onPressed: () {},
-                                              icon: SvgPicture.asset(
-                                                "assets/images/appbar_arrow.svg",
-                                                width: 30,
-                                                height: 30,
-                                              ))
-                                        ],
+                                      InkWell(
+                                        onTap: () {
+                                          HapticFeedback.mediumImpact();
+                                          Navigator.of(context)
+                                              .push(MaterialPageRoute(
+                                            builder: (context) =>
+                                                const LocationSearchPage(),
+                                          ));
+                                        },
+                                        child: Row(
+                                          children: [
+                                            Text("30 min delivery",
+                                                style: theme
+                                                    .textTheme.titleLarge!
+                                                    .copyWith(
+                                                        fontSize: 24,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        color: AppColors
+                                                            .textColorblack)),
+                                            IconButton(
+                                                onPressed: () {
+                                                  HapticFeedback.mediumImpact();
+                                                  Navigator.of(context)
+                                                      .push(MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        const LocationSearchPage(),
+                                                  ));
+                                                },
+                                                icon: SvgPicture.asset(
+                                                  "assets/images/appbar_arrow.svg",
+                                                  width: 30,
+                                                  height: 30,
+                                                ))
+                                          ],
+                                        ),
                                       ),
-                                      Row(
-                                        children: [
-                                          SvgPicture.asset(
-                                              "assets/images/addresshome_icon.svg"),
-                                          Text(
-                                              " J236, Kadampukur village, Newtown...",
-                                              maxLines: 1,
-                                              style: theme.textTheme.bodyMedium!
-                                                  .copyWith(
-                                                      fontSize: 12,
-                                                      color: AppColors
-                                                          .textColorblack)),
-                                        ],
+                                      InkWell(
+                                        onTap: () {
+                                          HapticFeedback.mediumImpact();
+                                          Navigator.of(context)
+                                              .push(MaterialPageRoute(
+                                            builder: (context) =>
+                                                const LocationSearchPage(),
+                                          ));
+                                        },
+                                        child: Row(
+                                          spacing: 8,
+                                          children: [
+                                            SvgPicture.asset(
+                                                "assets/images/addresshome_icon.svg"),
+                                            BlocBuilder<AddressBloc,
+                                                    AddressState>(
+                                                builder: (context, state) {
+                                              if (state
+                                                  is LocationSearchResults) {
+                                                return Text(
+                                                    "${state.currentlocationaddress.characters.take(35).string}...",
+                                                    maxLines: 1,
+                                                    style: theme
+                                                        .textTheme.bodyMedium!
+                                                        .copyWith(
+                                                            fontSize: 12,
+                                                            color: AppColors
+                                                                .textColorblack));
+                                              } else {
+                                                return const Shimmer(
+                                                    width: 200, height: 12);
+                                              }
+                                            }),
+                                          ],
+                                        ),
                                       ),
                                     ],
                                   ),

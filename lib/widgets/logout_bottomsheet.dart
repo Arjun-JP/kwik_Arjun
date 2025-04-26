@@ -48,56 +48,63 @@ class _LogoutBottomSheetState extends State<LogoutBottomSheet> {
                     fontSize: 24,
                     fontWeight: FontWeight.w700)),
             const SizedBox(height: 10),
-            Row(
-              children: [
-                Expanded(
-                  flex: 1,
-                  child: ElevatedButton(
-                    onPressed: () async {
-                      context.pop();
-                    },
-                    style: ElevatedButton.styleFrom(
-                      minimumSize: Size(MediaQuery.of(context).size.width, 50),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
+            SizedBox(
+              height: 40,
+              child: Row(
+                children: [
+                  Expanded(
+                    flex: 1,
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        context.pop();
+                      },
+                      style: ElevatedButton.styleFrom(
+                        minimumSize:
+                            Size(MediaQuery.of(context).size.width, 50),
+                        shape: RoundedRectangleBorder(
+                          side: const BorderSide(
+                              color: AppColors.buttonColorOrange, width: 1),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        foregroundColor: AppColors.textColorWhite,
+                        backgroundColor: AppColors.textColorWhite,
                       ),
-                      foregroundColor: AppColors.textColorblack,
-                      backgroundColor: AppColors.textColorblack,
-                    ),
-                    child: Text(
-                      "Close",
-                      style: theme.textTheme.bodyLarge!.copyWith(
-                        color: AppColors.kwhiteColor,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w400,
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 20),
-                Expanded(
-                  flex: 1,
-                  child: ElevatedButton(
-                    onPressed: () async {},
-                    style: ElevatedButton.styleFrom(
-                      minimumSize: Size(MediaQuery.of(context).size.width, 50),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      foregroundColor: const Color.fromARGB(255, 166, 28, 28),
-                      backgroundColor: const Color.fromARGB(255, 166, 28, 28),
-                    ),
-                    child: Text(
-                      "Continue",
-                      style: theme.textTheme.bodyLarge!.copyWith(
-                        color: AppColors.kwhiteColor,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w400,
+                      child: Text(
+                        "Close",
+                        style: theme.textTheme.bodyLarge!.copyWith(
+                          color: AppColors.buttonColorOrange,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w400,
+                        ),
                       ),
                     ),
                   ),
-                ),
-              ],
+                  const SizedBox(width: 20),
+                  Expanded(
+                    flex: 1,
+                    child: ElevatedButton(
+                      onPressed: () async {},
+                      style: ElevatedButton.styleFrom(
+                        minimumSize:
+                            Size(MediaQuery.of(context).size.width, 50),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        foregroundColor: const Color.fromARGB(255, 166, 28, 28),
+                        backgroundColor: const Color.fromARGB(255, 166, 28, 28),
+                      ),
+                      child: Text(
+                        "Continue",
+                        style: theme.textTheme.bodyLarge!.copyWith(
+                          color: AppColors.kwhiteColor,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
             const SizedBox(height: 25),
           ],

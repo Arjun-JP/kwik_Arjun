@@ -176,6 +176,8 @@ class _SearchPageState extends State<SearchPage> {
             extra: {
               'product': product,
               'subcategoryref': "6780ff720bfef51d79df1a06",
+              'buttonbg': parseColor("E23338"), // example color as a string
+              'buttontext': parseColor("FFFFFF"),
             },
           ),
           child: ListTile(
