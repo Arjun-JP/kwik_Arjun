@@ -43,11 +43,8 @@ class AddressBloc extends Bloc<AddressEvent, AddressState> {
       savedaddress = (state as LocationSearchResults).addresslist;
       address = (state as LocationSearchResults).currentlocationaddress;
       selecetdaddress = (state as LocationSearchResults).selecteaddress;
-      print(selecetdaddress!.addressType);
     }
 
-    print("old state ");
-    print(event.address.toJson());
     emit(LocationSearchResults(
         [], savedaddress, placeId, address, event.address));
   }
@@ -141,7 +138,7 @@ class AddressBloc extends Bloc<AddressEvent, AddressState> {
     try {
       emit(LocationSelected(event.location, event.address));
     } catch (e) {
-      emit(AddressError('Failed to select location: $e'));
+      // emit(AddressError('Failed to select location: $e'));
     }
   }
 
@@ -222,6 +219,18 @@ class AddressBloc extends Bloc<AddressEvent, AddressState> {
       AddanewAddressEvent event, Emitter<AddressState> emit) async {
     try {
       await savedaddressrepository.addAddress(event.address, event.userID);
+      List<AddressModel> existingsavedaddresslist = [];
+      String placeId = "";
+      String address = "";
+      AddressModel? selectedaddress;
+      if (state is LocationSearchResults) {
+        existingsavedaddresslist = (state as LocationSearchResults).addresslist;
+        placeId = (state as LocationSearchResults).currentplaceID;
+        address = (state as LocationSearchResults).currentlocationaddress;
+        selectedaddress = (state as LocationSearchResults).selecteaddress;
+      }
+      emit(LocationSearchResults(
+          [], existingsavedaddresslist, placeId, address, selectedaddress));
     } catch (error) {
       print("faild to add address");
     }

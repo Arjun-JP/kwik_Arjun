@@ -148,11 +148,11 @@ Widget subcategoryItem(
     crossAxisAlignment: CrossAxisAlignment.center,
     children: [
       SizedBox(
-        height: 146,
+        height: 126,
         child: Stack(
           children: [
             Container(
-              height: 140,
+              height: 120,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(20),
                 color: parseColor(bgcolor),
@@ -208,7 +208,7 @@ Widget subcategoryItem(
               ),
             ),
             Align(
-              alignment: const Alignment(0, 1.8),
+              alignment: const Alignment(0, 2.7),
               child: Image.network(height: 85, imageurl),
             )
           ],

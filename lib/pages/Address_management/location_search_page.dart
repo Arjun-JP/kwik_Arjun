@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:kwik/bloc/Address_bloc/Address_bloc.dart';
 import 'package:kwik/bloc/Address_bloc/address_event.dart';
@@ -49,6 +50,14 @@ class _LocationSearchPageState extends State<LocationSearchPage> {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 255, 255, 255),
       appBar: AppBar(
+        leading: InkWell(
+            onTap: () {
+              context.pop();
+              context.read<AddressBloc>().add(const GetsavedAddressEvent());
+            },
+            child: const Icon(
+              Icons.arrow_back_ios_new_rounded,
+            )),
         centerTitle: false,
         title: Text(
           'Select delivery Location',
@@ -155,6 +164,8 @@ class _LocationSearchPageState extends State<LocationSearchPage> {
                                                 ),
                                                 onPressed: () {
                                                   _searchController.clear();
+                                                  context.read<AddressBloc>().add(
+                                                      const GetsavedAddressEvent());
                                                 },
                                               )
                                             : null,
@@ -248,6 +259,18 @@ class _LocationSearchPageState extends State<LocationSearchPage> {
                                               initialPlaceId: place.placeId,
                                             )));
                               },
+                              decorationBuilder: (context, child) =>
+                                  DecoratedBox(
+                                decoration: BoxDecoration(
+                                  color: AppColors.backgroundColorWhite,
+                                  border: Border.all(
+                                    color: AppColors.dotColorUnSelected,
+                                    width: 1,
+                                  ),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: child,
+                              ),
                               loadingBuilder: (context) => const Padding(
                                 padding: EdgeInsets.symmetric(vertical: 8.0),
                                 child:
@@ -297,7 +320,7 @@ class _LocationSearchPageState extends State<LocationSearchPage> {
                                     )));
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.buttonColorOrange,
+                        backgroundColor: const Color.fromARGB(255, 1, 170, 97),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8.0),
                         ),
@@ -495,7 +518,7 @@ class _LocationSearchPageState extends State<LocationSearchPage> {
                                             "Hotel"
                                         ? Icons.domain_add
                                         : Icons.location_on_outlined,
-                            color: const Color.fromARGB(255, 255, 94, 0),
+                            color: const Color.fromARGB(255, 66, 143, 68),
                           ),
                         ),
                       ),
@@ -532,7 +555,7 @@ class _LocationSearchPageState extends State<LocationSearchPage> {
                             ],
                           ),
                           Text(
-                            "${savedaddress[index].floor}, ${savedaddress[index].flatNoName}, ${savedaddress[index].area}, ${savedaddress[index].landmark}, ${savedaddress[index].pincode},\n ${savedaddress[index].phoneNo}",
+                            "${savedaddress[index].floor ?? ""}, ${savedaddress[index].flatNoName}, ${savedaddress[index].area}, ${savedaddress[index].landmark ?? ""}, ${savedaddress[index].pincode},\n ${savedaddress[index].phoneNo}",
                             style: theme.textTheme.bodyMedium!.copyWith(
                                 fontSize: 12,
                                 color: const Color.fromARGB(255, 78, 78, 78),
@@ -555,111 +578,4 @@ class _LocationSearchPageState extends State<LocationSearchPage> {
       ],
     );
   }
-
-  // Future<Map<String, dynamic>?> getPlaceDetailsFromCurrentLocation() async {
-  //   // Replace YOUR_API_KEY with your actual Google Maps API key
-  //   const String apiKey = 'AIzaSyAPLvvnotvyrbkQVynYChnZhyrgSWAjO1k';
-
-  //   try {
-  //     // 1. Get the device's current location using geolocator
-  //     LocationPermission permission = await Geolocator.checkPermission();
-  //     if (permission == LocationPermission.denied) {
-  //       permission = await Geolocator.requestPermission();
-  //       if (permission == LocationPermission.denied) {
-  //         // Location permissions are denied, handle the error appropriately.
-  //         print('Location permissions are denied.');
-  //         return null;
-  //       }
-  //     }
-
-  //     if (permission == LocationPermission.deniedForever) {
-  //       // Permissions are denied forever, handle the error.
-  //       print(
-  //           'Location permissions are permanently denied, we cannot request them.');
-  //       return null;
-  //     }
-
-  //     Position position = await Geolocator.getCurrentPosition(
-  //         desiredAccuracy: LocationAccuracy.high);
-
-  //     // 2. Construct the URL for the Google Maps Geocoding API (Reverse Geocoding)
-  //     final String url =
-  //         'https://maps.googleapis.com/maps/api/geocode/json?latlng=${position.latitude},${position.longitude}&key=$apiKey';
-
-  //     // 3. Make the API request using the http package
-  //     final response = await http.get(Uri.parse(url));
-
-  //     // 4. Check the response status code
-  //     if (response.statusCode == 200) {
-  //       // 5. Decode the JSON response
-  //       final Map<String, dynamic> data = json.decode(response.body);
-
-  //       // 6. Check the API status in the response
-  //       if (data['status'] == 'OK') {
-  //         // 7. Extract the relevant information from the results
-  //         final List<dynamic> results = data['results'];
-  //         if (results.isNotEmpty) {
-  //           // We take the first result as it is the most relevant
-  //           final Map<String, dynamic> firstResult = results[0];
-
-  //           // Create a map to hold the place details.  Customize this as needed.
-  //           Map<String, dynamic> placeDetails = {
-  //             'place_id': firstResult['place_id'],
-  //             'formatted_address': firstResult['formatted_address'],
-  //             // You can add more fields here, for example:
-  //             // 'address_components': firstResult['address_components'],
-  //             // 'geometry': firstResult['geometry'],
-  //             // 'types': firstResult['types'],
-  //           };
-
-  //           print(placeDetails);
-  //           return placeDetails;
-  //         } else {
-  //           print('No results found for the given location.');
-  //           return null; // Or throw an exception if you prefer.
-  //         }
-  //       } else {
-  //         print('Google Maps API error: ${data['status']}');
-  //         return null; // Or throw an exception.
-  //       }
-  //     } else {
-  //       print(
-  //           'Failed to fetch place details. HTTP status code: ${response.statusCode}');
-  //       return null; // Or throw an exception.
-  //     }
-  //   } catch (e) {
-  //     // Handle any exceptions that occur during the process
-  //     print('Error getting place details: $e');
-  //     return null; // Or rethrow the exception if you want the caller to handle it.
-  //   }
-  // }
-
-  // Future<void> _loadPlaceDetails() async {
-  //   try {
-  //     Map<String, dynamic>? placeDetails =
-  //         await getPlaceDetailsFromCurrentLocation();
-  //     if (placeDetails != null) {
-  //       setState(() {
-  //         currentlocationPlaceID =
-  //             placeDetails['place_id'] ?? ""; //added null check.
-  //         currentlocationaddress =
-  //             placeDetails['formatted_address'] ?? ""; //added null check
-  //       });
-  //     } else {
-  //       // Handle the error:  show a message to the user, etc.
-  //       print('Failed to get place details');
-  //       //  You might want to set some default values in the state
-  //       setState(() {
-  //         currentlocationPlaceID = "";
-  //         currentlocationaddress = "";
-  //       });
-  //     }
-  //   } catch (e) {
-  //     print('Exception occurred: $e');
-  //     setState(() {
-  //       currentlocationPlaceID = "";
-  //       currentlocationaddress = "";
-  //     });
-  //   }
-  // }
 }

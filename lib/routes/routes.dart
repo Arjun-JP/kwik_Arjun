@@ -100,6 +100,30 @@ final GoRouter router = GoRouter(
       },
     ),
     GoRoute(
+      path: '/homeWA',
+      pageBuilder: (BuildContext context, GoRouterState state) {
+        return CustomTransitionPage(
+          key: state.pageKey,
+          child: const HomePage(), // Replace with your actual home page widget
+          transitionsBuilder: (BuildContext context,
+              Animation<double> animation,
+              Animation<double> secondaryAnimation,
+              Widget child) {
+            // You can choose from various transition animations here
+            // For example: FadeTransition, SlideTransition, ScaleTransition, etc.
+
+            // Example: Fade in animation
+            return FadeTransition(
+              opacity: CurveTween(curve: Curves.easeInOut).animate(animation),
+              child: child,
+            );
+          },
+          transitionDuration:
+              const Duration(milliseconds: 300), // Adjust duration as needed
+        );
+      },
+    ),
+    GoRoute(
       path: '/productdetails',
       builder: (BuildContext context, GoRouterState state) {
         final extraData = state.extra as Map<String, dynamic>?;

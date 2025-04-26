@@ -3,6 +3,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:kwik/bloc/Address_bloc/Address_bloc.dart';
+import 'package:kwik/bloc/Address_bloc/address_event.dart';
+import 'package:kwik/bloc/Address_bloc/address_state.dart';
 import 'package:kwik/bloc/Super%20Saver%20Page%20Bloc/super_saver_ui_bloc/super_saver_ui_bloc.dart';
 import 'package:kwik/bloc/Super%20Saver%20Page%20Bloc/super_saver_ui_bloc/super_saver_ui_event.dart';
 import 'package:kwik/bloc/Super%20Saver%20Page%20Bloc/super_saver_ui_bloc/super_saver_ui_state.dart';
@@ -11,19 +14,14 @@ import 'package:kwik/bloc/Super%20Saver%20Page%20Bloc/supersaver_model2_bloc/sup
 import 'package:kwik/bloc/Super%20Saver%20Page%20Bloc/supersaver_model4_bloc/supersaver_model4_bloc.dart';
 import 'package:kwik/bloc/home_page_bloc/category_model_10_bloc/category_model_10_bloc.dart';
 import 'package:kwik/bloc/home_page_bloc/category_model_10_bloc/category_model_10_event.dart';
-import 'package:kwik/bloc/home_page_bloc/category_model_2_bloc/category_model2_bloc.dart';
-import 'package:kwik/bloc/home_page_bloc/category_model_5__Bloc/category_model5__bloc.dart';
-import 'package:kwik/bloc/home_page_bloc/category_model_5__Bloc/category_model5__event.dart';
-import 'package:kwik/bloc/home_page_bloc/category_model_9_bloc/category_model_9_bloc.dart';
 import 'package:kwik/bloc/navbar_bloc/navbar_bloc.dart';
+import 'package:kwik/pages/Address_management/location_search_page.dart';
 import 'package:kwik/pages/Offer_Page/Super%20Saver%20Page%20Widgets/supersaver_model1.dart';
 import 'package:kwik/pages/Home_page/widgets/banner_model.dart';
 import 'package:kwik/pages/Home_page/widgets/descriptive_widget.dart';
 import 'package:kwik/pages/Offer_Page/Super%20Saver%20Page%20Widgets/supersaver_model4.dart';
 import 'package:kwik/widgets/navbar/navbar.dart';
-import '../../bloc/home_page_bloc/category_model_1_bloc/category_model1_event.dart';
-import '../../bloc/home_page_bloc/category_model_2_bloc/category_model2_event.dart';
-import '../../bloc/home_page_bloc/category_model_9_bloc/category_model_9_event.dart';
+import 'package:kwik/widgets/shimmer/shimmer.dart';
 import '../../bloc/navbar_bloc/navbar_event.dart';
 import '../../constants/colors.dart';
 import 'Super Saver Page Widgets/supersaver_model2.dart';
@@ -55,10 +53,9 @@ class _OfferPageState extends State<OfferPage> {
   @override
   void initState() {
     super.initState();
-    // Future.microtask(() {
-    //   context.read<SuperSaverUiBloc>().add(FetchUiDataEvent());
-    // });
+
     context.read<SuperSaverUiBloc>().add(FetchUiDataEvent());
+    context.read<AddressBloc>().add(const GetsavedAddressEvent());
   }
 
   @override
@@ -360,42 +357,81 @@ class _OfferPageState extends State<OfferPage> {
                                             ),
                                           ),
                                         ),
-                                        Row(
-                                          children: [
-                                            Text("30 min delivery",
-                                                style: theme
-                                                    .textTheme.titleLarge!
-                                                    .copyWith(
-                                                        fontSize: 24,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        color: AppColors
-                                                            .textColorWhite)),
-                                            IconButton(
-                                                onPressed: () {},
-                                                icon: SvgPicture.asset(
-                                                  "assets/images/appbar_arrow.svg",
-                                                  width: 30,
-                                                  height: 30,
-                                                ))
-                                          ],
+                                        InkWell(
+                                          onTap: () {
+                                            HapticFeedback.mediumImpact();
+                                            Navigator.of(context)
+                                                .push(MaterialPageRoute(
+                                              builder: (context) =>
+                                                  const LocationSearchPage(),
+                                            ));
+                                          },
+                                          child: Row(
+                                            children: [
+                                              Text("30 min delivery",
+                                                  style: theme
+                                                      .textTheme.titleLarge!
+                                                      .copyWith(
+                                                          fontSize: 24,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          color: AppColors
+                                                              .textColorWhite)),
+                                              IconButton(
+                                                  onPressed: () {
+                                                    HapticFeedback
+                                                        .mediumImpact();
+                                                    Navigator.of(context)
+                                                        .push(MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          const LocationSearchPage(),
+                                                    ));
+                                                  },
+                                                  icon: SvgPicture.asset(
+                                                    "assets/images/appbar_arrow.svg",
+                                                    width: 30,
+                                                    height: 30,
+                                                  ))
+                                            ],
+                                          ),
                                         ),
-                                        Row(
-                                          children: [
-                                            SvgPicture.asset(
-                                              "assets/images/addresshome_icon.svg",
-                                              color: Colors.white,
-                                            ),
-                                            Text(
-                                                " J236, Kadampukur village, Newtown...",
-                                                maxLines: 1,
-                                                style: theme
-                                                    .textTheme.bodyMedium!
-                                                    .copyWith(
-                                                        fontSize: 12,
-                                                        color: AppColors
-                                                            .textColorWhite)),
-                                          ],
+                                        InkWell(
+                                          onTap: () {
+                                            HapticFeedback.mediumImpact();
+                                            Navigator.of(context)
+                                                .push(MaterialPageRoute(
+                                              builder: (context) =>
+                                                  const LocationSearchPage(),
+                                            ));
+                                          },
+                                          child: Row(
+                                            spacing: 8,
+                                            children: [
+                                              SvgPicture.asset(
+                                                "assets/images/addresshome_icon.svg",
+                                                color: Colors.white,
+                                              ),
+                                              BlocBuilder<AddressBloc,
+                                                      AddressState>(
+                                                  builder: (context, state) {
+                                                if (state
+                                                    is LocationSearchResults) {
+                                                  return Text(
+                                                      "${state.currentlocationaddress.characters.take(35).string}...",
+                                                      maxLines: 1,
+                                                      style: theme
+                                                          .textTheme.bodyMedium!
+                                                          .copyWith(
+                                                              fontSize: 12,
+                                                              color: AppColors
+                                                                  .backgroundColorWhite));
+                                                } else {
+                                                  return const Shimmer(
+                                                      width: 200, height: 12);
+                                                }
+                                              }),
+                                            ],
+                                          ),
                                         ),
                                       ],
                                     ),

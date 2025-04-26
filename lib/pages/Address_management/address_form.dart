@@ -1,12 +1,14 @@
 // lib/features/address/presentation/pages/address_form_page.dart
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:kwik/bloc/Address_bloc/Address_bloc.dart';
 import 'package:kwik/bloc/Address_bloc/address_event.dart';
 import 'package:kwik/bloc/Address_bloc/address_state.dart';
-import 'package:kwik/constants/colors.dart';
 import 'package:kwik/models/address_model.dart';
 import 'package:kwik/models/order_model.dart' show Location;
 
@@ -24,6 +26,7 @@ class AddressFormPage extends StatefulWidget {
 
 class _AddressFormPageState extends State<AddressFormPage> {
   final _formKey = GlobalKey<FormState>();
+  Map<String, String>? address;
   final _flatNoNameController = TextEditingController();
   final _floorController = TextEditingController();
   final _areaController = TextEditingController();
@@ -37,9 +40,11 @@ class _AddressFormPageState extends State<AddressFormPage> {
     super.initState();
     // Pre-fill area if we have selected address
     final state = context.read<AddressBloc>().state;
-    if (state is LocationSelected) {
-      _areaController.text = state.selectedAddress;
-    }
+
+    _areaController.text =
+        extractAddressDetails(widget.selectedaddress)["area"]!;
+    _pincodeController.text =
+        extractAddressDetails(widget.selectedaddress)["pin"]!;
   }
 
   @override
@@ -56,13 +61,19 @@ class _AddressFormPageState extends State<AddressFormPage> {
   @override
   Widget build(BuildContext context) {
     ThemeData theme = Theme.of(context);
+    Map<String, String> address = extractAddressDetails(widget.selectedaddress);
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
         centerTitle: false,
-        title: Text(
-          'Add more address details',
-          style: theme.textTheme.bodyLarge,
+        title: InkWell(
+          onTap: () {
+            print(widget.selectedaddress);
+          },
+          child: Text(
+            'Add more address details',
+            style: theme.textTheme.bodyLarge,
+          ),
         ),
       ),
       body: BlocListener<AddressBloc, AddressState>(
@@ -354,7 +365,11 @@ class _AddressFormPageState extends State<AddressFormPage> {
                           pincode: _pincodeController.text,
                         );
                         context.read<AddressBloc>().add(AddanewAddressEvent(
-                            address, "67821e97640fb7573f33cba5"));
+                            address, "s5ZdLnYhnVfAramtr7knGduOI872"));
+                        context
+                            .read<AddressBloc>()
+                            .add(const GetsavedAddressEvent());
+                        context.go("/homeWA");
 
                         // } else {
                         //   print("validation faild ${_formKey.currentState}");
@@ -385,4 +400,23 @@ class _AddressFormPageState extends State<AddressFormPage> {
       ),
     );
   }
+}
+
+Map<String, String> extractAddressDetails(String address) {
+  final parts = address.split(',');
+  if (parts.length < 4) {
+    return {"area": "Invalid Address", "pin": ""};
+  }
+
+  final areaParts =
+      parts.sublist(2, parts.length - 2).map((part) => part.trim()).toList();
+  final area = areaParts.join(', ');
+
+  String pin = "";
+  final pinMatch = RegExp(r'\b\d{6}\b').firstMatch(address);
+  if (pinMatch != null) {
+    pin = pinMatch.group(0)!;
+  }
+
+  return {"area": area, "pin": pin};
 }
