@@ -1,0 +1,230 @@
+{
+  "project_info": {
+    "project_number": "760883509884",
+    "project_id": "kwikgroceries-8a11e",
+    "storage_bucket": "kwikgroceries-8a11e.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:760883509884:android:bc9a078d4b64643cc4a7f9",
+        "android_client_info": {
+          "package_name": "com.digi9.kwik"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "760883509884-4to8e72dp414gp6ajdc75s0r8et10mh9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.digi9.kwik",
+            "certificate_hash": "9bbb3186b2189ef16d8f272bdab59362c395cbb4"
+          }
+        },
+        {
+          "client_id": "760883509884-bbv1efcsjh5i9bpccqn8cfotr89u3ekv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA2uFclqIT0ie1gWtqperj9Chzv5JiGH1Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "760883509884-bbv1efcsjh5i9bpccqn8cfotr89u3ekv.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "760883509884-519kb0jlluedheufs4f09o914ev2chou.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.mycompany.kwikdelivery"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:760883509884:android:72dc47cc5a47c01cc4a7f9",
+        "android_client_info": {
+          "package_name": "com.example.kwik"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "760883509884-u41urkmspepe2eg4mho24ohjuivo5usd.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.kwik",
+            "certificate_hash": "9bbb3186b2189ef16d8f272bdab59362c395cbb4"
+          }
+        },
+        {
+          "client_id": "760883509884-bbv1efcsjh5i9bpccqn8cfotr89u3ekv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA2uFclqIT0ie1gWtqperj9Chzv5JiGH1Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "760883509884-bbv1efcsjh5i9bpccqn8cfotr89u3ekv.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "760883509884-519kb0jlluedheufs4f09o914ev2chou.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.mycompany.kwikdelivery"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:760883509884:android:3582310591bf02abc4a7f9",
+        "android_client_info": {
+          "package_name": "com.mycompany.kwik"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "760883509884-8o5h0450nm03kruuqa3g2eme4kuhkvvt.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mycompany.kwik",
+            "certificate_hash": "9bbb3186b2189ef16d8f272bdab59362c395cbb4"
+          }
+        },
+        {
+          "client_id": "760883509884-bbv1efcsjh5i9bpccqn8cfotr89u3ekv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA2uFclqIT0ie1gWtqperj9Chzv5JiGH1Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "760883509884-bbv1efcsjh5i9bpccqn8cfotr89u3ekv.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "760883509884-519kb0jlluedheufs4f09o914ev2chou.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.mycompany.kwikdelivery"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:760883509884:android:026622e6a0fd4317c4a7f9",
+        "android_client_info": {
+          "package_name": "com.mycompany.kwikadmin"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "760883509884-sum6051po1mbnok0lp3o7ctt6r6nt306.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mycompany.kwikadmin",
+            "certificate_hash": "9bbb3186b2189ef16d8f272bdab59362c395cbb4"
+          }
+        },
+        {
+          "client_id": "760883509884-bbv1efcsjh5i9bpccqn8cfotr89u3ekv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA2uFclqIT0ie1gWtqperj9Chzv5JiGH1Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "760883509884-bbv1efcsjh5i9bpccqn8cfotr89u3ekv.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "760883509884-519kb0jlluedheufs4f09o914ev2chou.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.mycompany.kwikdelivery"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:760883509884:android:e9d073363abda9d2c4a7f9",
+        "android_client_info": {
+          "package_name": "com.mycompany.kwikdelivery"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "760883509884-o1dd9383oqrju99h44tl1j0v5a7btp45.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mycompany.kwikdelivery",
+            "certificate_hash": "9bbb3186b2189ef16d8f272bdab59362c395cbb4"
+          }
+        },
+        {
+          "client_id": "760883509884-bbv1efcsjh5i9bpccqn8cfotr89u3ekv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA2uFclqIT0ie1gWtqperj9Chzv5JiGH1Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "760883509884-bbv1efcsjh5i9bpccqn8cfotr89u3ekv.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "760883509884-519kb0jlluedheufs4f09o914ev2chou.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.mycompany.kwikdelivery"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

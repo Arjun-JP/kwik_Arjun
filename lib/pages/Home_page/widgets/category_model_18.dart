@@ -97,6 +97,8 @@ class CategoryModel18 extends StatelessWidget {
                                             offertext2: offertextcolor2,
                                             name:
                                                 state.subCategories[index].name,
+                                            offer: state.subCategories[index]
+                                                .offerPercentage,
                                             textcolor: categorytitlecolor,
                                             imageurl: state
                                                 .subCategories[index].imageUrl,
@@ -169,6 +171,7 @@ class CategoryModel18 extends StatelessWidget {
 
 Widget subcategoryItem(
     {required String name,
+    required String offer,
     required String textcolor,
     required String offerbgcolor,
     required String offertext1,
@@ -217,7 +220,7 @@ Widget subcategoryItem(
                             color: parseColor(offertext1)),
                       ),
                       Text(
-                        "85% OFF",
+                        offer,
                         style: theme.textTheme.bodyMedium!.copyWith(
                             fontSize: 16, color: parseColor(offertext2)),
                       ),

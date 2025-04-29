@@ -4,7 +4,7 @@ import 'package:kwik/models/subcategory_model.dart';
 
 class SubCategoryModelAdapter extends TypeAdapter<SubCategoryModel> {
   @override
-  final typeId = 55; // Ensure this typeId is unique
+  final typeId = 55; // Ensure this typeId matches the model
 
   @override
   SubCategoryModel read(BinaryReader reader) {
@@ -15,6 +15,7 @@ class SubCategoryModelAdapter extends TypeAdapter<SubCategoryModel> {
     final createdTime = DateTime.fromMillisecondsSinceEpoch(reader.readInt());
     final categoryRef = CategoryAdapter().read(reader);
     final isDeleted = reader.readBool();
+    final offerPercentage = reader.readString(); // New field
 
     return SubCategoryModel(
       id: id,
@@ -24,6 +25,7 @@ class SubCategoryModelAdapter extends TypeAdapter<SubCategoryModel> {
       createdTime: createdTime,
       categoryRef: categoryRef,
       isDeleted: isDeleted,
+      offerPercentage: offerPercentage, // Added to constructor
     );
   }
 
@@ -36,5 +38,6 @@ class SubCategoryModelAdapter extends TypeAdapter<SubCategoryModel> {
     writer.writeInt(obj.createdTime.millisecondsSinceEpoch);
     CategoryAdapter().write(writer, obj.categoryRef);
     writer.writeBool(obj.isDeleted);
+    writer.writeString(obj.offerPercentage); // New field
   }
 }

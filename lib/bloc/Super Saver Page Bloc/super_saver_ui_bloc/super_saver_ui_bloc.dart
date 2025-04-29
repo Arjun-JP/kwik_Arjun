@@ -41,6 +41,7 @@ class SuperSaverUiBloc extends Bloc<SuperSaverUiEvent, SuperSaverUiState> {
       ClearUiCacheEvent event, Emitter<SuperSaverUiState> emit) async {
     var box = await Hive.openBox('Supersaver_ui_cache_box');
     await box.delete(_cacheKey);
+    await uiRepository.clearCache();
     emit(UiInitial()); // Reset state
   }
 }

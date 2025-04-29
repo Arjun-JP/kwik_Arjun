@@ -142,21 +142,24 @@ class _AddadressState extends State<MapPage> {
 
   Widget _buildSearchBar() {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 15),
+      padding: const EdgeInsets.symmetric(horizontal: 10),
       child: TextField(
         controller: _searchController,
         decoration: InputDecoration(
           hintText: "Search location",
           fillColor: Colors.white,
+          hintStyle: const TextStyle(
+              fontWeight: FontWeight.w500,
+              color: Color.fromARGB(255, 117, 117, 117)),
           filled: true,
           prefixIcon: InkWell(
             onTap: () => Navigator.of(context).pop(),
-            child: const Icon(
-              Icons.arrow_back_ios_rounded,
-            ),
+            child: const Icon(Icons.arrow_back_ios_rounded,
+                color: Color.fromARGB(255, 117, 117, 117)),
           ),
           suffixIcon: IconButton(
-            icon: const Icon(Icons.clear),
+            icon: const Icon(Icons.clear,
+                color: Color.fromARGB(255, 117, 117, 117)),
             onPressed: () {
               _searchController.clear();
               setState(() {
@@ -167,18 +170,18 @@ class _AddadressState extends State<MapPage> {
           ),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
-            borderSide:
-                const BorderSide(color: AppColors.buttonColorOrange, width: .5),
+            borderSide: const BorderSide(
+                color: Color.fromARGB(255, 1, 170, 97), width: .5),
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
-            borderSide:
-                const BorderSide(color: AppColors.buttonColorOrange, width: .5),
+            borderSide: const BorderSide(
+                color: Color.fromARGB(255, 1, 170, 97), width: .5),
           ),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
-            borderSide:
-                const BorderSide(color: AppColors.buttonColorOrange, width: .5),
+            borderSide: const BorderSide(
+                color: Color.fromARGB(255, 1, 170, 97), width: .5),
           ),
         ),
         onChanged: (value) {

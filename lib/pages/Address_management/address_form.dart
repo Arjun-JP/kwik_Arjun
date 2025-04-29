@@ -109,7 +109,7 @@ class _AddressFormPageState extends State<AddressFormPage> {
                               ["Home", "Work", "Hotel", "Other"].map((type) {
                             return InkWell(
                               onTap: () {
-                                HapticFeedback.lightImpact;
+                                HapticFeedback.mediumImpact();
                                 setState(() {
                                   _addressType = type;
                                 });

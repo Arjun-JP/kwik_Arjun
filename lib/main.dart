@@ -9,6 +9,7 @@ import 'package:kwik/bloc/Address_bloc/Address_bloc.dart';
 import 'package:kwik/bloc/Auth_bloc/auth_bloc.dart';
 import 'package:kwik/bloc/Cart_bloc/cart_bloc.dart';
 import 'package:kwik/bloc/Categories%20Page%20Bloc/category_model_bloc/category_model_bloc.dart';
+import 'package:kwik/bloc/Order_management.dart/order_management_bloc.dart';
 import 'package:kwik/bloc/Search_bloc/Search_bloc.dart';
 import 'package:kwik/bloc/Super%20Saver%20Page%20Bloc/super_saver_ui_bloc/super_saver_ui_bloc.dart';
 import 'package:kwik/bloc/all_sub_category_bloc/all_sub_category_bloc.dart';
@@ -65,6 +66,7 @@ import 'package:kwik/repositories/get_app_data_repo.dart';
 import 'package:kwik/repositories/googlemap_service.dart';
 import 'package:kwik/repositories/home_Ui_repository.dart';
 import 'package:kwik/repositories/home_category_repository.dart';
+import 'package:kwik/repositories/manage_order_repo.dart';
 import 'package:kwik/repositories/order_deiails_repo.dart';
 import 'package:kwik/repositories/order_history_repo.dart';
 import 'package:kwik/repositories/recommended_product_repo.dart';
@@ -73,7 +75,7 @@ import 'package:kwik/repositories/sub_category_product_repository.dart';
 import 'package:kwik/repositories/subcategory_product_repo.dart';
 import 'package:kwik/repositories/super_saver_ui_repo.dart';
 import 'package:kwik/routes/routes.dart';
-import 'package:kwik/widgets/Error_widget.dart';
+import 'package:kwik/pages/Error_pages/Error_widget.dart';
 import 'bloc/Categories Page Bloc/categories_UI_bloc/categories_ui_bloc.dart';
 import 'bloc/Categories Page Bloc/categories_page_model1/categories_page_model1_bloc.dart';
 import 'bloc/Categories Page Bloc/categories_page_model2/categories_page_model2_bloc.dart';
@@ -414,6 +416,11 @@ class _MyAppState extends State<MyApp> {
         BlocProvider<AddressBloc>(
             create: (_) =>
                 AddressBloc(GoogleMapsService(), AddressRepository())),
+
+        //order managemnent bloc
+        BlocProvider<OrderManagementBloc>(
+            create: (_) => OrderManagementBloc(
+                orderRepository: OrderManagementRepository())),
       ],
       child: MaterialApp.router(
         builder: (context, child) {

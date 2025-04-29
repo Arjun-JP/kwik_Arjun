@@ -137,9 +137,7 @@ class _SubcategoryProductsPageState extends State<SubcategoryProductsPage> {
                   ),
                   const SizedBox(height: 20),
                   const DescriptiveWidget(
-                    textColor: '989898',
-                    info: 'Delivery',
-                    title: "Always on Your Time",
+                    title: "Skip the store, we're at your door!",
                     logo:
                         "assets/images/Screenshot 2025-01-31 at 6.20.37 PM.jpeg",
                     showcategory: true,

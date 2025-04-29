@@ -126,6 +126,8 @@ class CategoryModel14 extends StatelessWidget {
                                                     name: filtredsubcat![index]
                                                         .name,
                                                     bgcolor: "00FFFFFF",
+                                                    offer: filtredsubcat![index]
+                                                        .offerPercentage,
                                                     textcolor: subcatColor,
                                                     imageurl:
                                                         filtredsubcat[index]
@@ -299,6 +301,7 @@ class CategoryModel14 extends StatelessWidget {
 
 Widget subcategoryItem(
     {required String name,
+    required String offer,
     required String bgcolor,
     required String textcolor,
     required String imageurl,

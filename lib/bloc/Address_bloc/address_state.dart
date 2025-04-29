@@ -3,7 +3,8 @@
 import 'package:equatable/equatable.dart';
 import 'package:kwik/models/address_model.dart' as AddressModel;
 import 'package:kwik/models/googlemap_place_model.dart';
-import 'package:kwik/models/order_model.dart';
+import 'package:kwik/models/order_model.dart' show Location;
+import 'package:kwik/models/warehouse_model.dart';
 
 abstract class AddressState extends Equatable {
   const AddressState();
@@ -22,9 +23,10 @@ class LocationSearchResults extends AddressState {
   final String currentplaceID;
   final String currentlocationaddress;
   AddressModel.AddressModel? selecteaddress;
+  final WarehouseModel warehouse;
 
   LocationSearchResults(this.placelist, this.addresslist, this.currentplaceID,
-      this.currentlocationaddress, this.selecteaddress);
+      this.currentlocationaddress, this.selecteaddress, this.warehouse);
 
   @override
   List<Object> get props => [
@@ -32,6 +34,7 @@ class LocationSearchResults extends AddressState {
         addresslist,
         currentplaceID,
         currentlocationaddress,
+        warehouse
       ];
 }
 
