@@ -16,6 +16,18 @@ class GetsavedAddressEvent extends AddressEvent {
   List<Object> get props => [];
 }
 
+class GetWarehousedataEvent extends AddressEvent {
+  final String pincode;
+  final String destinationLat;
+  final String destinationLon;
+
+  const GetWarehousedataEvent(
+      this.pincode, this.destinationLat, this.destinationLon);
+
+  @override
+  List<Object> get props => [pincode, destinationLat, destinationLon];
+}
+
 class SearchLocation extends AddressEvent {
   final String query;
 

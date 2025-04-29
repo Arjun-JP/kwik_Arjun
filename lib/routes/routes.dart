@@ -9,6 +9,7 @@ import 'package:kwik/pages/Home_page/home_Page.dart';
 import 'package:kwik/pages/LoginPage/login_page.dart';
 import 'package:kwik/pages/Offer_Page/offer_page.dart';
 import 'package:kwik/pages/OnboardingScreen/onboarding_screen.dart';
+import 'package:kwik/pages/Order_status_page/order_placed_page.dart';
 import 'package:kwik/pages/OtpVerificationPage/otp_verification_page.dart';
 import 'package:kwik/pages/PrivacyPolicy_Page/PrivacyPolicyPage.dart';
 import 'package:kwik/pages/Search%20page/search_page.dart';
@@ -253,6 +254,12 @@ final GoRouter router = GoRouter(
           subcategoryid: subcategoryId,
           subcatname: subcatName,
         );
+      },
+    ),
+    GoRoute(
+      path: '/order-success', // Define the path for your order success page
+      builder: (BuildContext context, GoRouterState state) {
+        return const OrderSuccessPage();
       },
     ),
   ],

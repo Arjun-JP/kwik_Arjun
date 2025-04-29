@@ -56,18 +56,12 @@ class OrderRepository {
 
   Future<bool> orderagain(
       {required String userId, required String orderID}) async {
-    print(orderID);
-    print(userId);
     try {
       final response = await http.post(Uri.parse('$baseUrl/users/orderAgain'),
           headers: headers,
           body: jsonEncode({"orderId": orderID, "userId": userId}));
-      print(response.statusCode);
-      print(response.body);
-      if (response.statusCode == 200) {
-        final decoded = json.decode(response.body);
 
-        print(decoded);
+      if (response.statusCode == 200) {
         return true;
       } else {
         throw HttpException(

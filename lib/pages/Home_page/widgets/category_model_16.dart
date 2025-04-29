@@ -107,6 +107,8 @@ class CategoryModel16 extends StatelessWidget {
                                           offertext1: offertext1,
                                           offertext2: offertext2,
                                           name: filtredsubcat[index].name,
+                                          offer: filtredsubcat[index]
+                                              .offerPercentage,
                                           bgcolor: categorybgcolor,
                                           textcolor: subcattitleColor,
                                           imageurl:
@@ -142,6 +144,7 @@ Widget subcategoryItem(
     required String offertext2,
     required String categorybgcolor,
     required ThemeData theme,
+    required String offer,
     required String imageurl}) {
   return Column(
     mainAxisSize: MainAxisSize.max,
@@ -163,6 +166,8 @@ Widget subcategoryItem(
             Align(
               alignment: Alignment.topCenter,
               child: Container(
+                margin: const EdgeInsets.symmetric(horizontal: 15),
+                width: double.infinity,
                 decoration: BoxDecoration(
                     color: parseColor(offerbgcolor),
                     borderRadius: const BorderRadius.only(
@@ -183,7 +188,7 @@ Widget subcategoryItem(
                             color: parseColor(offertext1)),
                       ),
                       Text(
-                        "85% OFF",
+                        offer,
                         style: theme.textTheme.bodyMedium!.copyWith(
                             fontSize: 12, color: parseColor(offertext2)),
                       ),

@@ -133,13 +133,13 @@ class _LocationSearchPageState extends State<LocationSearchPage> {
                                       borderRadius: BorderRadius.circular(10),
                                       borderSide: const BorderSide(
                                         width: .1,
-                                        color: Color.fromARGB(255, 255, 94, 0),
+                                        color: Color.fromARGB(255, 66, 143, 68),
                                       ),
                                     ),
                                     enabledBorder: OutlineInputBorder(
                                       borderSide: const BorderSide(
                                         width: .1,
-                                        color: Color.fromARGB(255, 255, 94, 0),
+                                        color: Color.fromARGB(255, 66, 143, 68),
                                       ),
                                       borderRadius: BorderRadius.circular(10),
                                     ),

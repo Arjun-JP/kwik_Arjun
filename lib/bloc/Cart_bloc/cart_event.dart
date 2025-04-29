@@ -26,6 +26,50 @@ class AddToCart extends CartEvent {
       [userId, productRef, variantId, pincode, cartProduct];
 }
 
+class AddToWishlistFromcart extends CartEvent {
+  final String userId;
+  final String productref;
+
+  final String variationID;
+
+  AddToWishlistFromcart(
+      {required this.userId,
+      required this.productref,
+      required this.variationID});
+
+  @override
+  List<Object> get props => [userId, productref, variationID];
+}
+
+class AddToCartFromWishlist extends CartEvent {
+  final String userId;
+  final String wishlistID;
+
+  final String pincode;
+
+  AddToCartFromWishlist({
+    required this.userId,
+    required this.wishlistID,
+    required this.pincode,
+  });
+
+  @override
+  List<Object> get props => [userId, wishlistID, pincode];
+}
+
+class RemoveFromWishlist extends CartEvent {
+  final String userId;
+  final String wishlistID;
+
+  RemoveFromWishlist({
+    required this.userId,
+    required this.wishlistID,
+  });
+
+  @override
+  List<Object> get props => [userId, wishlistID];
+}
+
 class IncreaseCartQuantity extends CartEvent {
   final String userId;
   final String productRef;

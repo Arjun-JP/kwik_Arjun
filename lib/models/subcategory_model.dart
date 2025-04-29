@@ -24,7 +24,10 @@ class SubCategoryModel {
   final Category categoryRef; // Category reference as an object
 
   @HiveField(6)
-  final bool isDeleted; // Added isDeleted field
+  final bool isDeleted;
+
+  @HiveField(7) // New field added here
+  final String offerPercentage;
 
   SubCategoryModel({
     required this.id,
@@ -34,6 +37,7 @@ class SubCategoryModel {
     required this.createdTime,
     required this.categoryRef,
     required this.isDeleted,
+    required this.offerPercentage, // Added to constructor
   });
 
   factory SubCategoryModel.fromJson(Map<String, dynamic> json) {
@@ -46,8 +50,10 @@ class SubCategoryModel {
           DateTime.tryParse(json['sub_created_time'] ?? '') ?? DateTime.now(),
       categoryRef: json['category_ref'] != null
           ? Category.fromJson(json['category_ref'])
-          : Category.empty(), // Convert JSON to CategoryModel
+          : Category.empty(),
       isDeleted: json['isDeleted'] ?? false,
+      offerPercentage: json['offer_percentage']?.toString() ??
+          '0', // Handle null and convert to string
     );
   }
 
@@ -58,8 +64,9 @@ class SubCategoryModel {
       'sub_category_des': description,
       'sub_category_image': imageUrl,
       'sub_created_time': createdTime.toIso8601String(),
-      'category_ref': categoryRef.toJson(), // Convert CategoryModel to JSON
+      'category_ref': categoryRef.toJson(),
       'isDeleted': isDeleted,
+      'offer_percentage': offerPercentage, // Added to JSON serialization
     };
   }
 
@@ -70,8 +77,9 @@ class SubCategoryModel {
       description: '',
       imageUrl: '',
       createdTime: DateTime.now(),
-      categoryRef: Category.empty(), // Use an empty CategoryModel instance
+      categoryRef: Category.empty(),
       isDeleted: false,
+      offerPercentage: '0', // Default value for empty
     );
   }
 }

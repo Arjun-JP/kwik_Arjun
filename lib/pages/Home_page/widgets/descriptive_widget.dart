@@ -2,24 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:kwik/constants/colors.dart';
 
 class DescriptiveWidget extends StatelessWidget {
-  final String info;
   final String logo;
   final String title;
-  final String textColor;
+
   final bool showcategory;
   const DescriptiveWidget(
       {super.key,
-      required this.info,
       required this.logo,
       required this.title,
-      required this.textColor,
       required this.showcategory});
 
   @override
   Widget build(BuildContext context) {
+    ThemeData theme = Theme.of(context);
     return showcategory
         ? Container(
-            padding: const EdgeInsets.all(20),
+            padding:
+                const EdgeInsets.only(top: 25, left: 15, right: 15, bottom: 50),
             width: double.infinity,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -29,27 +28,23 @@ class DescriptiveWidget extends StatelessWidget {
                   logo,
                   height: 80,
                 ),
-                Text(
-                  info,
-                  style: TextStyle(
-                      fontSize: 70,
-                      fontWeight: FontWeight.w800,
-                      color: parseColor(textColor)),
-                ),
+                const SizedBox(height: 15),
                 Text(
                   title,
-                  style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w600,
-                      color: parseColor(textColor)),
+                  style: theme.textTheme.bodyLarge!.copyWith(
+                      fontSize: 40,
+                      letterSpacing: .01,
+                      wordSpacing: 2,
+                      fontWeight: FontWeight.w800,
+                      height: 1.15,
+                      color: parseColor("cbced9")),
                 ),
-                Text(
-                  "Kwik Grocery",
-                  style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w600,
-                      color: parseColor(textColor)),
-                ),
+                const SizedBox(height: 10),
+                Text("Kwik Grocery",
+                    style: theme.textTheme.bodyLarge!.copyWith(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w900,
+                        color: parseColor("cbced9"))),
                 const SizedBox(height: 100)
               ],
             ),

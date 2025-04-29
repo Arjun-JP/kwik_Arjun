@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:kwik/models/address_model.dart';
+import 'package:kwik/models/warehouse_model.dart';
 
 class AddressRepository {
   String baseUrl = "https://kwik-backend.vercel.app";
@@ -141,9 +142,13 @@ class AddressRepository {
     }
   }
 
-  Future<void> getwarehousedetails(
+  Future<WarehouseModel> getwarehousedetails(
       String pincode, String destinationLat, String destinationLon) async {
     final url = Uri.parse('$baseUrl/warehouse/warehouseServiceStatus');
+    print("api called inside api call repo");
+    print(destinationLat);
+    print(destinationLon);
+    print(pincode);
     try {
       final response = await http.post(
         url,
@@ -154,12 +159,35 @@ class AddressRepository {
           "destinationLon": destinationLon
         }),
       );
+      print(response.statusCode);
+      print(response.body);
 
       if (response.statusCode == 200) {
-        throw Exception('Failed to add address');
+        final responseData = json.decode(response.body);
+
+        // Add comprehensive null checks
+        if (responseData == null) {
+          throw Exception('Error: Empty response data');
+        }
+        if (responseData['warehouse'] == null) {
+          throw Exception('Error: Missing "warehouse" in response');
+        }
+
+        final warehouseData = responseData['warehouse'];
+        print('Warehouse Data: $warehouseData'); // Debug print
+
+        if (warehouseData['warehouse_location'] == null) {
+          throw Exception(
+              'Error: Missing "warehouse_location" in warehouse data');
+        }
+
+        return WarehouseModel.fromJson(warehouseData);
+      } else {
+        throw Exception(
+            'Failed to get warehouse details: Status code ${response.statusCode}');
       }
     } catch (e) {
-      throw Exception("Error adding address: $e");
+      throw Exception("Error getting warehouse details: $e");
     }
   }
 }

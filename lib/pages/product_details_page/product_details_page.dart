@@ -213,7 +213,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                         onTap: () {},
                         child: Image.network(
                           widget.product.productImages[index],
-                          fit: BoxFit.cover,
+                          fit: BoxFit.contain,
                           width: double.infinity,
                         ),
                       ),

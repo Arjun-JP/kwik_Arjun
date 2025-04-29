@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -17,6 +18,9 @@ class CartBloc extends Bloc<CartEvent, CartState> {
     on<IncreaseCartQuantity>(_onIncreaseQuantity);
     on<DecreaseCartQuantity>(_onDecreaseQuantity);
     on<SyncCartWithServer>(_onSyncCartWithServer);
+    on<AddToCartFromWishlist>(_onAddtoCartfromWishlist);
+    on<RemoveFromWishlist>(_onRemoveFromWishlist);
+    on<AddToWishlistFromcart>(_onAddtowishlistfromcart);
   }
 
   Future<void> _onAddToCart(AddToCart event, Emitter<CartState> emit) async {
@@ -31,7 +35,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
       if (state is CartUpdated) {
         final currentState = state as CartUpdated;
         List<CartProduct> updatedCartItems = List.from(currentState.cartItems);
-
+        List<WishlistItem> wishlist = currentState.wishlist;
         int existingIndex = updatedCartItems.indexWhere((item) =>
             item.productRef.id == event.productRef &&
             item.variant.id == event.variantId);
@@ -48,7 +52,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
         // Emit updated state
         emit(CartUpdated(
             message: message,
-            wishlist: [],
+            wishlist: wishlist,
             cartItems: updatedCartItems,
             charges: currentState.charges));
       } else {
@@ -86,6 +90,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
       // Get the current state without resetting it to CartLoading()
       if (state is CartUpdated) {
         final currentState = state as CartUpdated;
+        List<WishlistItem> wishlist = currentState.wishlist;
         List<CartProduct> updatedCartItems = List.from(currentState.cartItems);
 
         int existingIndex = updatedCartItems.indexWhere((item) =>
@@ -101,7 +106,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
         // Emit only CartUpdated without CartLoading
         emit(CartUpdated(
             message: message,
-            wishlist: [],
+            wishlist: wishlist,
             cartItems: updatedCartItems,
             charges: currentState.charges));
       }
@@ -122,6 +127,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
 
       if (state is CartUpdated) {
         final currentState = state as CartUpdated;
+        List<WishlistItem> wishlist = currentState.wishlist;
         List<CartProduct> updatedCartItems = List.from(currentState.cartItems);
 
         int existingIndex = updatedCartItems.indexWhere((item) =>
@@ -142,7 +148,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
 
         emit(CartUpdated(
             message: message,
-            wishlist: [],
+            wishlist: wishlist,
             cartItems: updatedCartItems,
             charges: currentState.charges));
       }
@@ -228,6 +234,55 @@ class CartBloc extends Bloc<CartEvent, CartState> {
       ));
     } catch (e) {
       emit(CartError(message: "Error syncing cart: ${e.toString()}"));
+    }
+  }
+
+  Future<void> _onAddtoCartfromWishlist(
+      AddToCartFromWishlist event, Emitter<CartState> emit) async {
+    try {
+      await cartRepository.addToCartfromwishlist(
+          pincode: event.pincode,
+          userId: event.userId,
+          wishlistitemid: event.wishlistID);
+    } catch (error) {
+      print("error adding product to cartfromwish list ");
+    }
+  }
+
+  Future<void> _onRemoveFromWishlist(
+      RemoveFromWishlist event, Emitter<CartState> emit) async {
+    try {
+      await cartRepository.removeProductfromwishlist(
+          userId: event.userId, wishlistitemid: event.wishlistID);
+    } catch (error) {
+      print("error adding product to cartfromwish list ");
+    }
+  }
+
+  Future<void> _onAddtowishlistfromcart(
+      AddToWishlistFromcart event, Emitter<CartState> emit) async {
+    try {
+      await cartRepository.addtowishlist(
+          userId: event.userId,
+          productRef: event.productref,
+          varient: event.variationID);
+
+      if (state is CartUpdated) {
+        final currentState = state as CartUpdated;
+        List<CartProduct> updatedcartproducts = currentState.cartItems
+            .where((element) =>
+                element.productRef.id != event.productref ||
+                element.variant.id != event.variationID)
+            .toList();
+        // List<WishlistItem> updatedwishlistitem=currentState.wishlist.add(WishlistItem(productRef: currentState.cartItems.where((element) => element.productRef.id==event.productref&&element.variant.id==event.variationID).first.productRef, variantId:event.variationID , id: id))
+        emit(CartUpdated(
+            wishlist: currentState.wishlist,
+            message: "message",
+            cartItems: updatedcartproducts,
+            charges: currentState.charges));
+      }
+    } catch (error) {
+      print("Error adfding prodct to wishlist");
     }
   }
 }

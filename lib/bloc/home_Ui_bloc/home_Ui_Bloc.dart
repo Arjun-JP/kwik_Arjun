@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:math';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive/hive.dart';
@@ -12,23 +11,22 @@ class HomeUiBloc extends Bloc<HomeUiEvent, HomeUiState> {
     "chocolate",
     "ice cream",
     "cookies",
-    "coffee",
-    "snacks",
+    "Vegitable",
+    "coffee powder",
     "chocolate",
     "ice cream",
     "cookies",
-    "coffee",
-    "snacks",
+    "Vegitable",
+    "coffee powder",
     "chocolate",
     "ice cream",
     "cookies",
-    "coffee",
-    "snacks",
+    "coffee powder",
     "chocolate",
     "ice cream",
     "cookies",
-    "coffee",
-    "snacks"
+    "Vegitable",
+    "coffee powder",
   ];
   var random = Random();
 

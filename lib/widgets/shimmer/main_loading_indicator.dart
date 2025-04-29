@@ -1,36 +1,57 @@
 import 'package:flutter/material.dart';
+import 'dart:async';
 
-class AnimatedAdvertisementLoadingIndicator extends StatefulWidget {
-  const AnimatedAdvertisementLoadingIndicator({super.key});
+class MainLoadingIndicator extends StatefulWidget {
+  final Duration splashDuration;
+
+  const MainLoadingIndicator({
+    Key? key,
+    this.splashDuration = const Duration(seconds: 3),
+  }) : super(key: key);
 
   @override
-  AnimatedAdvertisementLoadingIndicatorState createState() =>
-      AnimatedAdvertisementLoadingIndicatorState();
+  _MainLoadingIndicatorState createState() => _MainLoadingIndicatorState();
 }
 
-class AnimatedAdvertisementLoadingIndicatorState
-    extends State<AnimatedAdvertisementLoadingIndicator>
+class _MainLoadingIndicatorState extends State<MainLoadingIndicator>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
-  late Animation<int> _animation;
-  final List<String> _imagePaths = [
-    'https://firebasestorage.googleapis.com/v0/b/kwikgroceries-8a11e.firebasestorage.app/o/Group%201000001399%20(1).png?alt=media&token=968885e6-8fa4-45c4-81e4-33723a7e6366', // Replace with your image paths
-    'https://firebasestorage.googleapis.com/v0/b/kwikgroceries-8a11e.firebasestorage.app/o/Group%201000001399%20(1).png?alt=media&token=968885e6-8fa4-45c4-81e4-33723a7e6366',
-    'https://firebasestorage.googleapis.com/v0/b/kwikgroceries-8a11e.firebasestorage.app/o/Group%201000001399%20(1).png?alt=media&token=968885e6-8fa4-45c4-81e4-33723a7e6366',
-  ];
+  late Animation<double> _opacityAnimation;
+  bool _showLoading = false;
 
   @override
   void initState() {
     super.initState();
     _controller = AnimationController(
+      duration: const Duration(milliseconds: 1000),
       vsync: this,
-      duration:
-          const Duration(milliseconds: 1500), // 1.5 seconds for full cycle
-    )..repeat();
-
-    _animation = IntTween(begin: 0, end: _imagePaths.length - 1).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.linear),
     );
+
+    _opacityAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: Curves.easeIn,
+      ),
+    );
+
+    // Start with logo visible
+    _controller.forward();
+
+    // After splash duration, navigate to next screen
+    Timer(widget.splashDuration, () {
+      if (mounted) {
+        // Navigator.of(context).pushReplacement(
+        //   MaterialPageRoute(builder: (_) => widget.nextScreen),
+        // );
+      }
+    });
+
+    // Show loading text after 500ms
+    Timer(const Duration(milliseconds: 500), () {
+      if (mounted) {
+        setState(() => _showLoading = true);
+      }
+    });
   }
 
   @override
@@ -41,22 +62,35 @@ class AnimatedAdvertisementLoadingIndicatorState
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          const CircularProgressIndicator(), // Background loading indicator
-          AnimatedBuilder(
-            animation: _animation,
-            builder: (context, child) {
-              return Image.network(
-                _imagePaths[_animation.value],
-                height: 50, // Adjust image size as needed
-                width: 50,
-              );
-            },
-          ),
-        ],
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            FadeTransition(
+              opacity: _opacityAnimation,
+              child: Image.asset(
+                'assets/images/Screenshot 2025-01-31 at 6.20.37 PM.jpeg', // Your logo asset
+                width: 120,
+                height: 120,
+              ),
+            ),
+            const SizedBox(height: 24),
+            if (_showLoading)
+              FadeTransition(
+                opacity: _opacityAnimation,
+                child: const Text(
+                  'Skip the store, we\'re at your door!',
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Color.fromARGB(255, 144, 144, 144), // Blinkit green
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+          ],
+        ),
       ),
     );
   }

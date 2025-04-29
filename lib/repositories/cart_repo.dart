@@ -41,6 +41,72 @@ class CartRepository {
     }
   }
 
+  Future<void> addToCartfromwishlist({
+    required String userId,
+    required String wishlistitemid,
+    required String pincode,
+  }) async {
+    final url = Uri.parse("$baseUrl/move/whislistToCart");
+
+    final Map<String, dynamic> body = {
+      "whishlist_itemId": wishlistitemid,
+      "user_ref": userId,
+      "pincode": pincode
+    };
+
+    try {
+      final response = await http.post(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          "api_Key": "arjun",
+          "api_Secret": "digi9",
+        },
+        body: jsonEncode(body),
+      );
+      print(body);
+      print(response.statusCode);
+      print(response.body);
+      if (response.statusCode == 200) {
+        print("Product added to cart from wish list");
+      } else {
+        throw Exception("Failed to add product to cart: ${response.body}");
+      }
+    } catch (e) {
+      throw Exception("Error adding to cart");
+    }
+  }
+
+  Future<void> removeProductfromwishlist({
+    required String userId,
+    required String wishlistitemid,
+  }) async {
+    final url = Uri.parse("$baseUrl/remove/whislist");
+
+    final Map<String, dynamic> body = {
+      "whishlist_itemId": wishlistitemid,
+      "user_ref": userId,
+    };
+
+    try {
+      final response = await http.put(
+        url,
+        headers: headers,
+        body: jsonEncode(body),
+      );
+      print(body);
+      print(response.statusCode);
+      print(response.body);
+      if (response.statusCode == 200) {
+        print("Product added to cart from wish list");
+      } else {
+        throw Exception("Failed to add product to cart: ${response.body}");
+      }
+    } catch (e) {
+      throw Exception("Error adding to cart");
+    }
+  }
+
   Future<String> increaseQuantity({
     required String userId,
     required String productRef,
@@ -176,7 +242,9 @@ class CartRepository {
       {required String userId,
       required String productRef,
       required String varient}) async {
-    final url = Uri.parse("$baseUrl/users/add/whislist");
+    print(productRef);
+    print(varient);
+    final url = Uri.parse("$baseUrl/add/whislist");
     try {
       final response = await http.post(url,
           headers: headers,

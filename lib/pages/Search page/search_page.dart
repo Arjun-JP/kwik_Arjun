@@ -393,7 +393,7 @@ class _SearchPageState extends State<SearchPage> {
                     offerbgcolor: "E3520D",
                     buttonBgColor: "FFFFFF",
                     productnamecolor: "000000",
-                    unitbgcolor: "FFFFFF",
+                    unitbgcolor: "00FFFFFF",
                     subcategoryRef: product.subCategoryRef.first.id,
                     context: context,
                   ),
@@ -406,33 +406,3 @@ class _SearchPageState extends State<SearchPage> {
     );
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-// SizedBox(
-//               height: 278,
-//               child: ProductItem(
-//                 mrpColor: "A19DA3",
-//                 offertextcolor: "FFFFFF",
-//                 productBgColor: "FFFFFF",
-//                 sellingPriceColor: "233D4D",
-//                 buttontextcolor: "E23338",
-//                 unitTextcolor: "A19DA3",
-//                 product: product,
-//                 offerbgcolor: "E3520D",
-//                 buttonBgColor: "FFFFFF",
-//                 productnamecolor: "000000",
-//                 unitbgcolor: "FFFFFF",
-//                 subcategoryRef: product.subCategoryRef.first.id,
-//                 context: context,
-//               ),
-//             );

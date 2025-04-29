@@ -42,7 +42,7 @@ class CategoriesUiBloc extends Bloc<CategoriesUiEvent, CategoriesUiState> {
       ClearCatUiCacheEvent event, Emitter<CategoriesUiState> emit) async {
     var box = await Hive.openBox('cat_ui_cache_box');
     await box.delete(_cacheKey);
-
+    await catUiRepository.clearCache();
     emit(CategoriesUiInitial()); // Reset state
   }
 }
