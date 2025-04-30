@@ -64,8 +64,10 @@ class DefaultFirebaseOptions {
     messagingSenderId: '760883509884',
     projectId: 'kwikgroceries-8a11e',
     storageBucket: 'kwikgroceries-8a11e.firebasestorage.app',
-    androidClientId: '760883509884-4to8e72dp414gp6ajdc75s0r8et10mh9.apps.googleusercontent.com',
-    iosClientId: '760883509884-qvn353fqq34pfq5mhk8mq2cj7r958o4d.apps.googleusercontent.com',
+    androidClientId:
+        '760883509884-4to8e72dp414gp6ajdc75s0r8et10mh9.apps.googleusercontent.com',
+    iosClientId:
+        '760883509884-qvn353fqq34pfq5mhk8mq2cj7r958o4d.apps.googleusercontent.com',
     iosBundleId: 'com.digi9.kwik',
   );
 
@@ -75,8 +77,10 @@ class DefaultFirebaseOptions {
     messagingSenderId: '760883509884',
     projectId: 'kwikgroceries-8a11e',
     storageBucket: 'kwikgroceries-8a11e.firebasestorage.app',
-    androidClientId: '760883509884-4to8e72dp414gp6ajdc75s0r8et10mh9.apps.googleusercontent.com',
-    iosClientId: '760883509884-qvn353fqq34pfq5mhk8mq2cj7r958o4d.apps.googleusercontent.com',
+    androidClientId:
+        '760883509884-4to8e72dp414gp6ajdc75s0r8et10mh9.apps.googleusercontent.com',
+    iosClientId:
+        '760883509884-qvn353fqq34pfq5mhk8mq2cj7r958o4d.apps.googleusercontent.com',
     iosBundleId: 'com.digi9.kwik',
   );
 
@@ -89,5 +93,4 @@ class DefaultFirebaseOptions {
     storageBucket: 'kwikgroceries-8a11e.firebasestorage.app',
     measurementId: 'G-QMD6Q2ZDXF',
   );
-
 }

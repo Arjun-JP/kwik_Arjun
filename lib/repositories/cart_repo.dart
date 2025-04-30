@@ -1,5 +1,9 @@
 import 'dart:convert';
+import 'dart:ffi';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:kwik/main.dart';
+import 'package:kwik/widgets/custom_snackbar.dart';
 
 class CartRepository {
   final String baseUrl = "https://kwik-backend.vercel.app/users";
@@ -10,7 +14,7 @@ class CartRepository {
     "api_Secret": "digi9",
   };
 
-  Future<String> addToCart({
+  Future<bool> addToCart({
     required String userId,
     required String productRef,
     required String variant,
@@ -31,10 +35,12 @@ class CartRepository {
         headers: headers,
         body: jsonEncode(body),
       );
+
       if (response.statusCode == 201) {
-        return "Product added to cart";
+        return true;
       } else {
-        throw Exception("Failed to add product to cart: ${response.body}");
+        CustomSnackBars.showLimitedQuantityWarning();
+        return false;
       }
     } catch (e) {
       throw Exception("Error adding to cart");
@@ -64,9 +70,9 @@ class CartRepository {
         },
         body: jsonEncode(body),
       );
-      print(body);
-      print(response.statusCode);
-      print(response.body);
+      // print(body);
+      // print(response.statusCode);
+      // print(response.body);
       if (response.statusCode == 200) {
         print("Product added to cart from wish list");
       } else {
@@ -94,11 +100,8 @@ class CartRepository {
         headers: headers,
         body: jsonEncode(body),
       );
-      print(body);
-      print(response.statusCode);
-      print(response.body);
+
       if (response.statusCode == 200) {
-        print("Product added to cart from wish list");
       } else {
         throw Exception("Failed to add product to cart: ${response.body}");
       }
@@ -107,7 +110,7 @@ class CartRepository {
     }
   }
 
-  Future<String> increaseQuantity({
+  Future<bool> increaseQuantity({
     required String userId,
     required String productRef,
     required String pincode,
@@ -129,9 +132,11 @@ class CartRepository {
       );
 
       if (response.statusCode == 201) {
-        return "Quantity increased";
+        print(response.statusCode);
+        return true;
       } else {
-        throw Exception("Failed to increase quantity: ${response.body}");
+        CustomSnackBars.showLimitedQuantityWarning();
+        return false;
       }
     } catch (e) {
       throw Exception("Error increasing quantity");
@@ -227,7 +232,8 @@ class CartRepository {
         return {
           "cartproducts": validatedList,
           "charges": charges,
-          "wishlist": validatedwishList
+          "wishlist": validatedwishList,
+          "instock": true
         };
       } else {
         throw Exception("Failed to fetch cart: ${response.body}");

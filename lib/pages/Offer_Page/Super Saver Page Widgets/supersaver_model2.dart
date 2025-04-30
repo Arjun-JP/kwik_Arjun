@@ -121,7 +121,7 @@ class SupersaverModel2 extends StatelessWidget {
                       product: product,
                       productBgColor: prodoductbgcolor,
                       buttontextcolor: cartbuttontextcolor,
-                      context: context,
+                      ctx: context,
                       offertextcolor: offerTextcolor,
                       buttonBgColor: buttonbgcolor,
                       offerbgcolor: offerBGcolor,

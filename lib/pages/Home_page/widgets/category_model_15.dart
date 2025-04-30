@@ -106,7 +106,7 @@ class CategoryModel15 extends StatelessWidget {
                                                   productnamecolor,
                                               product: state.products[index],
                                               // bgcolor: "FFFFFF",
-                                              context: context,
+                                              ctx: context,
 
                                               mrpColor: mrpColor,
 

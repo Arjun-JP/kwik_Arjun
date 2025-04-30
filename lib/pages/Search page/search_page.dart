@@ -346,7 +346,7 @@ class _SearchPageState extends State<SearchPage> {
                   productnamecolor: "000000",
                   unitbgcolor: "FFFFFF",
                   subcategoryRef: product.subCategoryRef.first.id,
-                  context: context,
+                  ctx: context,
                 ),
               );
             },
@@ -395,7 +395,7 @@ class _SearchPageState extends State<SearchPage> {
                     productnamecolor: "000000",
                     unitbgcolor: "00FFFFFF",
                     subcategoryRef: product.subCategoryRef.first.id,
-                    context: context,
+                    ctx: context,
                   ),
                 );
               },

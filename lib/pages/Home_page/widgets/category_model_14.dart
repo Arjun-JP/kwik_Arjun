@@ -212,7 +212,7 @@ class CategoryModel14 extends StatelessWidget {
                                                       .toList()[index],
                                                   buttontextcolor:
                                                       buttontextcolor,
-                                                  context: context,
+                                                  ctx: context,
                                                   offertextcolor:
                                                       offertextcolor,
                                                   productBgColor:

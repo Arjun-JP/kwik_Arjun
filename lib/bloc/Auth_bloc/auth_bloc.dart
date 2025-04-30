@@ -6,121 +6,160 @@ import 'auth_event.dart';
 import 'auth_state.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
   AuthBloc() : super(AuthInitial()) {
-    on<SendOtpToPhoneEvent>((event, emit) async {
-      emit(AuthLoading());
-
-      try {
-        await FirebaseAuth.instance.verifyPhoneNumber(
-          phoneNumber: event.phoneNumber,
-          verificationCompleted: (PhoneAuthCredential credential) {
-            if (!isClosed) {
-              add(OnPhoneAuthVerificationCompletedEvent(
-                  credential: credential));
-            }
-          },
-          verificationFailed: (FirebaseAuthException e) {
-            if (!isClosed) {
-              // Enhanced error handling with specific error codes
-              final errorMessage = _mapFirebaseAuthError(e);
-              add(OnPhoneAuthErrorEvent(error: errorMessage));
-            }
-          },
-          codeSent: (String verificationId, int? resendToken) {
-            if (!isClosed) {
-              add(OnPhoneOtpSend(
-                  verificationId: verificationId, token: resendToken ?? 0));
-            }
-          },
-          codeAutoRetrievalTimeout: (String verificationId) {
-            debugPrint("Code auto-retrieval timed out for $verificationId");
-            if (!isClosed) {
-              add(OnPhoneAuthErrorEvent(
-                  error: "Verification timeout. Please try again."));
-            }
-          },
-          timeout: const Duration(seconds: 60),
-        );
-      } catch (e) {
-        emit(AuthFailureState(_mapGenericError(e)));
-      }
-    });
-
-    on<OnPhoneOtpSend>((event, emit) {
-      emit(PhoneAuthCodeSentSuccess(verificationId: event.verificationId));
-    });
-
-    on<VerifySentOtp>((event, emit) {
-      try {
-        emit(AuthLoading());
-        PhoneAuthCredential credential = PhoneAuthProvider.credential(
-          verificationId: event.verificationId,
-          smsCode: event.otpCode,
-        );
-        if (!isClosed) {
-          add(OnPhoneAuthVerificationCompletedEvent(credential: credential));
-        }
-      } catch (e) {
-        emit(AuthFailureState(_mapGenericError(e)));
-      }
-    });
-
-    on<OnPhoneAuthErrorEvent>((event, emit) {
-      emit(AuthFailureState(event.error));
-    });
-
-    on<OnPhoneAuthVerificationCompletedEvent>((event, emit) async {
-      try {
-        UserCredential userCredential =
-            await FirebaseAuth.instance.signInWithCredential(event.credential);
-
-        if (userCredential.user == null) {
-          emit(AuthFailureState("Authentication failed. User not found."));
-          return;
-        }
-
-        String userId = userCredential.user!.uid;
-        String? phone = userCredential.user!.phoneNumber;
-        String? displayName = userCredential.user!.displayName ?? '';
-
-        // Handle user document creation
-        await _handleUserDocument(userId, phone, displayName);
-
-        emit(AuthenticatedState(userId));
-      } on FirebaseException catch (e) {
-        print("error");
-        print(e.message);
-      } catch (e) {
-        emit(AuthFailureState(_mapGenericError(e)));
-      }
-    });
+    on<SendOtpToPhoneEvent>(_handleSendOtp);
+    on<OnPhoneOtpSend>(_handleOtpSent);
+    on<VerifySentOtp>(_handleVerifyOtp);
+    on<OnPhoneAuthErrorEvent>(_handleAuthError);
+    on<OnPhoneAuthVerificationCompletedEvent>(_handleVerificationComplete);
   }
 
-  // Helper method to handle user document creation
-  Future<void> _handleUserDocument(
-      String userId, String? phone, String displayName) async {
-    try {
-      DocumentSnapshot userDoc = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(userId)
-          .get();
+  // Add state change logging
+  @override
+  void onTransition(Transition<AuthEvent, AuthState> transition) {
+    debugPrint('''
+    ============================================
+    EVENT: ${transition.event}
+    CURRENT STATE: ${transition.currentState}
+    NEXT STATE: ${transition.nextState}
+    ============================================
+    ''');
+    super.onTransition(transition);
+  }
 
-      if (!userDoc.exists) {
-        await FirebaseFirestore.instance.collection('users').doc(userId).set({
-          'phone': phone,
-          'createdAt': DateTime.now(),
-          'userId': userId,
-          'displayName': displayName,
-        });
-      }
+  Future<void> _handleSendOtp(
+      SendOtpToPhoneEvent event, Emitter<AuthState> emit) async {
+    emit(AuthLoading());
+    debugPrint('Initiating phone verification for: ${event.phoneNumber}');
+
+    try {
+      await _auth.verifyPhoneNumber(
+        phoneNumber: event.phoneNumber,
+        verificationCompleted: (credential) {
+          if (!isClosed) {
+            add(OnPhoneAuthVerificationCompletedEvent(credential: credential));
+          }
+        },
+        verificationFailed: (e) {
+          final error = _mapFirebaseAuthError(e);
+          debugPrint('Verification failed: ${e.code} - $error');
+          if (!isClosed) {
+            add(OnPhoneAuthErrorEvent(error: error));
+          }
+        },
+        codeSent: (verificationId, resendToken) {
+          debugPrint('Code sent to ${event.phoneNumber}');
+          if (!isClosed) {
+            add(OnPhoneOtpSend(
+              verificationId: verificationId,
+              token: resendToken ?? 0,
+            ));
+          }
+        },
+        codeAutoRetrievalTimeout: (verificationId) {
+          debugPrint('Auto-retrieval timeout: $verificationId');
+        },
+        // For web, you need to handle the app verifier
+        // forceResendingToken: event.token != 0 ? event.token : null,
+      );
     } catch (e) {
-      debugPrint("Error creating user document: ${e.toString()}");
-      // Continue even if document creation fails - auth succeeded
+      debugPrint('Exception in _handleSendOtp: ${e.toString()}');
+      emit(AuthFailureState(_mapGenericError(e)));
     }
   }
 
-  // Maps Firebase Auth errors to user-friendly messages
+  void _handleOtpSent(OnPhoneOtpSend event, Emitter<AuthState> emit) {
+    debugPrint(
+        'OTP sent successfully. Verification ID: ${event.verificationId}');
+    emit(PhoneAuthCodeSentSuccess(verificationId: event.verificationId));
+  }
+
+  Future<void> _handleVerifyOtp(
+      VerifySentOtp event, Emitter<AuthState> emit) async {
+    emit(AuthLoading());
+    debugPrint('Verifying OTP: ${event.otpCode}');
+
+    try {
+      final credential = PhoneAuthProvider.credential(
+        verificationId: event.verificationId,
+        smsCode: event.otpCode,
+      );
+      if (!isClosed) {
+        add(OnPhoneAuthVerificationCompletedEvent(credential: credential));
+      }
+    } catch (e) {
+      debugPrint('OTP verification error: ${e.toString()}');
+      emit(AuthFailureState(_mapGenericError(e)));
+    }
+  }
+
+  void _handleAuthError(OnPhoneAuthErrorEvent event, Emitter<AuthState> emit) {
+    debugPrint('Authentication error: ${event.error}');
+    emit(AuthFailureState(event.error));
+  }
+
+  Future<void> _handleVerificationComplete(
+      OnPhoneAuthVerificationCompletedEvent event,
+      Emitter<AuthState> emit) async {
+    try {
+      debugPrint('Attempting sign-in with credential');
+      final userCredential = await _auth.signInWithCredential(event.credential);
+
+      if (userCredential.user == null) {
+        debugPrint('User credential is null');
+        emit(AuthFailureState("Authentication failed. User not found."));
+        return;
+      }
+
+      final user = userCredential.user!;
+      debugPrint('User authenticated: ${user.uid}');
+
+      await _handleUserDocument(user);
+      emit(AuthenticatedState(user.uid));
+    } on FirebaseAuthException catch (e) {
+      debugPrint('FirebaseAuthException: ${e.code} - ${e.message}');
+      emit(AuthFailureState(_mapFirebaseAuthError(e)));
+    } on FirebaseException catch (e) {
+      debugPrint('FirebaseException: ${e.code} - ${e.message}');
+      emit(AuthFailureState(_mapFirebaseError(e)));
+    } catch (e) {
+      debugPrint('Unexpected error: ${e.toString()}');
+      emit(AuthFailureState(_mapGenericError(e)));
+    }
+  }
+
+  Future<void> _handleUserDocument(User user) async {
+    try {
+      debugPrint('Checking/creating user document for ${user.uid}');
+      final userDoc = await _firestore.collection('users').doc(user.uid).get();
+
+      if (!userDoc.exists) {
+        debugPrint('Creating new user document');
+        await _firestore.collection('users').doc(user.uid).set({
+          'phone': user.phoneNumber,
+          'createdAt': DateTime.now(),
+          'userId': user.uid,
+          'displayName': user.displayName ?? '',
+          'email': user.email ?? '',
+          'lastLogin': DateTime.now(),
+        });
+      } else {
+        debugPrint('Updating last login for existing user');
+        await _firestore.collection('users').doc(user.uid).update({
+          'lastLogin': DateTime.now(),
+        });
+      }
+    } catch (e) {
+      debugPrint('Error handling user document: ${e.toString()}');
+      // Continue even if document handling fails
+    }
+  }
+
   String _mapFirebaseAuthError(FirebaseAuthException e) {
+    debugPrint('Auth Error Code: ${e.code}');
     switch (e.code) {
       case 'invalid-phone-number':
         return 'Invalid phone number format. Please enter a valid number.';
@@ -144,14 +183,28 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         return 'Internal server error. Please try again.';
       case 'page-not-found':
       case 'web-context-canceled':
-        return 'Authentication failed. Please try again or use another method.';
+        return 'Authentication service unavailable. Please try again later.';
       default:
         return e.message ?? 'Authentication failed. Please try again.';
     }
   }
 
-  // Handles generic errors
+  String _mapFirebaseError(FirebaseException e) {
+    debugPrint('Firebase Error Code: ${e.code}');
+    switch (e.code) {
+      case 'permission-denied':
+        return 'Database permission denied.';
+      case 'not-found':
+        return 'Requested document not found.';
+      case 'unavailable':
+        return 'Service is unavailable. Please try again later.';
+      default:
+        return e.message ?? 'Database operation failed.';
+    }
+  }
+
   String _mapGenericError(dynamic e) {
+    debugPrint('Generic Error: ${e.toString()}');
     if (e is String) return e;
     if (e.toString().contains('page not found')) {
       return 'Authentication service unavailable. Please try again later.';
