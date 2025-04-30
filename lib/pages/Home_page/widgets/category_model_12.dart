@@ -47,7 +47,8 @@ class CategoryModel12 extends StatelessWidget {
     required this.topimage,
     required this.showcategory,
     required this.producttextcolor,
-    required this.offerbgcolor, required this.buttonbgcolor,
+    required this.offerbgcolor,
+    required this.buttonbgcolor,
   });
 
   @override
@@ -99,16 +100,15 @@ class CategoryModel12 extends StatelessWidget {
                                             subcategoryRef: maincategories[0],
                                             productnamecolor: producttextcolor,
                                             product: state.products[index],
-                                            context: context,
+                                            ctx: context,
                                             mrpColor: mrpColor,
                                             offertextcolor: offerTextcolor,
-                                          
                                             productBgColor: productBgColor,
                                             sellingPriceColor:
                                                 sellingPriceColor,
                                             unitTextcolor: unitTextcolor,
                                             unitbgcolor: unitbgcolor,
-                                              buttontextcolor: buttontextcolor,
+                                            buttontextcolor: buttontextcolor,
                                             buttonBgColor: buttonbgcolor,
                                             offerbgcolor: offerbgcolor,
                                           ));

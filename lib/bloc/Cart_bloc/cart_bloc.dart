@@ -31,46 +31,75 @@ class CartBloc extends Bloc<CartEvent, CartState> {
         variant: event.variantId,
         pincode: event.pincode,
       );
+      print("cart message$message");
+      if (message) {
+        if (state is CartUpdated) {
+          final currentState = state as CartUpdated;
+          List<CartProduct> updatedCartItems =
+              List.from(currentState.cartItems);
+          List<WishlistItem> wishlist = currentState.wishlist;
+          int existingIndex = updatedCartItems.indexWhere((item) =>
+              item.productRef.id == event.productRef &&
+              item.variant.id == event.variantId);
 
-      if (state is CartUpdated) {
-        final currentState = state as CartUpdated;
-        List<CartProduct> updatedCartItems = List.from(currentState.cartItems);
-        List<WishlistItem> wishlist = currentState.wishlist;
-        int existingIndex = updatedCartItems.indexWhere((item) =>
-            item.productRef.id == event.productRef &&
-            item.variant.id == event.variantId);
+          if (existingIndex == -1) {
+            // Add new product only if it doesn't exist
+            updatedCartItems.add(event.cartProduct);
+          }
 
-        if (existingIndex == -1) {
-          // Add new product only if it doesn't exist
-          updatedCartItems.add(event.cartProduct);
+          // Save to local storage
+          await cartBox.put(
+              'cart', updatedCartItems.map((e) => e.toJson()).toList());
+
+          // Emit updated state
+          emit(CartUpdated(
+              message: message,
+              wishlist: wishlist,
+              cartItems: updatedCartItems,
+              charges: currentState.charges));
         }
+        // else {
+        //   final currentState = state as CartUpdated;
+        //   // If cart is empty, initialize it
+        //   List<CartProduct> newCart = [event.cartProduct];
+        //   await cartBox.put('cart', newCart.map((e) => e.toJson()).toList());
 
-        // Save to local storage
-        await cartBox.put(
-            'cart', updatedCartItems.map((e) => e.toJson()).toList());
-
-        // Emit updated state
-        emit(CartUpdated(
-            message: message,
-            wishlist: wishlist,
-            cartItems: updatedCartItems,
-            charges: currentState.charges));
+        //   emit(CartUpdated(
+        //       message: message,
+        //       cartItems: newCart,
+        //       wishlist: [],
+        //       charges: const {
+        //         "enable_cod": true,
+        //         "delivery_charge": 2,
+        //         "handling_charge": 1,
+        //         "high_demand_charge": 3
+        //       }));}
       } else {
-        final currentState = state as CartUpdated;
-        // If cart is empty, initialize it
-        List<CartProduct> newCart = [event.cartProduct];
-        await cartBox.put('cart', newCart.map((e) => e.toJson()).toList());
+        if (state is CartUpdated) {
+          final currentState = state as CartUpdated;
+          List<CartProduct> updatedCartItems =
+              List.from(currentState.cartItems);
+          List<WishlistItem> wishlist = currentState.wishlist;
+          int existingIndex = updatedCartItems.indexWhere((item) =>
+              item.productRef.id == event.productRef &&
+              item.variant.id == event.variantId);
 
-        emit(CartUpdated(
-            message: message,
-            cartItems: newCart,
-            wishlist: [],
-            charges: const {
-              "enable_cod": true,
-              "delivery_charge": 2,
-              "handling_charge": 1,
-              "high_demand_charge": 3
-            }));
+          // if (existingIndex == -1) {
+          //   // Add new product only if it doesn't exist
+          //   updatedCartItems.add(event.cartProduct);
+          // }
+
+          // Save to local storage
+          await cartBox.put(
+              'cart', updatedCartItems.map((e) => e.toJson()).toList());
+
+          // Emit updated state
+          emit(CartUpdated(
+              message: message,
+              wishlist: wishlist,
+              cartItems: updatedCartItems,
+              charges: currentState.charges));
+        }
       }
     } catch (e) {
       emit(CartError(message: e.toString()));
@@ -87,29 +116,46 @@ class CartBloc extends Bloc<CartEvent, CartState> {
         pincode: event.pincode,
       );
 
-      // Get the current state without resetting it to CartLoading()
-      if (state is CartUpdated) {
-        final currentState = state as CartUpdated;
-        List<WishlistItem> wishlist = currentState.wishlist;
-        List<CartProduct> updatedCartItems = List.from(currentState.cartItems);
+      if (message) {
+        if (state is CartUpdated) {
+          final currentState = state as CartUpdated;
+          List<WishlistItem> wishlist = currentState.wishlist;
+          List<CartProduct> updatedCartItems =
+              List.from(currentState.cartItems);
 
-        int existingIndex = updatedCartItems.indexWhere((item) =>
-            item.productRef.id == event.productRef &&
-            item.variant.id == event.variantId);
+          int existingIndex = updatedCartItems.indexWhere((item) =>
+              item.productRef.id == event.productRef &&
+              item.variant.id == event.variantId);
 
-        if (existingIndex != -1) {
-          updatedCartItems[existingIndex] = updatedCartItems[existingIndex]
-              .copyWith(quantity: updatedCartItems[existingIndex].quantity + 1);
-          cartBox.put("cart", updatedCartItems.map((e) => e.toJson()).toList());
+          if (existingIndex != -1) {
+            updatedCartItems[existingIndex] = updatedCartItems[existingIndex]
+                .copyWith(
+                    quantity: updatedCartItems[existingIndex].quantity + 1);
+            cartBox.put(
+                "cart", updatedCartItems.map((e) => e.toJson()).toList());
+          }
+
+          // Emit only CartUpdated without CartLoading
+          emit(CartUpdated(
+              message: message,
+              wishlist: wishlist,
+              cartItems: updatedCartItems,
+              charges: currentState.charges));
+        } else {
+          final currentState = state as CartUpdated;
+          List<WishlistItem> wishlist = currentState.wishlist;
+          List<CartProduct> updatedCartItems =
+              List.from(currentState.cartItems);
+
+          // Emit only CartUpdated without CartLoading
+          emit(CartUpdated(
+              message: false,
+              wishlist: wishlist,
+              cartItems: updatedCartItems,
+              charges: currentState.charges));
         }
-
-        // Emit only CartUpdated without CartLoading
-        emit(CartUpdated(
-            message: message,
-            wishlist: wishlist,
-            cartItems: updatedCartItems,
-            charges: currentState.charges));
       }
+      // Get the current state without resetting it to CartLoading()
     } catch (e) {
       emit(CartError(message: e.toString()));
     }
@@ -147,7 +193,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
         }
 
         emit(CartUpdated(
-            message: message,
+            message: true,
             wishlist: wishlist,
             cartItems: updatedCartItems,
             charges: currentState.charges));
@@ -203,7 +249,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
       if (serverCartItems.isEmpty) {
         await cartBox.put('cart', []);
         emit(CartUpdated(
-            message: "Cart is empty",
+            message: true,
             cartItems: [],
             wishlist: serverwishlistItems ?? [],
             charges: serverCartData["charges"]));
@@ -226,7 +272,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
 
       // Always emit CartUpdated, even if local and server carts are the same
       emit(CartUpdated(
-        message: "Cart synced successfully",
+        message: true,
         cartItems: serverCartItems,
         wishlist: serverwishlistItems,
         charges: serverCartData[
@@ -277,7 +323,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
         // List<WishlistItem> updatedwishlistitem=currentState.wishlist.add(WishlistItem(productRef: currentState.cartItems.where((element) => element.productRef.id==event.productref&&element.variant.id==event.variationID).first.productRef, variantId:event.variationID , id: id))
         emit(CartUpdated(
             wishlist: currentState.wishlist,
-            message: "message",
+            message: true,
             cartItems: updatedcartproducts,
             charges: currentState.charges));
       }

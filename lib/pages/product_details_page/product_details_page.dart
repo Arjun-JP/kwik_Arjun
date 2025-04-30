@@ -476,7 +476,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                         unitTextcolor: "A19DA3",
                         unitbgcolor: "FFFFFF",
                         offerbgcolor: "E3520D",
-                        context: context,
+                        ctx: context,
                         product: productList[index]),
                   );
                 },
@@ -907,7 +907,7 @@ Widget productsYouMightAlsoLike(
                   unitTextcolor: "A19DA3",
                   unitbgcolor: "FFFFFF",
                   offerbgcolor: "FFFA76",
-                  context: context,
+                  ctx: context,
                   product: product,
                 ),
               );

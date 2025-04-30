@@ -5,12 +5,9 @@ abstract class AuthState extends Equatable {
   List<Object> get props => [];
 }
 
-
 class AuthInitial extends AuthState {}
 
-
 class AuthLoading extends AuthState {}
-
 
 class PhoneAuthCodeSentSuccess extends AuthState {
   final String verificationId;
@@ -21,7 +18,6 @@ class PhoneAuthCodeSentSuccess extends AuthState {
   List<Object> get props => [verificationId];
 }
 
-
 class AuthenticatedState extends AuthState {
   final String uid;
 
@@ -31,7 +27,6 @@ class AuthenticatedState extends AuthState {
   List<Object> get props => [uid];
 }
 
-
 class AuthFailureState extends AuthState {
   final String error;
 
@@ -40,6 +35,5 @@ class AuthFailureState extends AuthState {
   @override
   List<Object> get props => [error];
 }
-
 
 class LoggedOutState extends AuthState {}

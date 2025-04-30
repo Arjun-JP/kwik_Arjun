@@ -9,6 +9,7 @@ import 'package:kwik/bloc/Cart_bloc/cart_event.dart';
 import 'package:kwik/bloc/Cart_bloc/cart_state.dart';
 import 'package:kwik/constants/colors.dart';
 import 'package:kwik/constants/constants.dart';
+import 'package:kwik/main.dart';
 import 'package:kwik/models/cart_model.dart';
 import 'package:kwik/models/product_model.dart';
 import 'package:kwik/widgets/select_Varrient_bottom_sheet.dart';
@@ -27,7 +28,7 @@ class ProductItem extends StatelessWidget {
   final String offerbgcolor;
   final String unitTextcolor;
   final String unitbgcolor;
-  final BuildContext context;
+  final BuildContext ctx;
 
   const ProductItem({
     super.key,
@@ -43,7 +44,7 @@ class ProductItem extends StatelessWidget {
     required this.productnamecolor,
     required this.unitbgcolor,
     required this.subcategoryRef,
-    required this.context,
+    required this.ctx,
   });
 
   @override
@@ -54,21 +55,24 @@ class ProductItem extends StatelessWidget {
       List<CartProduct> cartItems = [];
 
       if (state is CartUpdated) {
+        print(state.message);
         cartItems = state.cartItems;
       }
       return Stack(
         children: [
           InkWell(
-            onTap: () => context.push(
-              '/productdetails',
-              extra: {
-                'product': product,
-                'subcategoryref': subcategoryRef,
-                'buttonbg':
-                    parseColor(buttontextcolor), // example color as a string
-                'buttontext': parseColor(buttonBgColor),
-              },
-            ),
+            onTap: () {
+              context.push(
+                '/productdetails',
+                extra: {
+                  'product': product,
+                  'subcategoryref': subcategoryRef,
+                  'buttonbg':
+                      parseColor(buttontextcolor), // example color as a string
+                  'buttontext': parseColor(buttonBgColor),
+                },
+              );
+            },
             child: Stack(
               children: [
                 Container(
@@ -167,6 +171,9 @@ class ProductItem extends StatelessWidget {
                               child: cartItems.any((element) =>
                                       element.productRef.id == product.id)
                                   ? quantitycontrolbutton(
+                                      instock: state is CartUpdated
+                                          ? state.message
+                                          : false,
                                       buttonbgcolor: buttontextcolor,
                                       buttontextcolor: buttonBgColor,
                                       theme: theme,
@@ -213,12 +220,19 @@ class ProductItem extends StatelessWidget {
                                                   );
                                                 },
                                               );
-                                            } else if (product
-                                                        .variations.length ==
-                                                    1 &&
-                                                product.variations.first.stock
-                                                        .first.stockQty !=
-                                                    0) {
+                                            } else if (product.variations
+                                                            .length ==
+                                                        1 &&
+                                                    product
+                                                            .variations
+                                                            .first
+                                                            .stock
+                                                            .first
+                                                            .stockQty !=
+                                                        0 &&
+                                                    state is CartUpdated
+                                                ? state.message
+                                                : false == true) {
                                               context.read<CartBloc>().add(
                                                     AddToCart(
                                                       cartProduct: CartProduct(
@@ -250,6 +264,17 @@ class ProductItem extends StatelessWidget {
                                                   );
                                             } else {
                                               HapticFeedback.heavyImpact();
+                                              try {
+                                                print("snckbar send");
+                                                rootScaffoldMessengerKey
+                                                    .currentState
+                                                    ?.showSnackBar(const SnackBar(
+                                                        content: Text(
+                                                            "Out of stock")));
+                                                print("snckbar send");
+                                              } catch (e) {
+                                                print(e);
+                                              }
                                             }
                                           },
                                           style: ElevatedButton.styleFrom(
@@ -343,6 +368,7 @@ class ProductItem extends StatelessWidget {
       {required ThemeData theme,
       required String buttonbgcolor,
       required String buttontextcolor,
+      required bool instock,
       required ProductModel product,
       required String qty}) {
     return Container(
@@ -360,7 +386,7 @@ class ProductItem extends StatelessWidget {
             child: InkWell(
               onTap: () {
                 HapticFeedback.mediumImpact();
-                context.read<CartBloc>().add(DecreaseCartQuantity(
+                ctx.read<CartBloc>().add(DecreaseCartQuantity(
                     pincode: "560003",
                     productRef: product.id,
                     userId: "s5ZdLnYhnVfAramtr7knGduOI872",
@@ -395,7 +421,7 @@ class ProductItem extends StatelessWidget {
             child: InkWell(
               onTap: () {
                 HapticFeedback.mediumImpact();
-                context.read<CartBloc>().add(IncreaseCartQuantity(
+                ctx.read<CartBloc>().add(IncreaseCartQuantity(
                     pincode: "560003",
                     productRef: product.id,
                     userId: "s5ZdLnYhnVfAramtr7knGduOI872",

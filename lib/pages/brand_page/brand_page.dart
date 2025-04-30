@@ -174,7 +174,7 @@ class _BrandPageState extends State<BrandPage> {
                                 unitTextcolor: "A19DA3",
                                 unitbgcolor: "FFFFFF",
                                 offerbgcolor: "E3520D",
-                                context: context,
+                                ctx: context,
                                 product: state.products[index],
                               ),
                             ),

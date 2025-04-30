@@ -22,8 +22,6 @@ import 'package:kwik/constants/doted_devider.dart';
 import 'package:kwik/models/cart_model.dart';
 import 'package:kwik/models/product_model.dart';
 import 'package:kwik/models/wishlist_model.dart';
-import 'package:kwik/pages/Address_management/address_form.dart'
-    show extractAddressDetails;
 import 'package:kwik/pages/Address_management/location_search_page.dart';
 import 'package:kwik/pages/product_details_page/product_details_page.dart';
 import 'package:kwik/widgets/produc_model_1.dart';
@@ -1865,7 +1863,7 @@ Widget productsYouMightAlsoLikeCart(
                       unitTextcolor: "A19DA3",
                       unitbgcolor: "FFFFFF",
                       offerbgcolor: "FFFA76",
-                      context: context,
+                      ctx: context,
                       product: productlist[index]),
                 );
               },

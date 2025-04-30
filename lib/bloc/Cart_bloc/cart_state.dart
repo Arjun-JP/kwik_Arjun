@@ -12,7 +12,7 @@ class CartInitial extends CartState {}
 class CartLoading extends CartState {}
 
 class CartUpdated extends CartState {
-  final String message;
+  final bool message;
   final List<CartProduct> cartItems;
   final Map<String, dynamic> charges;
   final List<WishlistItem> wishlist;

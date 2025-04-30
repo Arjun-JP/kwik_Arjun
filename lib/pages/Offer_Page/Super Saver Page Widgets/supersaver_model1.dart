@@ -90,6 +90,8 @@ class SupersaverModel1 extends StatelessWidget {
                                               titleColor: titleColor,
                                               name: state
                                                   .subCategories[index].name,
+                                              offer: state.subCategories[index]
+                                                  .offerPercentage,
                                               bgcolor: state.category.color,
                                               textcolor: titleColor,
                                               imageurl: state
@@ -125,6 +127,7 @@ class SupersaverModel1 extends StatelessWidget {
 
   Widget subcategoryItemOffer(
       {required ThemeData theme,
+      required String offer,
       required String name,
       required String bgcolor,
       required String textcolor,
@@ -176,12 +179,7 @@ class SupersaverModel1 extends StatelessWidget {
                       .copyWith(color: parseColor(priceColor)),
                   children: [
                     TextSpan(
-                      text: "330",
-                      style: theme.textTheme.bodyLarge!
-                          .copyWith(color: parseColor(priceColor)),
-                    ),
-                    TextSpan(
-                      text: "/kg",
+                      text: offer,
                       style: theme.textTheme.bodyLarge!
                           .copyWith(color: parseColor(priceColor)),
                     ),

@@ -184,7 +184,7 @@ class CategoryModel5 extends StatelessWidget {
                                           buttonBgColor: buttonbgcolor,
                                           unitTextcolor: unitcolor,
                                           unitbgcolor: unitbgcolor,
-                                          context: context,
+                                          ctx: context,
                                           productBgColor: productBgColor,
                                           sellingPriceColor: sellingPriceColor,
                                           offerbgcolor: offerBGcolor,

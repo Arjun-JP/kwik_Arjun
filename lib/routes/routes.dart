@@ -49,6 +49,19 @@ final GoRouter router = GoRouter(
       },
     ),
     GoRoute(
+      path: '/__/auth/callback',
+      redirect: (context, state) {
+        // Extract verificationId from the callback URL
+        final uri = Uri.parse(state.uri.toString());
+        final verificationId = uri.queryParameters['verificationId'] ?? '';
+
+        if (verificationId.isNotEmpty) {
+          return '/OtpVerificationPage/$verificationId';
+        }
+        return '/loginPage'; // Fallback if no verificationId
+      },
+    ),
+    GoRoute(
       path: '/category',
       pageBuilder: (BuildContext context, GoRouterState state) {
         return const NoTransitionPage(

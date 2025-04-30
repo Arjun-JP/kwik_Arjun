@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -76,6 +77,7 @@ import 'package:kwik/repositories/subcategory_product_repo.dart';
 import 'package:kwik/repositories/super_saver_ui_repo.dart';
 import 'package:kwik/routes/routes.dart';
 import 'package:kwik/pages/Error_pages/Error_widget.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'bloc/Categories Page Bloc/categories_UI_bloc/categories_ui_bloc.dart';
 import 'bloc/Categories Page Bloc/categories_page_model1/categories_page_model1_bloc.dart';
 import 'bloc/Categories Page Bloc/categories_page_model2/categories_page_model2_bloc.dart';
@@ -99,6 +101,8 @@ import 'repositories/category_model9_repo.dart';
 import 'repositories/category_model_10_repo.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
+final GlobalKey<ScaffoldMessengerState> rootScaffoldMessengerKey =
+    GlobalKey<ScaffoldMessengerState>();
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   debugProfilePlatformChannelsEnabled:
@@ -230,6 +234,8 @@ void main() async {
   // true;
   WidgetsFlutterBinding.ensureInitialized();
 
+  // Handle initial authentication state
+
   runApp(const MyApp());
 }
 
@@ -246,6 +252,7 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
     // Wait for context to be ready
+    requestNotificationPermissions();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       NetworkMonitor().startMonitoring(context);
     });
@@ -429,6 +436,7 @@ class _MyAppState extends State<MyApp> {
           };
           return child!;
         },
+        scaffoldMessengerKey: rootScaffoldMessengerKey,
         routerConfig: _router,
         title: 'Kwik',
 
@@ -440,7 +448,35 @@ class _MyAppState extends State<MyApp> {
   }
 }
 
+void requestNotificationPermissions() async {
+  FirebaseMessaging messaging = FirebaseMessaging.instance;
+
+  NotificationSettings settings = await messaging.requestPermission(
+    alert: true,
+    announcement: false,
+    badge: true,
+    carPlay: false,
+    criticalAlert: false,
+    provisional: false,
+    sound: true,
+  );
+
+  if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+    print('User granted permission');
+  } else if (settings.authorizationStatus == AuthorizationStatus.provisional) {
+    print('User granted provisional permission');
+  } else {
+    print('User declined or has not accepted permission');
+  }
+}
+
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   print("Handling a background message: ${message.messageId}");
   // Process your data here
 }
+
+// void _handleDeepLink(PendingDynamicLinkData linkData) {
+//   final Uri deepLink = linkData.link;
+//   // Handle the deep link - you might want to navigate to a specific route
+//   debugPrint('Deep link: $deepLink');
+// }
