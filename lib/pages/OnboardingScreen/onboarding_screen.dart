@@ -21,7 +21,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   final List<Map<String, String>> onboardData = [
     {
-      "title": "Welcome to KWIK App",
+      "title": "Welcome to KWIK",
       "description":
           "Effortlessly buy items with just a few taps, making transactions quick and simple",
       "image": "assets/images/image.jpeg"

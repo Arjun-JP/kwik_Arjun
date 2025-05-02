@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:http/http.dart' as http;
 import 'package:kwik/models/address_model.dart';
 import 'package:kwik/models/warehouse_model.dart';
@@ -11,32 +12,39 @@ class AddressRepository {
     'api_Key': 'arjun',
     'api_Secret': 'digi9',
   };
+  final user = FirebaseAuth.instance.currentUser;
 
-  Future<List<AddressModel>> getAddressesFromServer() async {
-    final url = Uri.parse('$baseUrl/users/s5ZdLnYhnVfAramtr7knGduOI872');
+  Future<Map<String, dynamic>> getAddressesFromServer() async {
+    final url = Uri.parse('$baseUrl/users/${user!.uid}');
 
     try {
       final response = await http.get(url, headers: headers);
-      print(response.body);
+
       final Map<String, dynamic> body = json.decode(response.body);
 
-      // Check if the response contains the user data and addresses
+      AddressModel? selectedAddress;
+      List<AddressModel> addresses = [];
+
       if (body.containsKey("user") && body["user"] is Map) {
         final Map<String, dynamic> userData = body["user"];
 
-        // Check if Address array exists in user data
+        if (userData.containsKey("selected_Address") &&
+            userData["selected_Address"] != null) {
+          selectedAddress = AddressModel.fromJson(userData["selected_Address"]);
+        }
+
         if (userData.containsKey("Address") && userData["Address"] is List) {
           List<dynamic> addressesJson = userData["Address"];
-          print(addressesJson);
-          // Parse each address JSON to AddressModel
-          return addressesJson.map((addressJson) {
-            return AddressModel.fromJson(addressJson);
-          }).toList();
+          addresses = addressesJson
+              .map((addressJson) => AddressModel.fromJson(addressJson))
+              .toList();
         }
       }
 
-      // Return empty list if no addresses found
-      return [];
+      return {
+        'addresses': addresses,
+        'selectedAddress': selectedAddress,
+      };
     } catch (e) {
       throw Exception("Error fetching addresses: $e");
     }
@@ -68,8 +76,7 @@ class AddressRepository {
         headers: headers,
         body: json.encode(requestBody),
       );
-      print(response.statusCode);
-      print(response.body);
+
       if (response.statusCode != 200) {
         throw Exception(
             'Failed to add address. Status code: ${response.statusCode}');
@@ -109,12 +116,12 @@ class AddressRepository {
   }
 
   Future<void> setDefaultAddress(String addressId) async {
-    final url = Uri.parse('$baseUrl/address/setDefault');
+    final url = Uri.parse('$baseUrl/users/select/address/change');
     try {
-      final response = await http.post(
+      final response = await http.put(
         url,
         headers: headers,
-        body: json.encode({"addressId": addressId}),
+        body: json.encode({"userId": user!.uid, "AddressID": addressId}),
       );
 
       if (response.statusCode != 200) {
@@ -142,13 +149,10 @@ class AddressRepository {
     }
   }
 
-  Future<WarehouseModel> getwarehousedetails(
+  Future<WarehouseModel?> getwarehousedetails(
       String pincode, String destinationLat, String destinationLon) async {
     final url = Uri.parse('$baseUrl/warehouse/warehouseServiceStatus');
-    print("api called inside api call repo");
-    print(destinationLat);
-    print(destinationLon);
-    print(pincode);
+
     try {
       final response = await http.post(
         url,
@@ -159,8 +163,6 @@ class AddressRepository {
           "destinationLon": destinationLon
         }),
       );
-      print(response.statusCode);
-      print(response.body);
 
       if (response.statusCode == 200) {
         final responseData = json.decode(response.body);
@@ -174,7 +176,6 @@ class AddressRepository {
         }
 
         final warehouseData = responseData['warehouse'];
-        print('Warehouse Data: $warehouseData'); // Debug print
 
         if (warehouseData['warehouse_location'] == null) {
           throw Exception(
@@ -183,8 +184,7 @@ class AddressRepository {
 
         return WarehouseModel.fromJson(warehouseData);
       } else {
-        throw Exception(
-            'Failed to get warehouse details: Status code ${response.statusCode}');
+        return null;
       }
     } catch (e) {
       throw Exception("Error getting warehouse details: $e");

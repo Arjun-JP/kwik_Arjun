@@ -40,7 +40,6 @@ class _TermsAndConditionPageState extends State<TermsAndConditionPage> {
         if (state is GetappdataLoading) {
           return const PrivacyPolicyShimmer();
         } else if (state is GetappdataLoaded) {
-          print(state);
           final termsofuse =
               _splitIntoParagraphs(state.content['terms_of_use']);
           return SingleChildScrollView(

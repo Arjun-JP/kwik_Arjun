@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
@@ -14,6 +15,7 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
+    final user = FirebaseAuth.instance.currentUser;
     ThemeData theme = Theme.of(context);
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 244, 244, 244),
@@ -35,8 +37,9 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
         ),
         title: Text(
-          "profile",
-          style: theme.textTheme.headlineMedium!.copyWith(color: Colors.black),
+          "Profile",
+          style: theme.textTheme.headlineMedium!
+              .copyWith(fontWeight: FontWeight.w400, color: Colors.black),
         ),
       ),
       body: SingleChildScrollView(
@@ -53,23 +56,30 @@ class _ProfilePageState extends State<ProfilePage> {
                 children: [
                   const CircleAvatar(
                     backgroundColor: Colors.white,
-                    radius: 40, // Adjust the size
-                    backgroundImage: NetworkImage(
-                        "https://firebasestorage.googleapis.com/v0/b/kwikgroceries-8a11e.firebasestorage.app/o/image%2023.png?alt=media&token=9925215f-e0eb-4a12-8431-281cea504c44"),
+                    radius: 30, // Adjust the size
+                    child: Icon(
+                      Icons.person,
+                      color: Colors.black,
+                      size: 35,
+                    ),
                   ),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.center,
+                    spacing: 5,
                     children: [
                       Text(
-                        "Arjun",
-                        style: theme.textTheme.headlineMedium!
-                            .copyWith(color: Colors.black),
+                        "Your account",
+                        style: theme.textTheme.headlineMedium!.copyWith(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w800,
+                            color: Colors.black),
                       ),
                       Text(
-                        "8547062699",
+                        user!.phoneNumber!,
                         style: theme.textTheme.bodyMedium!.copyWith(
-                            color: Colors.black, fontWeight: FontWeight.w700),
+                            color: const Color.fromARGB(255, 142, 142, 142),
+                            fontWeight: FontWeight.w700),
                       )
                     ],
                   )

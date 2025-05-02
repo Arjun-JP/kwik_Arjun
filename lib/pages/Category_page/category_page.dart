@@ -9,6 +9,8 @@ import 'package:kwik/bloc/Address_bloc/address_state.dart';
 import 'package:kwik/bloc/Categories%20Page%20Bloc/category_model_bloc/category_model_bloc.dart';
 import 'package:kwik/bloc/all_sub_category_bloc/all_sub_category_state.dart';
 import 'package:kwik/bloc/navbar_bloc/navbar_bloc.dart';
+import 'package:kwik/bloc/product_details_page/recommended_products_bloc/recommended_products_bloc.dart';
+import 'package:kwik/bloc/product_details_page/recommended_products_bloc/recommended_products_event.dart';
 import 'package:kwik/pages/Address_management/location_search_page.dart';
 import 'package:kwik/pages/Category_page/Categories%20Page%20Widgets/category_model.dart';
 import 'package:kwik/pages/Home_page/widgets/descriptive_widget.dart';
@@ -34,6 +36,7 @@ class _CategoryPageState extends State<CategoryPage> {
     BlocProvider.of<CategoriesPageModel1Bloc>(context)
         .add(ClearCacheCatPage1());
     BlocProvider.of<CategoryBlocModel>(context).add(ClearCacheCM());
+    context.read<RecommendedProductsBloc>().add(ClearRecommendedproductCache());
     context.read<CategoriesUiBloc>().add(FetchCatUiDataEvent());
   }
 
@@ -47,155 +50,130 @@ class _CategoryPageState extends State<CategoryPage> {
   @override
   Widget build(BuildContext context) {
     ThemeData theme = Theme.of(context);
-    return NotificationListener<ScrollNotification>(
-      onNotification: (scrollNotification) {
-        if (scrollNotification is ScrollUpdateNotification) {
-          double position = scrollNotification.metrics.pixels;
-          double maxScroll = scrollNotification.metrics.maxScrollExtent;
+    return BlocBuilder<CategoriesUiBloc, CategoriesUiState>(
+        builder: (context, state) {
+      if (state is CategoryInitial) {
+        context.read<CategoriesUiBloc>().add(FetchCatUiDataEvent());
+      } else if (state is CatUiLoading) {
+        return const Center(child: MainLoadingIndicator());
+      } else if (state is CatUiLoaded) {
+        final uiData = state.uiData;
+        final templates = [
+          {
+            'template': CategoryModel(
+              maincategories:
+                  List<String>.from(uiData["template1"]["main_categories"]),
+              secondarycategories:
+                  List<String>.from(uiData["template1"]["Sub_categories"]),
+              categoryId: uiData["template1"]["category"],
+              bgcolor: uiData["template1"]["background_color"] ?? "FFFFFF",
+              title: uiData["template1"]["title"],
+              titleColor: uiData["template1"]["title_color"] ?? "FFFFFF",
+              subcatColor:
+                  uiData["template1"]["subcategory_title_color"] ?? "FFFFFF",
+              showcategory: uiData["template1"]["show_Category"],
+            ),
+            'order': uiData["template1"]["ui_order_number"]
+          },
+          {
+            'template': CategoryModel(
+              maincategories:
+                  List<String>.from(uiData["template2"]["main_categories"]),
+              secondarycategories:
+                  List<String>.from(uiData["template2"]["Sub_categories"]),
+              categoryId: uiData["template2"]["category"],
+              bgcolor: uiData["template2"]["background_color"] ?? "FFFFFF",
+              title: uiData["template2"]["title"],
+              titleColor: uiData["template2"]["title_color"] ?? "FFFFFF",
+              subcatColor:
+                  uiData["template2"]["subcategory_title_color"] ?? "FFFFFF",
+              showcategory: uiData["template2"]["show_Category"],
+            ),
+            'order': uiData["template2"]["ui_order_number"]
+          },
+          {
+            'template': CategoryModel(
+              maincategories:
+                  List<String>.from(uiData["template3"]["main_categories"]),
+              secondarycategories:
+                  List<String>.from(uiData["template3"]["Sub_categories"]),
+              categoryId: uiData["template3"]["category"],
+              bgcolor: uiData["template3"]["background_color"] ?? "FFFFFF",
+              title: uiData["template3"]["title"],
+              titleColor: uiData["template3"]["title_color"] ?? "FFFFFF",
+              subcatColor:
+                  uiData["template3"]["subcategory_title_color"] ?? "FFFFFF",
+              showcategory: uiData["template3"]["show_Category"],
+            ),
+            'order': uiData["template3"]["ui_order_number"]
+          },
+          {
+            'template': CategoryModel(
+              maincategories:
+                  List<String>.from(uiData["template4"]["main_categories"]),
+              secondarycategories:
+                  List<String>.from(uiData["template4"]["Sub_categories"]),
+              categoryId: uiData["template4"]["category"],
+              bgcolor: uiData["template4"]["background_color"] ?? "FFFFFF",
+              title: uiData["template4"]["title"],
+              titleColor: uiData["template4"]["title_color"] ?? "FFFFFF",
+              subcatColor:
+                  uiData["template4"]["subcategory_title_color"] ?? "FFFFFF",
+              showcategory: uiData["template4"]["show_Category"],
+            ),
+            'order': uiData["template4"]["ui_order_number"]
+          },
+          {
+            'template': CategoryModel(
+              maincategories:
+                  List<String>.from(uiData["template5"]["main_categories"]),
+              secondarycategories:
+                  List<String>.from(uiData["template5"]["Sub_categories"]),
+              categoryId: uiData["template5"]["category"],
+              bgcolor: uiData["template5"]["background_color"] ?? "FFFFFF",
+              title: uiData["template5"]["title"],
+              titleColor: uiData["template5"]["title_color"] ?? "FFFFFF",
+              subcatColor:
+                  uiData["template5"]["subcategory_title_color"] ?? "FFFFFF",
+              showcategory: uiData["template5"]["show_Category"],
+            ),
+            'order': uiData["template4"]["ui_order_number"]
+          },
+          {
+            'template': const DescriptiveWidget(
+              showcategory: true,
+              title: "Skip the store, we're at your door!",
+              logo: "assets/images/Screenshot 2025-01-31 at 6.20.37 PM.jpeg",
+            ),
+            'order': "88888"
+          },
+          {'template': const SizedBox(height: 40), 'order': "500"}
+        ];
 
-          if (scrollNotification.scrollDelta! > 0) {
-            // Scrolling down: Hide navbar, but keep it visible at top/bottom
-            if (position > 100 && position < maxScroll - 100) {
-              context
-                  .read<NavbarBloc>()
-                  .add(const UpdateNavBarVisibility(false));
-            }
-          } else if (scrollNotification.scrollDelta! < 0) {
-            // Scrolling up: Show navbar when within 100 pixels from top OR at bottom
-            if (position < 100 || position >= maxScroll - 100) {
-              context
-                  .read<NavbarBloc>()
-                  .add(const UpdateNavBarVisibility(true));
-            }
-          }
-        }
-        return true;
-      },
-      child: BlocBuilder<CategoriesUiBloc, CategoriesUiState>(
-          builder: (context, state) {
-        if (state is CategoryInitial) {
-          context.read<CategoriesUiBloc>().add(FetchCatUiDataEvent());
-        } else if (state is CatUiLoading) {
-          return const Center(child: MainLoadingIndicator());
-        } else if (state is CatUiLoaded) {
-          final uiData = state.uiData;
-          final templates = [
-            {
-              'template': CategoryModel(
-                maincategories:
-                    List<String>.from(uiData["template1"]["main_categories"]),
-                secondarycategories:
-                    List<String>.from(uiData["template1"]["Sub_categories"]),
-                categoryId: uiData["template1"]["category"],
-                bgcolor: uiData["template1"]["background_color"] ?? "FFFFFF",
-                title: uiData["template1"]["title"],
-                titleColor: uiData["template1"]["title_color"] ?? "FFFFFF",
-                subcatColor:
-                    uiData["template1"]["subcategory_title_color"] ?? "FFFFFF",
-                showcategory: uiData["template1"]["show_Category"],
-              ),
-              'order': uiData["template1"]["ui_order_number"]
-            },
-            {
-              'template': CategoryModel(
-                maincategories:
-                    List<String>.from(uiData["template2"]["main_categories"]),
-                secondarycategories:
-                    List<String>.from(uiData["template2"]["Sub_categories"]),
-                categoryId: uiData["template2"]["category"],
-                bgcolor: uiData["template2"]["background_color"] ?? "FFFFFF",
-                title: uiData["template2"]["title"],
-                titleColor: uiData["template2"]["title_color"] ?? "FFFFFF",
-                subcatColor:
-                    uiData["template2"]["subcategory_title_color"] ?? "FFFFFF",
-                showcategory: uiData["template2"]["show_Category"],
-              ),
-              'order': uiData["template2"]["ui_order_number"]
-            },
-            {
-              'template': CategoryModel(
-                maincategories:
-                    List<String>.from(uiData["template3"]["main_categories"]),
-                secondarycategories:
-                    List<String>.from(uiData["template3"]["Sub_categories"]),
-                categoryId: uiData["template3"]["category"],
-                bgcolor: uiData["template3"]["background_color"] ?? "FFFFFF",
-                title: uiData["template3"]["title"],
-                titleColor: uiData["template3"]["title_color"] ?? "FFFFFF",
-                subcatColor:
-                    uiData["template3"]["subcategory_title_color"] ?? "FFFFFF",
-                showcategory: uiData["template3"]["show_Category"],
-              ),
-              'order': uiData["template3"]["ui_order_number"]
-            },
-            {
-              'template': CategoryModel(
-                maincategories:
-                    List<String>.from(uiData["template4"]["main_categories"]),
-                secondarycategories:
-                    List<String>.from(uiData["template4"]["Sub_categories"]),
-                categoryId: uiData["template4"]["category"],
-                bgcolor: uiData["template4"]["background_color"] ?? "FFFFFF",
-                title: uiData["template4"]["title"],
-                titleColor: uiData["template4"]["title_color"] ?? "FFFFFF",
-                subcatColor:
-                    uiData["template4"]["subcategory_title_color"] ?? "FFFFFF",
-                showcategory: uiData["template4"]["show_Category"],
-              ),
-              'order': uiData["template4"]["ui_order_number"]
-            },
-            {
-              'template': CategoryModel(
-                maincategories:
-                    List<String>.from(uiData["template5"]["main_categories"]),
-                secondarycategories:
-                    List<String>.from(uiData["template5"]["Sub_categories"]),
-                categoryId: uiData["template5"]["category"],
-                bgcolor: uiData["template5"]["background_color"] ?? "FFFFFF",
-                title: uiData["template5"]["title"],
-                titleColor: uiData["template5"]["title_color"] ?? "FFFFFF",
-                subcatColor:
-                    uiData["template5"]["subcategory_title_color"] ?? "FFFFFF",
-                showcategory: uiData["template5"]["show_Category"],
-              ),
-              'order': uiData["template4"]["ui_order_number"]
-            },
-            {
-              'template': const DescriptiveWidget(
-                showcategory: true,
-                title: "Skip the store, we're at your door!",
-                logo: "assets/images/Screenshot 2025-01-31 at 6.20.37 PM.jpeg",
-              ),
-              'order': "88888"
-            },
-            {'template': const SizedBox(height: 40), 'order': "500"}
-          ];
-          print(uiData["template5"]["subcategory_title_color"]);
-          print(uiData["template11"]["appbarcolor"]);
-          templates.sort(
-              (a, b) => int.parse(a['order']).compareTo(int.parse(b['order'])));
-          return Container(
-            decoration: BoxDecoration(
-                gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    stops: const [
-                  .08,
-                  .1,
-                  .2,
-                  .5,
-                  .7,
-                  1.0
-                ],
-                    colors: [
-                  parseColor(uiData["template11"]["appbarcolor"] ?? ''),
-                  parseColor(uiData["template11"]["appbarcolor"] ?? ''),
-                  const Color(0xFFFFFFFff),
-                  const Color(0xFFFFFFFff),
-                  const Color(0xFFFFFFFff),
-                  const Color(0xFFFFFFFff)
-                ])),
-            child: Scaffold(
+        templates.sort(
+            (a, b) => int.parse(a['order']).compareTo(int.parse(b['order'])));
+        return Container(
+          decoration: BoxDecoration(
+              gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  stops: const [
+                .08,
+                .1,
+                .2,
+                .5,
+                .7,
+                1.0
+              ],
+                  colors: [
+                parseColor(uiData["template11"]["appbarcolor"] ?? ''),
+                parseColor(uiData["template11"]["appbarcolor"] ?? ''),
+                const Color(0xFFFFFFFff),
+                const Color(0xFFFFFFFff),
+                const Color(0xFFFFFFFff),
+                const Color(0xFFFFFFFff)
+              ])),
+          child: Scaffold(
               backgroundColor: const Color(0xFFFFFF),
               body: InkWell(
                 onTap: () {
@@ -373,18 +351,13 @@ class _CategoryPageState extends State<CategoryPage> {
                   ),
                 ),
               ),
-              bottomNavigationBar:
-                  context.watch<NavbarBloc>().state.isBottomNavBarVisible
-                      ? const Navbar()
-                      : const SizedBox(),
-            ),
-          );
-        } else {
-          return const SizedBox();
-        }
+              bottomNavigationBar: const Navbar()),
+        );
+      } else {
         return const SizedBox();
-      }),
-    );
+      }
+      return const SizedBox();
+    });
   }
 }
 

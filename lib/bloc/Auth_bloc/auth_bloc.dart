@@ -1,20 +1,26 @@
+import 'dart:async';
+
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
+import 'package:kwik/constants/FCM_token.dart';
+import 'package:kwik/repositories/auth_repo.dart';
 import 'auth_event.dart';
 import 'auth_state.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final AuthRepo authrepo;
 
-  AuthBloc() : super(AuthInitial()) {
+  AuthBloc(this.authrepo) : super(AuthInitial()) {
     on<SendOtpToPhoneEvent>(_handleSendOtp);
     on<OnPhoneOtpSend>(_handleOtpSent);
     on<VerifySentOtp>(_handleVerifyOtp);
     on<OnPhoneAuthErrorEvent>(_handleAuthError);
     on<OnPhoneAuthVerificationCompletedEvent>(_handleVerificationComplete);
+    on<LogoutEvent>(_handleLogout);
   }
 
   // Add state change logging
@@ -102,38 +108,74 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   }
 
   Future<void> _handleVerificationComplete(
-      OnPhoneAuthVerificationCompletedEvent event,
-      Emitter<AuthState> emit) async {
+    OnPhoneAuthVerificationCompletedEvent event,
+    Emitter<AuthState> emit,
+  ) async {
     try {
-      debugPrint('Attempting sign-in with credential');
       final userCredential = await _auth.signInWithCredential(event.credential);
+      final user = userCredential.user!;
+      final phoneNumber = user.phoneNumber ?? '';
 
-      if (userCredential.user == null) {
-        debugPrint('User credential is null');
-        emit(AuthFailureState("Authentication failed. User not found."));
+      // Initialize FCM and get token
+      final fcmToken = await _handleFCMTokenGeneration();
+      if (fcmToken == null) {
+        emit(AuthFailureState('Failed to generate FCM token'));
         return;
       }
 
-      final user = userCredential.user!;
-      debugPrint('User authenticated: ${user.uid}');
+      // Handle user data in both Firestore and MongoDB
+      await _handleUserDataStorage(user.uid, phoneNumber, fcmToken);
 
-      await _handleUserDocument(user);
       emit(AuthenticatedState(user.uid));
-    } on FirebaseAuthException catch (e) {
-      debugPrint('FirebaseAuthException: ${e.code} - ${e.message}');
-      emit(AuthFailureState(_mapFirebaseAuthError(e)));
-    } on FirebaseException catch (e) {
-      debugPrint('FirebaseException: ${e.code} - ${e.message}');
-      emit(AuthFailureState(_mapFirebaseError(e)));
     } catch (e) {
-      debugPrint('Unexpected error: ${e.toString()}');
-      emit(AuthFailureState(_mapGenericError(e)));
+      emit(AuthFailureState('Failed to complete login: ${e.toString()}'));
+    }
+  }
+
+  Future<String?> _handleFCMTokenGeneration() async {
+    try {
+      final fcmService = FCMService();
+      await fcmService.initialize();
+      return await fcmService.getToken();
+    } catch (e) {
+      debugPrint('FCM Token generation error: $e');
+      return null;
+    }
+  }
+
+  Future<void> _handleUserDataStorage(
+    String uid,
+    String phoneNumber,
+    String fcmToken,
+  ) async {
+    try {
+      _saveUserToFirestore(fcmToken: fcmToken, phone: phoneNumber, uid: uid);
+
+      // MongoDB operations
+      try {
+        final userExists = await authrepo.addusertoMogoDB(
+          phone: phoneNumber,
+          uid: uid,
+          fcmToen: fcmToken,
+        );
+
+        if (!userExists) {
+          await authrepo.updateFcmToentoModoDB(
+            firebaseId: uid,
+            newFcmToken: fcmToken,
+          );
+        }
+      } catch (error) {}
+    } catch (e) {
+      debugPrint('User data storage error: $e');
+      // Consider whether to rethrow or handle silently
     }
   }
 
   Future<void> _handleUserDocument(User user) async {
     try {
       debugPrint('Checking/creating user document for ${user.uid}');
+
       final userDoc = await _firestore.collection('users').doc(user.uid).get();
 
       if (!userDoc.exists) {
@@ -155,6 +197,32 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     } catch (e) {
       debugPrint('Error handling user document: ${e.toString()}');
       // Continue even if document handling fails
+    }
+  }
+
+  Future<void> _saveUserToFirestore({
+    required String uid,
+    required String phone,
+    required String fcmToken,
+  }) async {
+    try {
+      final userRef = _firestore.collection('users').doc(uid);
+      debugPrint('Firestore document path: users/$uid');
+
+      await userRef.set({
+        'uid': uid,
+        'phone': phone,
+        'fcmTokens': FieldValue.arrayUnion([fcmToken]),
+        'createdAt': FieldValue.serverTimestamp(),
+        'lastLogin': FieldValue.serverTimestamp(),
+        'updatedAt': FieldValue.serverTimestamp(),
+      }, SetOptions(merge: true));
+
+      debugPrint('Firestore write successful');
+    } catch (e, stack) {
+      debugPrint('Firestore save failed: $e');
+      debugPrint('Stack trace: $stack');
+      rethrow;
     }
   }
 
@@ -210,5 +278,21 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       return 'Authentication service unavailable. Please try again later.';
     }
     return 'An unexpected error occurred. Please try again.';
+  }
+
+  Future<void> _handleLogout(
+    LogoutEvent event,
+    Emitter<AuthState> emit,
+  ) async {
+    emit(AuthLoading()); // Set loading state
+    try {
+      await _auth.signOut(); // Sign out the user
+      debugPrint('User signed out');
+      emit(LoggedOutState()); // Emit unauthenticated state
+    } catch (e) {
+      final errorMessage = _mapGenericError(e);
+      debugPrint('Error during sign out: $errorMessage');
+      emit(AuthFailureState(errorMessage)); // Emit failure state with error
+    }
   }
 }

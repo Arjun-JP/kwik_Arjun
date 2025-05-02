@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -41,334 +42,326 @@ class _CartPageState extends State<CartPage> {
   final TextEditingController _controller = TextEditingController();
   @override
   void initState() {
-    print('initState called');
     Future.microtask(() {
-      context
-          .read<CartBloc>()
-          .add(SyncCartWithServer(userId: "s5ZdLnYhnVfAramtr7knGduOI872"));
+      context.read<CartBloc>().add(
+          SyncCartWithServer(userId: FirebaseAuth.instance.currentUser!.uid));
       context
           .read<RecommendedProductsBloc>()
           .add(const FetchRecommendedProducts("null"));
     });
   }
 
-  UniqueKey _rebuildKey = UniqueKey();
   final Razorpay _razorpay = Razorpay();
-
-  void _forceRebuild() {
-    setState(() {
-      _rebuildKey = UniqueKey(); // Changing key forces full rebuild
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-
-    return KeyedSubtree(
-      key: _rebuildKey,
-      child: Scaffold(
-        backgroundColor: const Color(0xFFfbfafb),
-        // backgroundColor: const Color.fromARGB(255, 201, 201, 201),
-        appBar: AppBar(
-            backgroundColor: const Color(0xFFfbfafb),
-            elevation: 0,
-            centerTitle: false,
-            title: BlocBuilder<CartBloc, CartState>(builder: (context, state) {
-              return state is CartUpdated &&
-                      state.cartItems.isNotEmpty &&
-                      state.charges != {}
-                  ? Row(
-                      children: [
-                        const SizedBox(width: 15),
-                        Text(
-                          "Your Cart",
-                          style: theme.textTheme.bodyMedium!
-                              .copyWith(fontSize: 18),
+    final user = FirebaseAuth.instance.currentUser;
+    return Scaffold(
+      backgroundColor: const Color(0xFFfbfafb),
+      // backgroundColor: const Color.fromARGB(255, 201, 201, 201),
+      appBar: AppBar(
+          backgroundColor: const Color(0xFFfbfafb),
+          elevation: 0,
+          centerTitle: false,
+          title: BlocBuilder<CartBloc, CartState>(builder: (context, state) {
+            return state is CartUpdated &&
+                    state.cartItems.isNotEmpty &&
+                    state.charges != {}
+                ? Row(
+                    children: [
+                      const SizedBox(width: 15),
+                      Text(
+                        "Your Cart",
+                        style:
+                            theme.textTheme.bodyMedium!.copyWith(fontSize: 18),
+                      ),
+                      const SizedBox(width: 10),
+                      Container(
+                        decoration: BoxDecoration(
+                            color: const Color(0xFFFFD93C),
+                            borderRadius: BorderRadius.circular(15)),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 10.0, vertical: 5),
+                          child: Text(
+                              "Saved  ₹${(calculateTotalsaved(state.cartItems, state.charges)).toStringAsFixed(0)}",
+                              style: theme.textTheme.bodyMedium!
+                                  .copyWith(fontSize: 18)),
                         ),
-                        const SizedBox(width: 10),
-                        Container(
-                          decoration: BoxDecoration(
-                              color: const Color(0xFFFFD93C),
-                              borderRadius: BorderRadius.circular(15)),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 10.0, vertical: 5),
-                            child: Text(
-                                "Saved  ₹${(calculateTotalsaved(state.cartItems, state.charges)).toStringAsFixed(0)}",
-                                style: theme.textTheme.bodyMedium!
-                                    .copyWith(fontSize: 18)),
+                      ),
+                    ],
+                  )
+                : const SizedBox();
+          })),
+      body: BlocBuilder<CartBloc, CartState>(
+          buildWhen: (previous, current) => current is CartUpdated,
+          builder: (context, state) {
+            if (state is CartLoading) {
+              return const Center(child: CircularProgressIndicator());
+            } else if (state is CartError) {
+              context
+                  .read<CartBloc>()
+                  .add(SyncCartWithServer(userId: user!.uid));
+              return const Center(child: Text(""));
+            } else if (state is CartInitial) {
+              // Trigger loading when in initial state
+              context
+                  .read<CartBloc>()
+                  .add(SyncCartWithServer(userId: user!.uid));
+              return const Center(child: CircularProgressIndicator());
+            } else if (state is CartUpdated && state.cartItems.isNotEmpty) {
+              return Column(
+                children: [
+                  Expanded(
+                    flex: 11,
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.vertical,
+                      child: Column(
+                        children: [
+                          deliveryContainer(theme: theme),
+                          deliveryTimeContainer(
+                              theme: theme,
+                              numberofproducts: state.cartItems.length),
+                          const SizedBox(
+                            height: 15,
                           ),
-                        ),
-                      ],
-                    )
-                  : const SizedBox();
-            })),
-        body: BlocBuilder<CartBloc, CartState>(builder: (context, state) {
-          if (state is CartLoading) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (state is CartError) {
-            context.read<CartBloc>().add(
-                SyncCartWithServer(userId: "s5ZdLnYhnVfAramtr7knGduOI872"));
-            return const Center(child: Text(""));
-          } else if (state is CartInitial) {
-            // Trigger loading when in initial state
-            context.read<CartBloc>().add(
-                SyncCartWithServer(userId: "s5ZdLnYhnVfAramtr7knGduOI872"));
-            return const Center(child: CircularProgressIndicator());
-          } else if (state is CartUpdated && state.cartItems.isNotEmpty) {
-            return Column(
-              children: [
-                Expanded(
-                  flex: 11,
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.vertical,
-                    child: Column(
-                      children: [
-                        deliveryContainer(theme: theme),
-                        deliveryTimeContainer(theme: theme),
-                        const SizedBox(
-                          height: 15,
-                        ),
-                        state.wishlist.isNotEmpty
-                            ? Align(
-                                alignment: Alignment.centerLeft,
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 10.0, vertical: 5),
-                                  child: InkWell(
-                                    onTap: () {
-                                      Navigator.pushReplacement(
-                                        context,
-                                        PageRouteBuilder(
-                                          pageBuilder: (_, __, ___) =>
-                                              const CartPage(),
-                                          transitionDuration: Duration.zero,
-                                        ),
-                                      );
-                                    },
+                          state.wishlist.isNotEmpty
+                              ? Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 10.0, vertical: 5),
                                     child: Text(
                                       "Saved by You, Craved by Many",
                                       textAlign: TextAlign.left,
                                       style: theme.textTheme.bodyLarge,
                                     ),
                                   ),
-                                ),
-                              )
-                            : const SizedBox(),
-                        //wishlist  products
-                        state.wishlist.isNotEmpty
-                            ? Container(
-                                color: Colors.white,
-                                padding: const EdgeInsets.all(10),
-                                child: ListView.separated(
-                                  shrinkWrap: true,
-                                  physics: const NeverScrollableScrollPhysics(),
-                                  itemBuilder: (context, index) =>
-                                      wishlistProductItem(
-                                          wishlistproduct:
-                                              state.wishlist[index],
-                                          theme: theme,
-                                          qty: state.wishlist[index].productRef
-                                              .variations
-                                              .where(
-                                                (element) =>
-                                                    element.id ==
-                                                    state.wishlist[index]
-                                                        .variantId,
-                                              )
-                                              .toString()),
-                                  separatorBuilder: (context, index) =>
-                                      const Padding(
-                                          padding: EdgeInsets.symmetric(
-                                              horizontal: 10.0),
-                                          child: SizedBox(
-                                            height: 5,
-                                          )),
-                                  itemCount: state.wishlist.length,
-                                ),
-                              )
-                            : const SizedBox(),
-                        const SizedBox(
-                          height: 15,
-                        ),
-                        Align(
-                          alignment: Alignment.centerLeft,
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 10.0, vertical: 5),
-                            child: Text(
-                              "Picked by You, Packed for You",
-                              textAlign: TextAlign.left,
-                              style: theme.textTheme.bodyLarge,
+                                )
+                              : const SizedBox(),
+                          // wishlist  products
+                          state.wishlist.isNotEmpty
+                              ? Container(
+                                  color: Colors.white,
+                                  padding: const EdgeInsets.all(10),
+                                  child: ListView.separated(
+                                    shrinkWrap: true,
+                                    physics:
+                                        const NeverScrollableScrollPhysics(),
+                                    itemBuilder: (context, index) =>
+                                        wishlistProductItem(
+                                            user: user,
+                                            wishlistproduct:
+                                                state.wishlist[index],
+                                            theme: theme,
+                                            qty: state.wishlist[index]
+                                                .productRef.variations
+                                                .where(
+                                                  (element) =>
+                                                      element.id ==
+                                                      state.wishlist[index]
+                                                          .variantId,
+                                                )
+                                                .toString()),
+                                    separatorBuilder: (context, index) =>
+                                        const Padding(
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal: 10.0),
+                                            child: SizedBox(
+                                              height: 5,
+                                            )),
+                                    itemCount: state.wishlist.length,
+                                  ),
+                                )
+                              : const SizedBox(),
+                          const SizedBox(
+                            height: 15,
+                          ),
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 10.0, vertical: 5),
+                              child: Text(
+                                "Picked by You, Packed for You",
+                                textAlign: TextAlign.left,
+                                style: theme.textTheme.bodyLarge,
+                              ),
                             ),
                           ),
-                        ),
-                        //cart products
-                        ListView.separated(
-                          shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
-                          itemBuilder: (context, index) => cartproductItem(
-                              cartproduct: state.cartItems[index],
-                              theme: theme,
-                              qty: state.cartItems[index].quantity.toString()),
-                          separatorBuilder: (context, index) => const Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 10.0),
-                            child: DottedDivider(
-                              color: Color.fromARGB(255, 198, 198, 198),
+                          // cart products
+                          ListView.separated(
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemBuilder: (context, index) => cartproductItem(
+                                user: user,
+                                cartproduct: state.cartItems[index],
+                                theme: theme,
+                                qty:
+                                    state.cartItems[index].quantity.toString()),
+                            separatorBuilder: (context, index) => const Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 10.0),
+                              child: DottedDivider(
+                                color: Color.fromARGB(255, 198, 198, 198),
+                              ),
                             ),
+                            itemCount: state.cartItems.length,
                           ),
-                          itemCount: state.cartItems.length,
-                        ),
-                        const SizedBox(height: 15),
-                        SizedBox(
-                          height: 390,
-                          width: MediaQuery.of(context).size.width,
-                          child: BlocBuilder<RecommendedProductsBloc,
-                                  RecommendedProductsState>(
+                          const SizedBox(height: 15),
+                          SizedBox(
+                            height: 390,
+                            width: MediaQuery.of(context).size.width,
+                            child: BlocBuilder<RecommendedProductsBloc,
+                                    RecommendedProductsState>(
+                                builder: (context, state) {
+                              if (state is RecommendedProductLoading) {
+                                return const Center(
+                                    child: ProductModel1ListShimmer());
+                              } else if (state is RecommendedProductLoaded) {
+                                return state.products.isNotEmpty
+                                    ? productsYouMightAlsoLike(
+                                        theme: theme,
+                                        productlist: state.products)
+                                    : const SizedBox();
+                              } else if (state is RecommendedProductError) {
+                                return const Center(child: Text(""));
+                              } else {
+                                return const Center(child: Text(""));
+                              }
+                            }),
+                          ),
+                          const SizedBox(height: 15),
+                          addMoreItem(theme: theme),
+                          const SizedBox(height: 15),
+                          selectDeliveryType(theme: theme),
+                          const SizedBox(height: 15),
+                          deliveryInstructions(theme: theme),
+                          BlocBuilder<CartBloc, CartState>(
                               builder: (context, state) {
-                            if (state is RecommendedProductLoading) {
-                              return const Center(
-                                  child: ProductModel1ListShimmer());
-                            } else if (state is RecommendedProductLoaded) {
-                              return state.products.isNotEmpty
-                                  ? productsYouMightAlsoLike(
-                                      theme: theme, productlist: state.products)
-                                  : const SizedBox();
-                            } else if (state is RecommendedProductError) {
-                              return const Center(child: Text(""));
-                            } else {
-                              return const Center(child: Text(""));
-                            }
+                            return billDetails(
+                                theme: theme,
+                                charges:
+                                    state is CartUpdated ? state.charges : {},
+                                cartproducts: state is CartUpdated
+                                    ? state.cartItems
+                                    : []);
                           }),
+                          const SizedBox(height: 15),
+                          addressContainer(theme: theme),
+                          const SizedBox(height: 25),
+                        ],
+                      ),
+                    ),
+                  ),
+                  paymentOptions(
+                      user: user,
+                      theme: theme,
+                      charges: state.charges,
+                      cartproducts: state.cartItems)
+                ],
+              );
+            } else {
+              return SizedBox(
+                height: double.infinity,
+                width: double.infinity,
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(
+                    minHeight: MediaQuery.of(context).size.height,
+                  ),
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(10.0),
+                          child: Container(
+                            // padding: const EdgeInsets.all(15),
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                color: Colors.white),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Image.asset(
+                                  "assets/images/Screenshot 2025-01-31 at 6.20.37 PM.jpeg",
+                                  width: 80,
+                                  height: 100,
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(15),
+                                  child: Text(
+                                    "Your cart is feeling lonely! \nAdd something you love and we’ll bring it right to your doorstep.",
+                                    textAlign: TextAlign.center,
+                                    style: theme.textTheme.bodyLarge,
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 15,
+                                ),
+                                SizedBox(
+                                  height: 390,
+                                  width: MediaQuery.of(context).size.width,
+                                  child: BlocBuilder<RecommendedProductsBloc,
+                                          RecommendedProductsState>(
+                                      builder: (context, state) {
+                                    if (state is RecommendedProductLoading) {
+                                      return const Center(
+                                          child: ProductModel1ListShimmer());
+                                    } else if (state
+                                        is RecommendedProductLoaded) {
+                                      return state.products.isNotEmpty
+                                          ? productsYouMightAlsoLike(
+                                              theme: theme,
+                                              productlist: state.products)
+                                          : const SizedBox();
+                                    } else if (state
+                                        is RecommendedProductError) {
+                                      return const Center(child: Text(""));
+                                    } else {
+                                      return const Center(child: Text(""));
+                                    }
+                                  }),
+                                ),
+                                ElevatedButton(
+                                  onPressed: () async {
+                                    context.go("/home");
+                                    context
+                                        .read<NavbarBloc>()
+                                        .add(const UpdateNavBarIndex(0));
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    minimumSize: Size(
+                                        MediaQuery.of(context).size.width, 50),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    foregroundColor:
+                                        AppColors.buttonColorOrange,
+                                    backgroundColor:
+                                        AppColors.buttonColorOrange,
+                                  ),
+                                  child: Text(
+                                    "Find Your Favorites",
+                                    style: theme.textTheme.bodyLarge!.copyWith(
+                                      color: AppColors.kwhiteColor,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w800,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
-                        const SizedBox(height: 15),
-                        addMoreItem(theme: theme),
-                        const SizedBox(height: 15),
-                        selectDeliveryType(theme: theme),
-                        const SizedBox(height: 15),
-                        deliveryInstructions(theme: theme),
-                        BlocBuilder<CartBloc, CartState>(
-                            builder: (context, state) {
-                          return billDetails(
-                              theme: theme,
-                              charges:
-                                  state is CartUpdated ? state.charges : {},
-                              cartproducts:
-                                  state is CartUpdated ? state.cartItems : []);
-                        }),
-                        const SizedBox(height: 15),
-                        addressContainer(theme: theme),
-                        const SizedBox(height: 25),
                       ],
                     ),
                   ),
                 ),
-                paymentOptions(
-                    theme: theme,
-                    charges: state.charges,
-                    cartproducts: state.cartItems)
-              ],
-            );
-          } else {
-            return SizedBox(
-              height: double.infinity,
-              width: double.infinity,
-              child: ConstrainedBox(
-                constraints: BoxConstraints(
-                  minHeight: MediaQuery.of(context).size.height,
-                ),
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(10.0),
-                        child: Container(
-                          // padding: const EdgeInsets.all(15),
-                          width: double.infinity,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              color: Colors.white),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Image.asset(
-                                "assets/images/Screenshot 2025-01-31 at 6.20.37 PM.jpeg",
-                                width: 80,
-                                height: 100,
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(15),
-                                child: Text(
-                                  "Your cart is feeling lonely! \nAdd something you love and we’ll bring it right to your doorstep.",
-                                  textAlign: TextAlign.center,
-                                  style: theme.textTheme.bodyLarge,
-                                ),
-                              ),
-                              const SizedBox(
-                                height: 15,
-                              ),
-                              SizedBox(
-                                height: 390,
-                                width: MediaQuery.of(context).size.width,
-                                child: BlocBuilder<RecommendedProductsBloc,
-                                        RecommendedProductsState>(
-                                    builder: (context, state) {
-                                  if (state is RecommendedProductLoading) {
-                                    return const Center(
-                                        child: ProductModel1ListShimmer());
-                                  } else if (state
-                                      is RecommendedProductLoaded) {
-                                    return state.products.isNotEmpty
-                                        ? productsYouMightAlsoLike(
-                                            theme: theme,
-                                            productlist: state.products)
-                                        : const SizedBox();
-                                  } else if (state is RecommendedProductError) {
-                                    return const Center(child: Text(""));
-                                  } else {
-                                    return const Center(child: Text(""));
-                                  }
-                                }),
-                              ),
-                              ElevatedButton(
-                                onPressed: () async {
-                                  context.go("/home");
-                                  context
-                                      .read<NavbarBloc>()
-                                      .add(const UpdateNavBarIndex(0));
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  minimumSize: Size(
-                                      MediaQuery.of(context).size.width, 50),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
-                                  foregroundColor: AppColors.buttonColorOrange,
-                                  backgroundColor: AppColors.buttonColorOrange,
-                                ),
-                                child: Text(
-                                  "Find Your Favorites",
-                                  style: theme.textTheme.bodyLarge!.copyWith(
-                                    color: AppColors.kwhiteColor,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w800,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            );
-          }
-        }),
-        bottomNavigationBar: const Navbar(),
-      ),
+              );
+            }
+          }),
+      bottomNavigationBar: const Navbar(),
     );
   }
 
@@ -437,7 +430,8 @@ class _CartPageState extends State<CartPage> {
     );
   }
 
-  Widget deliveryTimeContainer({required ThemeData theme}) {
+  Widget deliveryTimeContainer(
+      {required ThemeData theme, required int numberofproducts}) {
     return Container(
       padding: const EdgeInsets.all(15),
       color: Colors.white,
@@ -449,14 +443,20 @@ class _CartPageState extends State<CartPage> {
           const SizedBox(width: 25),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
+            spacing: 3,
             children: [
-              Text(
-                "Delivery less then 20 mins",
-                style: theme.textTheme.bodyMedium!
-                    .copyWith(fontSize: 14, color: const Color(0xFF0743B2)),
+              SizedBox(
+                width: MediaQuery.of(context).size.width * .68,
+                child: Text(
+                  "Don't wait! Book your delivery slot and get it when you need it",
+                  textAlign: TextAlign.left,
+                  maxLines: 2,
+                  style: theme.textTheme.bodyMedium!
+                      .copyWith(fontSize: 14, color: const Color(0xFF0743B2)),
+                ),
               ),
               Text(
-                "Shipment of 3 items ",
+                "Shipment of $numberofproducts items ",
                 style: theme.textTheme.bodyMedium,
               ),
             ],
@@ -466,11 +466,11 @@ class _CartPageState extends State<CartPage> {
     );
   }
 
-  Widget cartproductItem({
-    required ThemeData theme,
-    required CartProduct cartproduct,
-    required String qty,
-  }) {
+  Widget cartproductItem(
+      {required ThemeData theme,
+      required CartProduct cartproduct,
+      required String qty,
+      required User? user}) {
     return InkWell(
       onTap: () => context.push(
         '/productdetails',
@@ -524,9 +524,11 @@ class _CartPageState extends State<CartPage> {
                   InkWell(
                     onTap: () {
                       context.read<CartBloc>().add(AddToWishlistFromcart(
-                          userId: "s5ZdLnYhnVfAramtr7knGduOI872",
+                          userId: user!.uid,
                           productref: cartproduct.productRef.id,
                           variationID: cartproduct.variant.id));
+                      context.read<CartBloc>().add(SyncCartWithServer(
+                          userId: FirebaseAuth.instance.currentUser!.uid));
                     },
                     child: Text(
                       "Save for later",
@@ -542,6 +544,7 @@ class _CartPageState extends State<CartPage> {
             Expanded(
               flex: 3,
               child: quantitycontrolbutton(
+                user: user,
                 theme: theme,
                 product: cartproduct.productRef,
                 qty: qty,
@@ -577,11 +580,11 @@ class _CartPageState extends State<CartPage> {
     );
   }
 
-  Widget wishlistProductItem({
-    required ThemeData theme,
-    required WishlistItem wishlistproduct,
-    required String qty,
-  }) {
+  Widget wishlistProductItem(
+      {required ThemeData theme,
+      required WishlistItem wishlistproduct,
+      required String qty,
+      required User? user}) {
     return GestureDetector(
       onTap: () => context.push(
         '/productdetails',
@@ -674,7 +677,7 @@ class _CartPageState extends State<CartPage> {
                     return ElevatedButton(
                       onPressed: () {
                         context.read<CartBloc>().add(AddToCartFromWishlist(
-                            userId: "s5ZdLnYhnVfAramtr7knGduOI872",
+                            userId: user!.uid,
                             wishlistID: wishlistproduct.id,
                             pincode: addressstate is LocationSearchResults
                                 ? "560003"
@@ -682,18 +685,11 @@ class _CartPageState extends State<CartPage> {
                                 //     addressstate.currentlocationaddress)["pin"]!
                                 : "673541"));
                         // context.read<CartBloc>().add(SyncCartWithServer(
-                        //     userId: "s5ZdLnYhnVfAramtr7knGduOI872"));
+                        //     userId: user!.uid));
 
-                        Future.microtask(() {
-                          Navigator.of(context).pushReplacement(
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  const CartPage(), // Replace CartPage() with your actual page widget
-                            ),
-                          );
-                        });
-                        context.read<CartBloc>().add(SyncCartWithServer(
-                            userId: "s5ZdLnYhnVfAramtr7knGduOI872"));
+                        context
+                            .read<CartBloc>()
+                            .add(SyncCartWithServer(userId: user!.uid));
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor:
@@ -830,7 +826,8 @@ class _CartPageState extends State<CartPage> {
                       label: Text(
                         "Instant delivery",
                         style: theme.textTheme.bodyMedium!.copyWith(
-                            fontSize: 14,
+                            fontSize: 10,
+                            fontWeight: FontWeight.w800,
                             color: state is DeliveryTypeUpdated &&
                                     state.deliveryType == "instant"
                                 ? Colors.white
@@ -868,7 +865,8 @@ class _CartPageState extends State<CartPage> {
                       label: Text(
                         "Book a Slot",
                         style: theme.textTheme.bodyMedium!.copyWith(
-                            fontSize: 14,
+                            fontWeight: FontWeight.w800,
+                            fontSize: 10,
                             color: state is DeliveryTypeUpdated &&
                                     state.deliveryType == "slot"
                                 ? Colors.white
@@ -906,17 +904,17 @@ class _CartPageState extends State<CartPage> {
                               children: List.generate(
                                 generateDeliverySlots(
                                         startTimeISO: addressstate
-                                            .warehouse.tumTumDeliveryStartTime,
+                                            .warehouse!.tumTumDeliveryStartTime,
                                         endTimeISO: addressstate
-                                            .warehouse.tumTumDeliveryEndTime)
+                                            .warehouse!.tumTumDeliveryEndTime)
                                     .length,
                                 (index) {
                                   List<DeliveryTimeSlot> deliverytimeslot =
                                       generateDeliverySlots(
-                                          startTimeISO: addressstate.warehouse
+                                          startTimeISO: addressstate.warehouse!
                                               .tumTumDeliveryStartTime,
-                                          endTimeISO: addressstate
-                                              .warehouse.tumTumDeliveryEndTime);
+                                          endTimeISO: addressstate.warehouse!
+                                              .tumTumDeliveryEndTime);
                                   return InkWell(
                                     onTap: () {
                                       context.read<OrderManagementBloc>().add(
@@ -994,7 +992,7 @@ class _CartPageState extends State<CartPage> {
               style: theme.textTheme.bodyLarge,
             ),
             leading: SvgPicture.asset("assets/images/instructions.svg",
-                height: 40, width: 40),
+                height: 25, width: 25),
             subtitle: Text(
               "Delivery partner will be notified",
               style: theme.textTheme.bodyMedium,
@@ -1090,7 +1088,7 @@ class _CartPageState extends State<CartPage> {
               style: theme.textTheme.bodyLarge,
             ),
             leading: SvgPicture.asset("assets/images/delivery_details.svg",
-                height: 40, width: 40),
+                height: 25, width: 25),
             subtitle: Text(
               "Learn more about how we ensue their safety",
               style: theme.textTheme.bodyMedium,
@@ -1208,8 +1206,8 @@ class _CartPageState extends State<CartPage> {
                   flex: 1,
                   child: SvgPicture.asset(
                     "assets/images/cartbill_1.svg",
-                    height: 28,
-                    width: 28,
+                    height: 20,
+                    width: 20,
                   )),
               Expanded(
                 flex: 5,
@@ -1220,7 +1218,7 @@ class _CartPageState extends State<CartPage> {
                     Text(
                       "Items total",
                       style: theme.textTheme.bodyMedium!.copyWith(
-                          fontSize: 14, color: const Color(0xFF233D4D)),
+                          fontSize: 12, color: const Color(0xFF233D4D)),
                     ),
                     Container(
                       padding: const EdgeInsets.symmetric(
@@ -1238,7 +1236,7 @@ class _CartPageState extends State<CartPage> {
                 ),
               ),
               Expanded(
-                flex: 2,
+                flex: 3,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   spacing: 10,
@@ -1247,7 +1245,7 @@ class _CartPageState extends State<CartPage> {
                       "₹${calculateTotalMRP(cartproducts).toStringAsFixed(0)}",
                       style: theme.textTheme.bodyMedium!.copyWith(
                           decoration: TextDecoration.lineThrough,
-                          fontSize: 13,
+                          fontSize: 12,
                           color: const Color(0xFFA19DA3)),
                     ),
                     Text(
@@ -1268,19 +1266,19 @@ class _CartPageState extends State<CartPage> {
                   flex: 1,
                   child: SvgPicture.asset(
                     "assets/images/cartbill_2.svg",
-                    height: 28,
-                    width: 28,
+                    height: 20,
+                    width: 20,
                   )),
               Expanded(
                 flex: 5,
                 child: Text(
                   "Delivery charge",
                   style: theme.textTheme.bodyMedium!
-                      .copyWith(fontSize: 14, color: const Color(0xFF233D4D)),
+                      .copyWith(fontSize: 12, color: const Color(0xFF233D4D)),
                 ),
               ),
               Expanded(
-                flex: 2,
+                flex: 3,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   spacing: 10,
@@ -1317,19 +1315,19 @@ class _CartPageState extends State<CartPage> {
                   flex: 1,
                   child: SvgPicture.asset(
                     "assets/images/cartbill_3.svg",
-                    height: 28,
-                    width: 28,
+                    height: 20,
+                    width: 20,
                   )),
               Expanded(
                 flex: 5,
                 child: Text(
                   "Handling charge",
                   style: theme.textTheme.bodyMedium!
-                      .copyWith(fontSize: 14, color: const Color(0xFF233D4D)),
+                      .copyWith(fontSize: 12, color: const Color(0xFF233D4D)),
                 ),
               ),
               Expanded(
-                flex: 2,
+                flex: 3,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   spacing: 10,
@@ -1365,19 +1363,19 @@ class _CartPageState extends State<CartPage> {
                   flex: 1,
                   child: SvgPicture.asset(
                     "assets/images/cartbill_4.svg",
-                    height: 28,
-                    width: 28,
+                    height: 20,
+                    width: 20,
                   )),
               Expanded(
                 flex: 5,
                 child: Text(
                   "High demand surge charge",
                   style: theme.textTheme.bodyMedium!
-                      .copyWith(fontSize: 14, color: const Color(0xFF233D4D)),
+                      .copyWith(fontSize: 12, color: const Color(0xFF233D4D)),
                 ),
               ),
               Expanded(
-                flex: 2,
+                flex: 3,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   spacing: 10,
@@ -1490,63 +1488,80 @@ class _CartPageState extends State<CartPage> {
                   ],
                 ),
               )
-            : Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
-                color: Colors.white,
-                child: Row(
-                  spacing: 5,
-                  children: [
-                    Expanded(
-                        flex: 2,
-                        child: SvgPicture.asset("assets/images/home_logo.svg")),
-                    Expanded(
-                      flex: 8,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "Delivering to ${state.addresslist[0]!.addressType}",
-                            style: theme.textTheme.titleLarge!
-                                .copyWith(fontSize: 12),
+            : state.addresslist.isNotEmpty
+                ? Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 10, vertical: 15),
+                    color: Colors.white,
+                    child: Row(
+                      spacing: 5,
+                      children: [
+                        Expanded(
+                            flex: 2,
+                            child: SvgPicture.asset(
+                                "assets/images/home_logo.svg")),
+                        Expanded(
+                          flex: 8,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "Delivering to ${state.addresslist[0]!.addressType}",
+                                style: theme.textTheme.titleLarge!
+                                    .copyWith(fontSize: 12),
+                              ),
+                              Text(
+                                "${state.addresslist[0].floor ?? ""}, ${state.addresslist[0].flatNoName ?? ""}, ${state.addresslist[0]!.area}, ${state.addresslist[0].landmark ?? ""}, ${state.addresslist[0]!.pincode},\n${state.addresslist[0]!.phoneNo}",
+                                style: theme.textTheme.bodyMedium!.copyWith(
+                                    fontSize: 12,
+                                    color: const Color(0xFFA19DA3)),
+                              ),
+                            ],
                           ),
-                          Text(
-                            "${state.addresslist[0]!.floor}, ${state.addresslist[0]!.flatNoName}, ${state.addresslist[0]!.area}, ${state.addresslist[0]!.landmark}, ${state.addresslist[0]!.pincode},\n${state.addresslist[0]!.phoneNo}",
-                            style: theme.textTheme.bodyMedium!.copyWith(
-                                fontSize: 12, color: const Color(0xFFA19DA3)),
+                        ),
+                        Expanded(
+                          flex: 2,
+                          child: InkWell(
+                            onTap: () {
+                              HapticFeedback.mediumImpact();
+                              Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) =>
+                                    const LocationSearchPage(),
+                              ));
+                            },
+                            child: Container(
+                              height: 30,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                color: const Color(0xFFD0F1C5),
+                              ),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 5, vertical: 5),
+                              child: Center(
+                                  child: Text(
+                                "Change",
+                                style: theme.textTheme.bodyMedium!.copyWith(
+                                    fontSize: 10,
+                                    color: const Color(0xFF328616)),
+                              )),
+                            ),
                           ),
-                        ],
+                        )
+                      ],
+                    ),
+                  )
+                : Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 10, vertical: 15),
+                    color: Colors.white,
+                    child: Center(
+                      child: Text(
+                        "Add address",
+                        style: theme.textTheme.bodyMedium!
+                            .copyWith(color: Colors.redAccent),
                       ),
                     ),
-                    Expanded(
-                      flex: 2,
-                      child: InkWell(
-                        onTap: () {
-                          HapticFeedback.mediumImpact();
-                          Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => const LocationSearchPage(),
-                          ));
-                        },
-                        child: Container(
-                          height: 30,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            color: const Color(0xFFD0F1C5),
-                          ),
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 5, vertical: 5),
-                          child: Center(
-                              child: Text(
-                            "Change",
-                            style: theme.textTheme.bodyMedium!.copyWith(
-                                fontSize: 10, color: const Color(0xFF328616)),
-                          )),
-                        ),
-                      ),
-                    )
-                  ],
-                ),
-              );
+                  );
       } else {
         return const SizedBox();
       }
@@ -1556,6 +1571,7 @@ class _CartPageState extends State<CartPage> {
   Widget paymentOptions(
       {required ThemeData theme,
       required List<CartProduct> cartproducts,
+      required User? user,
       required Map<String, dynamic> charges}) {
     return BlocBuilder<OrderManagementBloc, OrderManagementState>(
         builder: (context, state) {
@@ -1651,7 +1667,7 @@ class _CartPageState extends State<CartPage> {
                                 .read<OrderManagementBloc>()
                                 .add(PlaceOrder(orderJson: {
                                   "pincode": "560003",
-                                  "user_ref": "s5ZdLnYhnVfAramtr7knGduOI872",
+                                  "user_ref": user!.uid,
                                   "order_status": "Order placed",
                                   "otp": "123456",
                                   "order_placed_time":
@@ -1666,8 +1682,9 @@ class _CartPageState extends State<CartPage> {
                                   "delivery_instructions": " intruction"
                                 }));
                             context.go('/order-success');
-                            context.read<CartBloc>().add(SyncCartWithServer(
-                                userId: "s5ZdLnYhnVfAramtr7knGduOI872"));
+                            context
+                                .read<CartBloc>()
+                                .add(SyncCartWithServer(userId: user!.uid));
                             // Navigator.pushAndRemoveUntil(
                             //   context,
                             //   MaterialPageRoute(
@@ -1677,7 +1694,7 @@ class _CartPageState extends State<CartPage> {
                             // );
                           } catch (error) {
                             // context.read<CartBloc>().add(SyncCartWithServer(
-                            //     userId: "s5ZdLnYhnVfAramtr7knGduOI872"));
+                            //     userId: user!.uid));
                             print(error);
                           }
                         }
@@ -1723,6 +1740,7 @@ class _CartPageState extends State<CartPage> {
   Widget quantitycontrolbutton(
       {required ThemeData theme,
       required ProductModel product,
+      required User? user,
       required String qty}) {
     return BlocBuilder<CartBloc, CartState>(builder: (context, state) {
       List<CartProduct> cartItems = [];
@@ -1746,7 +1764,7 @@ class _CartPageState extends State<CartPage> {
                   context.read<CartBloc>().add(DecreaseCartQuantity(
                       pincode: "560003",
                       productRef: product.id,
-                      userId: "s5ZdLnYhnVfAramtr7knGduOI872",
+                      userId: user!.uid,
                       variantId: product.variations.first.id));
                 },
                 child: SizedBox(
@@ -1793,7 +1811,7 @@ class _CartPageState extends State<CartPage> {
                   context.read<CartBloc>().add(IncreaseCartQuantity(
                       pincode: "560003",
                       productRef: product.id,
-                      userId: "s5ZdLnYhnVfAramtr7knGduOI872",
+                      userId: user!.uid,
                       variantId: product.variations.first.id));
                 },
                 child: const SizedBox(
@@ -2091,18 +2109,18 @@ String generateIsoTime(String timeRange) {
 
 void _handlePaymentSuccess(
     PaymentSuccessResponse response, BuildContext context) {
-  print('Payment Success');
-  print('Payment ID: ${response.paymentId}');
-  print('Order ID: ${response.orderId}');
-  print('Signature: ${response.signature}');
+  // print('Payment Success');
+  // print('Payment ID: ${response.paymentId}');
+  // print('Order ID: ${response.orderId}');
+  // print('Signature: ${response.signature}');
 
   // Here you get the paymentId — use it to verify payment status
 }
 
 void _handlePaymentError(PaymentFailureResponse response) {
-  print('Payment Failed');
-  print('Code: ${response.code}');
-  print('Message: ${response.message}');
+  // print('Payment Failed');
+  // print('Code: ${response.code}');
+  // print('Message: ${response.message}');
 }
 
 void _handleExternalWallet(ExternalWalletResponse response) {

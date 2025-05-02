@@ -80,27 +80,24 @@ class SupersaverModel2 extends StatelessWidget {
       List<ProductModel> products, BuildContext context, String subcategoryid) {
     return Container(
       color: parseColor(bgcolor),
-      height: 617,
       width: double.infinity,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: Text(
-              title,
-              style: TextStyle(
-                  color: parseColor(titleColor),
-                  fontSize: 18,
-                  fontWeight: FontWeight.w800),
-            ),
-          ),
-          const SizedBox(height: 10),
+          // Padding(
+          //   padding: const EdgeInsets.all(10.0),
+          //   child: Text(
+          //     title,
+          //     style: TextStyle(
+          //         color: parseColor(titleColor),
+          //         fontSize: 18,
+          //         fontWeight: FontWeight.w800),
+          //   ),
+          // ),
           Image.network(
             topbanner,
             width: double.infinity,
-            height: 200,
           ),
           const SizedBox(height: 10),
           Padding(
@@ -135,7 +132,7 @@ class SupersaverModel2 extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(height: 15),
+          const SizedBox(height: 20),
           InkWell(
             onTap: () => context.push(
                 "/allsubcategorypage?categoryId=${products.first.categoryRef.catref}&selectedsubcategory=$subcategoryid"),
@@ -174,6 +171,7 @@ class SupersaverModel2 extends StatelessWidget {
               ),
             ),
           ),
+          const SizedBox(height: 20),
         ],
       ),
     );

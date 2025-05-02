@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -15,10 +17,11 @@ class Navbar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: BlocBuilder<NavbarBloc, NavbarState>(
-        builder: (context, state) {
+    return BlocBuilder<NavbarBloc, NavbarState>(
+      builder: (context, state) {
+        if (Platform.isIOS) {
           return Container(
+            margin: const EdgeInsets.only(bottom: 15),
             decoration: const BoxDecoration(
               color: Colors.white,
               border: Border(
@@ -39,6 +42,7 @@ class Navbar extends StatelessWidget {
                   Expanded(
                     flex: 1,
                     child: _buildNavItem(
+                        state.selectedIndex,
                         context,
                         0,
                         "Home",
@@ -50,6 +54,7 @@ class Navbar extends StatelessWidget {
                   Expanded(
                     flex: 1,
                     child: _buildNavItem(
+                        state.selectedIndex,
                         context,
                         1,
                         "Categories",
@@ -61,22 +66,24 @@ class Navbar extends StatelessWidget {
                   Expanded(
                     flex: 1,
                     child: BlocBuilder<CartBloc, CartState>(
-                        builder: (context, state) {
+                        builder: (context, states) {
                       return _buildNavItem(
+                          state.selectedIndex,
                           context,
                           3,
                           "Cart",
                           "assets/images/cart_selected.svg",
                           "assets/images/cart_unselected.svg",
                           "/cart",
-                          state is CartUpdated
-                              ? state.cartItems.length.toString()
+                          states is CartUpdated
+                              ? states.cartItems.length.toString()
                               : null);
                     }),
                   ),
                   Expanded(
                     flex: 1,
                     child: _buildNavItem(
+                        state.selectedIndex,
                         context,
                         2,
                         "Offers",
@@ -89,12 +96,91 @@ class Navbar extends StatelessWidget {
               ),
             ),
           );
-        },
-      ),
+        } else {
+          return SafeArea(
+            child: Container(
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                border: Border(
+                  top: BorderSide(
+                    color: AppColors.buttonColorOrange, // Border color
+                    width: .3, // Border width
+                  ),
+                ),
+              ),
+              height: 66,
+              width: MediaQuery.of(context).size.width,
+              child: Padding(
+                padding: const EdgeInsets.only(top: 10, right: 6, left: 6),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      flex: 1,
+                      child: _buildNavItem(
+                          state.selectedIndex,
+                          context,
+                          0,
+                          "Home",
+                          "assets/images/home_selected.svg",
+                          "assets/images/home_unselected.svg",
+                          "/home",
+                          null),
+                    ),
+                    Expanded(
+                      flex: 1,
+                      child: _buildNavItem(
+                          state.selectedIndex,
+                          context,
+                          1,
+                          "Categories",
+                          "assets/images/category_selected.svg",
+                          "assets/images/category_unselected.svg",
+                          "/category",
+                          null),
+                    ),
+                    Expanded(
+                      flex: 1,
+                      child: BlocBuilder<CartBloc, CartState>(
+                          builder: (context, states) {
+                        return _buildNavItem(
+                            state.selectedIndex,
+                            context,
+                            3,
+                            "Cart",
+                            "assets/images/cart_selected.svg",
+                            "assets/images/cart_unselected.svg",
+                            "/cart",
+                            states is CartUpdated
+                                ? states.cartItems.length.toString()
+                                : null);
+                      }),
+                    ),
+                    Expanded(
+                      flex: 1,
+                      child: _buildNavItem(
+                          state.selectedIndex,
+                          context,
+                          2,
+                          "Offers",
+                          "assets/images/supersaver.png",
+                          "assets/images/supersaver.png",
+                          "/offer",
+                          null),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        }
+      },
     );
   }
 
   Widget _buildNavItem(
+    int currentindex,
     BuildContext context,
     int index,
     String label,
@@ -111,9 +197,11 @@ class Navbar extends StatelessWidget {
       hoverColor: Colors.transparent,
       highlightColor: Colors.transparent,
       onTap: () {
-        HapticFeedback.mediumImpact();
-        context.go(route);
-        context.read<NavbarBloc>().add(UpdateNavBarIndex(index));
+        if (currentindex != index) {
+          HapticFeedback.mediumImpact();
+          context.go(route);
+          context.read<NavbarBloc>().add(UpdateNavBarIndex(index));
+        }
       },
       child: Column(
         children: [

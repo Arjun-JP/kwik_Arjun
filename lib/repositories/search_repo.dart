@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:http/http.dart' as http;
 import 'package:kwik/models/product_model.dart';
 
@@ -9,6 +10,7 @@ class SearchRepo {
     'api_Key': "arjun",
     'api_Secret': "digi9",
   };
+  final user = FirebaseAuth.instance.currentUser;
   Future<Map<String, dynamic>> searchProducts(
       String query, String userId) async {
     try {
@@ -16,10 +18,6 @@ class SearchRepo {
         Uri.parse("$baseUrl/product/search/product/user/$userId?query=$query"),
         headers: headers,
       );
-
-      print("Search API Response:");
-      print("Status: ${response.statusCode}");
-      print("Body: ${response.body}");
 
       if (response.statusCode == 200) {
         final decodedData = jsonDecode(response.body) as Map<String, dynamic>;
@@ -48,7 +46,7 @@ class SearchRepo {
   Future<Map<String, dynamic>> getInitialProducts() async {
     final response = await http.get(
       Uri.parse(
-          "$baseUrl/product/get/recommendedProductsByUserOrder/s5ZdLnYhnVfAramtr7knGduOI872"),
+          "$baseUrl/product/get/recommendedProductsByUserOrder/${user!.uid}"),
       headers: headers,
     );
 

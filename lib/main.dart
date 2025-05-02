@@ -39,6 +39,7 @@ import 'package:kwik/bloc/product_details_page/product_details_bloc/product_deta
 import 'package:kwik/bloc/product_details_page/recommended_products_bloc/recommended_products_bloc.dart';
 import 'package:kwik/bloc/product_details_page/similerproduct_bloc/similar_product_bloc.dart';
 import 'package:kwik/bloc/subcategory_product_bloc/subcategory_product_bloc.dart';
+import 'package:kwik/constants/FCM_token.dart';
 import 'package:kwik/constants/network_check.dart';
 import 'package:kwik/constants/textstyle.dart';
 import 'package:kwik/firebase_options.dart';
@@ -50,6 +51,7 @@ import 'package:kwik/models/cart_model.dart';
 import 'package:kwik/models/product_model.dart' show ProductModel;
 import 'package:kwik/repositories/address_repo.dart';
 import 'package:kwik/repositories/allsubcategory_repo.dart';
+import 'package:kwik/repositories/auth_repo.dart';
 import 'package:kwik/repositories/banner_repository.dart';
 import 'package:kwik/repositories/brand_products_repo.dart';
 import 'package:kwik/repositories/cart_repo.dart';
@@ -233,7 +235,9 @@ void main() async {
   // debugPrintScheduleFrameStacks:
   // true;
   WidgetsFlutterBinding.ensureInitialized();
-
+  final fcmService = FCMService();
+  await fcmService.initialize();
+  fcmService.setupTokenRefresh();
   // Handle initial authentication state
 
   runApp(const MyApp());
@@ -269,7 +273,7 @@ class _MyAppState extends State<MyApp> {
     return MultiBlocProvider(
       providers: [
         BlocProvider<AuthBloc>(
-          create: (_) => AuthBloc(),
+          create: (_) => AuthBloc(AuthRepo()),
         ),
         BlocProvider<HomeUiBloc>(
             create: (_) => HomeUiBloc(uiRepository: HomeUiRepository())),

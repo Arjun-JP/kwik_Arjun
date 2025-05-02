@@ -63,6 +63,7 @@ class SupersaverModel3 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    ThemeData theme = Theme.of(context);
     return showCategory
         ? BlocProvider(
             create: (context) =>
@@ -74,7 +75,7 @@ class SupersaverModel3 extends StatelessWidget {
                   return const Center(child: SupersaverModel3Shimmer());
                 } else if (state is CategoryModel10Loaded) {
                   return _buildCategoryModel10(
-                      state.products, context, categoryID);
+                      state.products, theme, context, categoryID);
                 } else if (state is CategoryModel10Error) {
                   return Center(child: Text('Error: ${state.message}'));
                 }
@@ -85,8 +86,8 @@ class SupersaverModel3 extends StatelessWidget {
         : const SizedBox();
   }
 
-  Widget _buildCategoryModel10(
-      List<ProductModel> products, BuildContext context, String subcategoryid) {
+  Widget _buildCategoryModel10(List<ProductModel> products, ThemeData theme,
+      BuildContext context, String subcategoryid) {
     return Container(
       color: parseColor(bgcolor),
       width: double.infinity,
@@ -102,9 +103,9 @@ class SupersaverModel3 extends StatelessWidget {
                 child: Text(
                   title,
                   maxLines: 2,
-                  style: TextStyle(
+                  style: theme.textTheme.titleLarge!.copyWith(
                       color: parseColor(titleColor),
-                      fontSize: 18,
+                      fontSize: 22,
                       fontWeight: FontWeight.w800),
                 ),
               ),

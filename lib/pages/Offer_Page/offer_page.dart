@@ -15,6 +15,8 @@ import 'package:kwik/bloc/Super%20Saver%20Page%20Bloc/supersaver_model4_bloc/sup
 import 'package:kwik/bloc/home_page_bloc/category_model_10_bloc/category_model_10_bloc.dart';
 import 'package:kwik/bloc/home_page_bloc/category_model_10_bloc/category_model_10_event.dart';
 import 'package:kwik/bloc/navbar_bloc/navbar_bloc.dart';
+import 'package:kwik/bloc/product_details_page/recommended_products_bloc/recommended_products_bloc.dart';
+import 'package:kwik/bloc/product_details_page/recommended_products_bloc/recommended_products_event.dart';
 import 'package:kwik/pages/Address_management/location_search_page.dart';
 import 'package:kwik/pages/Offer_Page/Super%20Saver%20Page%20Widgets/supersaver_model1.dart';
 import 'package:kwik/pages/Home_page/widgets/banner_model.dart';
@@ -44,7 +46,7 @@ class _OfferPageState extends State<OfferPage> {
 
     BlocProvider.of<CategoryModel10Bloc>(context)
         .add(Clearsubcatproduct10Cache());
-
+    context.read<RecommendedProductsBloc>().add(ClearRecommendedproductCache());
     BlocProvider.of<SupersaverModel4Bloc>(context).add(ClearsubcatCacheSS4());
 //,,,,,SupersaverModel5Bloc
     context.read<SuperSaverUiBloc>().add(FetchUiDataEvent());
@@ -61,219 +63,178 @@ class _OfferPageState extends State<OfferPage> {
   @override
   Widget build(BuildContext context) {
     ThemeData theme = Theme.of(context);
-    return NotificationListener<ScrollNotification>(
-      onNotification: (scrollNotification) {
-        if (scrollNotification is ScrollUpdateNotification) {
-          final metrics = scrollNotification.metrics;
-          final position = metrics.pixels;
-          final maxScroll = metrics.maxScrollExtent;
-          final scrollDelta = scrollNotification.scrollDelta;
+    return BlocBuilder<SuperSaverUiBloc, SuperSaverUiState>(
+        builder: (context, state) {
+      if (state is UiInitial) {
+        context.read<SuperSaverUiBloc>().add(FetchUiDataEvent());
+      } else if (state is UiLoading) {
+        return const Center(child: MainLoadingIndicator());
+      } else if (state is UiLoaded) {
+        final uiData = state.uiData;
 
-          // Only proceed if we have a valid scroll delta
-          if (scrollDelta == null) return true;
-
-          // Define thresholds
-          const edgeThreshold = 100.0;
-          final nearTop = position <= edgeThreshold;
-          final nearBottom = position >= maxScroll - edgeThreshold;
-
-          // Determine if we're in the middle of the list (not near edges)
-          final inMiddle = !nearTop && !nearBottom;
-
-          // Handle scroll direction with edge cases
-          if (scrollDelta > 0) {
-            // Scrolling down - only hide if we're in the middle
-            if (inMiddle) {
-              context
-                  .read<NavbarBloc>()
-                  .add(const UpdateNavBarVisibility(false));
-            }
-          } else if (scrollDelta < 0) {
-            // Scrolling up - always show, but especially when near edges
-            context.read<NavbarBloc>().add(const UpdateNavBarVisibility(true));
+        final templates = [
+          {
+            'template': BannerModel1(
+              titlecolor: uiData["template1"]["title_color"],
+              bgColor: uiData["template1"]["background_color"],
+              bannerId: uiData["template1"]["bannerId"],
+              height: double.parse((uiData["template1"]["height"]).toString()),
+              borderradious: double.parse(
+                  (uiData["template1"]["borderradious"]).toString()),
+              showbanner: uiData["template1"]["showbanner"],
+            ),
+            'order': uiData["template1"]["ui_order_number"]
+          },
+          {
+            'template': SupersaverModel1(
+              showCategory: uiData["template2"]["show_Category"],
+              title: uiData["template2"]["title"],
+              seeAllButtonBG: uiData["template2"]["seeAllButtonBG"],
+              seeAllButtontext: uiData["template2"]["seeAllButtontext"],
+              vegOrNonIcon: 'assets/images/vegicon.png',
+              categoryId: uiData["template2"]["categoryId"],
+              bgcolor: uiData["template2"]["bgcolor"],
+              titleColor: uiData["template2"]["titleColor"],
+              priceColor: uiData["template2"]["priceColor"],
+              subcatcolor1: uiData["template2"]["subcatcolor1"],
+              subcatcolor2: uiData["template2"]["subcatcolor2"],
+            ),
+            'order': uiData["template2"]["ui_order_number"],
+          },
+          {
+            'template': SupersaverModel2(
+              showCategory: uiData["template3"]["show_Category"],
+              topbanner: uiData["template3"]["topbanner"],
+              title: uiData["template3"]["title"],
+              subcategoryid: uiData["template3"]["subcategoryid"],
+              titleColor: uiData["template3"]["titleColor"],
+              bgcolor: uiData["template3"]["bgcolor"],
+              cartbuttontextcolor: uiData["template3"]["cartbuttontextcolor"],
+              mrpcolor: uiData["template3"]["mrpcolor"],
+              offerBGcolor: uiData["template3"]["offerBGcolor"],
+              offerTextcolor: uiData["template3"]["offerTextcolor"],
+              prodoductbgcolor: uiData["template3"]["prodoductbgcolor"],
+              productTextColor: uiData["template3"]["productTextColor"],
+              sellingpricecolor: uiData["template3"]["sellingpricecolor"],
+              seeAllButtonBG: uiData["template3"]["seeAllButtonBG"],
+              seeAllButtontext: uiData["template3"]["seeAllButtontext"],
+              buttonbgcolor: uiData["template3"]["buttonbgcolor"],
+              unitTextcolor: uiData["template3"]["unitTextcolor"],
+              unitbgcolor: uiData["template3"]["unitbgcolor"],
+            ),
+            'order': uiData["template3"]["ui_order_number"],
+          },
+          {
+            'template': SupersaverModel3(
+                showCategory: uiData["template4"]["show_Category"],
+                categoryID: uiData["template4"]["categoryID"],
+                title: uiData["template4"]["title"],
+                titleColor: uiData["template4"]["titleColor"],
+                bgcolor: uiData["template4"]["background_color"],
+                image: uiData["template4"]["image"],
+                cartbuttontextcolor: uiData["template4"]["cartbuttontextcolor"],
+                mrpcolor: uiData["template4"]["mrpcolor"],
+                crosscolor: uiData["template4"]["crosscolor"],
+                prodoductbgcolor: uiData["template4"]["prodoductbgcolor"],
+                productTextColor: uiData["template4"]["productTextColor"],
+                sellingpricecolor: uiData["template4"]["sellingpricecolor"],
+                seeAllButtonBG: uiData["template4"]["seeAllButtonBG"],
+                seeAllButtontext: uiData["template4"]["seeAllButtontext"],
+                cartbuttonbg: uiData["template4"]["cartbuttonbg"],
+                offerbgcolor2: uiData["template4"]["offerbgcolor2"],
+                offerbgcolor: uiData["template4"]["offerbgcolor"],
+                offerbordercolor: uiData["template4"]["offerbordercolor"],
+                offertextcolor: uiData["template4"]["offertextcolor"],
+                producttextcolor: uiData["template4"]["producttextcolor"],
+                unitcolor: uiData["template4"]["unitcolor"],
+                offertextcolor2: uiData["template4"]["offertextcolor2"]),
+            'order': uiData["template4"]["ui_order_number"]
+          },
+          {
+            'template': SupersaverModel4(
+              title: uiData["template5"]["title"],
+              showCategory: uiData["template5"]["show_Category"],
+              addButtonColor: uiData["template5"]["addButtonColor"],
+              offertextcolor: uiData["template5"]["offertextcolor"],
+              offerbgcolor: uiData["template5"]["offerbgcolor"],
+              subCategoryId: uiData["template5"]["subCategoryId"],
+              bgColor: uiData["template5"]["bgColor"],
+              productColor: uiData["template5"]["productColor"],
+              titleColor: uiData["template5"]["titleColor"],
+              mrpBgColor: uiData["template5"]["mrpBgColor"],
+              sellTextColor: uiData["template5"]["sellTextColor"],
+              mrpTextColor: uiData["template5"]["mrpTextColor"],
+              sellPriceBgColor: uiData["template5"]["sellPriceBgColor"],
+              ratingTextColor: uiData["template5"]["ratingTextColor"],
+              ratingBgColor: uiData["template5"]["ratingBgColor"],
+              seeAllButtonBG: uiData["template5"]["seeAllButtonBG"],
+              seeAllButtontext: uiData["template5"]["seeAllButtontext"],
+              bannerimage: uiData["template5"]["topbanner"],
+            ),
+            'order': uiData["template5"]["ui_order_number"]
+          },
+          {
+            'template': SupersaverModel5(
+              showCategory: uiData["template6"]["show_Category"],
+              maincategories:
+                  List<String>.from(uiData["template6"]["maincategories"]),
+              topbanner: uiData["template6"]["topbanner"],
+              categoryId: uiData["template6"]["categoryId"],
+              bgcolor: uiData["template6"]["bgcolor"],
+              titleColor: uiData["template6"]["titleColor"],
+              subcatColor: uiData["template6"]["subcatColor"],
+              offerBGcolor: uiData["template6"]["offerBGcolor"],
+              mrpColor: uiData["template6"]["mrpColor"],
+              productBgColor: uiData["template6"]["productBgColor"],
+              sellingPriceColor: uiData["template6"]["sellingPriceColor"],
+              buttontextcolor: uiData["template6"]["buttontextcolor"],
+              offerTextcolor: uiData["template6"]["offerTextcolor"],
+              title: uiData["template6"]["title"],
+              unitTextcolor: uiData["template6"]["unitTextcolor"],
+              unitbgcolor: uiData["template6"]["unitbgcolor"],
+              seeAllButtonBG: uiData["template6"]["seeAllButtonBG"],
+              seeAllButtontext: uiData["template6"]["seeAllButtontext"],
+            ),
+            'order': uiData["template6"]["ui_order_number"],
+          },
+          {
+            'template': const DescriptiveWidget(
+              showcategory: true,
+              title: "Skip the store, we're at your door!",
+              logo: "assets/images/Screenshot 2025-01-31 at 6.20.37 PM.jpeg",
+            ),
+            'order': "100"
           }
+        ];
 
-          // Special case: Show navbar when exactly at top or bottom
-          if (position == 0 || position == maxScroll) {
-            context.read<NavbarBloc>().add(const UpdateNavBarVisibility(true));
-          }
-        }
-        return true;
-      },
-      child: BlocBuilder<SuperSaverUiBloc, SuperSaverUiState>(
-          builder: (context, state) {
-        if (state is UiInitial) {
-          context.read<SuperSaverUiBloc>().add(FetchUiDataEvent());
-        } else if (state is UiLoading) {
-          return const Center(child: MainLoadingIndicator());
-        } else if (state is UiLoaded) {
-          final uiData = state.uiData;
+        templates.sort(
+            (a, b) => int.parse(a['order']).compareTo(int.parse(b['order'])));
 
-          final templates = [
-            {
-              'template': BannerModel1(
-                titlecolor: uiData["template1"]["title_color"],
-                bgColor: uiData["template1"]["background_color"],
-                bannerId: uiData["template1"]["bannerId"],
-                height:
-                    double.parse((uiData["template1"]["height"]).toString()),
-                borderradious: double.parse(
-                    (uiData["template1"]["borderradious"]).toString()),
-                showbanner: uiData["template1"]["showbanner"],
-              ),
-              'order': uiData["template1"]["ui_order_number"]
-            },
-            {
-              'template': SupersaverModel1(
-                showCategory: uiData["template2"]["show_Category"],
-                title: uiData["template2"]["title"],
-                seeAllButtonBG: uiData["template2"]["seeAllButtonBG"],
-                seeAllButtontext: uiData["template2"]["seeAllButtontext"],
-                vegOrNonIcon: 'assets/images/vegicon.png',
-                categoryId: uiData["template2"]["categoryId"],
-                bgcolor: uiData["template2"]["bgcolor"],
-                titleColor: uiData["template2"]["titleColor"],
-                priceColor: uiData["template2"]["priceColor"],
-                subcatcolor1: uiData["template2"]["subcatcolor1"],
-                subcatcolor2: uiData["template2"]["subcatcolor2"],
-              ),
-              'order': uiData["template2"]["ui_order_number"],
-            },
-            {
-              'template': SupersaverModel2(
-                showCategory: uiData["template3"]["show_Category"],
-                topbanner: uiData["template3"]["topbanner"],
-                title: uiData["template3"]["title"],
-                subcategoryid: uiData["template3"]["subcategoryid"],
-                titleColor: uiData["template3"]["titleColor"],
-                bgcolor: uiData["template3"]["bgcolor"],
-                cartbuttontextcolor: uiData["template3"]["cartbuttontextcolor"],
-                mrpcolor: uiData["template3"]["mrpcolor"],
-                offerBGcolor: uiData["template3"]["offerBGcolor"],
-                offerTextcolor: uiData["template3"]["offerTextcolor"],
-                prodoductbgcolor: uiData["template3"]["prodoductbgcolor"],
-                productTextColor: uiData["template3"]["productTextColor"],
-                sellingpricecolor: uiData["template3"]["sellingpricecolor"],
-                seeAllButtonBG: uiData["template3"]["seeAllButtonBG"],
-                seeAllButtontext: uiData["template3"]["seeAllButtontext"],
-                buttonbgcolor: uiData["template3"]["buttonbgcolor"],
-                unitTextcolor: uiData["template3"]["unitTextcolor"],
-                unitbgcolor: uiData["template3"]["unitbgcolor"],
-              ),
-              'order': uiData["template3"]["ui_order_number"],
-            },
-            {
-              'template': SupersaverModel3(
-                  showCategory: uiData["template4"]["show_Category"],
-                  categoryID: uiData["template4"]["categoryID"],
-                  title: uiData["template4"]["title"],
-                  titleColor: uiData["template4"]["titleColor"],
-                  bgcolor: uiData["template4"]["background_color"],
-                  image: uiData["template4"]["image"],
-                  cartbuttontextcolor: uiData["template4"]
-                      ["cartbuttontextcolor"],
-                  mrpcolor: uiData["template4"]["mrpcolor"],
-                  crosscolor: uiData["template4"]["crosscolor"],
-                  prodoductbgcolor: uiData["template4"]["prodoductbgcolor"],
-                  productTextColor: uiData["template4"]["productTextColor"],
-                  sellingpricecolor: uiData["template4"]["sellingpricecolor"],
-                  seeAllButtonBG: uiData["template4"]["seeAllButtonBG"],
-                  seeAllButtontext: uiData["template4"]["seeAllButtontext"],
-                  cartbuttonbg: uiData["template4"]["cartbuttonbg"],
-                  offerbgcolor2: uiData["template4"]["offerbgcolor2"],
-                  offerbgcolor: uiData["template4"]["offerbgcolor"],
-                  offerbordercolor: uiData["template4"]["offerbordercolor"],
-                  offertextcolor: uiData["template4"]["offertextcolor"],
-                  producttextcolor: uiData["template4"]["producttextcolor"],
-                  unitcolor: uiData["template4"]["unitcolor"],
-                  offertextcolor2: uiData["template4"]["offertextcolor2"]),
-              'order': uiData["template4"]["ui_order_number"]
-            },
-            {
-              'template': SupersaverModel4(
-                title: uiData["template5"]["title"],
-                showCategory: uiData["template5"]["show_Category"],
-                addButtonColor: uiData["template5"]["addButtonColor"],
-                offertextcolor: uiData["template5"]["offertextcolor"],
-                offerbgcolor: uiData["template5"]["offerbgcolor"],
-                subCategoryId: uiData["template5"]["subCategoryId"],
-                bgColor: uiData["template5"]["bgColor"],
-                productColor: uiData["template5"]["productColor"],
-                titleColor: uiData["template5"]["titleColor"],
-                mrpBgColor: uiData["template5"]["mrpBgColor"],
-                sellTextColor: uiData["template5"]["sellTextColor"],
-                mrpTextColor: uiData["template5"]["mrpTextColor"],
-                sellPriceBgColor: uiData["template5"]["sellPriceBgColor"],
-                ratingTextColor: uiData["template5"]["ratingTextColor"],
-                ratingBgColor: uiData["template5"]["ratingBgColor"],
-                seeAllButtonBG: uiData["template5"]["seeAllButtonBG"],
-                seeAllButtontext: uiData["template5"]["seeAllButtontext"],
-                bannerimage: uiData["template5"]["topbanner"],
-              ),
-              'order': uiData["template5"]["ui_order_number"]
-            },
-            {
-              'template': SupersaverModel5(
-                showCategory: uiData["template6"]["show_Category"],
-                maincategories:
-                    List<String>.from(uiData["template6"]["maincategories"]),
-                topbanner: uiData["template6"]["topbanner"],
-                categoryId: uiData["template6"]["categoryId"],
-                bgcolor: uiData["template6"]["bgcolor"],
-                titleColor: uiData["template6"]["titleColor"],
-                subcatColor: uiData["template6"]["subcatColor"],
-                offerBGcolor: uiData["template6"]["offerBGcolor"],
-                mrpColor: uiData["template6"]["mrpColor"],
-                productBgColor: uiData["template6"]["productBgColor"],
-                sellingPriceColor: uiData["template6"]["sellingPriceColor"],
-                buttontextcolor: uiData["template6"]["buttontextcolor"],
-                offerTextcolor: uiData["template6"]["offerTextcolor"],
-                title: uiData["template6"]["title"],
-                unitTextcolor: uiData["template6"]["unitTextcolor"],
-                unitbgcolor: uiData["template6"]["unitbgcolor"],
-                seeAllButtonBG: uiData["template6"]["seeAllButtonBG"],
-                seeAllButtontext: uiData["template6"]["seeAllButtontext"],
-              ),
-              'order': uiData["template6"]["ui_order_number"],
-            },
-            {
-              'template': const DescriptiveWidget(
-                showcategory: true,
-                title: "Skip the store, we're at your door!",
-                logo: "assets/images/Screenshot 2025-01-31 at 6.20.37 PM.jpeg",
-              ),
-              'order': "100"
-            }
-          ];
-
-          templates.sort(
-              (a, b) => int.parse(a['order']).compareTo(int.parse(b['order'])));
-
-          return SizedBox(
-            height: MediaQuery.of(context).size.height,
-            width: MediaQuery.of(context).size.width,
-            child: Container(
-              decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      stops: const [
-                    .08,
-                    .1,
-                    .2,
-                    .5,
-                    .7,
-                    1.0
-                  ],
-                      colors: [
-                    parseColor(uiData["template15"]["appbarcolor"]),
-                    parseColor(uiData["template15"]["appbarcolor"]),
-                    const Color(0xFFFFFFFff),
-                    const Color(0xFFFFFFFff),
-                    const Color(0xFFFFFFFff),
-                    const Color(0xFFFFFFFff)
-                  ])),
-              child: Scaffold(
+        return SizedBox(
+          height: MediaQuery.of(context).size.height,
+          width: MediaQuery.of(context).size.width,
+          child: Container(
+            decoration: BoxDecoration(
+                gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    stops: const [
+                  .08,
+                  .1,
+                  .2,
+                  .5,
+                  .7,
+                  1.0
+                ],
+                    colors: [
+                  parseColor(uiData["template15"]["appbarcolor"]),
+                  parseColor(uiData["template15"]["appbarcolor"]),
+                  const Color(0xFFFFFFFff),
+                  const Color(0xFFFFFFFff),
+                  const Color(0xFFFFFFFff),
+                  const Color(0xFFFFFFFff)
+                ])),
+            child: Scaffold(
                 backgroundColor: const Color.fromARGB(0, 255, 255, 255),
                 body: InkWell(
                   onTap: () {
@@ -459,19 +420,14 @@ class _OfferPageState extends State<OfferPage> {
                     ),
                   ),
                 ),
-                bottomNavigationBar:
-                    context.watch<NavbarBloc>().state.isBottomNavBarVisible
-                        ? const Navbar()
-                        : const SizedBox(),
-              ),
-            ),
-          );
-        } else {
-          return const SizedBox();
-        }
+                bottomNavigationBar: const Navbar()),
+          ),
+        );
+      } else {
         return const SizedBox();
-      }),
-    );
+      }
+      return const SizedBox();
+    });
   }
 }
 

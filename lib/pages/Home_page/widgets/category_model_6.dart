@@ -118,12 +118,13 @@ Widget subcategoryItem(
         child: Container(
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(25),
-              border: Border.all(color: Colors.blue, width: 3)),
-          height: 220,
-          width: 170,
+              border: Border.all(color: Colors.blue, width: 2)),
+          height: 190,
+          width: 150,
           child: Stack(
             children: [
               Container(
+                margin: EdgeInsets.all(2),
                 height: 220,
                 width: 170,
                 decoration: BoxDecoration(

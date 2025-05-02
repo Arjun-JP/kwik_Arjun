@@ -11,8 +11,7 @@ class GoogleMapsService {
         'https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$query&types=(regions)&components=country:IN&key=AIzaSyAPLvvnotvyrbkQVynYChnZhyrgSWAjO1k');
 
     final response = await http.get(url);
-    print(response.statusCode);
-    print(response.body);
+
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
 
@@ -37,8 +36,7 @@ class GoogleMapsService {
     );
 
     final response = await http.get(url);
-    print(response.statusCode);
-    print(response.body);
+
     if (response.statusCode == 200) {
       return json.decode(response.body)['result'] as Map<String, dynamic>;
     } else {

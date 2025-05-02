@@ -16,11 +16,10 @@ class OrderDeiailsRepo {
     // Fetch from API
     final response =
         await http.get(Uri.parse('$_baseUrl/order/$orderID'), headers: headers);
-    print(response.statusCode);
-    print(response.body);
+
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
-      print(data);
+
       return data;
     } else {
       throw Exception('Failed to load UI data');

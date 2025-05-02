@@ -85,200 +85,200 @@ class _LocationSearchPageState extends State<LocationSearchPage> {
                     child: Column(
                       spacing: 15,
                       children: [
-                        SizedBox(
-                          height: 45,
-                          child: BlocBuilder<AddressBloc, AddressState>(
-                              builder: (context, state) {
-                            if (state is LocationSearchResults) {
-                              suggestions = state.placelist;
-                            }
-                            return TypeAheadField<GoogleMapPlace>(
-                              debounceDuration:
-                                  const Duration(milliseconds: 300),
-                              hideOnEmpty: true,
-                              hideOnLoading: false,
-                              hideOnError: true,
-                              controller: _searchController,
-                              focusNode: _searchFocusNode,
-                              suggestionsCallback: (pattern) async {
-                                if (pattern.isNotEmpty) {
-                                  context
-                                      .read<AddressBloc>()
-                                      .add(SearchLocation(pattern));
+                        // SizedBox(
+                        //   height: 45,
+                        //   child: BlocBuilder<AddressBloc, AddressState>(
+                        //       builder: (context, state) {
+                        //     if (state is LocationSearchResults) {
+                        //       suggestions = state.placelist;
+                        //     }
+                        //     return TypeAheadField<GoogleMapPlace>(
+                        //       debounceDuration:
+                        //           const Duration(milliseconds: 300),
+                        //       hideOnEmpty: true,
+                        //       hideOnLoading: false,
+                        //       hideOnError: true,
+                        //       controller: _searchController,
+                        //       focusNode: _searchFocusNode,
+                        //       suggestionsCallback: (pattern) async {
+                        //         if (pattern.isNotEmpty) {
+                        //           context
+                        //               .read<AddressBloc>()
+                        //               .add(SearchLocation(pattern));
 
-                                  if (state is LocationSearchResults) {
-                                    print(state.placelist.length);
-                                    return state.placelist;
-                                  }
-                                }
-                              },
-                              builder: (context, controller, focusNode) {
-                                return TextField(
-                                  controller: controller,
-                                  focusNode: focusNode,
-                                  // onSubmitted: _onSearch,
-                                  onChanged: (value) {
-                                    if (value.length >= 3) {
-                                      context
-                                          .read<AddressBloc>()
-                                          .add(SearchLocation(value));
+                        //           if (state is LocationSearchResults) {
+                        //             print(state.placelist.length);
+                        //             return state.placelist;
+                        //           }
+                        //         }
+                        //       },
+                        //       builder: (context, controller, focusNode) {
+                        //         return TextField(
+                        //           controller: controller,
+                        //           focusNode: focusNode,
+                        //           // onSubmitted: _onSearch,
+                        //           onChanged: (value) {
+                        //             if (value.length >= 3) {
+                        //               context
+                        //                   .read<AddressBloc>()
+                        //                   .add(SearchLocation(value));
 
-                                      setState(() {});
-                                    }
-                                  },
-                                  decoration: InputDecoration(
-                                    contentPadding: const EdgeInsets.symmetric(
-                                        horizontal: 5, vertical: 0),
-                                    focusedBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(10),
-                                      borderSide: const BorderSide(
-                                        width: .1,
-                                        color: Color.fromARGB(255, 66, 143, 68),
-                                      ),
-                                    ),
-                                    enabledBorder: OutlineInputBorder(
-                                      borderSide: const BorderSide(
-                                        width: .1,
-                                        color: Color.fromARGB(255, 66, 143, 68),
-                                      ),
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                    hintStyle: const TextStyle(
-                                      color: Color.fromARGB(255, 114, 114, 114),
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w400,
-                                    ),
-                                    fillColor: AppColors.backgroundColorWhite,
-                                    hintText: "Search for area, street name...",
-                                    prefixIcon: const Icon(
-                                      Icons.search,
-                                      color: Color.fromARGB(255, 114, 114, 114),
-                                    ),
-                                    suffixIcon:
-                                        _searchController.text.isNotEmpty
-                                            ? IconButton(
-                                                icon: const Icon(
-                                                  Icons.clear,
-                                                  color: Color.fromARGB(
-                                                      255, 114, 114, 114),
-                                                ),
-                                                onPressed: () {
-                                                  _searchController.clear();
-                                                  context.read<AddressBloc>().add(
-                                                      const GetsavedAddressEvent());
-                                                },
-                                              )
-                                            : null,
-                                  ),
-                                );
-                              },
-                              itemBuilder: (context, place) {
-                                return InkWell(
-                                  onTap: () {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) => MapPage(
-                                                  initialPlaceId: place.placeId,
-                                                )));
-                                  },
-                                  child: Container(
-                                    color: Colors.white,
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 5, vertical: 2),
-                                    child: Container(
-                                      padding: const EdgeInsets.all(2),
-                                      // margin: const EdgeInsets.only(bottom: 5),
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(10),
-                                        color: Colors.green[50],
-                                      ),
-                                      child: ListTile(
-                                        dense: true,
-                                        leading: Container(
-                                          decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(15),
-                                              color: const Color.fromARGB(
-                                                  255, 232, 232, 232)),
-                                          child: const Padding(
-                                            padding: EdgeInsets.symmetric(
-                                                horizontal: 10.0, vertical: 10),
-                                            child: Icon(
-                                              Icons.add_location_alt,
-                                              color: Color.fromARGB(
-                                                  255, 255, 94, 0),
-                                            ),
-                                          ),
-                                        ),
-                                        trailing: const Icon(
-                                          Icons.keyboard_arrow_right_rounded,
-                                          color:
-                                              Color.fromARGB(255, 66, 143, 68),
-                                        ),
-                                        title: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              place.mainText,
-                                              style: theme.textTheme.bodyMedium!
-                                                  .copyWith(
-                                                fontSize: 12,
-                                                fontWeight: FontWeight.w800,
-                                                color: const Color.fromARGB(
-                                                    255, 0, 0, 0),
-                                              ),
-                                            ),
-                                            Text(
-                                              place.description,
-                                              style: theme.textTheme.bodyMedium!
-                                                  .copyWith(
-                                                      fontSize: 12,
-                                                      color:
-                                                          const Color.fromARGB(
-                                                              255, 78, 78, 78),
-                                                      fontWeight:
-                                                          FontWeight.w500),
-                                              maxLines: 3,
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                );
-                              },
-                              onSelected: (place) {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => MapPage(
-                                              initialPlaceId: place.placeId,
-                                            )));
-                              },
-                              decorationBuilder: (context, child) =>
-                                  DecoratedBox(
-                                decoration: BoxDecoration(
-                                  color: AppColors.backgroundColorWhite,
-                                  border: Border.all(
-                                    color: AppColors.dotColorUnSelected,
-                                    width: 1,
-                                  ),
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                child: child,
-                              ),
-                              loadingBuilder: (context) => const Padding(
-                                padding: EdgeInsets.symmetric(vertical: 8.0),
-                                child:
-                                    Center(child: CircularProgressIndicator()),
-                              ),
-                            );
-                          }),
-                        ),
+                        //               setState(() {});
+                        //             }
+                        //           },
+                        //           decoration: InputDecoration(
+                        //             contentPadding: const EdgeInsets.symmetric(
+                        //                 horizontal: 5, vertical: 0),
+                        //             focusedBorder: OutlineInputBorder(
+                        //               borderRadius: BorderRadius.circular(10),
+                        //               borderSide: const BorderSide(
+                        //                 width: .1,
+                        //                 color: Color.fromARGB(255, 66, 143, 68),
+                        //               ),
+                        //             ),
+                        //             enabledBorder: OutlineInputBorder(
+                        //               borderSide: const BorderSide(
+                        //                 width: .1,
+                        //                 color: Color.fromARGB(255, 66, 143, 68),
+                        //               ),
+                        //               borderRadius: BorderRadius.circular(10),
+                        //             ),
+                        //             hintStyle: const TextStyle(
+                        //               color: Color.fromARGB(255, 114, 114, 114),
+                        //               fontSize: 14,
+                        //               fontWeight: FontWeight.w400,
+                        //             ),
+                        //             fillColor: AppColors.backgroundColorWhite,
+                        //             hintText: "Search for area, street name...",
+                        //             prefixIcon: const Icon(
+                        //               Icons.search,
+                        //               color: Color.fromARGB(255, 114, 114, 114),
+                        //             ),
+                        //             suffixIcon:
+                        //                 _searchController.text.isNotEmpty
+                        //                     ? IconButton(
+                        //                         icon: const Icon(
+                        //                           Icons.clear,
+                        //                           color: Color.fromARGB(
+                        //                               255, 114, 114, 114),
+                        //                         ),
+                        //                         onPressed: () {
+                        //                           _searchController.clear();
+                        //                           context.read<AddressBloc>().add(
+                        //                               const GetsavedAddressEvent());
+                        //                         },
+                        //                       )
+                        //                     : null,
+                        //           ),
+                        //         );
+                        //       },
+                        //       itemBuilder: (context, place) {
+                        //         return InkWell(
+                        //           onTap: () {
+                        //             Navigator.push(
+                        //                 context,
+                        //                 MaterialPageRoute(
+                        //                     builder: (context) => MapPage(
+                        //                           initialPlaceId: place.placeId,
+                        //                         )));
+                        //           },
+                        //           child: Container(
+                        //             color: Colors.white,
+                        //             padding: const EdgeInsets.symmetric(
+                        //                 horizontal: 5, vertical: 2),
+                        //             child: Container(
+                        //               padding: const EdgeInsets.all(2),
+                        //               // margin: const EdgeInsets.only(bottom: 5),
+                        //               decoration: BoxDecoration(
+                        //                 borderRadius: BorderRadius.circular(10),
+                        //                 color: Colors.green[50],
+                        //               ),
+                        //               child: ListTile(
+                        //                 dense: true,
+                        //                 leading: Container(
+                        //                   decoration: BoxDecoration(
+                        //                       borderRadius:
+                        //                           BorderRadius.circular(15),
+                        //                       color: const Color.fromARGB(
+                        //                           255, 232, 232, 232)),
+                        //                   child: const Padding(
+                        //                     padding: EdgeInsets.symmetric(
+                        //                         horizontal: 10.0, vertical: 10),
+                        //                     child: Icon(
+                        //                       Icons.add_location_alt,
+                        //                       color: Color.fromARGB(
+                        //                           255, 255, 94, 0),
+                        //                     ),
+                        //                   ),
+                        //                 ),
+                        //                 trailing: const Icon(
+                        //                   Icons.keyboard_arrow_right_rounded,
+                        //                   color:
+                        //                       Color.fromARGB(255, 66, 143, 68),
+                        //                 ),
+                        //                 title: Column(
+                        //                   mainAxisAlignment:
+                        //                       MainAxisAlignment.center,
+                        //                   crossAxisAlignment:
+                        //                       CrossAxisAlignment.start,
+                        //                   children: [
+                        //                     Text(
+                        //                       place.mainText,
+                        //                       style: theme.textTheme.bodyMedium!
+                        //                           .copyWith(
+                        //                         fontSize: 12,
+                        //                         fontWeight: FontWeight.w800,
+                        //                         color: const Color.fromARGB(
+                        //                             255, 0, 0, 0),
+                        //                       ),
+                        //                     ),
+                        //                     Text(
+                        //                       place.description,
+                        //                       style: theme.textTheme.bodyMedium!
+                        //                           .copyWith(
+                        //                               fontSize: 12,
+                        //                               color:
+                        //                                   const Color.fromARGB(
+                        //                                       255, 78, 78, 78),
+                        //                               fontWeight:
+                        //                                   FontWeight.w500),
+                        //                       maxLines: 3,
+                        //                     ),
+                        //                   ],
+                        //                 ),
+                        //               ),
+                        //             ),
+                        //           ),
+                        //         );
+                        //       },
+                        //       onSelected: (place) {
+                        //         Navigator.push(
+                        //             context,
+                        //             MaterialPageRoute(
+                        //                 builder: (context) => MapPage(
+                        //                       initialPlaceId: place.placeId,
+                        //                     )));
+                        //       },
+                        //       decorationBuilder: (context, child) =>
+                        //           DecoratedBox(
+                        //         decoration: BoxDecoration(
+                        //           color: AppColors.backgroundColorWhite,
+                        //           border: Border.all(
+                        //             color: AppColors.dotColorUnSelected,
+                        //             width: 1,
+                        //           ),
+                        //           borderRadius: BorderRadius.circular(10),
+                        //         ),
+                        //         child: child,
+                        //       ),
+                        //       loadingBuilder: (context) => const Padding(
+                        //         padding: EdgeInsets.symmetric(vertical: 8.0),
+                        //         child:
+                        //             Center(child: CircularProgressIndicator()),
+                        //       ),
+                        //     );
+                        //   }),
+                        // ),
                         BlocBuilder<AddressBloc, AddressState>(
                             builder: (context, state) {
                           if (state is LocationSearchResults) {
@@ -470,7 +470,7 @@ class _LocationSearchPageState extends State<LocationSearchPage> {
           if (state is LocationSearchResults) {
             return Column(
               children: List.generate(
-                savedaddress.length,
+                state.addresslist.length,
                 (index) => Card(
                   color: Colors.white,
                   elevation: .5,
@@ -479,9 +479,6 @@ class _LocationSearchPageState extends State<LocationSearchPage> {
                         const EdgeInsets.symmetric(horizontal: 0, vertical: 5),
                     child: ListTile(
                       onTap: () async {
-                        print(state is LocationSearchResults
-                            ? state.selecteaddress?.addressType
-                            : "khsdbf");
                         HapticFeedback.mediumImpact();
                         await showModalBottomSheet(
                           isScrollControlled: true,
@@ -494,7 +491,7 @@ class _LocationSearchPageState extends State<LocationSearchPage> {
                               child: Padding(
                                 padding: MediaQuery.viewInsetsOf(context),
                                 child: ChangeDefaultaddressBottomsheet(
-                                  selectedaddress: savedaddress[index],
+                                  selectedaddress: state.addresslist[index],
                                 ),
                               ),
                             );
@@ -540,9 +537,9 @@ class _LocationSearchPageState extends State<LocationSearchPage> {
                                   color: const Color.fromARGB(255, 0, 0, 0),
                                 ),
                               ),
-                              selecetdaddress == savedaddress[index]
+                              selecetdaddress!.id == savedaddress[index].id
                                   ? Text(
-                                      "   ( ${selecetdaddress == savedaddress[index] ? "Default address" : ""} )",
+                                      "   ( ${selecetdaddress.id == savedaddress[index].id ? "Default address" : ""} )",
                                       style:
                                           theme.textTheme.bodyMedium!.copyWith(
                                         fontSize: 10,

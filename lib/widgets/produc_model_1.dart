@@ -1,17 +1,21 @@
 import 'dart:ui';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:kwik/bloc/Address_bloc/Address_bloc.dart';
+import 'package:kwik/bloc/Address_bloc/address_state.dart';
 import 'package:kwik/bloc/Cart_bloc/cart_bloc.dart';
 import 'package:kwik/bloc/Cart_bloc/cart_event.dart';
 import 'package:kwik/bloc/Cart_bloc/cart_state.dart';
 import 'package:kwik/constants/colors.dart';
 import 'package:kwik/constants/constants.dart';
-import 'package:kwik/main.dart';
 import 'package:kwik/models/cart_model.dart';
 import 'package:kwik/models/product_model.dart';
+import 'package:kwik/pages/Address_management/address_form.dart';
+import 'package:kwik/widgets/custom_snackbar.dart';
 import 'package:kwik/widgets/select_Varrient_bottom_sheet.dart';
 
 class ProductItem extends StatelessWidget {
@@ -50,322 +54,393 @@ class ProductItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-
+    final user = FirebaseAuth.instance.currentUser;
     return BlocBuilder<CartBloc, CartState>(builder: (context, state) {
       List<CartProduct> cartItems = [];
 
       if (state is CartUpdated) {
-        print(state.message);
         cartItems = state.cartItems;
       }
-      return Stack(
-        children: [
-          InkWell(
-            onTap: () {
-              context.push(
-                '/productdetails',
-                extra: {
-                  'product': product,
-                  'subcategoryref': subcategoryRef,
-                  'buttonbg':
-                      parseColor(buttontextcolor), // example color as a string
-                  'buttontext': parseColor(buttonBgColor),
-                },
-              );
-            },
+      return BlocBuilder<AddressBloc, AddressState>(
+          builder: (context, warstate) {
+        if (warstate is LocationSearchResults) {
+          String warehouseid = warstate.warehouse!.id;
+          return Opacity(
+            opacity: product.variations.length == 1
+                ? product.variations.first.stock
+                            .where((element) =>
+                                element.warehouseRef == warehouseid)
+                            .isEmpty ||
+                        product.variations.first.stock
+                                .where((element) =>
+                                    element.warehouseRef == warehouseid)
+                                .first
+                                .stockQty ==
+                            0
+                    ? .5
+                    : 1
+                : 1,
             child: Stack(
               children: [
-                Container(
-                  width: 120,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    spacing: 3,
+                InkWell(
+                  onTap: () {
+                    context.push(
+                      '/productdetails',
+                      extra: {
+                        'product': product,
+                        'subcategoryref': subcategoryRef,
+                        'buttonbg': parseColor(
+                            buttontextcolor), // example color as a string
+                        'buttontext': parseColor(buttonBgColor),
+                      },
+                    );
+                  },
+                  child: Stack(
                     children: [
                       Container(
-                        height: 160,
+                        width: 120,
                         decoration: BoxDecoration(
-                          color: parseColor(productBgColor),
                           borderRadius: BorderRadius.circular(10),
                         ),
-                        child: Container(
-                          width: 120,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            image: DecorationImage(
-                              image: NetworkImage(product.productImages[0]),
-                              fit: BoxFit.contain,
-                            ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 1),
-                      SizedBox(
-                        width: 120,
-                        child: Text(
-                          product.productName,
-                          textAlign: TextAlign.left,
-                          maxLines: 2,
-                          style: theme.textTheme.bodyMedium!.copyWith(
-                            color: parseColor(productnamecolor),
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ),
-                      Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Container(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: unitbgcolor == "00FFFFFF" ? 0 : 10,
-                                vertical: 1),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(8),
-                              color: parseColor(unitbgcolor),
-                            ),
-                            child: Text(
-                              product.variations.length > 1
-                                  ? "${product.variations.length} options"
-                                  : "${product.variations.first.qty}  ${product.variations.first.unit}",
-                              style: theme.textTheme.bodyMedium!.copyWith(
-                                color: parseColor(unitTextcolor),
-                                fontWeight: FontWeight.w600,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          spacing: 3,
+                          children: [
+                            Container(
+                              height: 160,
+                              decoration: BoxDecoration(
+                                color: parseColor(productBgColor),
+                                borderRadius: BorderRadius.circular(10),
                               ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      const Spacer(),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Expanded(
-                            flex: 2,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  "₹${product.variations.first.mrp.toStringAsFixed(0)}",
-                                  style: theme.textTheme.bodyMedium!.copyWith(
-                                    color: parseColor(mrpColor),
-                                    decoration: TextDecoration.lineThrough,
+                              child: Container(
+                                width: 120,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                  image: DecorationImage(
+                                    image:
+                                        NetworkImage(product.productImages[0]),
+                                    fit: BoxFit.contain,
                                   ),
                                 ),
-                                Text(
-                                  "₹${product.variations.first.sellingPrice.toStringAsFixed(0)}",
-                                  style: theme.textTheme.bodyMedium!.copyWith(
-                                    color: parseColor(sellingPriceColor),
-                                    fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            const SizedBox(height: 1),
+                            SizedBox(
+                              width: 120,
+                              child: Text(
+                                product.productName,
+                                textAlign: TextAlign.left,
+                                maxLines: 2,
+                                style: theme.textTheme.bodyMedium!.copyWith(
+                                  color: parseColor(productnamecolor),
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ),
+                            Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Container(
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal:
+                                          unitbgcolor == "00FFFFFF" ? 0 : 10,
+                                      vertical: 1),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(8),
+                                    color: parseColor(unitbgcolor),
+                                  ),
+                                  child: Text(
+                                    product.variations.length > 1
+                                        ? "${product.variations.length} options"
+                                        : "${product.variations.first.qty}  ${product.variations.first.unit}",
+                                    style: theme.textTheme.bodyMedium!.copyWith(
+                                      color: parseColor(unitTextcolor),
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const Spacer(),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Expanded(
+                                  flex: 2,
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        "₹${product.variations.first.mrp.toStringAsFixed(0)}",
+                                        style: theme.textTheme.bodyMedium!
+                                            .copyWith(
+                                          color: parseColor(mrpColor),
+                                          decoration:
+                                              TextDecoration.lineThrough,
+                                        ),
+                                      ),
+                                      Text(
+                                        "₹${product.variations.first.sellingPrice.toStringAsFixed(0)}",
+                                        style: theme.textTheme.bodyMedium!
+                                            .copyWith(
+                                          color: parseColor(sellingPriceColor),
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                                Expanded(
+                                  flex: 4,
+                                  child: SizedBox(
+                                    height: 30,
+                                    child: cartItems.any((element) =>
+                                            element.productRef.id == product.id)
+                                        ? quantitycontrolbutton(
+                                            user: user,
+                                            instock: state is CartUpdated
+                                                ? state.message
+                                                : false,
+                                            pincode: extractAddressDetails(
+                                                    warstate
+                                                        .currentlocationaddress)[
+                                                "pin"]!,
+                                            buttonbgcolor: buttontextcolor,
+                                            buttontextcolor: buttonBgColor,
+                                            theme: theme,
+                                            product: product,
+                                            qty: cartItems
+                                                .firstWhere((element) =>
+                                                    element.productRef.id ==
+                                                    product.id)
+                                                .quantity
+                                                .toString(),
+                                          )
+                                        : (product.variations.isNotEmpty
+                                            ? ElevatedButton(
+                                                onPressed: () async {
+                                                  HapticFeedback.mediumImpact();
+                                                  final firstVariation =
+                                                      product.variations.first;
+
+                                                  if (product
+                                                          .variations.length >
+                                                      1) {
+                                                    await showModalBottomSheet(
+                                                      isScrollControlled: true,
+                                                      backgroundColor:
+                                                          Colors.transparent,
+                                                      enableDrag: false,
+                                                      context: context,
+                                                      builder: (context) {
+                                                        return GestureDetector(
+                                                          onTap: () =>
+                                                              FocusScope.of(
+                                                                      context)
+                                                                  .unfocus(),
+                                                          child: Padding(
+                                                            padding: MediaQuery
+                                                                .viewInsetsOf(
+                                                                    context),
+                                                            child:
+                                                                SelectVarrientBottomSheet(
+                                                              product: product,
+                                                              buttonBgColor:
+                                                                  buttontextcolor,
+                                                              buttontextcolor:
+                                                                  buttonBgColor,
+                                                            ),
+                                                          ),
+                                                        );
+                                                      },
+                                                    );
+                                                  } else if (product.variations
+                                                                  .length ==
+                                                              1 &&
+                                                          product.variations
+                                                              .first.stock
+                                                              .where((element) =>
+                                                                  element
+                                                                      .warehouseRef ==
+                                                                  warehouseid)
+                                                              .isNotEmpty &&
+                                                          product.variations
+                                                                  .first.stock
+                                                                  .where((element) =>
+                                                                      element
+                                                                          .warehouseRef ==
+                                                                      warehouseid)
+                                                                  .first
+                                                                  .stockQty !=
+                                                              0 &&
+                                                          state is CartUpdated
+                                                      ? state.message
+                                                      : false == true) {
+                                                    context
+                                                        .read<CartBloc>()
+                                                        .add(
+                                                          AddToCart(
+                                                            cartProduct:
+                                                                CartProduct(
+                                                              productRef:
+                                                                  product,
+                                                              variant:
+                                                                  firstVariation,
+                                                              quantity: 1,
+                                                              pincode: warstate
+                                                                  .currentlocationaddress,
+                                                              sellingPrice:
+                                                                  firstVariation
+                                                                      .sellingPrice,
+                                                              mrp:
+                                                                  firstVariation
+                                                                      .mrp,
+                                                              buyingPrice:
+                                                                  firstVariation
+                                                                      .buyingPrice,
+                                                              inStock: true,
+                                                              variationVisibility:
+                                                                  true,
+                                                              finalPrice: 0,
+                                                              cartAddedDate:
+                                                                  DateTime
+                                                                      .now(),
+                                                            ),
+                                                            userId: user!.uid,
+                                                            productRef:
+                                                                product.id,
+                                                            variantId:
+                                                                firstVariation
+                                                                    .id,
+                                                            pincode:
+                                                                extractAddressDetails(
+                                                                        warstate
+                                                                            .currentlocationaddress)[
+                                                                    "pin"]!,
+                                                          ),
+                                                        );
+                                                  } else {
+                                                    HapticFeedback
+                                                        .heavyImpact();
+                                                    try {
+                                                      CustomSnackBars
+                                                          .showLimitedQuantityWarning();
+                                                    } catch (e) {
+                                                      print(e);
+                                                    }
+                                                  }
+                                                },
+                                                style: ElevatedButton.styleFrom(
+                                                  backgroundColor:
+                                                      parseColor(buttonBgColor),
+                                                  shape: RoundedRectangleBorder(
+                                                    side: BorderSide(
+                                                        color: parseColor(
+                                                            buttontextcolor)),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            5),
+                                                  ),
+                                                  padding:
+                                                      const EdgeInsets.all(0),
+                                                ),
+                                                child: Text(
+                                                  product.variations.length ==
+                                                                  1 &&
+                                                              product.variations
+                                                                  .first.stock
+                                                                  .where((element) =>
+                                                                      element
+                                                                          .warehouseRef ==
+                                                                      warehouseid)
+                                                                  .isEmpty ||
+                                                          product.variations
+                                                                  .first.stock
+                                                                  .where((element) =>
+                                                                      element
+                                                                          .warehouseRef ==
+                                                                      warehouseid)
+                                                                  .first
+                                                                  .stockQty ==
+                                                              0
+                                                      ? 'No stock'
+                                                      : "Add",
+                                                  style: theme
+                                                      .textTheme.bodyMedium!
+                                                      .copyWith(
+                                                    color: parseColor(
+                                                        buttontextcolor),
+                                                    fontFamily: "Inter",
+                                                    fontWeight: FontWeight.w900,
+                                                  ),
+                                                ),
+                                              )
+                                            : const SizedBox()), // Return empty widget if no variations
                                   ),
                                 )
                               ],
                             ),
-                          ),
-                          Expanded(
-                            flex: 4,
-                            child: SizedBox(
-                              height: 30,
-                              child: cartItems.any((element) =>
-                                      element.productRef.id == product.id)
-                                  ? quantitycontrolbutton(
-                                      instock: state is CartUpdated
-                                          ? state.message
-                                          : false,
-                                      buttonbgcolor: buttontextcolor,
-                                      buttontextcolor: buttonBgColor,
-                                      theme: theme,
-                                      product: product,
-                                      qty: cartItems
-                                          .firstWhere((element) =>
-                                              element.productRef.id ==
-                                              product.id)
-                                          .quantity
-                                          .toString(),
-                                    )
-                                  : (product.variations.isNotEmpty
-                                      ? ElevatedButton(
-                                          onPressed: () async {
-                                            HapticFeedback.mediumImpact();
-                                            final firstVariation =
-                                                product.variations.first;
-
-                                            if (product.variations.length > 1) {
-                                              await showModalBottomSheet(
-                                                isScrollControlled: true,
-                                                backgroundColor:
-                                                    Colors.transparent,
-                                                enableDrag: false,
-                                                context: context,
-                                                builder: (context) {
-                                                  return GestureDetector(
-                                                    onTap: () =>
-                                                        FocusScope.of(context)
-                                                            .unfocus(),
-                                                    child: Padding(
-                                                      padding: MediaQuery
-                                                          .viewInsetsOf(
-                                                              context),
-                                                      child:
-                                                          SelectVarrientBottomSheet(
-                                                        product: product,
-                                                        buttonBgColor:
-                                                            buttontextcolor,
-                                                        buttontextcolor:
-                                                            buttonBgColor,
-                                                      ),
-                                                    ),
-                                                  );
-                                                },
-                                              );
-                                            } else if (product.variations
-                                                            .length ==
-                                                        1 &&
-                                                    product
-                                                            .variations
-                                                            .first
-                                                            .stock
-                                                            .first
-                                                            .stockQty !=
-                                                        0 &&
-                                                    state is CartUpdated
-                                                ? state.message
-                                                : false == true) {
-                                              context.read<CartBloc>().add(
-                                                    AddToCart(
-                                                      cartProduct: CartProduct(
-                                                        productRef: product,
-                                                        variant: firstVariation,
-                                                        quantity: 1,
-                                                        pincode: "560003",
-                                                        sellingPrice:
-                                                            firstVariation
-                                                                .sellingPrice,
-                                                        mrp: firstVariation.mrp,
-                                                        buyingPrice:
-                                                            firstVariation
-                                                                .buyingPrice,
-                                                        inStock: true,
-                                                        variationVisibility:
-                                                            true,
-                                                        finalPrice: 0,
-                                                        cartAddedDate:
-                                                            DateTime.now(),
-                                                      ),
-                                                      userId:
-                                                          "s5ZdLnYhnVfAramtr7knGduOI872",
-                                                      productRef: product.id,
-                                                      variantId:
-                                                          firstVariation.id,
-                                                      pincode: "560003",
-                                                    ),
-                                                  );
-                                            } else {
-                                              HapticFeedback.heavyImpact();
-                                              try {
-                                                print("snckbar send");
-                                                rootScaffoldMessengerKey
-                                                    .currentState
-                                                    ?.showSnackBar(const SnackBar(
-                                                        content: Text(
-                                                            "Out of stock")));
-                                                print("snckbar send");
-                                              } catch (e) {
-                                                print(e);
-                                              }
-                                            }
-                                          },
-                                          style: ElevatedButton.styleFrom(
-                                            backgroundColor:
-                                                parseColor(buttonBgColor),
-                                            shape: RoundedRectangleBorder(
-                                              side: BorderSide(
-                                                  color: parseColor(
-                                                      buttontextcolor)),
-                                              borderRadius:
-                                                  BorderRadius.circular(5),
-                                            ),
-                                            padding: const EdgeInsets.all(0),
-                                          ),
-                                          child: Text(
-                                            product.variations.length == 1 &&
-                                                    product
-                                                            .variations
-                                                            .first
-                                                            .stock
-                                                            .first
-                                                            .stockQty ==
-                                                        0
-                                                ? 'No stock'
-                                                : "Add",
-                                            style: theme.textTheme.bodyMedium!
-                                                .copyWith(
-                                              color:
-                                                  parseColor(buttontextcolor),
-                                              fontFamily: "Inter",
-                                              fontWeight: FontWeight.w900,
-                                            ),
-                                          ),
-                                        )
-                                      : const SizedBox()), // Return empty widget if no variations
+                          ],
+                        ),
+                      ),
+                      ClipPath(
+                        clipper: ZigZagClipper(),
+                        child: Container(
+                          width: 40,
+                          height: 50,
+                          decoration: BoxDecoration(
+                            color: parseColor(offerbgcolor),
+                            borderRadius: const BorderRadius.only(
+                              topLeft: Radius.circular(10),
                             ),
-                          )
-                        ],
+                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                "${percentage(product.variations.first.mrp, product.variations.first.sellingPrice)}"
+                                " "
+                                "%",
+                                textAlign: TextAlign.center,
+                                style: theme.textTheme.bodyMedium!.copyWith(
+                                  color: parseColor(offertextcolor),
+                                  fontSize: 10,
+                                  fontFamily: "Inter",
+                                  fontWeight: FontWeight.w900,
+                                ),
+                              ),
+                              Text(
+                                "OFF",
+                                textAlign: TextAlign.center,
+                                style: theme.textTheme.bodyMedium!.copyWith(
+                                  color: parseColor(offertextcolor),
+                                  fontSize: 10,
+                                  fontFamily: "Inter",
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
                     ],
                   ),
                 ),
-                ClipPath(
-                  clipper: ZigZagClipper(),
-                  child: Container(
-                    width: 40,
-                    height: 50,
-                    decoration: BoxDecoration(
-                      color: parseColor(offerbgcolor),
-                      borderRadius: const BorderRadius.only(
-                        topLeft: Radius.circular(10),
-                      ),
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          "${percentage(product.variations.first.mrp, product.variations.first.sellingPrice)}"
-                          " "
-                          "%",
-                          textAlign: TextAlign.center,
-                          style: theme.textTheme.bodyMedium!.copyWith(
-                            color: parseColor(offertextcolor),
-                            fontSize: 10,
-                            fontFamily: "Inter",
-                            fontWeight: FontWeight.w900,
-                          ),
-                        ),
-                        Text(
-                          "OFF",
-                          textAlign: TextAlign.center,
-                          style: theme.textTheme.bodyMedium!.copyWith(
-                            color: parseColor(offertextcolor),
-                            fontSize: 10,
-                            fontFamily: "Inter",
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
               ],
             ),
-          ),
-        ],
-      );
+          );
+        } else {
+          return const SizedBox();
+        }
+      });
     });
   }
 
   Widget quantitycontrolbutton(
       {required ThemeData theme,
+      required User? user,
+      required String pincode,
       required String buttonbgcolor,
       required String buttontextcolor,
       required bool instock,
@@ -387,9 +462,9 @@ class ProductItem extends StatelessWidget {
               onTap: () {
                 HapticFeedback.mediumImpact();
                 ctx.read<CartBloc>().add(DecreaseCartQuantity(
-                    pincode: "560003",
+                    pincode: pincode,
                     productRef: product.id,
-                    userId: "s5ZdLnYhnVfAramtr7knGduOI872",
+                    userId: user!.uid,
                     variantId: product.variations.first.id));
               },
               child: SizedBox(
@@ -404,7 +479,7 @@ class ProductItem extends StatelessWidget {
             ),
           ),
           Expanded(
-            flex: 2,
+            flex: 3,
             child: SizedBox(
                 child: Center(
               child: Text(
@@ -424,7 +499,7 @@ class ProductItem extends StatelessWidget {
                 ctx.read<CartBloc>().add(IncreaseCartQuantity(
                     pincode: "560003",
                     productRef: product.id,
-                    userId: "s5ZdLnYhnVfAramtr7knGduOI872",
+                    userId: user!.uid,
                     variantId: product.variations.first.id));
               },
               child: Padding(

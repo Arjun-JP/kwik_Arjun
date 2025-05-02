@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -34,6 +35,7 @@ TextEditingController lessoncontroller = TextEditingController();
 class _SelectVarrientBottomSheetState extends State<SelectVarrientBottomSheet> {
   @override
   Widget build(BuildContext context) {
+    final user = FirebaseAuth.instance.currentUser;
     final theme = Theme.of(context);
     final filtredvariations = widget.product.variations
         .where((element) => element.stock.isNotEmpty)
@@ -99,17 +101,20 @@ class _SelectVarrientBottomSheetState extends State<SelectVarrientBottomSheet> {
                                 return Opacity(
                                   opacity: filtredvariations[index]
                                               .stock
-                                              .map((e) =>
-                                                  e.warehouseRef ==
-                                                  state.warehouse.id)
+                                              .where((element) =>
+                                                  element.warehouseRef ==
+                                                  state.warehouse!.id)
                                               .isNotEmpty &&
                                           filtredvariations[index]
                                                   .stock
+                                                  .where((element) =>
+                                                      element.warehouseRef ==
+                                                      state.warehouse!.id)
                                                   .first
-                                                  .stockQty ==
+                                                  .stockQty !=
                                               0
-                                      ? 0.5
-                                      : 1,
+                                      ? 1
+                                      : .5,
                                   child: Stack(
                                     children: [
                                       Container(
@@ -204,6 +209,7 @@ class _SelectVarrientBottomSheetState extends State<SelectVarrientBottomSheet> {
                                                                           index]
                                                                       .id)
                                                       ? quantitycontrolbutton(
+                                                          user: user,
                                                           variationid: widget
                                                               .product
                                                               .variations[index]
@@ -234,9 +240,7 @@ class _SelectVarrientBottomSheetState extends State<SelectVarrientBottomSheet> {
                                                                 widget.product
                                                                         .variations[
                                                                     index];
-                                                            print(firstVariation
-                                                                .qty);
-                                                            print(index);
+
                                                             if (widget
                                                                     .product
                                                                     .variations[
@@ -282,8 +286,8 @@ class _SelectVarrientBottomSheetState extends State<SelectVarrientBottomSheet> {
                                                                         cartAddedDate:
                                                                             DateTime.now(),
                                                                       ),
-                                                                      userId:
-                                                                          "s5ZdLnYhnVfAramtr7knGduOI872",
+                                                                      userId: user!
+                                                                          .uid,
                                                                       productRef:
                                                                           widget
                                                                               .product
@@ -395,6 +399,7 @@ class _SelectVarrientBottomSheetState extends State<SelectVarrientBottomSheet> {
 Widget quantitycontrolbutton(
     {required ThemeData theme,
     required String variationid,
+    required User? user,
     required ProductModel product,
     required String buttonbgcolor,
     required String buttontextcolor,
@@ -415,7 +420,7 @@ Widget quantitycontrolbutton(
               ctx.read<CartBloc>().add(DecreaseCartQuantity(
                   pincode: "560003",
                   productRef: product.id,
-                  userId: "s5ZdLnYhnVfAramtr7knGduOI872",
+                  userId: user!.uid,
                   variantId: variationid));
             },
             child: SizedBox(
@@ -448,7 +453,7 @@ Widget quantitycontrolbutton(
               ctx.read<CartBloc>().add(IncreaseCartQuantity(
                   pincode: "560003",
                   productRef: product.id,
-                  userId: "s5ZdLnYhnVfAramtr7knGduOI872",
+                  userId: user!.uid,
                   variantId: variationid));
             },
             child: SizedBox(

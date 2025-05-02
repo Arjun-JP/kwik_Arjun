@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -46,6 +47,7 @@ class _AllSubcategoryState extends State<AllSubcategory> {
 
   @override
   Widget build(BuildContext context) {
+    final user = FirebaseAuth.instance.currentUser;
     ThemeData theme = Theme.of(context);
     return Scaffold(
         backgroundColor: Colors.white,
@@ -293,7 +295,7 @@ class ProductItemSubcategorypage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-
+    final user = FirebaseAuth.instance.currentUser;
     return product.variations.first.stock.length != 0
         ? BlocBuilder<CartBloc, CartState>(builder: (context, state) {
             List<CartProduct> cartItems = [];
@@ -497,8 +499,7 @@ class ProductItemSubcategorypage extends StatelessWidget {
                                                                   DateTime
                                                                       .now(),
                                                             ),
-                                                            userId:
-                                                                "s5ZdLnYhnVfAramtr7knGduOI872",
+                                                            userId: user!.uid,
                                                             productRef:
                                                                 product.id,
                                                             variantId:
@@ -617,6 +618,7 @@ class ProductItemSubcategorypage extends StatelessWidget {
 
   Widget quantitycontrolbutton(
       {required ThemeData theme,
+      final User? user,
       required String buttonbgcolor,
       required String buttontextcolor,
       required ProductModel product,
@@ -638,7 +640,7 @@ class ProductItemSubcategorypage extends StatelessWidget {
                 context.read<CartBloc>().add(DecreaseCartQuantity(
                     pincode: "560003",
                     productRef: product.id,
-                    userId: "s5ZdLnYhnVfAramtr7knGduOI872",
+                    userId: user!.uid,
                     variantId: product.variations.first.id));
               },
               child: SizedBox(
@@ -673,7 +675,7 @@ class ProductItemSubcategorypage extends StatelessWidget {
                 context.read<CartBloc>().add(IncreaseCartQuantity(
                     pincode: "560003",
                     productRef: product.id,
-                    userId: "s5ZdLnYhnVfAramtr7knGduOI872",
+                    userId: user!.uid,
                     variantId: product.variations.first.id));
               },
               child: Padding(

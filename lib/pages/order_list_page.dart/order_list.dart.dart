@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -22,11 +23,14 @@ class _OrderListingPageState extends State<OrderListingPage> {
   @override
   void initState() {
     // TODO: implement initState
-    context.read<OrderBloc>().add(FetchOrders("s5ZdLnYhnVfAramtr7knGduOI872"));
+    context
+        .read<OrderBloc>()
+        .add(FetchOrders(FirebaseAuth.instance.currentUser!.uid));
   }
 
   @override
   Widget build(BuildContext context) {
+    final user = FirebaseAuth.instance.currentUser;
     ThemeData theme = Theme.of(context);
     return Scaffold(
         appBar: AppBar(
@@ -42,29 +46,46 @@ class _OrderListingPageState extends State<OrderListingPage> {
           ),
         ),
         body: BlocBuilder<OrderBloc, OrderState>(builder: (context, state) {
-          print(state is OrderLoaded ? state.orders.length : "0");
           if (state is OrderLoading) {
             return const OrderListPageShimmer();
           }
           if (state is OrderLoaded) {
-            return Column(
-              children: [
-                Expanded(
-                    child: SingleChildScrollView(
-                  child: Column(
-                    children: List.generate(
-                      state.orders.length,
-                      (index) => OrderCard(
-                        orderData: state.orders[index],
-                        theme: theme,
+            if (state.orders.isNotEmpty) {
+              return Column(
+                children: [
+                  Expanded(
+                      child: SingleChildScrollView(
+                    child: Column(
+                      children: List.generate(
+                        state.orders.length,
+                        (index) => OrderCard(
+                          user: user!,
+                          orderData: state.orders[index],
+                          theme: theme,
+                        ),
                       ),
                     ),
-                  ),
-                )),
+                  )),
 
-                // bottomCartBanner(theme: theme, ctx: context),
-              ],
-            );
+                  // bottomCartBanner(theme: theme, ctx: context),
+                ],
+              );
+            } else {
+              return SizedBox(
+                width: double.infinity,
+                height: double.infinity,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  spacing: 10,
+                  children: [
+                    const SizedBox(height: 150),
+                    Image.asset("assets/images/empty_order.gif"),
+                    const Text("No orders placed yet")
+                  ],
+                ),
+              );
+            }
           } else if (state is Orderagainloading) {
             return Column(
               children: [
@@ -74,6 +95,7 @@ class _OrderListingPageState extends State<OrderListingPage> {
                     children: List.generate(
                       state.orders.length,
                       (index) => OrderCard(
+                        user: user!,
                         orderData: state.orders[index],
                         theme: theme,
                       ),
@@ -93,6 +115,7 @@ class _OrderListingPageState extends State<OrderListingPage> {
                     children: List.generate(
                       state.orders.length,
                       (index) => OrderCard(
+                        user: user!,
                         orderData: state.orders[index],
                         theme: theme,
                       ),
@@ -112,6 +135,7 @@ class _OrderListingPageState extends State<OrderListingPage> {
                     children: List.generate(
                       state.orders.length,
                       (index) => OrderCard(
+                        user: user!,
                         orderData: state.orders[index],
                         theme: theme,
                       ),
@@ -133,8 +157,13 @@ class _OrderListingPageState extends State<OrderListingPage> {
 class OrderCard extends StatelessWidget {
   final Order orderData;
   final ThemeData theme;
+  final User user;
 
-  const OrderCard({super.key, required this.orderData, required this.theme});
+  const OrderCard(
+      {super.key,
+      required this.orderData,
+      required this.theme,
+      required this.user});
 
   @override
   Widget build(BuildContext context) {
@@ -265,8 +294,9 @@ class OrderCard extends StatelessWidget {
                         is Orderagaincompleted, // only listen for this state
                     listener: (context, state) {
                       if (state is Orderagaincompleted) {
-                        context.read<CartBloc>().add(SyncCartWithServer(
-                            userId: "s5ZdLnYhnVfAramtr7knGduOI872"));
+                        context
+                            .read<CartBloc>()
+                            .add(SyncCartWithServer(userId: user!.uid));
                         context
                             .read<NavbarBloc>()
                             .add(const UpdateNavBarIndex(3));
@@ -287,8 +317,7 @@ class OrderCard extends StatelessWidget {
                           return TextButton(
                             onPressed: () {
                               context.read<OrderBloc>().add(Orderagain(
-                                  orderid: orderData.id,
-                                  userId: "s5ZdLnYhnVfAramtr7knGduOI872"));
+                                  orderid: orderData.id, userId: user!.uid));
                             },
                             child: const Text(
                               "Order Again",
@@ -302,8 +331,7 @@ class OrderCard extends StatelessWidget {
                         return TextButton(
                           onPressed: () {
                             context.read<OrderBloc>().add(Orderagain(
-                                orderid: orderData.id,
-                                userId: "s5ZdLnYhnVfAramtr7knGduOI872"));
+                                orderid: orderData.id, userId: user!.uid));
                           },
                           child: const Text(
                             "Order Again",

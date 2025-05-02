@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -31,6 +32,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
 
   @override
   Widget build(BuildContext context) {
+    final user = FirebaseAuth.instance.currentUser;
     ThemeData theme = Theme.of(context);
     return BlocBuilder<OrderDetailsBloc, OrderDetailsState>(
         builder: (context, state) {
@@ -65,7 +67,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                           _buildOrderDetails(
                               theme: theme, orderdata: state.order),
                           const SizedBox(height: 24),
-                          _buildActionButtons(theme: theme),
+                          _buildActionButtons(theme: theme, user: user),
                           const SizedBox(height: 35),
                         ],
                       ),
@@ -356,7 +358,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
     );
   }
 
-  Widget _buildActionButtons({required ThemeData theme}) {
+  Widget _buildActionButtons({required ThemeData theme, required User? user}) {
     return Row(
       children: [
         Expanded(
@@ -376,9 +378,9 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
         Expanded(
           child: ElevatedButton(
             onPressed: () {
-              context.read<OrderBloc>().add(Orderagain(
-                  orderid: widget.orderID,
-                  userId: "s5ZdLnYhnVfAramtr7knGduOI872"));
+              context
+                  .read<OrderBloc>()
+                  .add(Orderagain(orderid: widget.orderID, userId: user!.uid));
             },
             style: ElevatedButton.styleFrom(
               elevation: 0,
