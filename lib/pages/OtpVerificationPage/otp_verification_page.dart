@@ -5,6 +5,7 @@ import 'package:kwik/bloc/Auth_bloc/auth_bloc.dart';
 import 'package:kwik/bloc/Auth_bloc/auth_event.dart';
 import 'package:kwik/bloc/Auth_bloc/auth_state.dart';
 import 'package:kwik/constants/colors.dart';
+import 'package:kwik/pages/Error_pages/Error_widget.dart';
 import 'package:kwik/widgets/kiwi_button.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 
@@ -32,18 +33,17 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
     final theme = Theme.of(context);
     final deviceheight = MediaQuery.of(context).size.height;
     final devicewidth = MediaQuery.of(context).size.width;
-    return BlocConsumer<AuthBloc, AuthState>(
-      listener: (context, state) {
-        if (state is AuthenticatedState) {
-          context.go("/home");
-        } else if (state is AuthFailureState) {
-          _focusNode.unfocus();
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(state.error)),
-          );
-        }
-      },
-      builder: (context, state) {
+    return BlocConsumer<AuthBloc, AuthState>(listener: (context, state) {
+      if (state is AuthenticatedState) {
+        context.go("/home");
+      } else if (state is AuthFailureState) {
+        _focusNode.unfocus();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(state.error)),
+        );
+      }
+    }, builder: (context, state) {
+      if (state is PhoneAuthCodeSentSuccess) {
         return Scaffold(
           body: SingleChildScrollView(
             child: Column(
@@ -114,29 +114,43 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
                           autovalidateMode: AutovalidateMode.onUserInteraction,
                         ),
                       ),
-                      KiwiButton(
-                        text: 'Verify & Login',
+                      ElevatedButton(
                         onPressed: () {
-                          String otpCode = _otpController.text.trim();
-                          if (otpCode.isEmpty || otpCode.length < 6) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('Please enter a valid OTP code'),
-                              ),
-                            );
-                            return;
-                          }
-
-                          if (state is! AuthLoading) {
-                            BlocProvider.of<AuthBloc>(context).add(
-                              VerifySentOtp(
-                                otpCode: otpCode,
-                                verificationId: widget.verificationId,
-                              ),
-                            );
+                          if (state is AuthLoading) {
+                          } else {
+                            String otpCode = _otpController.text.trim();
+                            if (otpCode.isEmpty || otpCode.length < 6) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content:
+                                      Text('Please enter a valid OTP code'),
+                                ),
+                              );
+                            } else {
+                              BlocProvider.of<AuthBloc>(context).add(
+                                VerifySentOtp(
+                                  otpCode: otpCode,
+                                  verificationId: widget.verificationId,
+                                ),
+                              );
+                            }
                           }
                         },
-                      )
+                        style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColors.buttonColorOrange,
+                            minimumSize: Size(devicewidth, 60),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12))),
+                        child: state is AuthLoading
+                            ? const CircularProgressIndicator(
+                                color: Colors.white,
+                              )
+                            : Text('Verify & Login',
+                                style: theme.textTheme.titleMedium!.copyWith(
+                                    color: AppColors.textColorWhite,
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.w400)),
+                      ),
                     ],
                   ),
                 )
@@ -144,7 +158,22 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
             ),
           ),
         );
-      },
-    );
+      } else if (state is AuthFailureState) {
+        return const KwikErrorWidget(
+          errordetails: FlutterErrorDetails(exception: Object()),
+        );
+      } else {
+        return Scaffold(
+          body: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            width: double.infinity,
+            height: double.infinity,
+            child: Center(
+              child: Text("Its not otpsend event man $state"),
+            ),
+          ),
+        );
+      }
+    });
   }
 }

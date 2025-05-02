@@ -17,9 +17,8 @@ class OrderManagementBloc
   Future<void> _onPlaceOrder(
       PlaceOrder event, Emitter<OrderManagementState> emit) async {
     emit(OrderPlacing());
-    print("order called in bloc");
+
     try {
-      print("order api called in bloc");
       final response =
           await orderRepository.placeOrder(orderJson: event.orderJson);
       emit(OrderPlaced(orderResponse: response));

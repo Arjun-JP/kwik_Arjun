@@ -1,5 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:kwik/bloc/Auth_bloc/auth_bloc.dart';
+import 'package:kwik/bloc/Auth_bloc/auth_event.dart';
+import 'package:kwik/bloc/navbar_bloc/navbar_bloc.dart';
+import 'package:kwik/bloc/navbar_bloc/navbar_event.dart';
 import 'package:kwik/constants/colors.dart';
 
 class LogoutBottomSheet extends StatefulWidget {
@@ -83,7 +89,15 @@ class _LogoutBottomSheetState extends State<LogoutBottomSheet> {
                   Expanded(
                     flex: 1,
                     child: ElevatedButton(
-                      onPressed: () async {},
+                      onPressed: () {
+                        HapticFeedback.mediumImpact();
+
+                        context.read<AuthBloc>().add(LogoutEvent());
+                        context
+                            .read<NavbarBloc>()
+                            .add(const UpdateNavBarIndex(0));
+                        context.go('/loginPage');
+                      },
                       style: ElevatedButton.styleFrom(
                         minimumSize:
                             Size(MediaQuery.of(context).size.width, 50),

@@ -22,7 +22,7 @@ class AddressBloc extends Bloc<AddressEvent, AddressState> {
       : super(AddressInitial()) {
     on<SearchLocation>(_onSearchLocation);
     on<SelectLocation>(_onSelectLocation);
-    on<SaveAddress>(_onSaveAddress);
+    // on<SaveAddress>(_onSaveAddress);
     on<GetCurrentLocation>(_onGetCurrentLocation);
     on<GetsavedAddressEvent>(_ongetalladdress);
     on<UpdateselectedaddressEvent>(_onupdateselectedaddress);
@@ -36,21 +36,26 @@ class AddressBloc extends Bloc<AddressEvent, AddressState> {
     List<AddressModel> savedaddress = [];
     String placeId = "";
     String address = "";
-    AddressModel? selecetdaddress;
+    AddressModel? selecetdaddress = event.address;
     WarehouseModel? warehouse;
 
     if (state is LocationSearchResults) {
+      // print((state as LocationSearchResults).selecteaddress?.id);
       fallbackLovationlist = (state as LocationSearchResults).placelist;
       placeId = (state as LocationSearchResults).currentplaceID;
       savedaddress = (state as LocationSearchResults).addresslist;
-      address = (state as LocationSearchResults).currentlocationaddress;
-      selecetdaddress = (state as LocationSearchResults).selecteaddress;
-
+      // print(event.address.id);
       warehouse = (state as LocationSearchResults).warehouse;
     }
-
+    savedaddressrepository.setDefaultAddress(event.address.id!);
     emit(LocationSearchResults(
-        [], savedaddress, placeId, address, event.address, warehouse!));
+      fallbackLovationlist, // Use the existing list here
+      savedaddress,
+      placeId,
+      address,
+      selecetdaddress,
+      warehouse!,
+    ));
   }
 
   Future<void> _ongetalladdress(
@@ -59,8 +64,11 @@ class AddressBloc extends Bloc<AddressEvent, AddressState> {
   ) async {
     try {
       // Get saved addresses from server
-      List<AddressModel> savedaddress =
+
+      Map<String, dynamic> useraddressdata =
           await savedaddressrepository.getAddressesFromServer();
+      List<AddressModel> savedaddress = useraddressdata["addresses"];
+      AddressModel? selectedaddressfromdb = useraddressdata["selectedAddress"];
       List<String> curentlocationdetails = await _loadPlaceDetails();
       // Get existing lovationlist from current state if available
       List<GoogleMapPlace> existingLovationlist = [];
@@ -69,7 +77,8 @@ class AddressBloc extends Bloc<AddressEvent, AddressState> {
 
       if (state is LocationSearchResults) {
         existingLovationlist = (state as LocationSearchResults).placelist;
-        selectedaddress = (state as LocationSearchResults).selecteaddress;
+        selectedaddress = (state as LocationSearchResults).selecteaddress ??
+            savedaddress.first;
 
         warehouse = (state as LocationSearchResults).warehouse;
       }
@@ -158,20 +167,20 @@ class AddressBloc extends Bloc<AddressEvent, AddressState> {
     }
   }
 
-  Future<void> _onSaveAddress(
-    SaveAddress event,
-    Emitter<AddressState> emit,
-  ) async {
-    emit(AddressLoading());
-    try {
-      // Here you would typically save to your database/API
-      // For now, we'll just emit the saved address
-      await Future.delayed(const Duration(seconds: 1)); // Simulate API call
-      emit(AddressSaved(event.address));
-    } catch (e) {
-      emit(AddressError('Failed to save address: $e'));
-    }
-  }
+  // Future<void> _onSaveAddress(
+  //   SaveAddress event,
+  //   Emitter<AddressState> emit,
+  // ) async {
+  //   emit(AddressLoading());
+  //   try {
+  //     // Here you would typically save to your database/API
+  //     // For now, we'll just emit the saved address
+  //     await Future.delayed(const Duration(seconds: 1)); // Simulate API call
+  //     emit(AddressSaved(event.address));
+  //   } catch (e) {
+  //     emit(AddressError('Failed to save address: $e'));
+  //   }
+  // }
 
   Future<void> _onGetCurrentLocation(
     GetCurrentLocation event,
@@ -230,6 +239,7 @@ class AddressBloc extends Bloc<AddressEvent, AddressState> {
       AddanewAddressEvent event, Emitter<AddressState> emit) async {
     try {
       await savedaddressrepository.addAddress(event.address, event.userID);
+      // print(event.userID);
       List<AddressModel> existingsavedaddresslist = [];
       String placeId = "";
       String address = "";
@@ -253,13 +263,15 @@ class AddressBloc extends Bloc<AddressEvent, AddressState> {
 
   Future<void> _ongetwarehousedetails(
       GetWarehousedetailsEvent event, Emitter<AddressState> emit) async {
-    print("api called");
     try {
-      print("api called");
-      WarehouseModel warehouse =
+      WarehouseModel? warehouse =
           await savedaddressrepository.getwarehousedetails(event.pincode,
               event.location.lat.toString(), event.location.lang.toString());
-      emit(LocationSearchResults([], [], "", "", null, warehouse));
+      if (warehouse != null) {
+        emit(LocationSearchResults([], [], "", "", null, warehouse));
+      } else {
+        emit(const NowarehousefoudState());
+      }
     } catch (error) {
       print(error);
     }
@@ -318,7 +330,7 @@ Future<Map<String, dynamic>?> getPlaceDetailsFromCurrentLocation() async {
             // 'types': firstResult['types'],
           };
 
-          print(placeDetails);
+          // print(placeDetails);
           return placeDetails;
         } else {
           print('No results found for the given location.');

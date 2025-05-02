@@ -23,7 +23,7 @@ class LocationSearchResults extends AddressState {
   final String currentplaceID;
   final String currentlocationaddress;
   AddressModel.AddressModel? selecteaddress;
-  final WarehouseModel warehouse;
+  final WarehouseModel? warehouse;
 
   LocationSearchResults(this.placelist, this.addresslist, this.currentplaceID,
       this.currentlocationaddress, this.selecteaddress, this.warehouse);
@@ -34,7 +34,6 @@ class LocationSearchResults extends AddressState {
         addresslist,
         currentplaceID,
         currentlocationaddress,
-        warehouse
       ];
 }
 
@@ -64,4 +63,11 @@ class AddressError extends AddressState {
 
   @override
   List<Object> get props => [message];
+}
+
+class NowarehousefoudState extends AddressState {
+  const NowarehousefoudState();
+
+  @override
+  List<Object> get props => [];
 }

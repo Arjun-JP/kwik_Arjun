@@ -40,7 +40,6 @@ class _PrivacyPolicyPageState extends State<PrivacyPolicyPage> {
           return const PrivacyPolicyShimmer();
         }
         if (state is GetappdataLoaded) {
-          print(state);
           final privacypolicy =
               _splitIntoParagraphs(state.content['privacy_policy']);
           return SingleChildScrollView(

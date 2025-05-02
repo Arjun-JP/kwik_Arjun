@@ -1,6 +1,7 @@
 // lib/features/address/presentation/pages/address_form_page.dart
 import 'dart:convert';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -60,6 +61,7 @@ class _AddressFormPageState extends State<AddressFormPage> {
 
   @override
   Widget build(BuildContext context) {
+    final user = FirebaseAuth.instance.currentUser;
     ThemeData theme = Theme.of(context);
     Map<String, String> address = extractAddressDetails(widget.selectedaddress);
     return Scaffold(
@@ -364,8 +366,9 @@ class _AddressFormPageState extends State<AddressFormPage> {
                           phoneNo: _phoneNoController.text,
                           pincode: _pincodeController.text,
                         );
-                        context.read<AddressBloc>().add(AddanewAddressEvent(
-                            address, "s5ZdLnYhnVfAramtr7knGduOI872"));
+                        context
+                            .read<AddressBloc>()
+                            .add(AddanewAddressEvent(address, user!.uid));
                         context
                             .read<AddressBloc>()
                             .add(const GetsavedAddressEvent());

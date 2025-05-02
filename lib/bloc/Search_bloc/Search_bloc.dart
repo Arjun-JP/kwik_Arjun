@@ -27,9 +27,6 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
         final searchHistory =
             (response['searchHistory'] as List?)?.cast<String>() ?? [];
 
-        print("Found ${products.length} products");
-        print("Search history: $searchHistory");
-
         emit(SearchresultProductLoaded(
           products: products, // Send the actual products, not empty list
           searchHistory: searchHistory,

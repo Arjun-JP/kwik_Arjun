@@ -19,7 +19,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
     on<DecreaseCartQuantity>(_onDecreaseQuantity);
     on<SyncCartWithServer>(_onSyncCartWithServer);
     on<AddToCartFromWishlist>(_onAddtoCartfromWishlist);
-    on<RemoveFromWishlist>(_onRemoveFromWishlist);
+    // on<RemoveFromWishlist>(_onRemoveFromWishlist);
     on<AddToWishlistFromcart>(_onAddtowishlistfromcart);
   }
 
@@ -31,7 +31,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
         variant: event.variantId,
         pincode: event.pincode,
       );
-      print("cart message$message");
+
       if (message) {
         if (state is CartUpdated) {
           final currentState = state as CartUpdated;
@@ -286,49 +286,98 @@ class CartBloc extends Bloc<CartEvent, CartState> {
   Future<void> _onAddtoCartfromWishlist(
       AddToCartFromWishlist event, Emitter<CartState> emit) async {
     try {
-      await cartRepository.addToCartfromwishlist(
+      final success = await cartRepository.addToCartfromwishlist(
           pincode: event.pincode,
           userId: event.userId,
           wishlistitemid: event.wishlistID);
+      if (state is CartUpdated) {
+        emit((state as CartUpdated).copyWith(message: true));
+      } else {
+        emit(CartError(
+            message: "Initial state error during add to cart from wishlist"));
+      }
     } catch (error) {
-      print("error adding product to cartfromwish list ");
-    }
-  }
-
-  Future<void> _onRemoveFromWishlist(
-      RemoveFromWishlist event, Emitter<CartState> emit) async {
-    try {
-      await cartRepository.removeProductfromwishlist(
-          userId: event.userId, wishlistitemid: event.wishlistID);
-    } catch (error) {
-      print("error adding product to cartfromwish list ");
+      if (state is CartUpdated) {
+        emit((state as CartUpdated)
+            .copyWith(message: false)); // Indicate failure
+      } else {
+        emit(CartError(
+            message: "Error adding product to cart from wishlist: $error"));
+      }
     }
   }
 
   Future<void> _onAddtowishlistfromcart(
       AddToWishlistFromcart event, Emitter<CartState> emit) async {
-    try {
-      await cartRepository.addtowishlist(
-          userId: event.userId,
-          productRef: event.productref,
-          varient: event.variationID);
+    if (state is! CartUpdated) {
+      emit(
+          CartError(message: "Invalid state for adding to wishlist from cart"));
+      return;
+    }
 
-      if (state is CartUpdated) {
-        final currentState = state as CartUpdated;
-        List<CartProduct> updatedcartproducts = currentState.cartItems
-            .where((element) =>
-                element.productRef.id != event.productref ||
-                element.variant.id != event.variationID)
-            .toList();
-        // List<WishlistItem> updatedwishlistitem=currentState.wishlist.add(WishlistItem(productRef: currentState.cartItems.where((element) => element.productRef.id==event.productref&&element.variant.id==event.variationID).first.productRef, variantId:event.variationID , id: id))
-        emit(CartUpdated(
-            wishlist: currentState.wishlist,
-            message: true,
-            cartItems: updatedcartproducts,
-            charges: currentState.charges));
+    final currentState = state as CartUpdated;
+
+    try {
+      // 1. First add to wishlist
+      final success = await cartRepository.addtowishlist(
+        userId: event.userId,
+        productRef: event.productref,
+        varient: event.variationID,
+      );
+
+      if (success.isNotEmpty) {
+        emit(currentState.copyWith(message: false));
+        return;
       }
+
+      // 2. Update the cart by removing the item
+      final updatedCartProducts = success["cartproducts"];
+
+      // 3. Get updated wishlist (or you could add the item locally)
+      final updatedWishlist = success["wishlist"];
+      // Alternative: Add locally without fetching
+      // final wishlistItem = convertCartItemToWishlist(currentState.cartItems.firstWhere(...));
+      // final updatedWishlist = [...currentState.wishlist, wishlistItem];
+
+      // 4. Emit new state with ALL previous data preserved
+      emit(currentState.copyWith(
+        cartItems: updatedCartProducts,
+        wishlist: updatedWishlist,
+        // Keep all other state properties unchanged
+        charges: currentState.charges,
+        message: true,
+        // Add any other properties your state has
+      ));
     } catch (error) {
-      print("Error adfding prodct to wishlist");
+      emit(currentState.copyWith(
+        message: false,
+      ));
     }
   }
+  // Future<void> _onAddtowishlistfromcart(
+  //     AddToWishlistFromcart event, Emitter<CartState> emit) async {
+  //   try {
+  //     await cartRepository.addtowishlist(
+  //         userId: event.userId,
+  //         productRef: event.productref,
+  //         varient: event.variationID);
+
+  //     if (state is CartUpdated) {
+  //       final currentState = state as CartUpdated;
+  //       List<CartProduct> updatedcartproducts = currentState.cartItems
+  //           .where((element) =>
+  //               element.productRef.id != event.productref ||
+  //               element.variant.id != event.variationID)
+  //           .toList();
+  //       // List<WishlistItem> updatedwishlistitem=currentState.wishlist.add(WishlistItem(productRef: currentState.cartItems.where((element) => element.productRef.id==event.productref&&element.variant.id==event.variationID).first.productRef, variantId:event.variationID , id: id))
+  //       emit(CartUpdated(
+  //           wishlist: currentState.wishlist,
+  //           message: true,
+  //           cartItems: updatedcartproducts,
+  //           charges: currentState.charges));
+  //     }
+  //   } catch (error) {
+  //     print("Error adfding prodct to wishlist");
+  //   }
+  // }
 }

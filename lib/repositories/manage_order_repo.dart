@@ -15,7 +15,6 @@ class OrderManagementRepository {
       {required Map<String, dynamic> orderJson // 'instant' or 'slot'
 
       }) async {
-    print(orderJson);
     final response = await http.post(
       Uri.parse("$baseUrl/order"),
       headers: {
@@ -25,8 +24,7 @@ class OrderManagementRepository {
       },
       body: jsonEncode(orderJson), // <<<< pass orderJson directly
     );
-    print(response.statusCode);
-    print(response.body);
+
     if (response.statusCode == 200) {
       return json.decode(response.body);
     } else {

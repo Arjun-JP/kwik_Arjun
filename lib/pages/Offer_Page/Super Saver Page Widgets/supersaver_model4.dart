@@ -51,10 +51,8 @@ class SupersaverModel4 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return showCategory
-        ? Container(
-            height: 752,
+        ? SizedBox(
             width: double.infinity,
-            color: Colors.amber,
             child: BlocProvider(
               create: (context) => SupersaverModel4Bloc(
                   repository: SubcategoryProductRepository())
@@ -71,24 +69,26 @@ class SupersaverModel4 extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          Padding(
-                            padding: const EdgeInsets.all(10.0),
-                            child: Text(
-                              title,
-                              maxLines: 1,
-                              style: TextStyle(
-                                  color: parseColor(titleColor),
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w800),
-                            ),
-                          ),
+                          // Padding(
+                          //   padding: const EdgeInsets.all(10.0),
+                          //   child: Text(
+                          //     title,
+                          //     maxLines: 1,
+                          //     style: TextStyle(
+                          //         color: parseColor(titleColor),
+                          //         fontSize: 18,
+                          //         fontWeight: FontWeight.w800),
+                          //   ),
+                          // ),
                           Image.network(
                             bannerimage,
-                            height: 250,
+                            // height: 250,
                             width: double.infinity,
                             fit: BoxFit.fitWidth,
                           ),
-                          const SizedBox(height: 10),
+                          const SizedBox(
+                            height: 10,
+                          ),
                           Padding(
                             padding: const EdgeInsets.only(left: 10),
                             child: SizedBox(
@@ -168,7 +168,7 @@ class SupersaverModel4 extends StatelessWidget {
                               ),
                             ),
                           ),
-                          const SizedBox(height: 10)
+                          const SizedBox(height: 20)
                         ],
                       ),
                     );

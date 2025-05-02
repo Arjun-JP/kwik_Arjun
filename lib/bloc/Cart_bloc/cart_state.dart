@@ -17,14 +17,29 @@ class CartUpdated extends CartState {
   final Map<String, dynamic> charges;
   final List<WishlistItem> wishlist;
 
-  CartUpdated(
-      {required this.wishlist,
-      required this.message,
-      required this.cartItems,
-      required this.charges});
+  CartUpdated({
+    required this.wishlist,
+    required this.message,
+    required this.cartItems,
+    required this.charges,
+  });
+
+  CartUpdated copyWith({
+    bool? message,
+    List<CartProduct>? cartItems,
+    Map<String, dynamic>? charges,
+    List<WishlistItem>? wishlist,
+  }) {
+    return CartUpdated(
+      wishlist: wishlist ?? this.wishlist,
+      message: message ?? this.message,
+      cartItems: cartItems ?? this.cartItems,
+      charges: charges ?? this.charges,
+    );
+  }
 
   @override
-  List<Object> get props => [message, cartItems, wishlist];
+  List<Object> get props => [message, cartItems, wishlist, charges]; // Make sure to include charges here
 }
 
 class CartSynced extends CartState {
@@ -32,6 +47,16 @@ class CartSynced extends CartState {
   final List<Map<String, dynamic>> cartItems;
 
   CartSynced({required this.isSynced, required this.cartItems});
+
+  CartSynced copyWith({
+    bool? isSynced,
+    List<Map<String, dynamic>>? cartItems,
+  }) {
+    return CartSynced(
+      isSynced: isSynced ?? this.isSynced,
+      cartItems: cartItems ?? this.cartItems,
+    );
+  }
 
   @override
   List<Object> get props => [isSynced, cartItems];
@@ -42,6 +67,14 @@ class CartCleared extends CartState {
 
   CartCleared({required this.message});
 
+  CartCleared copyWith({
+    String? message,
+  }) {
+    return CartCleared(
+      message: message ?? this.message,
+    );
+  }
+
   @override
   List<Object> get props => [message];
 }
@@ -50,6 +83,14 @@ class CartError extends CartState {
   final String message;
 
   CartError({required this.message});
+
+  CartError copyWith({
+    String? message,
+  }) {
+    return CartError(
+      message: message ?? this.message,
+    );
+  }
 
   @override
   List<Object> get props => [message];

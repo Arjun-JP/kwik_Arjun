@@ -15,9 +15,9 @@ class AppColors {
 
   static const primaryColor = Color(0xFF233D4D);
 
-  static final gradient1black = Color(0xFF233D4D).withOpacity(0.0);
+  static final gradient1black = const Color(0xFF233D4D).withOpacity(0.0);
 
-  static final gradient2orange = Color(0xffFC5B00).withOpacity(0.2);
+  static final gradient2orange = const Color(0xffFC5B00).withOpacity(0.2);
 
   static const secondaryColor = Color(0xffCEBEFB);
 

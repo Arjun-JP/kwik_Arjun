@@ -5,8 +5,9 @@ import 'package:kwik/models/product_model.dart';
 import 'package:kwik/pages/Category_page/category_page.dart';
 import 'package:kwik/pages/Error_pages/network_error_page.dart';
 import 'package:kwik/pages/FAQ_page/faq_questions.dart';
-import 'package:kwik/pages/Home_page/home_Page.dart';
+import 'package:kwik/pages/Home_page/home_page.dart';
 import 'package:kwik/pages/LoginPage/login_page.dart';
+import 'package:kwik/pages/No_service_page/no_service_page.dart';
 import 'package:kwik/pages/Offer_Page/offer_page.dart';
 import 'package:kwik/pages/OnboardingScreen/onboarding_screen.dart';
 import 'package:kwik/pages/Order_status_page/order_placed_page.dart';
@@ -24,10 +25,11 @@ import 'package:kwik/pages/Order_details_page/order_details_page.dart';
 import 'package:kwik/pages/order_list_page.dart/order_list.dart.dart';
 import 'package:kwik/pages/product_details_page/product_details_page.dart';
 import 'package:kwik/pages/profile/profile_page.dart';
-import 'package:kwik/pages/subcategory_products/subcategory_products.dart';
+import 'package:kwik/pages/subcategory_products/subcategory_products.dart'; // Import Firebase Auth
 
 final GoRouter router = GoRouter(
-  initialLocation: '/splashScreen', // Set the home page as the default page
+  // * The initialRoute is set to splashScreen.
+  initialLocation: '/splashScreen',
   routes: [
     GoRoute(
       path: '/splashScreen',
@@ -268,6 +270,10 @@ final GoRouter router = GoRouter(
           subcatname: subcatName,
         );
       },
+    ),
+    GoRoute(
+      path: '/no-service',
+      builder: (context, state) => const NoServicePage(),
     ),
     GoRoute(
       path: '/order-success', // Define the path for your order success page

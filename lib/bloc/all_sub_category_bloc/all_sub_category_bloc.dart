@@ -24,14 +24,14 @@ class AllSubCategoryBloc
   /// **Initialize Hive boxes safely**
   Future<void> _initializeHiveBoxes() async {
     if (!Hive.isBoxOpen('subCategoriesallcategorypage')) {
-      print("inside 1");
+    
       subCategoryBox =
           await Hive.openBox<String>('subCategoriesallcategorypage');
     } else {
-      print("inside else");
+
       subCategoryBox = Hive.box<String>('subCategoriesallcategorypage');
-      print("object");
-      print(subCategoryBox);
+
+
     }
 
     if (!Hive.isBoxOpen('productsallsubcategorypage')) {
@@ -44,7 +44,7 @@ class AllSubCategoryBloc
   /// **Load all subcategories and products initially with Hive caching**
   Future<void> _onLoadSubCategories(
       LoadSubCategories event, Emitter<AllSubCategoryState> emit) async {
-    print("event called");
+    
     await _initializeHiveBoxes(); // Ensure boxes are open
 
     String categoryKey = event.categoryId; // Use category ID as the cache key
@@ -55,14 +55,13 @@ class AllSubCategoryBloc
           (jsonDecode(subCategoryBox.get(categoryKey)!) as List)
               .map((data) => SubCategoryModel.fromJson(data))
               .toList();
-      print("1111");
-      print(cachedSubCategories);
+
+
       List<ProductModel> cachedProducts =
           (jsonDecode(productBox.get(categoryKey)!) as List)
               .map((data) => ProductModel.fromJson(data))
               .toList();
-      print("2222");
-      print(cachedProducts);
+   
       if (cachedSubCategories.isNotEmpty) {
         final defaultSubCategory =
             event.selectedsubcategoryId ?? cachedSubCategories.first.id;
@@ -71,8 +70,7 @@ class AllSubCategoryBloc
             .where((product) => product.subCategoryRef
                 .any((sub) => sub.id == defaultSubCategory))
             .toList();
-        print("333323");
-        print(filteredProducts);
+    
         emit(CategoryLoaded(
           subCategories: cachedSubCategories,
           selectedSubCategory: defaultSubCategory,

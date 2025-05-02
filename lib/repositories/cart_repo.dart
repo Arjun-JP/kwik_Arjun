@@ -1,8 +1,8 @@
 import 'dart:convert';
-import 'dart:ffi';
-import 'package:flutter/material.dart';
+
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:http/http.dart' as http;
-import 'package:kwik/main.dart';
+import 'package:kwik/models/wishlist_model.dart';
 import 'package:kwik/widgets/custom_snackbar.dart';
 
 class CartRepository {
@@ -13,7 +13,7 @@ class CartRepository {
     "api_Key": "arjun",
     "api_Secret": "digi9",
   };
-
+  final user = FirebaseAuth.instance.currentUser;
   Future<bool> addToCart({
     required String userId,
     required String productRef,
@@ -76,6 +76,7 @@ class CartRepository {
       if (response.statusCode == 200) {
         print("Product added to cart from wish list");
       } else {
+        CustomSnackBars.showLimitedQuantityWarning();
         throw Exception("Failed to add product to cart: ${response.body}");
       }
     } catch (e) {
@@ -132,7 +133,7 @@ class CartRepository {
       );
 
       if (response.statusCode == 201) {
-        print(response.statusCode);
+        // print(response.statusCode);
         return true;
       } else {
         CustomSnackBars.showLimitedQuantityWarning();
@@ -163,8 +164,8 @@ class CartRepository {
           "pincode": pincode,
         }),
       );
-      print(response.statusCode);
-      print(response.body);
+      // print(response.statusCode);
+      // print(response.body);
       if (response.statusCode == 201) {
         return "Quantity decreased";
       } else {
@@ -225,7 +226,7 @@ class CartRepository {
           if (item is! Map<String, dynamic>) {
             throw Exception("Unexpected item format in wishlist");
           }
-          print(Map<String, dynamic>.from(item));
+          // print(Map<String, dynamic>.from(item));
           return Map<String, dynamic>.from(item);
         }).toList();
 
@@ -243,65 +244,72 @@ class CartRepository {
     }
   }
 
-  /// 📌 **Fetch User's Cart**
-  Future<Map<String, dynamic>> addtowishlist(
-      {required String userId,
-      required String productRef,
-      required String varient}) async {
-    print(productRef);
-    print(varient);
+  Future<Map<String, dynamic>> addtowishlist({
+    required String userId,
+    required String productRef,
+    required String varient,
+  }) async {
     final url = Uri.parse("$baseUrl/add/whislist");
     try {
-      final response = await http.post(url,
-          headers: headers,
-          body: jsonEncode({
-            "userId": "s5ZdLnYhnVfAramtr7knGduOI872",
-            "product_ref": productRef,
-            "variant": varient
-          }));
-      print("add to wish list api called");
-      print(response.statusCode);
-      print(response.body);
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body) as Map<String, dynamic>;
+      final response = await http.post(
+        url,
+        headers: headers,
+        body: jsonEncode({
+          "userId": userId, // Changed from user!.uid to userId parameter
+          "product_ref": productRef,
+          "variant": varient
+        }),
+      );
 
-        // Check if the response has the expected structure
-        if (!data.containsKey("cartProducts")) {
-          throw Exception(
-              "Unexpected response format: Missing 'cartProducts' key");
-        }
+      final data = jsonDecode(response.body) as Map<String, dynamic>;
 
-        if (!data.containsKey("charges")) {
-          throw Exception("Unexpected response format: Missing 'charges' key");
-        }
-
-        final cartProductList = data["cartProducts"];
-        final wishlist = data["whishlist"];
-        final charges = data["charges"];
-        // print("charges while syncing cart $charges");
-        if (cartProductList is! List) {
-          throw Exception(
-              "Unexpected response format: 'cartProducts' is not a List");
-        }
-
-        // Validate and convert each item in the list
-        final validatedList = cartProductList.map((item) {
-          if (item is! Map<String, dynamic>) {
-            throw Exception("Unexpected item format in cartProducts");
-          }
-          return Map<String, dynamic>.from(item);
-        }).toList();
-
-        return {
-          "cartproducts": validatedList,
-          "charges": charges,
-          "wishlist": wishlist
-        };
-      } else {
-        throw Exception("Failed to fetch cart: ${response.body}");
+      // Check response status code
+      if (response.statusCode != 200) {
+        throw Exception("Failed to add to wishlist: ${response.statusCode}");
       }
+
+      // Validate response structure
+      if (!data.containsKey("cartProducts") ||
+          !data.containsKey("charges") ||
+          !data.containsKey("whishlist")) {
+        throw Exception("Unexpected response format");
+      }
+
+      final cartProductList = data["cartProducts"];
+      final wishlist = data["whishlist"];
+      final charges = data["charges"];
+
+      // Validate cart products
+      if (cartProductList is! List) {
+        throw Exception("'cartProducts' is not a List");
+      }
+
+      final validatedList = cartProductList.map((item) {
+        if (item is! Map<String, dynamic>) {
+          throw Exception("Unexpected item format in cartProducts");
+        }
+        return Map<String, dynamic>.from(item);
+      }).toList();
+
+      // Parse wishlist
+      if (wishlist is! List) {
+        throw Exception("'whishlist' is not a List");
+      }
+
+      final parsedWishlist = wishlist.map((wishlistItem) {
+        if (wishlistItem is! Map<String, dynamic>) {
+          throw Exception("Unexpected item format in wishlist");
+        }
+        return WishlistItem.fromJson(Map<String, dynamic>.from(wishlistItem));
+      }).toList();
+
+      return {
+        "cartproducts": validatedList,
+        "charges": charges,
+        "wishlist": parsedWishlist
+      };
     } catch (e) {
-      throw Exception("Error fetching cart: $e");
+      throw Exception("Error adding to wishlist: $e");
     }
   }
 }

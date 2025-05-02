@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
@@ -45,7 +46,7 @@ class _SearchPageState extends State<SearchPage> {
       });
       context
           .read<SearchBloc>()
-          .add(SearchProducts(query, "s5ZdLnYhnVfAramtr7knGduOI872"));
+          .add(SearchProducts(query, FirebaseAuth.instance.currentUser!.uid));
     }
   }
 
@@ -175,7 +176,7 @@ class _SearchPageState extends State<SearchPage> {
             '/productdetails',
             extra: {
               'product': product,
-              'subcategoryref': "6780ff720bfef51d79df1a06",
+              'subcategoryref': product.subCategoryRef.first.categoryRef,
               'buttonbg': parseColor("E23338"), // example color as a string
               'buttontext': parseColor("FFFFFF"),
             },

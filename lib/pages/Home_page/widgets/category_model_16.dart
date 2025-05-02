@@ -55,7 +55,7 @@ class CategoryModel16 extends StatelessWidget {
                       return Container(
                         color: parseColor(bgcolor),
                         width: double.infinity,
-                        height: 425,
+                        height: 403,
                         padding: const EdgeInsets.symmetric(horizontal: 10),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.start,
@@ -166,7 +166,7 @@ Widget subcategoryItem(
             Align(
               alignment: Alignment.topCenter,
               child: Container(
-                margin: const EdgeInsets.symmetric(horizontal: 15),
+                margin: const EdgeInsets.symmetric(horizontal: 14),
                 width: double.infinity,
                 decoration: BoxDecoration(
                     color: parseColor(offerbgcolor),
@@ -175,7 +175,7 @@ Widget subcategoryItem(
                         bottomRight: Radius.circular(10))),
                 child: Padding(
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 5.0, vertical: 3),
+                      const EdgeInsets.symmetric(horizontal: 2.0, vertical: 3),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -190,7 +190,9 @@ Widget subcategoryItem(
                       Text(
                         offer,
                         style: theme.textTheme.bodyMedium!.copyWith(
-                            fontSize: 12, color: parseColor(offertext2)),
+                            fontWeight: FontWeight.w600,
+                            fontSize: 10,
+                            color: parseColor(offertext2)),
                       ),
                     ],
                   ),

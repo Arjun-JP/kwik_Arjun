@@ -92,7 +92,7 @@ class _ChangeDefaultaddressBottomsheetState
                       onPressed: () async {
                         context.read<AddressBloc>().add(
                             UpdateselectedaddressEvent(widget.selectedaddress));
-                        print(widget.selectedaddress.addressType);
+
                         context.pop();
                       },
                       style: ElevatedButton.styleFrom(

@@ -37,7 +37,6 @@ class _AddadressState extends State<MapPage> {
   }
 
   _init() {
-    print(widget.initialPlaceId);
     _placeId = widget.initialPlaceId;
     // Initialize the map with a default location (Bangalore)
     _draggedLatlng = const gmap.LatLng(12.9716, 77.5946);
