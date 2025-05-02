@@ -5,7 +5,7 @@ import 'package:kwik/models/product_model.dart';
 import 'package:kwik/pages/Category_page/category_page.dart';
 import 'package:kwik/pages/Error_pages/network_error_page.dart';
 import 'package:kwik/pages/FAQ_page/faq_questions.dart';
-import 'package:kwik/pages/Home_page/home_Page.dart';
+import 'package:kwik/pages/Home_page/home_page.dart';
 import 'package:kwik/pages/LoginPage/login_page.dart';
 import 'package:kwik/pages/Offer_Page/offer_page.dart';
 import 'package:kwik/pages/OnboardingScreen/onboarding_screen.dart';
@@ -25,14 +25,33 @@ import 'package:kwik/pages/order_list_page.dart/order_list.dart.dart';
 import 'package:kwik/pages/product_details_page/product_details_page.dart';
 import 'package:kwik/pages/profile/profile_page.dart';
 import 'package:kwik/pages/subcategory_products/subcategory_products.dart';
+import 'package:firebase_auth/firebase_auth.dart'; // Import Firebase Auth
 
 final GoRouter router = GoRouter(
-  initialLocation: '/splashScreen', // Set the home page as the default page
+  // * The initialRoute is set to splashScreen.
+  initialLocation: '/splashScreen',
   routes: [
     GoRoute(
       path: '/splashScreen',
       builder: (BuildContext context, GoRouterState state) {
         return const SplashScreen();
+      },
+      // * The redirect is now defined inside the splashScreen route.
+      redirect: (context, state) {
+        // Use Firebase Auth to check the user's authentication status
+        final user = FirebaseAuth.instance.currentUser;
+
+        // If the user is logged in, redirect to the home page.
+        if (user != null) {
+          return '/home';
+        }
+        // Otherwise, redirect to the login page.
+        else {
+          return '/loginPage';
+        }
+        // * Note: redirect is called before any other page is rendered
+        // * It is important to handle all cases.
+        return null; //  * return null to allow the route to go through.
       },
     ),
     GoRoute(
