@@ -24,7 +24,8 @@ class OrderManagementRepository {
       },
       body: jsonEncode(orderJson), // <<<< pass orderJson directly
     );
-
+print(response.statusCode);
+print(response.body);
     if (response.statusCode == 200) {
       return json.decode(response.body);
     } else {

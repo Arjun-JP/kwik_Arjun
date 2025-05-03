@@ -345,9 +345,14 @@ Widget productModel3(
                                   child: Center(
                                     child: Text(
                                       product.variations.length == 1 &&
-                                              product.variations.first.stock
-                                                      .first.stockQty ==
-                                                  0
+                                              (product.variations.first.stock
+                                                      .where(
+                                                        (element) => element.warehouseRef==warstate.warehouse!.id,
+                                                      ).isEmpty||product.variations.first.stock
+                                                      .where(
+                                                        (element) => element.warehouseRef==warstate.warehouse!.id,
+                                                      ).first .stockQty ==
+                                                  0)
                                           ? "No stock"
                                           : "Add",
                                       style: TextStyle(

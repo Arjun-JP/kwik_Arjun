@@ -398,7 +398,7 @@ class ProductModel2 extends StatelessWidget {
                                           ),
                                           child: Text(
                                             product.variations.length == 1 &&
-                                                        product.variations.first
+                                                        (product.variations.first
                                                             .stock
                                                             .where((element) =>
                                                                 element
@@ -413,7 +413,7 @@ class ProductModel2 extends StatelessWidget {
                                                                 warehouseid)
                                                             .first
                                                             .stockQty ==
-                                                        0
+                                                        0)
                                                 ? "Out of stock"
                                                 : 'Add to Cart',
                                             style: TextStyle(
