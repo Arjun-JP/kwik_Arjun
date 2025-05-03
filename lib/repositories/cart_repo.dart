@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:http/http.dart' as http;
 import 'package:kwik/models/wishlist_model.dart';
@@ -28,17 +27,19 @@ class CartRepository {
       "variant": variant,
       "pincode": pincode,
     };
-
+    print(body);
     try {
       final response = await http.post(
         url,
         headers: headers,
         body: jsonEncode(body),
       );
-
+      print(response.statusCode);
+      print(response.body);
       if (response.statusCode == 201) {
         return true;
       } else {
+        print("safsssssssssss");
         CustomSnackBars.showLimitedQuantityWarning();
         return false;
       }
@@ -76,6 +77,7 @@ class CartRepository {
       if (response.statusCode == 200) {
         print("Product added to cart from wish list");
       } else {
+        print("sudghfvauygrsfbvu");
         CustomSnackBars.showLimitedQuantityWarning();
         throw Exception("Failed to add product to cart: ${response.body}");
       }
@@ -136,6 +138,7 @@ class CartRepository {
         // print(response.statusCode);
         return true;
       } else {
+        print("1231234");
         CustomSnackBars.showLimitedQuantityWarning();
         return false;
       }

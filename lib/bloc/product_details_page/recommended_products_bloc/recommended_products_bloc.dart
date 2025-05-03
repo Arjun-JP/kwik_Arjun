@@ -22,7 +22,7 @@ class RecommendedProductsBloc
     try {
       var box = await Hive.openBox('Recommended_product_cache');
 
-      // Check if cached data exists and no force refresh
+      // // Check if cached data exists and no force refresh
       if (!event.forceRefresh && box.containsKey(_cacheKey)) {
         final cachedData = (box.get(_cacheKey) as List)
             .map((json) =>

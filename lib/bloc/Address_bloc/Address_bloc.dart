@@ -10,6 +10,7 @@ import 'package:kwik/models/address_model.dart';
 import 'package:kwik/models/googlemap_place_model.dart';
 import 'package:kwik/models/order_model.dart' as Location;
 import 'package:kwik/models/warehouse_model.dart';
+import 'package:kwik/pages/Address_management/address_form.dart';
 import 'package:kwik/repositories/address_repo.dart';
 import 'package:kwik/repositories/googlemap_service.dart';
 import 'package:http/http.dart' as http;
@@ -44,33 +45,45 @@ class AddressBloc extends Bloc<AddressEvent, AddressState> {
       fallbackLovationlist = (state as LocationSearchResults).placelist;
       placeId = (state as LocationSearchResults).currentplaceID;
       savedaddress = (state as LocationSearchResults).addresslist;
-      // print(event.address.id);
+      address = (state as LocationSearchResults).currentlocationaddress;
       warehouse = (state as LocationSearchResults).warehouse;
     }
     savedaddressrepository.setDefaultAddress(event.address.id!);
     emit(LocationSearchResults(
-      fallbackLovationlist, // Use the existing list here
-      savedaddress,
-      placeId,
-      address,
-      selecetdaddress,
-      warehouse!,
-    ));
+        fallbackLovationlist, // Use the existing list here
+        savedaddress,
+        placeId,
+        address,
+        selecetdaddress,
+        warehouse!,
+        extractAddressDetails(address)["pin"]!));
   }
 
   Future<void> _ongetalladdress(
     GetsavedAddressEvent event,
     Emitter<AddressState> emit,
   ) async {
+    if (state is LocationSearchResults &&
+        (state as LocationSearchResults).addresslist.isNotEmpty &&
+        (state as LocationSearchResults).currentlocationaddress.isNotEmpty) {
+      // If the current state is LocationSearchResults and already
+      //
+      // has addresses,
+      // just emit the current state to avoid the API call.
+      emit(state);
+      return;
+    }
+
     try {
       // Get saved addresses from server
-
       Map<String, dynamic> useraddressdata =
           await savedaddressrepository.getAddressesFromServer();
-      List<AddressModel> savedaddress = useraddressdata["addresses"];
+      List<AddressModel> savedaddress =
+          (useraddressdata["addresses"] as List?)?.cast<AddressModel>() ?? [];
       AddressModel? selectedaddressfromdb = useraddressdata["selectedAddress"];
       List<String> curentlocationdetails = await _loadPlaceDetails();
-      // Get existing lovationlist from current state if available
+
+      // Get existing location list and selected address from current state if available
       List<GoogleMapPlace> existingLovationlist = [];
       AddressModel? selectedaddress;
       WarehouseModel? warehouse;
@@ -78,19 +91,27 @@ class AddressBloc extends Bloc<AddressEvent, AddressState> {
       if (state is LocationSearchResults) {
         existingLovationlist = (state as LocationSearchResults).placelist;
         selectedaddress = (state as LocationSearchResults).selecteaddress ??
-            savedaddress.first;
-
+            savedaddress.firstOrNull;
         warehouse = (state as LocationSearchResults).warehouse;
+      } else {
+        // If the state is not LocationSearchResults (e.g., initial state),
+        // set the first saved address as the selected one if available.
+        selectedaddress = savedaddress.firstOrNull;
+        warehouse =
+            null; // Initialize warehouse if not in LocationSearchResults
       }
 
-      // Emit new state with saved addresses and existing lovationlist
+      // Emit new state with saved addresses and existing location list
       emit(LocationSearchResults(
-          existingLovationlist,
-          savedaddress,
-          curentlocationdetails[0],
-          curentlocationdetails[1],
-          selectedaddress,
-          warehouse!));
+        existingLovationlist,
+        savedaddress,
+        curentlocationdetails.firstOrNull ?? "",
+        curentlocationdetails.lastOrNull ?? "",
+        selectedaddress,
+        warehouse,
+        extractAddressDetails(curentlocationdetails.lastOrNull ?? "")["pin"] ??
+            "",
+      ));
     } catch (error) {
       // Handle error case - use empty list if current state isn't LocationSearchResults
       List<GoogleMapPlace> fallbackLovationlist = [];
@@ -104,12 +125,18 @@ class AddressBloc extends Bloc<AddressEvent, AddressState> {
         placeId = (state as LocationSearchResults).currentplaceID;
         address = (state as LocationSearchResults).currentlocationaddress;
         selectedaddress = (state as LocationSearchResults).selecteaddress;
-
         warehouse = (state as LocationSearchResults).warehouse;
       }
 
-      emit(LocationSearchResults(fallbackLovationlist, [], placeId, address,
-          selectedaddress, warehouse!));
+      emit(LocationSearchResults(
+        fallbackLovationlist,
+        [],
+        placeId,
+        address,
+        selectedaddress,
+        warehouse,
+        extractAddressDetails(address)["pin"] ?? "",
+      ));
 
       // You might want to emit an error state here as well
       emit(AddressError('Failed to load saved addresses: $error'));
@@ -148,8 +175,14 @@ class AddressBloc extends Bloc<AddressEvent, AddressState> {
 
         warehouse = (state as LocationSearchResults).warehouse;
       }
-      emit(LocationSearchResults(lovationlist, existingsavedaddresslist,
-          placeId, address, selectedaddress, warehouse!));
+      emit(LocationSearchResults(
+          lovationlist,
+          existingsavedaddresslist,
+          placeId,
+          address,
+          selectedaddress,
+          warehouse!,
+          extractAddressDetails(address)["pin"]!));
     } catch (e) {
       emit(AddressError('Failed to search location: $e'));
     }
@@ -255,7 +288,7 @@ class AddressBloc extends Bloc<AddressEvent, AddressState> {
         warehouse = (state as LocationSearchResults).warehouse;
       }
       emit(LocationSearchResults([], existingsavedaddresslist, placeId, address,
-          selectedaddress, warehouse!));
+          selectedaddress, warehouse!, extractAddressDetails(address)["pin"]!));
     } catch (error) {
       print("faild to add address");
     }
@@ -264,11 +297,12 @@ class AddressBloc extends Bloc<AddressEvent, AddressState> {
   Future<void> _ongetwarehousedetails(
       GetWarehousedetailsEvent event, Emitter<AddressState> emit) async {
     try {
+      print("called");
       WarehouseModel? warehouse =
           await savedaddressrepository.getwarehousedetails(event.pincode,
               event.location.lat.toString(), event.location.lang.toString());
       if (warehouse != null) {
-        emit(LocationSearchResults([], [], "", "", null, warehouse));
+        emit(LocationSearchResults([], [], "", "", null, warehouse, ""));
       } else {
         emit(const NowarehousefoudState());
       }

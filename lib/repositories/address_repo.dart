@@ -154,6 +154,10 @@ class AddressRepository {
     final url = Uri.parse('$baseUrl/warehouse/warehouseServiceStatus');
 
     try {
+      print("repocalled");
+      print(pincode);
+      print(destinationLat);
+      print(destinationLon);
       final response = await http.post(
         url,
         headers: headers,
@@ -163,7 +167,8 @@ class AddressRepository {
           "destinationLon": destinationLon
         }),
       );
-
+      // print(response.statusCode);
+      // print(response.body);
       if (response.statusCode == 200) {
         final responseData = json.decode(response.body);
 

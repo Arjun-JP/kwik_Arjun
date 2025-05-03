@@ -55,6 +55,7 @@ class _CartPageState extends State<CartPage> {
 
   @override
   Widget build(BuildContext context) {
+    print("rebuilding");
     final theme = Theme.of(context);
     final user = FirebaseAuth.instance.currentUser;
     return Scaffold(

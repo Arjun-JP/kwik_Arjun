@@ -53,7 +53,7 @@ class _LocationSearchPageState extends State<LocationSearchPage> {
         leading: InkWell(
             onTap: () {
               context.pop();
-              context.read<AddressBloc>().add(const GetsavedAddressEvent());
+              // context.read<AddressBloc>().add(const GetsavedAddressEvent());
             },
             child: const Icon(
               Icons.arrow_back_ios_new_rounded,

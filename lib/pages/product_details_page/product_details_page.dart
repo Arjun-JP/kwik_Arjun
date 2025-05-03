@@ -25,7 +25,6 @@ import 'package:kwik/models/brand_model.dart';
 import 'package:kwik/models/cart_model.dart';
 import 'package:kwik/models/product_model.dart';
 import 'package:kwik/models/variation_model.dart';
-import 'package:kwik/pages/Address_management/address_form.dart';
 import 'package:kwik/repositories/recommended_product_repo.dart';
 import 'package:kwik/repositories/sub_category_product_repository.dart';
 import 'package:kwik/widgets/produc_model_1.dart';
@@ -63,21 +62,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
           .read<VariationBloc>()
           .add(SelectVariationEvent(widget.product.variations.first));
     }
-    // _initializeVideo();
   }
-
-  // Future<void> _initializeVideo() async {
-  //   if (widget.product.productVideo != null &&
-  //       widget.product.productVideo!.isNotEmpty &&
-  //       widget.product.productVideo != "video") {
-  //     _videoPlayerController =
-  //         VideoPlayerController.network(widget.product.productVideo!);
-  //     _initializeVideoPlayerFuture =
-  //         _videoPlayerController!.initialize().then((_) {
-  //       setState(() {}); // Ensure the first frame is shown after initialization
-  //     });
-  //   }
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -646,8 +631,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                             element.variant.id == selecedvariation.id)
                         ? quantitycontrolbutton(
                             user: user,
-                            pincode: extractAddressDetails(
-                                warstate.currentlocationaddress)["pin"]!,
+                            pincode: warstate.pincode,
                             buttontextcolor: widget.buttontext,
                             buttonbgcolor: widget.buttonbg,
                             variationID: selecedvariation.id,
@@ -667,12 +651,15 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                                       .where((element) =>
                                           element.warehouseRef ==
                                           warstate.warehouse!.id)
-                                      .isEmpty ||
-                                  selecedvariation.stock.where(
-                                        (element) =>
-                                            element.warehouseRef ==
-                                            warstate.warehouse!.id,
-                                      ) ==
+                                      .isEmpty &&
+                                  selecedvariation.stock
+                                          .where(
+                                            (element) =>
+                                                element.warehouseRef ==
+                                                warstate.warehouse!.id,
+                                          )
+                                          .first
+                                          .stockQty ==
                                       0) {
                                 HapticFeedback.heavyImpact();
                               } else {
@@ -682,10 +669,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                                           productRef: product,
                                           variant: selecedvariation,
                                           quantity: 1,
-                                          pincode: extractAddressDetails(
-                                                  warstate
-                                                      .currentlocationaddress)[
-                                              "pin"]!,
+                                          pincode: warstate.pincode,
                                           sellingPrice:
                                               selecedvariation.sellingPrice,
                                           mrp: selecedvariation.mrp,
@@ -699,8 +683,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                                         userId: user!.uid,
                                         productRef: product.id,
                                         variantId: selecedvariation.id,
-                                        pincode: extractAddressDetails(warstate
-                                            .currentlocationaddress)["pin"]!,
+                                        pincode: warstate.pincode,
                                       ),
                                     );
                               }
@@ -912,7 +895,9 @@ Widget quantitycontrolbutton(
   return Container(
     padding: const EdgeInsets.symmetric(horizontal: 10),
     decoration: BoxDecoration(
-        color: buttonbgcolor, borderRadius: BorderRadius.circular(10)),
+        border: Border.all(color: buttontextcolor),
+        color: buttonbgcolor,
+        borderRadius: BorderRadius.circular(10)),
     child: Row(
       spacing: 10,
       children: [

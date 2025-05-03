@@ -14,7 +14,6 @@ import 'package:kwik/constants/colors.dart';
 import 'package:kwik/constants/constants.dart';
 import 'package:kwik/models/cart_model.dart';
 import 'package:kwik/models/product_model.dart';
-import 'package:kwik/pages/Address_management/address_form.dart';
 import 'package:kwik/widgets/custom_snackbar.dart';
 import 'package:kwik/widgets/select_Varrient_bottom_sheet.dart';
 
@@ -203,10 +202,7 @@ class ProductItem extends StatelessWidget {
                                             instock: state is CartUpdated
                                                 ? state.message
                                                 : false,
-                                            pincode: extractAddressDetails(
-                                                    warstate
-                                                        .currentlocationaddress)[
-                                                "pin"]!,
+                                            pincode: "560003",
                                             buttonbgcolor: buttontextcolor,
                                             buttontextcolor: buttonBgColor,
                                             theme: theme,
@@ -314,11 +310,8 @@ class ProductItem extends StatelessWidget {
                                                             variantId:
                                                                 firstVariation
                                                                     .id,
-                                                            pincode:
-                                                                extractAddressDetails(
-                                                                        warstate
-                                                                            .currentlocationaddress)[
-                                                                    "pin"]!,
+                                                            pincode: warstate
+                                                                .pincode,
                                                           ),
                                                         );
                                                   } else {
