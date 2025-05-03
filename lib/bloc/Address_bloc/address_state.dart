@@ -22,16 +22,24 @@ class LocationSearchResults extends AddressState {
   final List<AddressModel.AddressModel> addresslist;
   final String currentplaceID;
   final String currentlocationaddress;
+  final String pincode;
   AddressModel.AddressModel? selecteaddress;
   final WarehouseModel? warehouse;
 
-  LocationSearchResults(this.placelist, this.addresslist, this.currentplaceID,
-      this.currentlocationaddress, this.selecteaddress, this.warehouse);
+  LocationSearchResults(
+      this.placelist,
+      this.addresslist,
+      this.currentplaceID,
+      this.currentlocationaddress,
+      this.selecteaddress,
+      this.warehouse,
+      this.pincode);
 
   @override
   List<Object> get props => [
         placelist,
         addresslist,
+        pincode,
         currentplaceID,
         currentlocationaddress,
       ];

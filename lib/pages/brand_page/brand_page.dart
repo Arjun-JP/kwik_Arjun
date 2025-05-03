@@ -10,6 +10,7 @@ import 'package:kwik/bloc/brand_products/brand_products_state.dart';
 import 'package:kwik/constants/colors.dart';
 import 'package:kwik/pages/Home_page/widgets/descriptive_widget.dart';
 import 'package:kwik/widgets/produc_model_1.dart';
+import 'package:kwik/widgets/shimmer/product1_grid_Shimnmer.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class BrandPage extends StatefulWidget {
@@ -147,7 +148,7 @@ class _BrandPageState extends State<BrandPage> {
                   BlocBuilder<BrandProductBloc, BrandProductState>(
                     builder: (context, state) {
                       if (state is BrandProductLoading) {
-                        return const Center(child: CircularProgressIndicator());
+                        return const Center(child: ProductModel1GridShimmer());
                       } else if (state is BrandProductLoaded) {
                         if (state.products.isEmpty) {
                           return const Center(
