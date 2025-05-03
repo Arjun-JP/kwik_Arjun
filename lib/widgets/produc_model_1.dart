@@ -342,7 +342,7 @@ class ProductItem extends StatelessWidget {
                                                 child: Text(
                                                   product.variations.length ==
                                                                   1 &&
-                                                              product.variations
+                                                              (product.variations
                                                                   .first.stock
                                                                   .where((element) =>
                                                                       element
@@ -357,7 +357,7 @@ class ProductItem extends StatelessWidget {
                                                                       warehouseid)
                                                                   .first
                                                                   .stockQty ==
-                                                              0
+                                                              0)
                                                       ? 'No stock'
                                                       : "Add",
                                                   style: theme

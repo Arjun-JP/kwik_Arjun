@@ -482,101 +482,125 @@ class _CartPageState extends State<CartPage> {
           'buttontext': parseColor("FFFFFF"),
         },
       ),
-      child: Container(
-        width: MediaQuery.of(context).size.width,
-        padding: const EdgeInsets.all(15),
-        color: Colors.white,
-        child: Row(
-          spacing: 15,
-          children: [
-            // Image Column
-            Expanded(
-              flex: 2,
-              child: SizedBox(
-                width: 50,
-                height: 50,
-                child: Image.network(
-                  cartproduct.productRef.productImages.first,
-                  fit: BoxFit.contain,
-                ),
-              ),
-            ),
-
-            // Product Info Column
-            Expanded(
-              flex: 5,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
+      child: BlocBuilder<AddressBloc, AddressState>(
+          builder: (context, warstate) {
+        if (warstate is LocationSearchResults) {
+          String warehouseid = warstate.warehouse!.id;
+          return Opacity(
+            opacity: cartproduct.productRef.variations.length == 1
+                ? cartproduct.productRef.variations.first.stock
+                            .where((element) =>
+                                element.warehouseRef == warehouseid)
+                            .isEmpty ||
+                        cartproduct.productRef.variations.first.stock
+                                .where((element) =>
+                                    element.warehouseRef == warehouseid)
+                                .first
+                                .stockQty ==
+                            0
+                    ? .5
+                    : 1
+                : 1,
+            child: Container(
+              width: MediaQuery.of(context).size.width,
+              padding: const EdgeInsets.all(15),
+              color: Colors.white,
+              child: Row(
+                spacing: 15,
                 children: [
-                  Text(
-                    cartproduct.productRef.productName,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: theme.textTheme.bodyMedium,
+                  // Image Column
+                  Expanded(
+                    flex: 2,
+                    child: SizedBox(
+                      width: 50,
+                      height: 50,
+                      child: Image.network(
+                        cartproduct.productRef.productImages.first,
+                        fit: BoxFit.contain,
+                      ),
+                    ),
                   ),
-                  const SizedBox(height: 3),
-                  Text(
-                    "${cartproduct.variant.qty} ${cartproduct.variant.unit}",
-                    style: theme.textTheme.bodySmall,
+            
+                  // Product Info Column
+                  Expanded(
+                    flex: 5,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          cartproduct.productRef.productName,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: theme.textTheme.bodyMedium,
+                        ),
+                        const SizedBox(height: 3),
+                        Text(
+                          "${cartproduct.variant.qty} ${cartproduct.variant.unit}",
+                          style: theme.textTheme.bodySmall,
+                        ),
+                        const SizedBox(height: 3),
+                        InkWell(
+                          onTap: () {
+                            context.read<CartBloc>().add(AddToWishlistFromcart(
+                                userId: user!.uid,
+                                productref: cartproduct.productRef.id,
+                                variationID: cartproduct.variant.id));
+                            context.read<CartBloc>().add(SyncCartWithServer(
+                                userId: FirebaseAuth.instance.currentUser!.uid));
+                          },
+                          child: Text(
+                            "Save for later",
+                            style: theme.textTheme.bodySmall,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                  const SizedBox(height: 3),
-                  InkWell(
-                    onTap: () {
-                      context.read<CartBloc>().add(AddToWishlistFromcart(
-                          userId: user!.uid,
-                          productref: cartproduct.productRef.id,
-                          variationID: cartproduct.variant.id));
-                      context.read<CartBloc>().add(SyncCartWithServer(
-                          userId: FirebaseAuth.instance.currentUser!.uid));
-                    },
-                    child: Text(
-                      "Save for later",
-                      style: theme.textTheme.bodySmall,
+                  // Spacing between items
+            
+                  // Quantity Control Column
+                  Expanded(
+                    flex: 3,
+                    child: quantitycontrolbutton(
+                      user: user,
+                      theme: theme,
+                      product: cartproduct.productRef,
+                      qty: qty,
+                    ),
+                  ),
+                  // Spacing between items
+            
+                  // Price Column
+                  Expanded(
+                    flex: 2,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Text(
+                          "₹${(cartproduct.quantity * cartproduct.variant.sellingPrice).toStringAsFixed(0)}",
+                          style: theme.textTheme.bodyLarge,
+                        ),
+                        Text(
+                          "₹${(cartproduct.quantity * cartproduct.variant.mrp).toStringAsFixed(0)}",
+                          style: theme.textTheme.bodyLarge!.copyWith(
+                            color: Colors.grey,
+                            fontSize: 12,
+                            decoration: TextDecoration.lineThrough,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ],
               ),
             ),
-            // Spacing between items
-
-            // Quantity Control Column
-            Expanded(
-              flex: 3,
-              child: quantitycontrolbutton(
-                user: user,
-                theme: theme,
-                product: cartproduct.productRef,
-                qty: qty,
-              ),
-            ),
-            // Spacing between items
-
-            // Price Column
-            Expanded(
-              flex: 2,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Text(
-                    "₹${(cartproduct.quantity * cartproduct.variant.sellingPrice).toStringAsFixed(0)}",
-                    style: theme.textTheme.bodyLarge,
-                  ),
-                  Text(
-                    "₹${(cartproduct.quantity * cartproduct.variant.mrp).toStringAsFixed(0)}",
-                    style: theme.textTheme.bodyLarge!.copyWith(
-                      color: Colors.grey,
-                      fontSize: 12,
-                      decoration: TextDecoration.lineThrough,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
+          );
+        }else{
+          return const SizedBox();
+        }}
       ),
     );
   }
@@ -855,6 +879,8 @@ class _CartPageState extends State<CartPage> {
                         context.read<OrderManagementBloc>().add(
                             UpdateDeliveryType(
                                 newDeliveryType: "slot", selectedSlot: '0'));
+
+                                
                       },
                       icon: Icon(
                         Icons.add,
@@ -923,6 +949,10 @@ class _CartPageState extends State<CartPage> {
                                               newDeliveryType: "slot",
                                               selectedSlot:
                                                   "${deliverytimeslot[index].startTime} - ${deliverytimeslot[index].endTime}"));
+                                                  print( addressstate.warehouse!
+                                              .tumTumDeliveryStartTime);
+                                              print(addressstate
+                                            .warehouse!.tumTumDeliveryEndTime);
                                     },
                                     child: isHideTimePassed(
                                             deliverytimeslot[index].hideTime)
@@ -1656,80 +1686,85 @@ class _CartPageState extends State<CartPage> {
             charges["enable_cod"]
                 ? Expanded(
                     flex: 2,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        if (state is DeliveryTypeUpdated &&
-                            state.deliveryType == "instant") {
-                        } else {
-                          // state is DeliveryTypeUpdated ?state.selectedslot.
-                          try {
-                            HapticFeedback.mediumImpact();
-                            context
-                                .read<OrderManagementBloc>()
-                                .add(PlaceOrder(orderJson: {
-                                  "pincode": "560003",
-                                  "user_ref": user!.uid,
-                                  "order_status": "Order placed",
-                                  "otp": "123456",
-                                  "order_placed_time":
-                                      DateTime.now().toIso8601String(),
-                                  "payment_type": "COD",
-                                  "discount_price": 10,
-                                  "type_of_delivery": "tum tum",
-                                  "selected_time_slot": generateIsoTime(
-                                      state is DeliveryTypeUpdated
-                                          ? state.selectedslot
-                                          : "10.30 AM - 11.30 AM"),
-                                  "delivery_instructions": " intruction"
-                                }));
-                            context.go('/order-success');
-                            context
-                                .read<CartBloc>()
-                                .add(SyncCartWithServer(userId: user!.uid));
-                            // Navigator.pushAndRemoveUntil(
-                            //   context,
-                            //   MaterialPageRoute(
-                            //     builder: (context) => const OrderSuccessPage(),
-                            //   ),
-                            //   (route) => false,
-                            // );
-                          } catch (error) {
-                            // context.read<CartBloc>().add(SyncCartWithServer(
-                            //     userId: user!.uid));
-                            print(error);
-                          }
-                        }
-                      },
-                      style: ElevatedButton.styleFrom(
-                        elevation: 0,
-                        backgroundColor:
-                            const Color(0xFFE23338), // Background color
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 10, vertical: 5), // Padding
-                        shape: RoundedRectangleBorder(
-                          borderRadius:
-                              BorderRadius.circular(8), // Rounded corners
-                        ),
-                      ),
+                     
+                    child: BlocBuilder<OrderManagementBloc, OrderManagementState>(
+         
+          builder: (context, orderstate) {
+        
+                        return ElevatedButton(
+                          onPressed: () {
+                            if (state is DeliveryTypeUpdated &&
+                                state.deliveryType == "instant") {
+                            } else {
+                              // state is DeliveryTypeUpdated ?state.selectedslot.
+                              try {
 
-                      child: Column(
-                        children: [
-                          Text(
-                            "Pay Cash/UPI",
-                            textAlign: TextAlign.center,
-                            style: theme.textTheme.bodyMedium!.copyWith(
-                                fontWeight: FontWeight.w700,
-                                fontSize: 13,
-                                color: Colors.white),
+                                
+                                HapticFeedback.mediumImpact();
+                                context
+                                    .read<OrderManagementBloc>()
+                                    .add(PlaceOrder(orderJson: {
+                                      "pincode": "560003",
+                                      "user_ref": user!.uid,
+                                      "order_status": "Order placed",
+                                      "otp": "123456",
+                                      "order_placed_time":
+                                          DateTime.now().toIso8601String(),
+                                      "payment_type": "COD",
+                                      "discount_price": 10,
+                                      "type_of_delivery": "tum tum",
+                                      "selected_time_slot": generateIsoTime(
+                                          state is DeliveryTypeUpdated
+                                              ? state.selectedslot
+                                              : "10.30 AM - 11.30 AM"),
+                                      "delivery_instructions": " intruction"
+                                    }));
+                                    if(orderstate is OrderPlaced){
+                                       context.go('/order-success');
+                                    }else{
+                                       context.go('/order-error');
+                                    }
+                               
+                               
+                              } catch (error) {
+                                context.read<CartBloc>().add(SyncCartWithServer(
+                                    userId: user!.uid));
+                                print(error);
+                              }
+                            }
+                          },
+                          style: ElevatedButton.styleFrom(
+                            elevation: 0,
+                            backgroundColor:
+                                const Color(0xFFE23338), // Background color
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 10, vertical: 5), // Padding
+                            shape: RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.circular(8), // Rounded corners
+                            ),
                           ),
-                          Text(
-                            "(On Delivery)",
-                            textAlign: TextAlign.center,
-                            style: theme.textTheme.bodyMedium!
-                                .copyWith(fontSize: 10, color: Colors.white),
-                          ),
-                        ],
-                      ), // Button text
+                        
+                          child: Column(
+                            children: [
+                              Text(
+                                "Pay Cash/UPI",
+                                textAlign: TextAlign.center,
+                                style: theme.textTheme.bodyMedium!.copyWith(
+                                    fontWeight: FontWeight.w700,
+                                    fontSize: 13,
+                                    color: Colors.white),
+                              ),
+                              Text(
+                                "(On Delivery)",
+                                textAlign: TextAlign.center,
+                                style: theme.textTheme.bodyMedium!
+                                    .copyWith(fontSize: 10, color: Colors.white),
+                              ),
+                            ],
+                          ), // Button text
+                        );
+                     }
                     ))
                 : const SizedBox(),
           ],
@@ -2016,7 +2051,8 @@ List<DeliveryTimeSlot> generateDeliverySlots({
   return slots;
 }
 
-String _formatTime(DateTime time) {
+String _formatTime(DateTime time) 
+  {
   final hour = time.hour;
   final minute = time.minute;
 
