@@ -26,6 +26,7 @@ import 'package:kwik/models/wishlist_model.dart';
 import 'package:kwik/pages/Address_management/location_search_page.dart';
 import 'package:kwik/pages/product_details_page/product_details_page.dart';
 import 'package:kwik/widgets/produc_model_1.dart';
+import 'package:kwik/widgets/select_sddress_cart.dart';
 import 'package:kwik/widgets/shimmer/product_model1_list.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 import '../../widgets/navbar/navbar.dart';
@@ -1665,9 +1666,12 @@ class _CartPageState extends State<CartPage> {
                     child: InkWell(
                       onTap: () {
                         HapticFeedback.mediumImpact();
-                        Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => const LocationSearchPage(),
-                        ));
+                        showModalBottomSheet(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return const AddressSelectionBottomSheet();
+                          },
+                        );
                       },
                       child: Container(
                         height: 30,
@@ -1693,14 +1697,24 @@ class _CartPageState extends State<CartPage> {
               ),
             );
           }
-          return Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
-            color: Colors.white,
-            child: Center(
-              child: Text(
-                "Add address",
-                style: theme.textTheme.bodyMedium!
-                    .copyWith(color: Colors.redAccent),
+          return InkWell(
+            onTap: () async {
+              showModalBottomSheet(
+                context: context,
+                builder: (BuildContext context) {
+                  return const AddressSelectionBottomSheet();
+                },
+              );
+            },
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+              color: Colors.white,
+              child: Center(
+                child: Text(
+                  "Add address",
+                  style: theme.textTheme.bodyMedium!
+                      .copyWith(color: Colors.redAccent),
+                ),
               ),
             ),
           );

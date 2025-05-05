@@ -98,7 +98,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-
+    print("Init state called again");
     context.read<HomeUiBloc>().add(FetchUiDataEvent());
 
     context.read<CartBloc>().add(
@@ -109,45 +109,51 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> _initializeApp() async {
-    await _checkLocationAndFetchWarehouse();
-    if (_isInitialized) return;
-    _isInitialized = true;
+    print(context.read<AddressBloc>().state is LocationSearchResults);
+    if (context.read<AddressBloc>().state is! LocationSearchResults) {
+      print("Initialize state called again");
+      await _checkLocationAndFetchWarehouse();
+      if (_isInitialized) return;
+      _isInitialized = true;
 
-    final user = FirebaseAuth.instance.currentUser;
-    if (user == null) {
-      if (!mounted) return;
-      GoRouter.of(context).go('/loginPage');
-      return;
-    }
-
-    // Initialize BLoCs
-    context.read<HomeUiBloc>().add(FetchUiDataEvent());
-    context.read<CartBloc>().add(
-          SyncCartWithServer(userId: user.uid),
-        );
-    context.read<AddressBloc>().add(const GetsavedAddressEvent());
-
-    // Setup address listener
-    _addressSubscription = context.read<AddressBloc>().stream.listen((state) {
-      if (!mounted) return;
-
-      if (state is NowarehousefoudState) {
-        GoRouter.of(context).go('/no-service');
-      } else if (state is LocationSearchResults) {
-        if (state.warehouse?.underMaintenance == true) {
-          Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) =>
-                UnderMaintananceScreen(warehouse: state.warehouse!),
-          ));
-        }
+      final user = FirebaseAuth.instance.currentUser;
+      if (user == null) {
+        if (!mounted) return;
+        GoRouter.of(context).go('/loginPage');
+        return;
       }
-    });
+
+      // Initialize BLoCs
+      context.read<HomeUiBloc>().add(FetchUiDataEvent());
+      context.read<CartBloc>().add(
+            SyncCartWithServer(userId: user.uid),
+          );
+      context.read<AddressBloc>().add(const GetsavedAddressEvent());
+
+      // Setup address listener
+      _addressSubscription = context.read<AddressBloc>().stream.listen((state) {
+        if (!mounted) return;
+
+        if (state is NowarehousefoudState) {
+          GoRouter.of(context).go('/no-service');
+        } else if (state is LocationSearchResults) {
+          if (state.warehouse?.underMaintenance == true) {
+            Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) =>
+                  UnderMaintananceScreen(warehouse: state.warehouse!),
+            ));
+          }
+        }
+      });
+    } else {
+      print("Skipped the initial call ");
+    }
 
     // Check location and fetch warehouse
   }
 
   Future<void> _checkLocationAndFetchWarehouse() async {
-    print("get warehouse function called");
+    print("get warehouse function called again ");
     try {
       final hasPermission = await _checkLocationPermission();
       if (!hasPermission && mounted) {
