@@ -71,9 +71,9 @@ class CartRepository {
         },
         body: jsonEncode(body),
       );
-      // print(body);
-      // print(response.statusCode);
-      // print(response.body);
+      print(body);
+      print(response.statusCode);
+      print(response.body);
       if (response.statusCode == 200) {
         print("Product added to cart from wish list");
       } else {
@@ -119,6 +119,13 @@ class CartRepository {
     required String pincode,
     required String variantId,
   }) async {
+    print({
+      "userId": userId,
+      "product_ref": productRef,
+      "variant": variantId,
+      "quantity": 1,
+      "pincode": pincode,
+    });
     final url = Uri.parse("$baseUrl/increseqty");
 
     try {
@@ -133,7 +140,8 @@ class CartRepository {
           "pincode": pincode,
         }),
       );
-
+      print(response.statusCode);
+      print(response.body);
       if (response.statusCode == 201) {
         // print(response.statusCode);
         return true;
@@ -167,8 +175,8 @@ class CartRepository {
           "pincode": pincode,
         }),
       );
-      // print(response.statusCode);
-      // print(response.body);
+      print(response.statusCode);
+      print(response.body);
       if (response.statusCode == 201) {
         return "Quantity decreased";
       } else {

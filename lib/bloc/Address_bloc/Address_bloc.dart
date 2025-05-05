@@ -200,21 +200,6 @@ class AddressBloc extends Bloc<AddressEvent, AddressState> {
     }
   }
 
-  // Future<void> _onSaveAddress(
-  //   SaveAddress event,
-  //   Emitter<AddressState> emit,
-  // ) async {
-  //   emit(AddressLoading());
-  //   try {
-  //     // Here you would typically save to your database/API
-  //     // For now, we'll just emit the saved address
-  //     await Future.delayed(const Duration(seconds: 1)); // Simulate API call
-  //     emit(AddressSaved(event.address));
-  //   } catch (e) {
-  //     emit(AddressError('Failed to save address: $e'));
-  //   }
-  // }
-
   Future<void> _onGetCurrentLocation(
     GetCurrentLocation event,
     Emitter<AddressState> emit,

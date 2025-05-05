@@ -151,13 +151,11 @@ class _HomePageState extends State<HomePage> {
     try {
       final hasPermission = await _checkLocationPermission();
       if (!hasPermission && mounted) {
-        print("1112111");
         await _showLocationPermissionSheet();
-        print("1112111");
       }
-      print("22222222");
+
       Position position = await Geolocator.getCurrentPosition();
-      print("33333333");
+
       List<Placemark> placemarks = await placemarkFromCoordinates(
         position.latitude,
         position.longitude,
@@ -172,10 +170,6 @@ class _HomePageState extends State<HomePage> {
           ));
     } catch (e) {
       if (!mounted) return;
-      // context.read<AddressBloc>().add(GetWarehousedetailsEvent(
-      //       '000000',
-      //       locationmode.Location(lat: 00.00, lang: 00.00),
-      //     ));
     }
   }
 
@@ -503,6 +497,7 @@ class _HomePageContent extends StatelessWidget {
       },
       {
         'template': CategoryModel10(
+          subCatID: uiData["template13"]["category_ref"],
           title: uiData["template13"]["title"],
           titleColor: uiData["template13"]["titleColor"],
           bgcolor: uiData["template13"]["background_color"],

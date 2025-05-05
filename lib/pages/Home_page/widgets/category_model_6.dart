@@ -78,6 +78,7 @@ class CategoryModel6 extends StatelessWidget {
                           var subCategory = filteredSubCategories[index];
                           return subcategoryItem(
                             name: subCategory.name,
+                            offer: subCategory.offerPercentage,
                             bgcolor: bgcolor,
                             imageurl: subCategory.imageUrl,
                             catnamecolor: catnamecolor,
@@ -104,6 +105,7 @@ class CategoryModel6 extends StatelessWidget {
 Widget subcategoryItem(
     {required String name,
     required String bgcolor,
+    required String offer,
     required String imageurl,
     required String catnamebgcolor,
     required String offertextcolor,
@@ -124,7 +126,7 @@ Widget subcategoryItem(
           child: Stack(
             children: [
               Container(
-                margin: EdgeInsets.all(2),
+                margin: const EdgeInsets.all(2),
                 height: 220,
                 width: 170,
                 decoration: BoxDecoration(
@@ -150,7 +152,7 @@ Widget subcategoryItem(
                               bottomRight: Radius.circular(10))),
                       child: Center(
                         child: Text(
-                          "17% off",
+                          "$offer % off",
                           style: TextStyle(
                               color: parseColor(offertextcolor),
                               fontSize: 14,

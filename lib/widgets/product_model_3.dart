@@ -222,8 +222,7 @@ Widget productModel3(
                           right: 8,
                           child: quantitycontrolbutton(
                             user: user,
-                            pincode: extractAddressDetails(
-                                warstate.currentlocationaddress)["pin"]!,
+                            pincode: warstate.pincode,
                             buttontextcolor: seeAllButtonBG,
                             buttonbgcolor: seeAllButtontext,
                             context: context,
@@ -238,8 +237,7 @@ Widget productModel3(
                                     quantity:
                                         1, // Default quantity to prevent UI flicker
                                     variant: product.variations.first,
-                                    pincode: extractAddressDetails(warstate
-                                        .currentlocationaddress)["pin"]!,
+                                    pincode: warstate.pincode,
                                     sellingPrice:
                                         product.variations.first.sellingPrice,
                                     mrp: product.variations.first.mrp,
@@ -302,10 +300,7 @@ Widget productModel3(
                                               productRef: product,
                                               variant: product.variations.first,
                                               quantity: 1,
-                                              pincode: extractAddressDetails(
-                                                      warstate
-                                                          .currentlocationaddress)[
-                                                  "pin"]!,
+                                              pincode: warstate.pincode,
                                               sellingPrice: product.variations
                                                   .first.sellingPrice,
                                               mrp: product.variations.first.mrp,
@@ -320,10 +315,7 @@ Widget productModel3(
                                             productRef: product.id,
                                             variantId:
                                                 product.variations.first.id,
-                                            pincode: extractAddressDetails(
-                                                    warstate
-                                                        .currentlocationaddress)[
-                                                "pin"]!,
+                                            pincode: warstate.pincode,
                                           ),
                                         );
                                   } else {
@@ -347,12 +339,25 @@ Widget productModel3(
                                       product.variations.length == 1 &&
                                               (product.variations.first.stock
                                                       .where(
-                                                        (element) => element.warehouseRef==warstate.warehouse!.id,
-                                                      ).isEmpty||product.variations.first.stock
-                                                      .where(
-                                                        (element) => element.warehouseRef==warstate.warehouse!.id,
-                                                      ).first .stockQty ==
-                                                  0)
+                                                        (element) =>
+                                                            element
+                                                                .warehouseRef ==
+                                                            warstate
+                                                                .warehouse!.id,
+                                                      )
+                                                      .isEmpty ||
+                                                  product.variations.first.stock
+                                                          .where(
+                                                            (element) =>
+                                                                element
+                                                                    .warehouseRef ==
+                                                                warstate
+                                                                    .warehouse!
+                                                                    .id,
+                                                          )
+                                                          .first
+                                                          .stockQty ==
+                                                      0)
                                           ? "No stock"
                                           : "Add",
                                       style: TextStyle(
