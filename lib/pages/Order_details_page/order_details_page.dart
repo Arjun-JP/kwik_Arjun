@@ -97,7 +97,9 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
         ),
         const SizedBox(height: 8),
         Text(
-          'Arrived in ${orderdata.completedTime}',
+          orderdata.orderStatus == "Delivered"
+              ? 'Arrived in ${orderdata.completedTime}'
+              : "Order placed time : ${formatIso8601Date(orderdata.orderPlacedTime != null ? orderdata.orderPlacedTime.toIso8601String() : "")}",
           style: theme.textTheme.bodyMedium,
         ),
       ],
@@ -309,9 +311,13 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
         ),
         _buildDetailRow(
             'Order Arrived at',
-            formatIso8601Date(orderdata.completedTime != null
-                ? orderdata.completedTime!.toIso8601String()
-                : "")),
+            orderdata.orderStatus == "Delivered"
+                ? formatIso8601Date(orderdata.completedTime != null
+                    ? orderdata.completedTime!.toIso8601String()
+                    : "")
+                : orderdata.orderStatus == "Delivery failed"
+                    ? "Delivery failed"
+                    : " Processing"),
         const SizedBox(height: 16),
         InkWell(
           onTap: () => openWhatsAppChat(),

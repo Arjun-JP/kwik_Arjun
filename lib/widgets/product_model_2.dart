@@ -274,8 +274,7 @@ class ProductModel2 extends StatelessWidget {
                                     element.productRef.id == product.id)
                                 ? quantitycontrolbutton(
                                     user: user,
-                                    pincode: extractAddressDetails(warstate
-                                        .currentlocationaddress)["pin"]!,
+                                    pincode: warstate.pincode,
                                     buttonbgcolor: buttontextcolor,
                                     buttontext: buttonbgcolor,
                                     theme: theme,
@@ -290,10 +289,7 @@ class ProductModel2 extends StatelessWidget {
                                             quantity:
                                                 1, // Default quantity to prevent UI flicker
                                             variant: product.variations.first,
-                                            pincode: extractAddressDetails(
-                                                    warstate
-                                                        .currentlocationaddress)[
-                                                "pin"]!,
+                                            pincode: warstate.pincode,
                                             sellingPrice: product
                                                 .variations.first.sellingPrice,
                                             mrp: product.variations.first.mrp,
@@ -398,22 +394,22 @@ class ProductModel2 extends StatelessWidget {
                                           ),
                                           child: Text(
                                             product.variations.length == 1 &&
-                                                        (product.variations.first
+                                                    (product.variations.first
                                                             .stock
                                                             .where((element) =>
                                                                 element
                                                                     .warehouseRef ==
                                                                 warehouseid)
                                                             .isEmpty ||
-                                                    product.variations.first
-                                                            .stock
-                                                            .where((element) =>
-                                                                element
-                                                                    .warehouseRef ==
-                                                                warehouseid)
-                                                            .first
-                                                            .stockQty ==
-                                                        0)
+                                                        product.variations.first
+                                                                .stock
+                                                                .where((element) =>
+                                                                    element
+                                                                        .warehouseRef ==
+                                                                    warehouseid)
+                                                                .first
+                                                                .stockQty ==
+                                                            0)
                                                 ? "Out of stock"
                                                 : 'Add to Cart',
                                             style: TextStyle(

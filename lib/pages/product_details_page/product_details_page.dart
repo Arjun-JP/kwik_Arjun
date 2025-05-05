@@ -236,8 +236,8 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
               //   ),
               // ),
               SizedBox(
-                height: 400,
-                width: 400,
+                height: MediaQuery.of(context).size.height * .5,
+                width: MediaQuery.of(context).size.width,
                 child: ProductImageSlider(
                   product: widget.product,
                 ),
@@ -631,7 +631,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                             element.variant.id == selecedvariation.id)
                         ? quantitycontrolbutton(
                             user: user,
-                            pincode: warstate.pincode,
+                            pincode: warstate.pincode!,
                             buttontextcolor: widget.buttontext,
                             buttonbgcolor: widget.buttonbg,
                             variationID: selecedvariation.id,
@@ -640,7 +640,8 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                             ctx: context,
                             qty: cartItems
                                 .firstWhere((element) =>
-                                    element.productRef.id == product.id)
+                                    element.productRef.id == product.id &&
+                                    element.variant.id == selecedvariation.id)
                                 .quantity
                                 .toString(),
                           )
@@ -669,7 +670,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                                           productRef: product,
                                           variant: selecedvariation,
                                           quantity: 1,
-                                          pincode: warstate.pincode,
+                                          pincode: warstate.pincode!,
                                           sellingPrice:
                                               selecedvariation.sellingPrice,
                                           mrp: selecedvariation.mrp,
@@ -683,7 +684,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                                         userId: user!.uid,
                                         productRef: product.id,
                                         variantId: selecedvariation.id,
-                                        pincode: warstate.pincode,
+                                        pincode: warstate.pincode!,
                                       ),
                                     );
                               }

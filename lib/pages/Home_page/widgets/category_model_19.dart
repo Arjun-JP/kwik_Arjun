@@ -193,10 +193,10 @@ class CategoryModel19 extends StatelessWidget {
                                   ),
                             InkWell(
                               onTap: () => context.push(
-                                  "/allsubcategorypage?categoryId=$categoryId&selectedsubcategory=${state.selectedCategoryId}"),
+                                  "/allsubcategorypage?categoryId=${state.subCategories.where((element) => element.id == state.selectedCategoryId).first.categoryRef.catref}&selectedsubcategory=${state.selectedCategoryId}"),
                               child: Container(
                                 margin:
-                                    const EdgeInsets.symmetric(horizontal: 15),
+                                    const EdgeInsets.symmetric(horizontal: 0),
                                 width: MediaQuery.of(context).size.width,
                                 height: 48,
                                 decoration: BoxDecoration(

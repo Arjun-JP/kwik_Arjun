@@ -341,23 +341,25 @@ class ProductItem extends StatelessWidget {
                                                 ),
                                                 child: Text(
                                                   product.variations.length ==
-                                                                  1 &&
-                                                              (product.variations
+                                                              1 &&
+                                                          (product.variations
                                                                   .first.stock
                                                                   .where((element) =>
                                                                       element
                                                                           .warehouseRef ==
                                                                       warehouseid)
                                                                   .isEmpty ||
-                                                          product.variations
-                                                                  .first.stock
-                                                                  .where((element) =>
-                                                                      element
-                                                                          .warehouseRef ==
-                                                                      warehouseid)
-                                                                  .first
-                                                                  .stockQty ==
-                                                              0)
+                                                              product
+                                                                      .variations
+                                                                      .first
+                                                                      .stock
+                                                                      .where((element) =>
+                                                                          element
+                                                                              .warehouseRef ==
+                                                                          warehouseid)
+                                                                      .first
+                                                                      .stockQty ==
+                                                                  0)
                                                       ? 'No stock'
                                                       : "Add",
                                                   style: theme

@@ -39,334 +39,285 @@ class CartPage extends StatefulWidget {
 }
 
 class _CartPageState extends State<CartPage> {
-  final TextEditingController _controller = TextEditingController();
+  final TextEditingController _instructionsController = TextEditingController();
+  late final Razorpay _razorpay;
+
   @override
   void initState() {
-    Future.microtask(() {
-      context.read<CartBloc>().add(
-          SyncCartWithServer(userId: FirebaseAuth.instance.currentUser!.uid));
+    super.initState();
+    _razorpay = Razorpay();
+    _loadInitialData();
+  }
+
+  @override
+  void dispose() {
+    _razorpay.clear();
+    _instructionsController.dispose();
+    super.dispose();
+  }
+
+  void _loadInitialData() {
+    final userId = FirebaseAuth.instance.currentUser?.uid;
+    if (userId != null) {
+      context.read<CartBloc>().add(SyncCartWithServer(userId: userId));
       context
           .read<RecommendedProductsBloc>()
           .add(const FetchRecommendedProducts("null"));
-    });
+    }
   }
 
-  final Razorpay _razorpay = Razorpay();
+  void _handlePaymentSuccess(PaymentSuccessResponse response) {
+    // Handle payment success
+  }
+
+  void _handlePaymentError(PaymentFailureResponse response) {
+    // Handle payment error
+  }
+
+  void _handleExternalWallet(ExternalWalletResponse response) {
+    // Handle external wallet
+  }
 
   @override
   Widget build(BuildContext context) {
-    print("rebuilding");
     final theme = Theme.of(context);
     final user = FirebaseAuth.instance.currentUser;
+
     return Scaffold(
       backgroundColor: const Color(0xFFfbfafb),
-      // backgroundColor: const Color.fromARGB(255, 201, 201, 201),
-      appBar: AppBar(
-          backgroundColor: const Color(0xFFfbfafb),
-          elevation: 0,
-          centerTitle: false,
-          title: BlocBuilder<CartBloc, CartState>(builder: (context, state) {
-            return state is CartUpdated &&
-                    state.cartItems.isNotEmpty &&
-                    state.charges != {}
-                ? Row(
-                    children: [
-                      const SizedBox(width: 15),
-                      Text(
-                        "Your Cart",
-                        style:
-                            theme.textTheme.bodyMedium!.copyWith(fontSize: 18),
-                      ),
-                      const SizedBox(width: 10),
-                      Container(
-                        decoration: BoxDecoration(
-                            color: const Color(0xFFFFD93C),
-                            borderRadius: BorderRadius.circular(15)),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 10.0, vertical: 5),
-                          child: Text(
-                              "Saved  ₹${(calculateTotalsaved(state.cartItems, state.charges)).toStringAsFixed(0)}",
-                              style: theme.textTheme.bodyMedium!
-                                  .copyWith(fontSize: 18)),
-                        ),
-                      ),
-                    ],
-                  )
-                : const SizedBox();
-          })),
+      appBar: _buildAppBar(theme),
       body: BlocBuilder<CartBloc, CartState>(
-          buildWhen: (previous, current) => current is CartUpdated,
-          builder: (context, state) {
-            if (state is CartLoading) {
-              return const Center(child: CircularProgressIndicator());
-            } else if (state is CartError) {
+        buildWhen: (previous, current) => current is CartUpdated,
+        builder: (context, state) {
+          if (state is CartLoading || state is CartInitial) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (state is CartError) {
+            if (user != null) {
               context
                   .read<CartBloc>()
-                  .add(SyncCartWithServer(userId: user!.uid));
-              return const Center(child: Text(""));
-            } else if (state is CartInitial) {
-              // Trigger loading when in initial state
-              context
-                  .read<CartBloc>()
-                  .add(SyncCartWithServer(userId: user!.uid));
-              return const Center(child: CircularProgressIndicator());
-            } else if (state is CartUpdated && state.cartItems.isNotEmpty) {
-              return Column(
-                children: [
-                  Expanded(
-                    flex: 11,
-                    child: SingleChildScrollView(
-                      scrollDirection: Axis.vertical,
-                      child: Column(
-                        children: [
-                          deliveryContainer(theme: theme),
-                          deliveryTimeContainer(
-                              theme: theme,
-                              numberofproducts: state.cartItems.length),
-                          const SizedBox(
-                            height: 15,
-                          ),
-                          state.wishlist.isNotEmpty
-                              ? Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 10.0, vertical: 5),
-                                    child: Text(
-                                      "Saved by You, Craved by Many",
-                                      textAlign: TextAlign.left,
-                                      style: theme.textTheme.bodyLarge,
-                                    ),
-                                  ),
-                                )
-                              : const SizedBox(),
-                          // wishlist  products
-                          state.wishlist.isNotEmpty
-                              ? Container(
-                                  color: Colors.white,
-                                  padding: const EdgeInsets.all(10),
-                                  child: ListView.separated(
-                                    shrinkWrap: true,
-                                    physics:
-                                        const NeverScrollableScrollPhysics(),
-                                    itemBuilder: (context, index) =>
-                                        wishlistProductItem(
-                                            user: user,
-                                            wishlistproduct:
-                                                state.wishlist[index],
-                                            theme: theme,
-                                            qty: state.wishlist[index]
-                                                .productRef.variations
-                                                .where(
-                                                  (element) =>
-                                                      element.id ==
-                                                      state.wishlist[index]
-                                                          .variantId,
-                                                )
-                                                .toString()),
-                                    separatorBuilder: (context, index) =>
-                                        const Padding(
-                                            padding: EdgeInsets.symmetric(
-                                                horizontal: 10.0),
-                                            child: SizedBox(
-                                              height: 5,
-                                            )),
-                                    itemCount: state.wishlist.length,
-                                  ),
-                                )
-                              : const SizedBox(),
-                          const SizedBox(
-                            height: 15,
-                          ),
-                          Align(
-                            alignment: Alignment.centerLeft,
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 10.0, vertical: 5),
-                              child: Text(
-                                "Picked by You, Packed for You",
-                                textAlign: TextAlign.left,
-                                style: theme.textTheme.bodyLarge,
-                              ),
-                            ),
-                          ),
-                          // cart products
-                          ListView.separated(
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                            itemBuilder: (context, index) => cartproductItem(
-                                user: user,
-                                cartproduct: state.cartItems[index],
-                                theme: theme,
-                                qty:
-                                    state.cartItems[index].quantity.toString()),
-                            separatorBuilder: (context, index) => const Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 10.0),
-                              child: DottedDivider(
-                                color: Color.fromARGB(255, 198, 198, 198),
-                              ),
-                            ),
-                            itemCount: state.cartItems.length,
-                          ),
-                          const SizedBox(height: 15),
-                          SizedBox(
-                            height: 390,
-                            width: MediaQuery.of(context).size.width,
-                            child: BlocBuilder<RecommendedProductsBloc,
-                                    RecommendedProductsState>(
-                                builder: (context, state) {
-                              if (state is RecommendedProductLoading) {
-                                return const Center(
-                                    child: ProductModel1ListShimmer());
-                              } else if (state is RecommendedProductLoaded) {
-                                return state.products.isNotEmpty
-                                    ? productsYouMightAlsoLike(
-                                        theme: theme,
-                                        productlist: state.products)
-                                    : const SizedBox();
-                              } else if (state is RecommendedProductError) {
-                                return const Center(child: Text(""));
-                              } else {
-                                return const Center(child: Text(""));
-                              }
-                            }),
-                          ),
-                          const SizedBox(height: 15),
-                          addMoreItem(theme: theme),
-                          const SizedBox(height: 15),
-                          selectDeliveryType(theme: theme),
-                          const SizedBox(height: 15),
-                          deliveryInstructions(theme: theme),
-                          BlocBuilder<CartBloc, CartState>(
-                              builder: (context, state) {
-                            return billDetails(
-                                theme: theme,
-                                charges:
-                                    state is CartUpdated ? state.charges : {},
-                                cartproducts: state is CartUpdated
-                                    ? state.cartItems
-                                    : []);
-                          }),
-                          const SizedBox(height: 15),
-                          addressContainer(theme: theme),
-                          const SizedBox(height: 25),
-                        ],
-                      ),
-                    ),
-                  ),
-                  paymentOptions(
-                      user: user,
-                      theme: theme,
-                      charges: state.charges,
-                      cartproducts: state.cartItems)
-                ],
-              );
-            } else {
-              return SizedBox(
-                height: double.infinity,
-                width: double.infinity,
-                child: ConstrainedBox(
-                  constraints: BoxConstraints(
-                    minHeight: MediaQuery.of(context).size.height,
-                  ),
-                  child: SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(10.0),
-                          child: Container(
-                            // padding: const EdgeInsets.all(15),
-                            width: double.infinity,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                color: Colors.white),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Image.asset(
-                                  "assets/images/Screenshot 2025-01-31 at 6.20.37 PM.jpeg",
-                                  width: 80,
-                                  height: 100,
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.all(15),
-                                  child: Text(
-                                    "Your cart is feeling lonely! \nAdd something you love and we’ll bring it right to your doorstep.",
-                                    textAlign: TextAlign.center,
-                                    style: theme.textTheme.bodyLarge,
-                                  ),
-                                ),
-                                const SizedBox(
-                                  height: 15,
-                                ),
-                                SizedBox(
-                                  height: 390,
-                                  width: MediaQuery.of(context).size.width,
-                                  child: BlocBuilder<RecommendedProductsBloc,
-                                          RecommendedProductsState>(
-                                      builder: (context, state) {
-                                    if (state is RecommendedProductLoading) {
-                                      return const Center(
-                                          child: ProductModel1ListShimmer());
-                                    } else if (state
-                                        is RecommendedProductLoaded) {
-                                      return state.products.isNotEmpty
-                                          ? productsYouMightAlsoLike(
-                                              theme: theme,
-                                              productlist: state.products)
-                                          : const SizedBox();
-                                    } else if (state
-                                        is RecommendedProductError) {
-                                      return const Center(child: Text(""));
-                                    } else {
-                                      return const Center(child: Text(""));
-                                    }
-                                  }),
-                                ),
-                                ElevatedButton(
-                                  onPressed: () async {
-                                    context.go("/home");
-                                    context
-                                        .read<NavbarBloc>()
-                                        .add(const UpdateNavBarIndex(0));
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                    minimumSize: Size(
-                                        MediaQuery.of(context).size.width, 50),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(12),
-                                    ),
-                                    foregroundColor:
-                                        AppColors.buttonColorOrange,
-                                    backgroundColor:
-                                        AppColors.buttonColorOrange,
-                                  ),
-                                  child: Text(
-                                    "Find Your Favorites",
-                                    style: theme.textTheme.bodyLarge!.copyWith(
-                                      color: AppColors.kwhiteColor,
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w800,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              );
+                  .add(SyncCartWithServer(userId: user.uid));
             }
-          }),
+            return const Center(child: Text(""));
+          } else if (state is CartUpdated) {
+            return state.cartItems.isEmpty
+                ? _buildEmptyCartView(theme)
+                : _buildCartWithItems(theme, state, user);
+          }
+          return const SizedBox();
+        },
+      ),
       bottomNavigationBar: const Navbar(),
     );
   }
 
-  Widget deliveryContainer({required ThemeData theme}) {
+  AppBar _buildAppBar(ThemeData theme) {
+    return AppBar(
+      backgroundColor: const Color(0xFFfbfafb),
+      elevation: 0,
+      centerTitle: false,
+      title: BlocBuilder<CartBloc, CartState>(
+        builder: (context, state) {
+          if (state is CartUpdated &&
+              state.cartItems.isNotEmpty &&
+              state.charges.isNotEmpty) {
+            return Row(
+              children: [
+                const SizedBox(width: 15),
+                Text(
+                  "Your Cart",
+                  style: theme.textTheme.bodyMedium!.copyWith(fontSize: 18),
+                ),
+                const SizedBox(width: 10),
+                Container(
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFFFD93C),
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 10.0, vertical: 5),
+                    child:
+                        BlocBuilder<OrderManagementBloc, OrderManagementState>(
+                            builder: (context, orderstate) {
+                      return Text(
+                        "Saved ₹${((calculateTotalMRP(state.cartItems) - calculateTotalSellingPrice(state.cartItems, state.charges)) + (orderstate is DeliveryTypeUpdated && orderstate.deliveryType == "slot" && state.charges["delivery_charge_tum_tum"] == 0 ? 30 : 0) + (orderstate is DeliveryTypeUpdated && orderstate.deliveryType == "instant" && state.charges["delivery_charge"] == 0 ? 30 : 0)).toStringAsFixed(0)}",
+                        // "Saved ₹${calculateTotalSaved(orderstate is DeliveryTypeUpdated ? orderstate.deliveryType : "", state.cartItems, state.charges).toStringAsFixed(0)}",
+                        style:
+                            theme.textTheme.bodyMedium!.copyWith(fontSize: 18),
+                      );
+                    }),
+                  ),
+                ),
+              ],
+            );
+          }
+          return const SizedBox();
+        },
+      ),
+    );
+  }
+
+  Widget _buildEmptyCartView(ThemeData theme) {
+    return SingleChildScrollView(
+      child: ConstrainedBox(
+        constraints: BoxConstraints(
+          minHeight: MediaQuery.of(context).size.height,
+        ),
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Container(
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: Colors.white,
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Image.asset(
+                      "assets/images/Screenshot 2025-01-31 at 6.20.37 PM.jpeg",
+                      width: 80,
+                      height: 100,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(15),
+                      child: Text(
+                        "Your cart is feeling lonely! \nAdd something you love and we'll bring it right to your doorstep.",
+                        textAlign: TextAlign.center,
+                        style: theme.textTheme.bodyLarge,
+                      ),
+                    ),
+                    const SizedBox(height: 15),
+                    SizedBox(
+                      height: 390,
+                      width: MediaQuery.of(context).size.width,
+                      child: BlocBuilder<RecommendedProductsBloc,
+                          RecommendedProductsState>(
+                        builder: (context, state) {
+                          if (state is RecommendedProductLoading) {
+                            return const Center(
+                                child: ProductModel1ListShimmer());
+                          } else if (state is RecommendedProductLoaded) {
+                            return state.products.isNotEmpty
+                                ? _buildRecommendedProducts(
+                                    theme, state.products)
+                                : const SizedBox();
+                          } else if (state is RecommendedProductError) {
+                            return const Center(child: Text(""));
+                          }
+                          return const Center(child: Text(""));
+                        },
+                      ),
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        context.go("/home");
+                        context
+                            .read<NavbarBloc>()
+                            .add(const UpdateNavBarIndex(0));
+                      },
+                      style: ElevatedButton.styleFrom(
+                        minimumSize:
+                            Size(MediaQuery.of(context).size.width, 50),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        foregroundColor: AppColors.buttonColorOrange,
+                        backgroundColor: AppColors.buttonColorOrange,
+                      ),
+                      child: Text(
+                        "Find Your Favorites",
+                        style: theme.textTheme.bodyLarge!.copyWith(
+                          color: AppColors.kwhiteColor,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w800,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCartWithItems(ThemeData theme, CartUpdated state, User? user) {
+    return Column(
+      children: [
+        Expanded(
+          flex: 11,
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                _buildDeliveryContainer(theme),
+                _buildDeliveryTimeContainer(theme, state.cartItems.length),
+                const SizedBox(height: 15),
+                if (state.wishlist.isNotEmpty) ...[
+                  _buildSectionTitle(theme, "Saved by You, Craved by Many"),
+                  _buildWishlistItems(theme, state.wishlist, user),
+                  const SizedBox(height: 15),
+                ],
+                _buildSectionTitle(theme, "Picked by You, Packed for You"),
+                _buildCartItems(theme, state.cartItems, user),
+                const SizedBox(height: 15),
+                SizedBox(
+                  height: 390,
+                  width: MediaQuery.of(context).size.width,
+                  child: BlocBuilder<RecommendedProductsBloc,
+                      RecommendedProductsState>(
+                    builder: (context, state) {
+                      if (state is RecommendedProductLoading) {
+                        return const Center(child: ProductModel1ListShimmer());
+                      } else if (state is RecommendedProductLoaded) {
+                        return state.products.isNotEmpty
+                            ? _buildRecommendedProducts(theme, state.products)
+                            : const SizedBox();
+                      } else if (state is RecommendedProductError) {
+                        return const Center(child: Text(""));
+                      }
+                      return const Center(child: Text(""));
+                    },
+                  ),
+                ),
+                const SizedBox(height: 15),
+                _buildAddMoreItems(theme),
+                const SizedBox(height: 15),
+                _buildDeliveryTypeSelector(theme, state.charges),
+                const SizedBox(height: 15),
+                _buildDeliveryInstructions(theme),
+                _buildBillDetails(theme, state.cartItems, state.charges),
+                const SizedBox(height: 15),
+                _buildAddressContainer(theme),
+                const SizedBox(height: 25),
+              ],
+            ),
+          ),
+        ),
+        _buildPaymentOptions(theme, state.cartItems, state.charges, user),
+      ],
+    );
+  }
+
+  Widget _buildSectionTitle(ThemeData theme, String title) {
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5),
+        child: Text(
+          title,
+          textAlign: TextAlign.left,
+          style: theme.textTheme.bodyLarge,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDeliveryContainer(ThemeData theme) {
     return Container(
       margin: const EdgeInsets.all(10),
       decoration: BoxDecoration(
@@ -377,34 +328,38 @@ class _CartPageState extends State<CartPage> {
       child: Column(
         children: [
           InkWell(
-            onTap: () {
-              print(generateIsoTime("10.30 AM - 11.30 AM"));
-            },
+            onTap: () => print(generateIsoTime("10.30 AM - 11.30 AM")),
             child: Container(
               margin: const EdgeInsets.all(15),
               padding: const EdgeInsets.all(15),
               decoration: BoxDecoration(
-                  color: const Color(0xFFF7FAFF),
-                  borderRadius: BorderRadius.circular(15)),
+                color: const Color(0xFFF7FAFF),
+                borderRadius: BorderRadius.circular(15),
+              ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   Image.asset(
-                      width: 40, height: 40, "assets/images/pizza 1.png"),
+                    width: 40,
+                    height: 40,
+                    "assets/images/pizza 1.png",
+                  ),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         "Get FREE delivery",
                         style: theme.textTheme.bodyMedium!.copyWith(
-                            fontSize: 14, color: const Color(0xFF0743B2)),
+                          fontSize: 14,
+                          color: const Color(0xFF0743B2),
+                        ),
                       ),
                       Text(
                         "Add products worth ₹102 more ",
                         style: theme.textTheme.bodyMedium,
                       ),
                     ],
-                  )
+                  ),
                 ],
               ),
             ),
@@ -413,7 +368,10 @@ class _CartPageState extends State<CartPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Image.asset(
-                  height: 25, width: 25, "assets/images/couponimage.png"),
+                height: 25,
+                width: 25,
+                "assets/images/couponimage.png",
+              ),
               const SizedBox(width: 10),
               Text(
                 "Add products worth ₹102 more ",
@@ -422,17 +380,16 @@ class _CartPageState extends State<CartPage> {
               const Icon(
                 Icons.arrow_right_rounded,
                 size: 20,
-              )
+              ),
             ],
           ),
-          const SizedBox(height: 10)
+          const SizedBox(height: 10),
         ],
       ),
     );
   }
 
-  Widget deliveryTimeContainer(
-      {required ThemeData theme, required int numberofproducts}) {
+  Widget _buildDeliveryTimeContainer(ThemeData theme, int numberOfProducts) {
     return Container(
       padding: const EdgeInsets.all(15),
       color: Colors.white,
@@ -440,183 +397,72 @@ class _CartPageState extends State<CartPage> {
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           const SizedBox(width: 20),
-          Image.asset(width: 40, height: 40, "assets/images/clock_blue.png"),
+          Image.asset(
+            width: 40,
+            height: 40,
+            "assets/images/clock_blue.png",
+          ),
           const SizedBox(width: 25),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             spacing: 3,
             children: [
               SizedBox(
-                width: MediaQuery.of(context).size.width * .68,
+                width: MediaQuery.of(context).size.width * 0.68,
                 child: Text(
                   "Don't wait! Book your delivery slot and get it when you need it",
                   textAlign: TextAlign.left,
                   maxLines: 2,
-                  style: theme.textTheme.bodyMedium!
-                      .copyWith(fontSize: 14, color: const Color(0xFF0743B2)),
+                  style: theme.textTheme.bodyMedium!.copyWith(
+                    fontSize: 14,
+                    color: const Color(0xFF0743B2),
+                  ),
                 ),
               ),
               Text(
-                "Shipment of $numberofproducts items ",
+                "Shipment of $numberOfProducts items ",
                 style: theme.textTheme.bodyMedium,
               ),
             ],
-          )
+          ),
         ],
       ),
     );
   }
 
-  Widget cartproductItem(
-      {required ThemeData theme,
-      required CartProduct cartproduct,
-      required String qty,
-      required User? user}) {
-    return InkWell(
-      onTap: () => context.push(
-        '/productdetails',
-        extra: {
-          'product': cartproduct.productRef,
-          'subcategoryref': cartproduct.productRef.subCategoryRef.first.id,
-          'buttonbg': parseColor("E23338"), // example color as a string
-          'buttontext': parseColor("FFFFFF"),
-        },
-      ),
-      child: BlocBuilder<AddressBloc, AddressState>(
-          builder: (context, warstate) {
-        if (warstate is LocationSearchResults) {
-          String warehouseid = warstate.warehouse!.id;
-          return Opacity(
-            opacity: cartproduct.productRef.variations.length == 1
-                ? cartproduct.productRef.variations.first.stock
-                            .where((element) =>
-                                element.warehouseRef == warehouseid)
-                            .isEmpty ||
-                        cartproduct.productRef.variations.first.stock
-                                .where((element) =>
-                                    element.warehouseRef == warehouseid)
-                                .first
-                                .stockQty ==
-                            0
-                    ? .5
-                    : 1
-                : 1,
-            child: Container(
-              width: MediaQuery.of(context).size.width,
-              padding: const EdgeInsets.all(15),
-              color: Colors.white,
-              child: Row(
-                spacing: 15,
-                children: [
-                  // Image Column
-                  Expanded(
-                    flex: 2,
-                    child: SizedBox(
-                      width: 50,
-                      height: 50,
-                      child: Image.network(
-                        cartproduct.productRef.productImages.first,
-                        fit: BoxFit.contain,
-                      ),
-                    ),
-                  ),
-            
-                  // Product Info Column
-                  Expanded(
-                    flex: 5,
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          cartproduct.productRef.productName,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          style: theme.textTheme.bodyMedium,
-                        ),
-                        const SizedBox(height: 3),
-                        Text(
-                          "${cartproduct.variant.qty} ${cartproduct.variant.unit}",
-                          style: theme.textTheme.bodySmall,
-                        ),
-                        const SizedBox(height: 3),
-                        InkWell(
-                          onTap: () {
-                            context.read<CartBloc>().add(AddToWishlistFromcart(
-                                userId: user!.uid,
-                                productref: cartproduct.productRef.id,
-                                variationID: cartproduct.variant.id));
-                            context.read<CartBloc>().add(SyncCartWithServer(
-                                userId: FirebaseAuth.instance.currentUser!.uid));
-                          },
-                          child: Text(
-                            "Save for later",
-                            style: theme.textTheme.bodySmall,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  // Spacing between items
-            
-                  // Quantity Control Column
-                  Expanded(
-                    flex: 3,
-                    child: quantitycontrolbutton(
-                      user: user,
-                      theme: theme,
-                      product: cartproduct.productRef,
-                      qty: qty,
-                    ),
-                  ),
-                  // Spacing between items
-            
-                  // Price Column
-                  Expanded(
-                    flex: 2,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Text(
-                          "₹${(cartproduct.quantity * cartproduct.variant.sellingPrice).toStringAsFixed(0)}",
-                          style: theme.textTheme.bodyLarge,
-                        ),
-                        Text(
-                          "₹${(cartproduct.quantity * cartproduct.variant.mrp).toStringAsFixed(0)}",
-                          style: theme.textTheme.bodyLarge!.copyWith(
-                            color: Colors.grey,
-                            fontSize: 12,
-                            decoration: TextDecoration.lineThrough,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          );
-        }else{
-          return const SizedBox();
-        }}
+  Widget _buildWishlistItems(
+      ThemeData theme, List<WishlistItem> wishlist, User? user) {
+    return Container(
+      color: Colors.white,
+      padding: const EdgeInsets.all(10),
+      child: ListView.separated(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        itemBuilder: (context, index) => _buildWishlistItem(
+          theme,
+          wishlist[index],
+          user,
+        ),
+        separatorBuilder: (context, index) => const Padding(
+          padding: EdgeInsets.symmetric(horizontal: 10.0),
+          child: SizedBox(height: 5),
+        ),
+        itemCount: wishlist.length,
       ),
     );
   }
 
-  Widget wishlistProductItem(
-      {required ThemeData theme,
-      required WishlistItem wishlistproduct,
-      required String qty,
-      required User? user}) {
+  Widget _buildWishlistItem(ThemeData theme, WishlistItem item, User? user) {
+    final variant = item.productRef.variations
+        .firstWhere((element) => element.id == item.variantId);
+
     return GestureDetector(
       onTap: () => context.push(
         '/productdetails',
         extra: {
-          'product': wishlistproduct.productRef,
-          'subcategoryref': wishlistproduct.productRef.subCategoryRef.first.id,
-          'buttonbg': parseColor("E23338"), // example color as a string
+          'product': item.productRef,
+          'subcategoryref': item.productRef.subCategoryRef.first.id,
+          'buttonbg': parseColor("E23338"),
           'buttontext': parseColor("FFFFFF"),
         },
       ),
@@ -630,20 +476,16 @@ class _CartPageState extends State<CartPage> {
         child: Row(
           spacing: 15,
           children: [
-            // Image Column
             Expanded(
               flex: 2,
               child: SizedBox(
-                width: 50,
-                height: 50,
-                child: Image.network(
-                  wishlistproduct.productRef.productImages.first,
-                  fit: BoxFit.contain,
-                ),
-              ),
+                  width: 50,
+                  height: 50,
+                  child: Image.network(
+                    item.productRef.productImages.first,
+                    fit: BoxFit.contain,
+                  )),
             ),
-
-            // Product Info Column
             Expanded(
               flex: 5,
               child: Column(
@@ -652,83 +494,50 @@ class _CartPageState extends State<CartPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    wishlistproduct.productRef.productName,
+                    item.productRef.productName,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     style: theme.textTheme.bodyMedium,
                   ),
                   const SizedBox(height: 3),
                   Text(
-                    "${wishlistproduct.productRef.variations.firstWhere((element) => element.id == wishlistproduct.variantId).qty} ${wishlistproduct.productRef.variations.firstWhere((element) => element.id == wishlistproduct.variantId).unit}",
+                    "${variant.qty} ${variant.unit}",
                     style: theme.textTheme.bodySmall,
                   ),
-                  const SizedBox(height: 3),
                 ],
               ),
             ),
-            // Expanded(
-            //     flex: 3,
-            //     child: SizedBox(
-            //       height: 30,
-            //       child: ElevatedButton(
-            //         onPressed: () {},
-            //         style: ElevatedButton.styleFrom(
-            //           backgroundColor:
-            //               const Color(0xFFE23338), // background color
-            //           foregroundColor: Colors.white,
-            //           // text color
-            //           side: const BorderSide(
-            //               color: Color(0xFFE23338), width: 1), // border
-            //           shape: RoundedRectangleBorder(
-            //             borderRadius: BorderRadius.circular(
-            //                 8), // optional: rounded corners
-            //           ),
-            //           padding: const EdgeInsets.symmetric(
-            //               horizontal: 10, vertical: 0), // optional: spacing
-            //         ),
-            //         child: Text(
-            //           "Add",
-            //           style: theme.textTheme.bodyLarge
-            //               ?.copyWith(color: Colors.white),
-            //         ),
-            //       ),
-            //     )),
             Expanded(
-                flex: 3,
-                child: SizedBox(
-                  height: 30,
-                  child: BlocBuilder<AddressBloc, AddressState>(
-                      builder: (context, addressstate) {
+              flex: 3,
+              child: SizedBox(
+                height: 30,
+                child: BlocBuilder<AddressBloc, AddressState>(
+                  builder: (context, addressState) {
                     return ElevatedButton(
                       onPressed: () {
-                        context.read<CartBloc>().add(AddToCartFromWishlist(
-                            userId: user!.uid,
-                            wishlistID: wishlistproduct.id,
-                            pincode: addressstate is LocationSearchResults
-                                ? "560003"
-                                //  extractAddressDetails(
-                                //     addressstate.currentlocationaddress)["pin"]!
-                                : "673541"));
-                        // context.read<CartBloc>().add(SyncCartWithServer(
-                        //     userId: user!.uid));
-
-                        context
-                            .read<CartBloc>()
-                            .add(SyncCartWithServer(userId: user!.uid));
+                        if (user != null) {
+                          context.read<CartBloc>().add(AddToCartFromWishlist(
+                                userId: user.uid,
+                                wishlistID: item.id,
+                                pincode: addressState is LocationSearchResults
+                                    ? "560003"
+                                    : "673541",
+                              ));
+                          context
+                              .read<CartBloc>()
+                              .add(SyncCartWithServer(userId: user.uid));
+                        }
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor:
-                            const Color(0xFFE23338), // background color
+                        backgroundColor: const Color(0xFFE23338),
                         foregroundColor: Colors.white,
-                        // text color
                         side: const BorderSide(
-                            color: Color(0xFFE23338), width: 1), // border
+                            color: Color(0xFFE23338), width: 1),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(
-                              8), // optional: rounded corners
+                          borderRadius: BorderRadius.circular(8),
                         ),
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 10, vertical: 0), // optional: spacing
+                            horizontal: 10, vertical: 0),
                       ),
                       child: Text(
                         "Add",
@@ -736,8 +545,10 @@ class _CartPageState extends State<CartPage> {
                             ?.copyWith(color: Colors.white),
                       ),
                     );
-                  }),
-                )),
+                  },
+                ),
+              ),
+            ),
             Expanded(
               flex: 2,
               child: Column(
@@ -745,11 +556,11 @@ class _CartPageState extends State<CartPage> {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Text(
-                    "₹${wishlistproduct.productRef.variations.firstWhere((element) => element.id == wishlistproduct.variantId).sellingPrice.toStringAsFixed(0)}",
+                    "₹${variant.sellingPrice.toStringAsFixed(0)}",
                     style: theme.textTheme.bodyLarge,
                   ),
                   Text(
-                    "₹${wishlistproduct.productRef.variations.firstWhere((element) => element.id == wishlistproduct.variantId).mrp.toStringAsFixed(0)}",
+                    "₹${variant.mrp.toStringAsFixed(0)}",
                     style: theme.textTheme.bodyLarge!.copyWith(
                       color: Colors.grey,
                       fontSize: 12,
@@ -765,7 +576,301 @@ class _CartPageState extends State<CartPage> {
     );
   }
 
-  Widget addMoreItem({required ThemeData theme}) {
+  Widget _buildCartItems(
+      ThemeData theme, List<CartProduct> cartItems, User? user) {
+    return ListView.separated(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemBuilder: (context, index) => _buildCartItem(
+        theme,
+        cartItems[index],
+        user,
+      ),
+      separatorBuilder: (context, index) => const Padding(
+        padding: EdgeInsets.symmetric(horizontal: 10.0),
+        child: DottedDivider(
+          color: Color.fromARGB(255, 198, 198, 198),
+        ),
+      ),
+      itemCount: cartItems.length,
+    );
+  }
+
+  Widget _buildCartItem(ThemeData theme, CartProduct item, User? user) {
+    return BlocBuilder<AddressBloc, AddressState>(
+      builder: (context, addressState) {
+        if (addressState is LocationSearchResults) {
+          final warehouseId = addressState.warehouse!.id;
+          final isOutOfStock = item.productRef.variations.length == 1 &&
+              (item.productRef.variations
+                      .where((element) => element.id == item.variant.id)
+                      .first
+                      .stock
+                      .where((element) => element.warehouseRef == warehouseId)
+                      .isEmpty ||
+                  item.productRef.variations.first.stock
+                          .where(
+                              (element) => element.warehouseRef == warehouseId)
+                          .first
+                          .stockQty ==
+                      0);
+
+          return Opacity(
+            opacity: isOutOfStock ? 0.5 : 1,
+            child: InkWell(
+              onTap: () => context.push(
+                '/productdetails',
+                extra: {
+                  'product': item.productRef,
+                  'subcategoryref': item.productRef.subCategoryRef.first.id,
+                  'buttonbg': parseColor("E23338"),
+                  'buttontext': parseColor("FFFFFF"),
+                },
+              ),
+              child: Container(
+                width: MediaQuery.of(context).size.width,
+                padding: const EdgeInsets.all(15),
+                color: Colors.white,
+                child: Row(
+                  spacing: 15,
+                  children: [
+                    Expanded(
+                      flex: 2,
+                      child: SizedBox(
+                        width: 50,
+                        height: 50,
+                        child: Image.network(
+                          item.productRef.productImages.first,
+                          fit: BoxFit.contain,
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      flex: 5,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            item.productRef.productName,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: theme.textTheme.bodyMedium,
+                          ),
+                          const SizedBox(height: 3),
+                          Text(
+                            "${item.variant.qty} ${item.variant.unit}",
+                            style: theme.textTheme.bodySmall,
+                          ),
+                          const SizedBox(height: 3),
+                          InkWell(
+                            onTap: () {
+                              if (user != null) {
+                                context.read<CartBloc>().add(
+                                      AddToWishlistFromcart(
+                                        userId: user.uid,
+                                        productref: item.productRef.id,
+                                        variationID: item.variant.id,
+                                      ),
+                                    );
+                                context.read<CartBloc>().add(
+                                      SyncCartWithServer(userId: user.uid),
+                                    );
+                              }
+                            },
+                            child: Text(
+                              "Save for later",
+                              style: theme.textTheme.bodySmall,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Expanded(
+                      flex: 3,
+                      child: _buildQuantityControl(theme, item.productRef,
+                          item.quantity.toString(), user, item.variant.id),
+                    ),
+                    Expanded(
+                      flex: 2,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Text(
+                            "₹${(item.quantity * item.variant.sellingPrice).toStringAsFixed(0)}",
+                            style: theme.textTheme.bodyLarge,
+                          ),
+                          Text(
+                            "₹${(item.quantity * item.variant.mrp).toStringAsFixed(0)}",
+                            style: theme.textTheme.bodyLarge!.copyWith(
+                              color: Colors.grey,
+                              fontSize: 12,
+                              decoration: TextDecoration.lineThrough,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        }
+        return const SizedBox();
+      },
+    );
+  }
+
+  Widget _buildQuantityControl(ThemeData theme, ProductModel product,
+      String qty, User? user, String variationID) {
+    return BlocBuilder<CartBloc, CartState>(
+      builder: (context, state) {
+        List<CartProduct> cartItems =
+            state is CartUpdated ? state.cartItems : [];
+        final currentItem = cartItems.firstWhere((element) =>
+            (element.productRef.id == product.id &&
+                element.variant.id == variationID));
+
+        return Container(
+          height: 30,
+          padding: const EdgeInsets.symmetric(vertical: 1, horizontal: 3),
+          decoration: BoxDecoration(
+            color: const Color(0xFFE23338),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Row(
+            spacing: 2,
+            children: [
+              Expanded(
+                child: InkWell(
+                  onTap: () {
+                    HapticFeedback.mediumImpact();
+                    if (user != null) {
+                      context.read<CartBloc>().add(
+                            DecreaseCartQuantity(
+                              pincode: "560003",
+                              productRef: product.id,
+                              userId: user.uid,
+                              variantId: variationID,
+                            ),
+                          );
+                    }
+                  },
+                  child: SizedBox(
+                    height: 25,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                          width: 12,
+                          height: 2,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(3),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              Expanded(
+                child: SizedBox(
+                  child: Center(
+                    child: Text(
+                      currentItem.quantity.toString(),
+                      style: theme.textTheme.bodyMedium!.copyWith(
+                        color: Colors.white,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              Expanded(
+                child: InkWell(
+                  onTap: () {
+                    HapticFeedback.mediumImpact();
+                    if (user != null) {
+                      context.read<CartBloc>().add(
+                            IncreaseCartQuantity(
+                              pincode: "560003",
+                              productRef: product.id,
+                              userId: user.uid,
+                              variantId: variationID,
+                            ),
+                          );
+                    }
+                  },
+                  child: const SizedBox(
+                    height: 25,
+                    child: Center(
+                      child: Icon(
+                        Icons.add,
+                        size: 20,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildRecommendedProducts(
+      ThemeData theme, List<ProductModel> products) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10),
+      color: AppColors.kwhiteColor,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        spacing: 15,
+        children: [
+          const SizedBox(height: 15),
+          Text("You might also like", style: theme.textTheme.titleMedium),
+          SizedBox(
+            height: 280,
+            child: ListView.builder(
+              itemBuilder: (context, index) {
+                return Padding(
+                  padding: const EdgeInsets.only(right: 10.0),
+                  child: ProductItem(
+                    subcategoryRef: products[index].subCategoryRef.first.id,
+                    productnamecolor: "000000",
+                    mrpColor: "A19DA3",
+                    offertextcolor: "233D4D",
+                    productBgColor: "FFFFFF",
+                    sellingPriceColor: "000000",
+                    buttontextcolor: "E23338",
+                    buttonBgColor: "FFFFFF",
+                    unitTextcolor: "A19DA3",
+                    unitbgcolor: "FFFFFF",
+                    offerbgcolor: "FFFA76",
+                    ctx: context,
+                    product: products[index],
+                  ),
+                );
+              },
+              scrollDirection: Axis.horizontal,
+              itemCount: products.length,
+            ),
+          ),
+          const SizedBox(height: 20),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildAddMoreItems(ThemeData theme) {
     return Container(
       width: MediaQuery.of(context).size.width,
       color: Colors.white,
@@ -774,10 +879,10 @@ class _CartPageState extends State<CartPage> {
         margin: const EdgeInsets.all(10),
         padding: const EdgeInsets.all(10),
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
-            color: Colors.white,
-            border:
-                Border.all(color: const Color.fromARGB(255, 239, 239, 239))),
+          borderRadius: BorderRadius.circular(10),
+          color: Colors.white,
+          border: Border.all(color: const Color.fromARGB(255, 239, 239, 239)),
+        ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -793,31 +898,34 @@ class _CartPageState extends State<CartPage> {
               icon: const Icon(
                 Icons.add,
                 color: Colors.white,
-              ), // Your icon
+              ),
               label: Text(
                 "Add more item",
-                style: theme.textTheme.bodyMedium!
-                    .copyWith(fontSize: 14, color: Colors.white),
+                style: theme.textTheme.bodyMedium!.copyWith(
+                  fontSize: 14,
+                  color: Colors.white,
+                ),
               ),
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF233D4D), // Background color
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 16, vertical: 12), // Padding
+                backgroundColor: const Color(0xFF233D4D),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8), // Rounded corners
+                  borderRadius: BorderRadius.circular(8),
                 ),
-              ), // Button text
-            )
+              ),
+            ),
           ],
         ),
       ),
     );
   }
 
-  Widget selectDeliveryType({required ThemeData theme}) {
+  Widget _buildDeliveryTypeSelector(
+      ThemeData theme, Map<String, dynamic> charges) {
     return BlocBuilder<OrderManagementBloc, OrderManagementState>(
-        builder: (context, state) {
-      return Container(
+      builder: (context, state) {
+        return Container(
           padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
           decoration: const BoxDecoration(
             color: Colors.white,
@@ -833,54 +941,60 @@ class _CartPageState extends State<CartPage> {
               Row(
                 spacing: 15,
                 children: [
+                  charges["enable_Instant_Delivery"]
+                      ? Expanded(
+                          flex: 1,
+                          child: ElevatedButton.icon(
+                            onPressed: () {
+                              context.read<OrderManagementBloc>().add(
+                                    UpdateDeliveryType(
+                                      newDeliveryType: "instant",
+                                      selectedSlot: '0',
+                                    ),
+                                  );
+                            },
+                            icon: Icon(
+                              Icons.check_circle,
+                              color: state is DeliveryTypeUpdated &&
+                                      state.deliveryType == "instant"
+                                  ? Colors.white
+                                  : Colors.black,
+                            ),
+                            label: Text(
+                              "Instant delivery",
+                              style: theme.textTheme.bodyMedium!.copyWith(
+                                fontSize: 10,
+                                fontWeight: FontWeight.w800,
+                                color: state is DeliveryTypeUpdated &&
+                                        state.deliveryType == "instant"
+                                    ? Colors.white
+                                    : Colors.black,
+                              ),
+                            ),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: state is DeliveryTypeUpdated &&
+                                      state.deliveryType == "instant"
+                                  ? const Color(0xFF8CCA97)
+                                  : const Color(0xFFF6F7F9),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 16, vertical: 12),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                            ),
+                          ),
+                        )
+                      : const SizedBox(),
                   Expanded(
                     flex: 1,
                     child: ElevatedButton.icon(
                       onPressed: () {
                         context.read<OrderManagementBloc>().add(
-                            UpdateDeliveryType(
-                                newDeliveryType: "instant", selectedSlot: '0'));
-                      },
-                      icon: Icon(
-                        Icons.check_circle,
-                        color: state is DeliveryTypeUpdated &&
-                                state.deliveryType == "instant"
-                            ? Colors.white
-                            : Colors.black,
-                      ), // Your icon
-                      label: Text(
-                        "Instant delivery",
-                        style: theme.textTheme.bodyMedium!.copyWith(
-                            fontSize: 10,
-                            fontWeight: FontWeight.w800,
-                            color: state is DeliveryTypeUpdated &&
-                                    state.deliveryType == "instant"
-                                ? Colors.white
-                                : Colors.black),
-                      ),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: state is DeliveryTypeUpdated &&
-                                state.deliveryType == "instant"
-                            ? const Color(0xFF8CCA97)
-                            : const Color(0xFFF6F7F9), // Background color
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 16, vertical: 12), // Padding
-                        shape: RoundedRectangleBorder(
-                          borderRadius:
-                              BorderRadius.circular(8), // Rounded corners
-                        ),
-                      ), // Button text
-                    ),
-                  ),
-                  Expanded(
-                    flex: 1,
-                    child: ElevatedButton.icon(
-                      onPressed: () {
-                        context.read<OrderManagementBloc>().add(
-                            UpdateDeliveryType(
-                                newDeliveryType: "slot", selectedSlot: '0'));
-
-                                
+                              UpdateDeliveryType(
+                                newDeliveryType: "slot",
+                                selectedSlot: '0',
+                              ),
+                            );
                       },
                       icon: Icon(
                         Icons.add,
@@ -888,129 +1002,133 @@ class _CartPageState extends State<CartPage> {
                                 state.deliveryType == "slot"
                             ? Colors.white
                             : Colors.black,
-                      ), // Your icon
+                      ),
                       label: Text(
                         "Book a Slot",
                         style: theme.textTheme.bodyMedium!.copyWith(
-                            fontWeight: FontWeight.w800,
-                            fontSize: 10,
-                            color: state is DeliveryTypeUpdated &&
-                                    state.deliveryType == "slot"
-                                ? Colors.white
-                                : Colors.black),
+                          fontWeight: FontWeight.w800,
+                          fontSize: 10,
+                          color: state is DeliveryTypeUpdated &&
+                                  state.deliveryType == "slot"
+                              ? Colors.white
+                              : Colors.black,
+                        ),
                       ),
-
                       style: ElevatedButton.styleFrom(
                         elevation: 0,
                         backgroundColor: state is DeliveryTypeUpdated &&
                                 state.deliveryType == "slot"
                             ? const Color(0xFF8CCA97)
-                            : const Color(0xFFF6F7F9), // Background color
+                            : const Color(0xFFF6F7F9),
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 16, vertical: 12), // Padding
+                            horizontal: 16, vertical: 12),
                         shape: RoundedRectangleBorder(
-                          borderRadius:
-                              BorderRadius.circular(8), // Rounded corners
+                          borderRadius: BorderRadius.circular(8),
                         ),
-                      ), // Button text
+                      ),
                     ),
-                  )
+                  ),
                 ],
               ),
-              state is DeliveryTypeUpdated && state.deliveryType == "slot"
-                  ? BlocBuilder<AddressBloc, AddressState>(
-                      builder: (context, addressstate) {
-                      if (addressstate is LocationSearchResults) {
-                        return SizedBox(
+              if (state is DeliveryTypeUpdated && state.deliveryType == "slot")
+                BlocBuilder<AddressBloc, AddressState>(
+                  builder: (context, addressState) {
+                    if (addressState is LocationSearchResults) {
+                      final deliverySlots = generateDeliverySlots(
+                        startTimeISO:
+                            addressState.warehouse!.tumTumDeliveryEndTime,
+                        endTimeISO:
+                            addressState.warehouse!.tumTumDeliveryStartTime,
+                      );
+
+                      return InkWell(
+                        onTap: () {
+                          print(addressState.warehouse!.managerName);
+                          print(addressState.warehouse!.warehouseAddress);
+                          print(
+                              addressState.warehouse!.tumTumDeliveryStartTime);
+                          print(addressState.warehouse!.tumTumDeliveryEndTime);
+                        },
+                        child: SizedBox(
                           width: double.infinity,
                           height: 35,
                           child: SingleChildScrollView(
                             scrollDirection: Axis.horizontal,
                             child: Row(
                               spacing: 10,
-                              children: List.generate(
-                                generateDeliverySlots(
-                                        startTimeISO: addressstate
-                                            .warehouse!.tumTumDeliveryStartTime,
-                                        endTimeISO: addressstate
-                                            .warehouse!.tumTumDeliveryEndTime)
-                                    .length,
-                                (index) {
-                                  List<DeliveryTimeSlot> deliverytimeslot =
-                                      generateDeliverySlots(
-                                          startTimeISO: addressstate.warehouse!
-                                              .tumTumDeliveryStartTime,
-                                          endTimeISO: addressstate.warehouse!
-                                              .tumTumDeliveryEndTime);
-                                  return InkWell(
-                                    onTap: () {
-                                      context.read<OrderManagementBloc>().add(
-                                          UpdateDeliveryType(
-                                              newDeliveryType: "slot",
-                                              selectedSlot:
-                                                  "${deliverytimeslot[index].startTime} - ${deliverytimeslot[index].endTime}"));
-                                                  print( addressstate.warehouse!
-                                              .tumTumDeliveryStartTime);
-                                              print(addressstate
-                                            .warehouse!.tumTumDeliveryEndTime);
-                                    },
-                                    child: isHideTimePassed(
-                                            deliverytimeslot[index].hideTime)
-                                        ? Container(
-                                            decoration: BoxDecoration(
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: deliverySlots.map((slot) {
+                                return !isHideTimePassed(slot.hideTime)
+                                    ? InkWell(
+                                        onTap: () {
+                                          context
+                                              .read<OrderManagementBloc>()
+                                              .add(
+                                                UpdateDeliveryType(
+                                                  newDeliveryType: "slot",
+                                                  selectedSlot:
+                                                      "${slot.startTime} - ${slot.endTime}",
+                                                ),
+                                              );
+                                        },
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                            color: (state.deliveryType ==
+                                                        "slot" &&
+                                                    state.selectedslot ==
+                                                        "${slot.startTime} - ${slot.endTime}")
+                                                ? const Color(0xFF8CCA97)
+                                                : const Color.fromARGB(
+                                                    255, 255, 251, 240),
+                                            border: Border.all(
+                                                color: const Color.fromARGB(
+                                                    255, 216, 216, 216)),
+                                          ),
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 15, vertical: 8),
+                                          child: Center(
+                                            child: Text(
+                                              "${slot.startTime} - ${slot.endTime}",
+                                              style: theme.textTheme.bodyMedium!
+                                                  .copyWith(
                                                 color: (state.deliveryType ==
                                                             "slot" &&
                                                         state.selectedslot ==
-                                                            "${deliverytimeslot[index].startTime} - ${deliverytimeslot[index].endTime}")
-                                                    ? const Color(
-                                                        0xFF8CCA97) // Selected color
-                                                    : const Color.fromARGB(
-                                                        255, 255, 251, 240),
-                                                border: Border.all(
-                                                    color: const Color.fromARGB(
-                                                        255, 216, 216, 216))),
-                                            padding: const EdgeInsets.symmetric(
-                                                horizontal: 15, vertical: 8),
-                                            child: Center(
-                                              child: Text(
-                                                "${deliverytimeslot[index].startTime} - ${deliverytimeslot[index].endTime}",
-                                                style: theme.textTheme.bodyMedium!.copyWith(
-                                                    color: (state.deliveryType ==
-                                                                "slot" &&
-                                                            state.selectedslot ==
-                                                                "${deliverytimeslot[index].startTime} - ${deliverytimeslot[index].endTime}")
-                                                        ? Colors.white
-                                                        : Colors.black,
-                                                    fontWeight: (state
-                                                                    .deliveryType ==
-                                                                "slot" &&
-                                                            state.selectedslot ==
-                                                                "${deliverytimeslot[index].startTime} - ${deliverytimeslot[index].endTime}")
-                                                        ? FontWeight.w700
-                                                        : FontWeight.w400),
+                                                            "${slot.startTime} - ${slot.endTime}")
+                                                    ? Colors.white
+                                                    : Colors.black,
+                                                fontWeight: (state
+                                                                .deliveryType ==
+                                                            "slot" &&
+                                                        state.selectedslot ==
+                                                            "${slot.startTime} - ${slot.endTime}")
+                                                    ? FontWeight.w700
+                                                    : FontWeight.w400,
                                               ),
                                             ),
-                                          )
-                                        : const SizedBox(),
-                                  );
-                                },
-                              ),
+                                          ),
+                                        ),
+                                      )
+                                    : const SizedBox();
+                              }).toList(),
                             ),
                           ),
-                        );
-                      } else {
-                        return const Text("Update location");
-                      }
-                    })
-                  : const SizedBox(),
+                        ),
+                      );
+                    }
+                    return const Text("Update location");
+                  },
+                ),
             ],
-          ));
-    });
+          ),
+        );
+      },
+    );
   }
 
-  Widget deliveryInstructions({required ThemeData theme}) {
+  Widget _buildDeliveryInstructions(ThemeData theme) {
     return Container(
       color: Colors.white,
       child: Column(
@@ -1022,84 +1140,70 @@ class _CartPageState extends State<CartPage> {
               "Delivery Instructions",
               style: theme.textTheme.bodyLarge,
             ),
-            leading: SvgPicture.asset("assets/images/instructions.svg",
-                height: 25, width: 25),
+            leading: SvgPicture.asset(
+              "assets/images/instructions.svg",
+              height: 25,
+              width: 25,
+            ),
             subtitle: Text(
               "Delivery partner will be notified",
               style: theme.textTheme.bodyMedium,
             ),
-            shape: RoundedRectangleBorder(
-                borderRadius:
-                    BorderRadius.circular(0)), // Removes the top & bottom lines
-            collapsedShape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(
-                    0)), // Ensures the collapsed state also has no lines
+            shape: const RoundedRectangleBorder(),
+            collapsedShape: const RoundedRectangleBorder(),
             onExpansionChanged: (expanded) {},
             children: [
               AnimatedSize(
-                  duration: const Duration(milliseconds: 300),
-                  curve: Curves.easeInOut,
-                  child: Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: Row(
-                      spacing: 15,
-                      children: [
-                        Expanded(
-                          flex: 2,
-                          child: TextField(
-                            maxLines: 2,
-                            style: theme.textTheme.bodyMedium,
-                            controller: _controller,
-                            decoration: const InputDecoration(
-                              labelText: "Enter instructions",
-                              labelStyle: TextStyle(
-                                  fontSize: 12, fontWeight: FontWeight.w400),
-                              enabledBorder: OutlineInputBorder(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(15.0)),
-                                  borderSide: BorderSide(
-                                      color: Color(0xffA19DA3), width: .5)),
-                              focusedBorder: OutlineInputBorder(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(15.0)),
-                                  borderSide: BorderSide(
-                                      color: Color(0xffA19DA3), width: .5)),
-                              border: OutlineInputBorder(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(15.0)),
-                                  borderSide: BorderSide(
-                                      color: Color(0xffA19DA3), width: .5)),
+                duration: const Duration(milliseconds: 300),
+                curve: Curves.easeInOut,
+                child: Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Row(
+                    spacing: 15,
+                    children: [
+                      Expanded(
+                        flex: 2,
+                        child: TextField(
+                          maxLines: 2,
+                          style: theme.textTheme.bodyMedium,
+                          controller: _instructionsController,
+                          decoration: const InputDecoration(
+                            labelText: "Enter instructions",
+                            labelStyle: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w400,
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(15.0)),
+                              borderSide: BorderSide(
+                                color: Color(0xffA19DA3),
+                                width: 0.5,
+                              ),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(15.0)),
+                              borderSide: BorderSide(
+                                color: Color(0xffA19DA3),
+                                width: 0.5,
+                              ),
+                            ),
+                            border: OutlineInputBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(15.0)),
+                              borderSide: BorderSide(
+                                color: Color(0xffA19DA3),
+                                width: 0.5,
+                              ),
                             ),
                           ),
                         ),
-                        // const SizedBox(height: 10),
-                        // Expanded(
-                        //     flex: 1,
-                        //     child: ElevatedButton.icon(
-                        //       onPressed: () {},
-                        //       icon: const Icon(
-                        //         Icons.add,
-                        //         color: Colors.white,
-                        //       ), // Your icon
-                        //       label: Text(
-                        //         "Add",
-                        //         style: theme.textTheme.bodyMedium!.copyWith(
-                        //             fontSize: 14, color: Colors.white),
-                        //       ),
-                        //       style: ElevatedButton.styleFrom(
-                        //         backgroundColor:
-                        //             const Color(0xFF233D4D), // Background color
-                        //         padding: const EdgeInsets.symmetric(
-                        //             horizontal: 16, vertical: 12), // Padding
-                        //         shape: RoundedRectangleBorder(
-                        //           borderRadius: BorderRadius.circular(
-                        //               8), // Rounded corners
-                        //         ),
-                        //       ), // Button text
-                        //     )),
-                      ],
-                    ),
-                  ))
+                      ),
+                    ],
+                  ),
+                ),
+              ),
             ],
           ),
           const SizedBox(height: 5),
@@ -1118,96 +1222,96 @@ class _CartPageState extends State<CartPage> {
               "Delivery Partner Safety",
               style: theme.textTheme.bodyLarge,
             ),
-            leading: SvgPicture.asset("assets/images/delivery_details.svg",
-                height: 25, width: 25),
+            leading: SvgPicture.asset(
+              "assets/images/delivery_details.svg",
+              height: 25,
+              width: 25,
+            ),
             subtitle: Text(
               "Learn more about how we ensue their safety",
               style: theme.textTheme.bodyMedium,
             ),
-            shape: RoundedRectangleBorder(
-                borderRadius:
-                    BorderRadius.circular(0)), // Removes the top & bottom lines
-            collapsedShape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(
-                    0)), // Ensures the collapsed state also has no lines
+            shape: const RoundedRectangleBorder(),
+            collapsedShape: const RoundedRectangleBorder(),
             onExpansionChanged: (expanded) {},
             children: [
               AnimatedSize(
-                  duration: const Duration(milliseconds: 300),
-                  curve: Curves.easeInOut,
-                  child: Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      spacing: 10,
-                      children: [
-                        Text(
-                          "Here's How We Do It",
-                          style: theme.textTheme.bodyLarge,
-                        ),
-                        Row(
-                          spacing: 15,
-                          children: [
-                            const Expanded(
-                              flex: 1,
-                              child: Icon(
-                                Icons.delivery_dining_outlined,
-                                size: 24,
-                                color: Color.fromARGB(255, 208, 25, 5),
-                              ),
+                duration: const Duration(milliseconds: 300),
+                curve: Curves.easeInOut,
+                child: Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    spacing: 10,
+                    children: [
+                      Text(
+                        "Here's How We Do It",
+                        style: theme.textTheme.bodyLarge,
+                      ),
+                      Row(
+                        spacing: 15,
+                        children: [
+                          const Expanded(
+                            flex: 1,
+                            child: Icon(
+                              Icons.delivery_dining_outlined,
+                              size: 24,
+                              color: Color.fromARGB(255, 208, 25, 5),
                             ),
-                            Expanded(
-                              flex: 7,
-                              child: Text(
-                                "Delivery partners ride safely at an average speed of 15kmph per delivery",
-                                maxLines: 5,
-                                style: theme.textTheme.bodyMedium,
-                              ),
+                          ),
+                          Expanded(
+                            flex: 7,
+                            child: Text(
+                              "Delivery partners ride safely at an average speed of 15kmph per delivery",
+                              maxLines: 5,
+                              style: theme.textTheme.bodyMedium,
                             ),
-                          ],
-                        ),
-                        Row(
-                          spacing: 15,
-                          children: [
-                            const Expanded(
-                              flex: 1,
-                              child: Icon(
-                                Icons.delivery_dining_outlined,
-                                size: 24,
-                                color: Color.fromARGB(255, 5, 107, 208),
-                              ),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        spacing: 15,
+                        children: [
+                          const Expanded(
+                            flex: 1,
+                            child: Icon(
+                              Icons.delivery_dining_outlined,
+                              size: 24,
+                              color: Color.fromARGB(255, 5, 107, 208),
                             ),
-                            Expanded(
-                              flex: 7,
-                              child: Text(
-                                "No penalties for late deliveries & no oo incentives for on-time deliveries",
-                                style: theme.textTheme.bodyMedium,
-                              ),
+                          ),
+                          Expanded(
+                            flex: 7,
+                            child: Text(
+                              "No penalties for late deliveries & no oo incentives for on-time deliveries",
+                              style: theme.textTheme.bodyMedium,
                             ),
-                          ],
-                        ),
-                        Row(
-                          spacing: 15,
-                          children: [
-                            const Expanded(
-                              flex: 1,
-                              child: Icon(
-                                Icons.delivery_dining_outlined,
-                                size: 24,
-                              ),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        spacing: 15,
+                        children: [
+                          const Expanded(
+                            flex: 1,
+                            child: Icon(
+                              Icons.delivery_dining_outlined,
+                              size: 24,
                             ),
-                            Expanded(
-                              flex: 7,
-                              child: Text(
-                                "Delivery partners are not informed about promised delivery time",
-                                style: theme.textTheme.bodyMedium,
-                              ),
+                          ),
+                          Expanded(
+                            flex: 7,
+                            child: Text(
+                              "Delivery partners are not informed about promised delivery time",
+                              style: theme.textTheme.bodyMedium,
                             ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ))
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
             ],
           ),
         ],
@@ -1215,10 +1319,8 @@ class _CartPageState extends State<CartPage> {
     );
   }
 
-  Widget billDetails(
-      {required ThemeData theme,
-      required List<CartProduct> cartproducts,
-      required Map<String, dynamic> charges}) {
+  Widget _buildBillDetails(ThemeData theme, List<CartProduct> cartItems,
+      Map<String, dynamic> charges) {
     return Container(
       padding: const EdgeInsets.only(right: 10, left: 10, top: 30, bottom: 20),
       color: Colors.white,
@@ -1234,12 +1336,13 @@ class _CartPageState extends State<CartPage> {
           Row(
             children: [
               Expanded(
-                  flex: 1,
-                  child: SvgPicture.asset(
-                    "assets/images/cartbill_1.svg",
-                    height: 20,
-                    width: 20,
-                  )),
+                flex: 1,
+                child: SvgPicture.asset(
+                  "assets/images/cartbill_1.svg",
+                  height: 20,
+                  width: 20,
+                ),
+              ),
               Expanded(
                 flex: 5,
                 child: Row(
@@ -1249,20 +1352,26 @@ class _CartPageState extends State<CartPage> {
                     Text(
                       "Items total",
                       style: theme.textTheme.bodyMedium!.copyWith(
-                          fontSize: 12, color: const Color(0xFF233D4D)),
-                    ),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 10, vertical: 5),
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          color: const Color.fromARGB(255, 109, 205, 125)),
-                      child: Text(
-                        "Saved ₹${(calculateTotalMRP(cartproducts) - calculateTotalSellingPrice(cartproducts, charges)).toStringAsFixed(0)}",
-                        style: theme.textTheme.bodyMedium!
-                            .copyWith(color: Colors.white),
+                        fontSize: 12,
+                        color: const Color(0xFF233D4D),
                       ),
-                    )
+                    ),
+                    BlocBuilder<OrderManagementBloc, OrderManagementState>(
+                        builder: (context, orderstate) {
+                      return Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 10, vertical: 5),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: const Color.fromARGB(255, 109, 205, 125),
+                        ),
+                        child: Text(
+                          "Saved ₹${((calculateTotalMRP(cartItems) - calculateTotalSellingPrice(cartItems, charges)) + (orderstate is DeliveryTypeUpdated && orderstate.deliveryType == "slot" && charges["delivery_charge_tum_tum"] == 0 ? 30 : 0) + (orderstate is DeliveryTypeUpdated && orderstate.deliveryType == "instant" && charges["delivery_charge"] == 0 ? 30 : 0)).toStringAsFixed(0)}",
+                          style: theme.textTheme.bodyMedium!
+                              .copyWith(color: Colors.white),
+                        ),
+                      );
+                    }),
                   ],
                 ),
               ),
@@ -1273,88 +1382,129 @@ class _CartPageState extends State<CartPage> {
                   spacing: 10,
                   children: [
                     Text(
-                      "₹${calculateTotalMRP(cartproducts).toStringAsFixed(0)}",
+                      "₹${calculateTotalMRP(cartItems).toStringAsFixed(0)}",
                       style: theme.textTheme.bodyMedium!.copyWith(
-                          decoration: TextDecoration.lineThrough,
-                          fontSize: 12,
-                          color: const Color(0xFFA19DA3)),
+                        decoration: TextDecoration.lineThrough,
+                        fontSize: 12,
+                        color: const Color(0xFFA19DA3),
+                      ),
                     ),
                     Text(
-                      "₹${calculateTotalSellingPrice(cartproducts, charges).toStringAsFixed(0)}",
+                      "₹${calculateTotalSellingPrice(cartItems, charges).toStringAsFixed(0)}",
                       style: theme.textTheme.bodyMedium!.copyWith(
-                          fontWeight: FontWeight.w700,
-                          fontSize: 14,
-                          color: const Color(0xFF233D4D)),
+                        fontWeight: FontWeight.w700,
+                        fontSize: 14,
+                        color: const Color(0xFF233D4D),
+                      ),
                     ),
                   ],
                 ),
-              )
+              ),
             ],
           ),
-          Row(
-            children: [
-              Expanded(
+          BlocBuilder<OrderManagementBloc, OrderManagementState>(
+              builder: (context, state) {
+            return Row(
+              children: [
+                Expanded(
                   flex: 1,
                   child: SvgPicture.asset(
                     "assets/images/cartbill_2.svg",
                     height: 20,
                     width: 20,
-                  )),
-              Expanded(
-                flex: 5,
-                child: Text(
-                  "Delivery charge",
-                  style: theme.textTheme.bodyMedium!
-                      .copyWith(fontSize: 12, color: const Color(0xFF233D4D)),
+                  ),
                 ),
-              ),
-              Expanded(
-                flex: 3,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  spacing: 10,
-                  children: [
-                    Text(
-                      (charges != {} && charges["delivery_charge"] != 0)
-                          ? ""
-                          : "₹30",
-                      style: theme.textTheme.bodyMedium!.copyWith(
-                          decoration: TextDecoration.lineThrough,
-                          fontSize: 14,
-                          color: const Color(0xFFA19DA3)),
+                Expanded(
+                  flex: 5,
+                  child: Text(
+                    "Delivery charge",
+                    style: theme.textTheme.bodyMedium!.copyWith(
+                      fontSize: 12,
+                      color: const Color(0xFF233D4D),
                     ),
-                    Text(
-                      (charges != {} && charges["delivery_charge"] != 0)
-                          ? "₹${charges["delivery_charge"]}"
-                          : "FREE",
-                      style: theme.textTheme.bodyMedium!.copyWith(
+                  ),
+                ),
+                Expanded(
+                  flex: 3,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    spacing: 10,
+                    children: [
+                      state is DeliveryTypeUpdated &&
+                              state.deliveryType == "instant"
+                          ? Text(
+                              (charges.isNotEmpty &&
+                                      charges["delivery_charge"] != 0)
+                                  ? ""
+                                  : "₹30",
+                              style: theme.textTheme.bodyMedium!.copyWith(
+                                decoration: TextDecoration.lineThrough,
+                                fontSize: 14,
+                                color: const Color(0xFFA19DA3),
+                              ),
+                            )
+                          : Text(
+                              (charges.isNotEmpty &&
+                                      charges["delivery_charge_tum_tum"] != 0)
+                                  ? ""
+                                  : "₹30",
+                              style: theme.textTheme.bodyMedium!.copyWith(
+                                decoration: TextDecoration.lineThrough,
+                                fontSize: 14,
+                                color: const Color(0xFFA19DA3),
+                              ),
+                            ),
+                      Text(
+                        (charges.isNotEmpty &&
+                                charges["delivery_charge"] != 0 &&
+                                state is DeliveryTypeUpdated &&
+                                state.deliveryType == "slot")
+                            ? "₹${charges["delivery_charge_tum_tum"]}"
+                            : (charges.isNotEmpty &&
+                                    charges["delivery_charge"] != 0 &&
+                                    state is DeliveryTypeUpdated &&
+                                    state.deliveryType == "instant")
+                                ? "₹${charges["delivery_charge"]}"
+                                : "FREE",
+                        style: theme.textTheme.bodyMedium!.copyWith(
                           fontWeight: FontWeight.w700,
                           fontSize: 14,
-                          color:
-                              (charges != {} && charges["delivery_charge"] != 0)
-                                  ? const Color(0xFF233D4D)
-                                  : const Color(0xFF7DA5D9)),
-                    ),
-                  ],
+                          color: (charges.isNotEmpty &&
+                                      state is DeliveryTypeUpdated &&
+                                      state.deliveryType == "instant" &&
+                                      charges["delivery_charge"] != 0) ||
+                                  (charges.isNotEmpty &&
+                                      state is DeliveryTypeUpdated &&
+                                      state.deliveryType == "slot" &&
+                                      charges["delivery_charge_tum_tum"] != 0)
+                              ? const Color(0xFF233D4D)
+                              : const Color(0xFF7DA5D9),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              )
-            ],
-          ),
+              ],
+            );
+          }),
           Row(
             children: [
               Expanded(
-                  flex: 1,
-                  child: SvgPicture.asset(
-                    "assets/images/cartbill_3.svg",
-                    height: 20,
-                    width: 20,
-                  )),
+                flex: 1,
+                child: SvgPicture.asset(
+                  "assets/images/cartbill_3.svg",
+                  height: 20,
+                  width: 20,
+                ),
+              ),
               Expanded(
                 flex: 5,
                 child: Text(
                   "Handling charge",
-                  style: theme.textTheme.bodyMedium!
-                      .copyWith(fontSize: 12, color: const Color(0xFF233D4D)),
+                  style: theme.textTheme.bodyMedium!.copyWith(
+                    fontSize: 12,
+                    color: const Color(0xFF233D4D),
+                  ),
                 ),
               ),
               Expanded(
@@ -1364,45 +1514,50 @@ class _CartPageState extends State<CartPage> {
                   spacing: 10,
                   children: [
                     Text(
-                      (charges != {} && charges["handling_charge"] != 0)
+                      (charges.isNotEmpty && charges["handling_charge"] != 0)
                           ? ""
                           : "₹20",
                       style: theme.textTheme.bodyMedium!.copyWith(
-                          decoration: TextDecoration.lineThrough,
-                          fontSize: 14,
-                          color: const Color(0xFFA19DA3)),
+                        decoration: TextDecoration.lineThrough,
+                        fontSize: 14,
+                        color: const Color(0xFFA19DA3),
+                      ),
                     ),
                     Text(
-                      (charges != {} && charges["handling_charge"] != 0)
+                      (charges.isNotEmpty && charges["handling_charge"] != 0)
                           ? "₹${charges["handling_charge"]}"
                           : "FREE",
                       style: theme.textTheme.bodyMedium!.copyWith(
-                          fontSize: 14,
-                          color:
-                              (charges != {} && charges["handling_charge"] != 0)
-                                  ? const Color(0xFF233D4D)
-                                  : const Color(0xFF7DA5D9)),
+                        fontSize: 14,
+                        color: (charges.isNotEmpty &&
+                                charges["handling_charge"] != 0)
+                            ? const Color(0xFF233D4D)
+                            : const Color(0xFF7DA5D9),
+                      ),
                     ),
                   ],
                 ),
-              )
+              ),
             ],
           ),
           Row(
             children: [
               Expanded(
-                  flex: 1,
-                  child: SvgPicture.asset(
-                    "assets/images/cartbill_4.svg",
-                    height: 20,
-                    width: 20,
-                  )),
+                flex: 1,
+                child: SvgPicture.asset(
+                  "assets/images/cartbill_4.svg",
+                  height: 20,
+                  width: 20,
+                ),
+              ),
               Expanded(
                 flex: 5,
                 child: Text(
                   "High demand surge charge",
-                  style: theme.textTheme.bodyMedium!
-                      .copyWith(fontSize: 12, color: const Color(0xFF233D4D)),
+                  style: theme.textTheme.bodyMedium!.copyWith(
+                    fontSize: 12,
+                    color: const Color(0xFF233D4D),
+                  ),
                 ),
               ),
               Expanded(
@@ -1412,567 +1567,450 @@ class _CartPageState extends State<CartPage> {
                   spacing: 10,
                   children: [
                     Text(
-                      (charges != {} && charges["handling_charge"] != 0)
+                      (charges.isNotEmpty && charges["handling_charge"] != 0)
                           ? ""
                           : "₹40",
                       style: theme.textTheme.bodyMedium!.copyWith(
-                          decoration: TextDecoration.lineThrough,
-                          fontSize: 14,
-                          color: const Color(0xFFA19DA3)),
+                        decoration: TextDecoration.lineThrough,
+                        fontSize: 14,
+                        color: const Color(0xFFA19DA3),
+                      ),
                     ),
                     Text(
-                      (charges != {} && charges["handling_charge"] != 0)
+                      (charges.isNotEmpty && charges["handling_charge"] != 0)
                           ? "₹ ${charges["high_demand_charge"]}"
                           : "FREE",
                       style: theme.textTheme.bodyMedium!.copyWith(
-                          fontWeight: FontWeight.w700,
-                          fontSize: 14,
-                          color: (charges != {} &&
-                                  charges["high_demand_charge"] != 0)
-                              ? const Color(0xFF233D4D)
-                              : const Color(0xFF7DA5D9)),
+                        fontWeight: FontWeight.w700,
+                        fontSize: 14,
+                        color: (charges.isNotEmpty &&
+                                charges["high_demand_charge"] != 0)
+                            ? const Color(0xFF233D4D)
+                            : const Color(0xFF7DA5D9),
+                      ),
                     ),
                   ],
                 ),
-              )
+              ),
             ],
           ),
           const Divider(color: Color.fromARGB(255, 221, 221, 221)),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                "Grand total",
-                style: theme.textTheme.bodyLarge!
-                    .copyWith(fontSize: 18, color: const Color(0xFF233D4D)),
-              ),
-              Text(
-                "₹${calculatetotal(cartproducts, charges).toStringAsFixed(0)}",
-                style: theme.textTheme.bodyLarge!
-                    .copyWith(fontSize: 18, color: const Color(0xFF233D4D)),
-              ),
-            ],
-          ),
+          BlocBuilder<OrderManagementBloc, OrderManagementState>(
+              builder: (context, state) {
+            return Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  "Grand total",
+                  style: theme.textTheme.bodyLarge!.copyWith(
+                    fontSize: 18,
+                    color: const Color(0xFF233D4D),
+                  ),
+                ),
+                Text(
+                  "₹${calculateTotal((state is DeliveryTypeUpdated) ? state.deliveryType : "", cartItems, charges).toStringAsFixed(0)}",
+                  style: theme.textTheme.bodyLarge!.copyWith(
+                    fontSize: 18,
+                    color: const Color(0xFF233D4D),
+                  ),
+                ),
+              ],
+            );
+          }),
         ],
       ),
     );
   }
 
-  Widget addressContainer({required ThemeData theme}) {
-    return BlocBuilder<AddressBloc, AddressState>(builder: (context, state) {
-      if (state is LocationSearchResults) {
-        return state.selecteaddress != null
-            ? Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
-                color: Colors.white,
-                child: Row(
-                  spacing: 5,
-                  children: [
-                    Expanded(
-                        flex: 2,
-                        child: SvgPicture.asset("assets/images/home_logo.svg")),
-                    Expanded(
-                      flex: 8,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "Delivering to ${state.selecteaddress!.addressType}",
-                            style: theme.textTheme.titleLarge!
-                                .copyWith(fontSize: 12),
-                          ),
-                          Text(
-                            "${state.selecteaddress!.floor}, ${state.selecteaddress!.flatNoName}, ${state.selecteaddress!.area}, ${state.selecteaddress!.landmark}, ${state.selecteaddress!.pincode},\n${state.selecteaddress!.phoneNo}",
-                            style: theme.textTheme.bodyMedium!.copyWith(
-                                fontSize: 12, color: const Color(0xFFA19DA3)),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Expanded(
-                      flex: 2,
-                      child: InkWell(
-                        onTap: () {
-                          HapticFeedback.mediumImpact();
-                          Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => const LocationSearchPage(),
-                          ));
-                        },
-                        child: Container(
-                          height: 30,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            color: const Color(0xFFD0F1C5),
-                          ),
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 5, vertical: 5),
-                          child: Center(
-                              child: Text(
-                            "Change",
-                            style: theme.textTheme.bodyMedium!.copyWith(
-                                fontSize: 10, color: const Color(0xFF328616)),
-                          )),
-                        ),
-                      ),
-                    )
-                  ],
-                ),
-              )
-            : state.addresslist.isNotEmpty
-                ? Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 10, vertical: 15),
-                    color: Colors.white,
-                    child: Row(
-                      spacing: 5,
+  Widget _buildAddressContainer(ThemeData theme) {
+    return BlocBuilder<AddressBloc, AddressState>(
+      builder: (context, state) {
+        if (state is LocationSearchResults) {
+          final address = state.selecteaddress ??
+              (state.addresslist.isNotEmpty ? state.addresslist[0] : null);
+
+          if (address != null) {
+            return Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+              color: Colors.white,
+              child: Row(
+                spacing: 5,
+                children: [
+                  Expanded(
+                    flex: 2,
+                    child: SvgPicture.asset("assets/images/home_logo.svg"),
+                  ),
+                  Expanded(
+                    flex: 8,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Expanded(
-                            flex: 2,
-                            child: SvgPicture.asset(
-                                "assets/images/home_logo.svg")),
-                        Expanded(
-                          flex: 8,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                "Delivering to ${state.addresslist[0]!.addressType}",
-                                style: theme.textTheme.titleLarge!
-                                    .copyWith(fontSize: 12),
-                              ),
-                              Text(
-                                "${state.addresslist[0].floor ?? ""}, ${state.addresslist[0].flatNoName ?? ""}, ${state.addresslist[0]!.area}, ${state.addresslist[0].landmark ?? ""}, ${state.addresslist[0]!.pincode},\n${state.addresslist[0]!.phoneNo}",
-                                style: theme.textTheme.bodyMedium!.copyWith(
-                                    fontSize: 12,
-                                    color: const Color(0xFFA19DA3)),
-                              ),
-                            ],
+                        Text(
+                          "Delivering to ${address.addressType}",
+                          style: theme.textTheme.titleLarge!
+                              .copyWith(fontSize: 12),
+                        ),
+                        Text(
+                          "${address.floor}, ${address.flatNoName}, ${address.area}, ${address.landmark}, ${address.pincode},\n${address.phoneNo}",
+                          style: theme.textTheme.bodyMedium!.copyWith(
+                            fontSize: 12,
+                            color: const Color(0xFFA19DA3),
                           ),
                         ),
-                        Expanded(
-                          flex: 2,
-                          child: InkWell(
-                            onTap: () {
-                              HapticFeedback.mediumImpact();
-                              Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) =>
-                                    const LocationSearchPage(),
-                              ));
-                            },
-                            child: Container(
-                              height: 30,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                color: const Color(0xFFD0F1C5),
-                              ),
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 5, vertical: 5),
-                              child: Center(
-                                  child: Text(
-                                "Change",
-                                style: theme.textTheme.bodyMedium!.copyWith(
-                                    fontSize: 10,
-                                    color: const Color(0xFF328616)),
-                              )),
-                            ),
-                          ),
-                        )
                       ],
                     ),
-                  )
-                : Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 10, vertical: 15),
-                    color: Colors.white,
-                    child: Center(
-                      child: Text(
-                        "Add address",
-                        style: theme.textTheme.bodyMedium!
-                            .copyWith(color: Colors.redAccent),
+                  ),
+                  Expanded(
+                    flex: 2,
+                    child: InkWell(
+                      onTap: () {
+                        HapticFeedback.mediumImpact();
+                        Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => const LocationSearchPage(),
+                        ));
+                      },
+                      child: Container(
+                        height: 30,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: const Color(0xFFD0F1C5),
+                        ),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 5, vertical: 5),
+                        child: Center(
+                          child: Text(
+                            "Change",
+                            style: theme.textTheme.bodyMedium!.copyWith(
+                              fontSize: 10,
+                              color: const Color(0xFF328616),
+                            ),
+                          ),
+                        ),
                       ),
                     ),
-                  );
-      } else {
+                  ),
+                ],
+              ),
+            );
+          }
+          return Container(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+            color: Colors.white,
+            child: Center(
+              child: Text(
+                "Add address",
+                style: theme.textTheme.bodyMedium!
+                    .copyWith(color: Colors.redAccent),
+              ),
+            ),
+          );
+        }
         return const SizedBox();
-      }
-    });
+      },
+    );
   }
 
-  Widget paymentOptions(
-      {required ThemeData theme,
-      required List<CartProduct> cartproducts,
-      required User? user,
-      required Map<String, dynamic> charges}) {
+  Widget _buildPaymentOptions(ThemeData theme, List<CartProduct> cartItems,
+      Map<String, dynamic> charges, User? user) {
     return BlocBuilder<OrderManagementBloc, OrderManagementState>(
-        builder: (context, state) {
-      return Container(
-        width: MediaQuery.of(context).size.width,
-        height: 55,
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-        decoration: const BoxDecoration(
-          color: Colors.white,
-        ),
-        child: Row(
-          spacing: 15,
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "To Pay",
-                  style: theme.textTheme.bodyMedium!.copyWith(fontSize: 12),
-                ),
-                Text(
-                  "₹${calculatetotal(cartproducts, charges).toStringAsFixed(0)}",
-                  style: theme.textTheme.titleLarge!.copyWith(fontSize: 16),
-                ),
-              ],
-            ),
-            Expanded(
+      builder: (context, orderState) {
+        return Container(
+          width: MediaQuery.of(context).size.width,
+          height: 55,
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+          decoration: const BoxDecoration(
+            color: Colors.white,
+          ),
+          child: Row(
+            spacing: 15,
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "To Pay",
+                    style: theme.textTheme.bodyMedium!.copyWith(fontSize: 12),
+                  ),
+                  Text(
+                    "₹${calculateTotal(orderState is DeliveryTypeUpdated ? orderState.deliveryType : "", cartItems, charges).toStringAsFixed(0)}",
+                    style: theme.textTheme.titleLarge!.copyWith(fontSize: 16),
+                  ),
+                ],
+              ),
+              Expanded(
                 flex: 2,
                 child: ElevatedButton(
                   onPressed: () {
-                    final Razorpay _razorpay = Razorpay();
-                    _razorpay.on(
-                        Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
-                    _razorpay.on(
-                        Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
-                    _razorpay.on(
-                        Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
-                    var options = {
-                      'key':
-                          'rzp_test_BQYhrtYkdExJNC', // Replace with your TEST key
-                      'amount': (calculatetotal(cartproducts, charges)) *
-                          100, // ₹100 (10000 paise)
-                      'name': 'kwik groceries',
-                      'description': 'Test Payment',
-                      'prefill': {
-                        'contact': '9876543210',
-                        'email': 'test@example.com'
-                      }
-                    };
+                    if (orderState is DeliveryTypeUpdated) {
+                      if (orderState.deliveryType == 'slot' &&
+                          orderState.selectedslot != '0') {
+                        var options = {
+                          'key': 'rzp_test_BQYhrtYkdExJNC',
+                          'amount': (calculateTotal(
+                                  orderState.deliveryType ?? "",
+                                  cartItems,
+                                  charges)) *
+                              100,
+                          'name': 'kwik groceries',
+                          'description': 'Test Payment',
+                          'prefill': {
+                            'contact': '9876543210',
+                            'email': 'test@example.com'
+                          }
+                        };
 
-                    try {
-                      _razorpay.open(options);
-                    } catch (e) {
-                      print('Error: $e');
+                        try {
+                          _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS,
+                              _handlePaymentSuccess);
+                          _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR,
+                              _handlePaymentError);
+                          _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET,
+                              _handleExternalWallet);
+                          _razorpay.open(options);
+                        } catch (e) {
+                          print('Error: $e');
+                        }
+                      } else if (orderState.deliveryType == "instant") {
+                        var options = {
+                          'key': 'rzp_test_BQYhrtYkdExJNC',
+                          'amount':
+                              (calculateTotal("instant", cartItems, charges)) *
+                                  100,
+                          'name': 'kwik groceries',
+                          'description': 'Test Payment',
+                          'prefill': {
+                            'contact': '9876543210',
+                            'email': 'test@example.com'
+                          }
+                        };
+
+                        try {
+                          _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS,
+                              _handlePaymentSuccess);
+                          _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR,
+                              _handlePaymentError);
+                          _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET,
+                              _handleExternalWallet);
+                          _razorpay.open(options);
+                        } catch (e) {
+                          print('Error: $e');
+                        }
+                      }
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                          content: Text("select delivery type")));
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                          content: Text("select delivery type")));
                     }
                   },
-
                   style: ElevatedButton.styleFrom(
-                    elevation: .1,
-
+                    elevation: 0.1,
                     backgroundColor: charges["enable_cod"]
                         ? const Color.fromARGB(255, 255, 240, 240)
-                        : const Color(0xFFE23338), // Background color
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 10, vertical: 5), // Padding
+                        : const Color(0xFFE23338),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8), // Rounded corners
+                      borderRadius: BorderRadius.circular(8),
                     ),
                   ),
-
                   child: Text(
                     "Pay Online",
                     style: theme.textTheme.bodyMedium!.copyWith(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w700,
-                        color: charges["enable_cod"]
-                            ? const Color(0xFF3F3F3F)
-                            : Colors.white),
-                  ), // Button text
-                )),
-            charges["enable_cod"]
-                ? Expanded(
-                    flex: 2,
-                     
-                    child: BlocBuilder<OrderManagementBloc, OrderManagementState>(
-         
-          builder: (context, orderstate) {
-        
-                        return ElevatedButton(
-                          onPressed: () {
-                            if (state is DeliveryTypeUpdated &&
-                                state.deliveryType == "instant") {
-                            } else {
-                              // state is DeliveryTypeUpdated ?state.selectedslot.
-                              try {
-
-                                
-                                HapticFeedback.mediumImpact();
-                                context
-                                    .read<OrderManagementBloc>()
-                                    .add(PlaceOrder(orderJson: {
-                                      "pincode": "560003",
-                                      "user_ref": user!.uid,
-                                      "order_status": "Order placed",
-                                      "otp": "123456",
-                                      "order_placed_time":
-                                          DateTime.now().toIso8601String(),
-                                      "payment_type": "COD",
-                                      "discount_price": 10,
-                                      "type_of_delivery": "tum tum",
-                                      "selected_time_slot": generateIsoTime(
-                                          state is DeliveryTypeUpdated
-                                              ? state.selectedslot
-                                              : "10.30 AM - 11.30 AM"),
-                                      "delivery_instructions": " intruction"
-                                    }));
-                                    if(orderstate is OrderPlaced){
-                                       context.go('/order-success');
-                                    }else{
-                                       context.go('/order-error');
-                                    }
-                               
-                               
-                              } catch (error) {
-                                context.read<CartBloc>().add(SyncCartWithServer(
-                                    userId: user!.uid));
-                                print(error);
-                              }
-                            }
-                          },
-                          style: ElevatedButton.styleFrom(
-                            elevation: 0,
-                            backgroundColor:
-                                const Color(0xFFE23338), // Background color
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 10, vertical: 5), // Padding
-                            shape: RoundedRectangleBorder(
-                              borderRadius:
-                                  BorderRadius.circular(8), // Rounded corners
-                            ),
-                          ),
-                        
-                          child: Column(
-                            children: [
-                              Text(
-                                "Pay Cash/UPI",
-                                textAlign: TextAlign.center,
-                                style: theme.textTheme.bodyMedium!.copyWith(
-                                    fontWeight: FontWeight.w700,
-                                    fontSize: 13,
-                                    color: Colors.white),
-                              ),
-                              Text(
-                                "(On Delivery)",
-                                textAlign: TextAlign.center,
-                                style: theme.textTheme.bodyMedium!
-                                    .copyWith(fontSize: 10, color: Colors.white),
-                              ),
-                            ],
-                          ), // Button text
-                        );
-                     }
-                    ))
-                : const SizedBox(),
-          ],
-        ),
-      );
-    });
-  }
-
-  Widget quantitycontrolbutton(
-      {required ThemeData theme,
-      required ProductModel product,
-      required User? user,
-      required String qty}) {
-    return BlocBuilder<CartBloc, CartState>(builder: (context, state) {
-      List<CartProduct> cartItems = [];
-
-      if (state is CartUpdated) {
-        cartItems = state.cartItems;
-      }
-      return Container(
-        height: 30,
-        padding: const EdgeInsets.symmetric(vertical: 1, horizontal: 3),
-        decoration: BoxDecoration(
-            color: const Color(0xFFE23338),
-            borderRadius: BorderRadius.circular(10)),
-        child: Row(
-          spacing: 2,
-          children: [
-            Expanded(
-              child: InkWell(
-                onTap: () {
-                  HapticFeedback.mediumImpact();
-                  context.read<CartBloc>().add(DecreaseCartQuantity(
-                      pincode: "560003",
-                      productRef: product.id,
-                      userId: user!.uid,
-                      variantId: product.variations.first.id));
-                },
-                child: SizedBox(
-                  height: 25,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Container(
-                        width: 12,
-                        height: 2,
-                        decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(3)),
-                      ),
-                    ],
+                      fontSize: 14,
+                      fontWeight: FontWeight.w700,
+                      color: charges["enable_cod"]
+                          ? const Color(0xFF3F3F3F)
+                          : Colors.white,
+                    ),
                   ),
                 ),
               ),
-            ),
-            Expanded(
-              child: InkWell(
-                onTap: () {},
-                child: SizedBox(
-                    child: Center(
-                  child: Text(
-                    cartItems
-                        .where((element) => element.productRef.id == product.id)
-                        .first
-                        .quantity
-                        .toString(),
-                    style: theme.textTheme.bodyMedium!.copyWith(
-                        color: Colors.white,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w800),
-                  ),
-                )),
-              ),
-            ),
-            Expanded(
-              child: InkWell(
-                onTap: () {
-                  HapticFeedback.mediumImpact();
-                  context.read<CartBloc>().add(IncreaseCartQuantity(
-                      pincode: "560003",
-                      productRef: product.id,
-                      userId: user!.uid,
-                      variantId: product.variations.first.id));
-                },
-                child: const SizedBox(
-                    height: 25,
-                    child: Center(
-                      child: Icon(
-                        Icons.add,
-                        size: 20,
-                        color: Colors.white,
-                      ),
-                    )),
-              ),
-            )
-          ],
-        ),
-      );
-    });
-  }
+              if (charges["enable_cod"])
+                Expanded(
+                  flex: 2,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      // convertTimeStringToISO(
+                      //   orderState is DeliveryTypeUpdated
+                      //       ? orderState.selectedslot
+                      //       : "00.00",
+                      // );
+                      HapticFeedback.mediumImpact();
+                      if (orderState is DeliveryTypeUpdated) {
+                        if (orderState.deliveryType == 'slot') {
+                          // print(
+                          //   orderState ?? "empty state",
+                          // );
+                          // print(
+                          //   orderState.deliveryType ?? "empty state",
+                          // );
+                          // print(
+                          //   orderState.selectedslot ?? "empty state",
+                          // );
+                          // print(convertTimeStringToISO(
+                          //   orderState is DeliveryTypeUpdated
+                          //       ? orderState.selectedslot
+                          //       : "00.00",
+                          // ));
+                          context.read<OrderManagementBloc>().add(
+                                PlaceOrder(
+                                  orderJson: {
+                                    "pincode": "560003",
+                                    "user_ref": user!.uid,
+                                    "order_status": "Order placed",
+                                    "otp": "123456",
+                                    "order_placed_time":
+                                        DateTime.now().toIso8601String(),
+                                    "payment_type": "COD",
+                                    "discount_price": 10,
+                                    "type_of_delivery": "tum tum",
+                                    "selected_time_slot":
+                                        convertTimeStringToISO(
+                                      orderState is DeliveryTypeUpdated
+                                          ? orderState.selectedslot
+                                          : "00.00",
+                                    ),
+                                    "delivery_instructions":
+                                        _instructionsController.text
+                                  },
+                                ),
+                              );
 
-  whishlistcontainer(
-      {required ThemeData theme, required List<WishlistItem> wishlist}) {
-    return Container(
-      padding: const EdgeInsets.all(15),
-      color: Colors.amber,
-      child: Column(
-        children: List.generate(
-          wishlist.length,
-          (index) {
-            return ListTile(
-              leading:
-                  Image.network(wishlist[index].productRef.productImages.first),
-            );
-          },
-        ),
-      ),
+                          if (orderState is OrderPlaced) {
+                            context.go('/order-success');
+                          } else {
+                            context.go('/order-error');
+                          }
+                        } else if (orderState.deliveryType == "instant") {
+                          print(
+                            orderState ?? "empty state",
+                          );
+                          print(
+                            orderState.deliveryType ?? "empty state",
+                          );
+                          print(
+                            orderState.selectedslot ?? "empty state",
+                          );
+                          // print(convertTimeStringToISO(
+                          //   orderState is DeliveryTypeUpdated
+                          //       ? orderState.selectedslot
+                          //       : "00.00",
+                          // ));
+                          // convertTimeStringToISO(
+                          //   orderState is DeliveryTypeUpdated
+                          //       ? orderState.selectedslot
+                          //       : "00.00",
+                          // );
+                          // context.read<OrderManagementBloc>().add(
+                          //       PlaceOrder(
+                          //         orderJson: {
+                          //           "pincode": "560003",
+                          //           "user_ref": user.uid,
+                          //           "order_status": "Order placed",
+                          //           "otp": "123456",
+                          //           "order_placed_time":
+                          //               DateTime.now().toIso8601String(),
+                          //           "payment_type": "COD",
+                          //           "discount_price": 10,
+                          //           "type_of_delivery": "tum tum",
+                          //           "selected_time_slot":
+                          //               convertTimeStringToISO(
+                          //             orderState is DeliveryTypeUpdated
+                          //                 ? orderState.selectedslot
+                          //                 : "00.00",
+                          //           ),
+                          //           "delivery_instructions": "instruction"
+                          //         },
+                          //       ),
+                          //     );
+
+                          // if (orderState is OrderPlaced) {
+                          //   context.go('/order-success');
+                          // } else {
+                          //   context.go('/order-error');
+                          // }
+                        }
+                        // ScaffoldMessenger.of(context).showSnackBar(
+                        //     const SnackBar(
+                        //         content: Text("select delivery type")));
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                                content: Text("select delivery type")));
+                      }
+                    },
+                    style: ElevatedButton.styleFrom(
+                      elevation: 0,
+                      backgroundColor: const Color(0xFFE23338),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 5),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                    child: Column(
+                      children: [
+                        Text(
+                          "Pay Cash/UPI",
+                          textAlign: TextAlign.center,
+                          style: theme.textTheme.bodyMedium!.copyWith(
+                            fontWeight: FontWeight.w700,
+                            fontSize: 13,
+                            color: Colors.white,
+                          ),
+                        ),
+                        Text(
+                          "(On Delivery)",
+                          textAlign: TextAlign.center,
+                          style: theme.textTheme.bodyMedium!.copyWith(
+                            fontSize: 10,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        );
+      },
     );
   }
 }
 
-Widget productsYouMightAlsoLikeCart(
-    {required ThemeData theme, required List<ProductModel> productlist}) {
-  return Container(
-    padding: const EdgeInsets.symmetric(horizontal: 10),
-    color: AppColors.kwhiteColor,
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      spacing: 15,
-      children: [
-        const SizedBox(height: 15),
-        Text("You might also like", style: theme.textTheme.titleMedium),
-        SizedBox(
-          height: 280,
-          child: ListView.builder(
-              itemBuilder: (context, index) {
-                return Padding(
-                  padding: const EdgeInsets.only(right: 10.0),
-                  child: ProductItem(
-                      subcategoryRef:
-                          productlist[index].subCategoryRef.first.id,
-                      productnamecolor: "000000",
-                      mrpColor: "A19DA3",
-                      offertextcolor: "233D4D",
-                      productBgColor: "FFFFFF",
-                      sellingPriceColor: "000000",
-                      buttontextcolor: "E23338",
-                      buttonBgColor: "FFFFFF",
-                      unitTextcolor: "A19DA3",
-                      unitbgcolor: "FFFFFF",
-                      offerbgcolor: "FFFA76",
-                      ctx: context,
-                      product: productlist[index]),
-                );
-              },
-              scrollDirection: Axis.horizontal,
-              itemCount: productlist.length),
-        ),
-        const SizedBox(height: 20)
-      ],
-    ),
-  );
-}
-
 double calculateTotalSellingPrice(
     List<CartProduct> cartList, Map<String, dynamic> charges) {
-  double total = 0.0;
-  for (var item in cartList) {
-    total += item.sellingPrice * item.quantity;
-  }
-  return total;
+  return cartList.fold(
+      0.0, (sum, item) => sum + (item.sellingPrice * item.quantity));
 }
 
 double calculateTotalMRP(List<CartProduct> cartList) {
-  double total = 0.0;
-  for (var item in cartList) {
-    total += item.mrp * item.quantity;
-  }
-  return total;
+  return cartList.fold(0.0, (sum, item) => sum + (item.mrp * item.quantity));
 }
 
-double calculatetotal(
-    List<CartProduct> cartList, Map<String, dynamic> charges) {
-  double total = 0.0;
-  for (var item in cartList) {
-    total += item.sellingPrice * item.quantity +
-        charges["high_demand_charge"] +
-        charges["handling_charge"] +
-        charges["delivery_charge"];
-  }
-  return total;
+double calculateTotal(
+    String type, List<CartProduct> cartList, Map<String, dynamic> charges) {
+  return calculateTotalSellingPrice(cartList, charges) +
+      (charges["high_demand_charge"] ?? 0) +
+      (charges["handling_charge"] ?? 0) +
+      ((type == "slot")
+          ? charges["delivery_charge_tum_tum"]
+          : charges["delivery_charge"] ?? 0);
 }
 
-double calculateTotalsaved(
-    List<CartProduct> cartList, Map<String, dynamic> charges) {
-  double mrp = 0.0;
-  double sellingprice = 0.0;
-  double savedcharges = 0.0;
-  savedcharges = (charges["high_demand_charge"] == 0 ? 40.0 : 0.0) +
+double calculateTotalSaved(
+    String type, List<CartProduct> cartList, Map<String, dynamic> charges) {
+  final mrp = calculateTotalMRP(cartList);
+  final sellingPrice = calculateTotalSellingPrice(cartList, charges);
+  final savedCharges = (charges["high_demand_charge"] == 0 ? 40.0 : 0.0) +
       (charges["handling_charge"] == 0 ? 20.0 : 0.0) +
-      (charges["delivery_charge"] == 0 ? 30.0 : 0.0);
+      ((type == "slot")
+          ? charges["delivery_charge_tum_tum"]
+          : charges["delivery_charge"] ?? 0);
 
-  for (var item in cartList) {
-    mrp += item.mrp * item.quantity;
-    sellingprice += item.sellingPrice * item.quantity;
-  }
-  return (mrp - sellingprice) + savedcharges;
+  return (mrp - sellingPrice) + savedCharges;
 }
 
 class DeliveryTimeSlot {
@@ -1997,32 +2035,30 @@ List<DeliveryTimeSlot> generateDeliverySlots({
   int slotDurationMinutes = 60,
   int hideBeforeMinutes = 15,
 }) {
-  print(startTimeISO);
-  print(endTimeISO);
-
   final now = DateTime.now();
+  final startParsedUTC = DateTime.parse(startTimeISO);
+  final endParsedUTC = DateTime.parse(endTimeISO);
 
-  final startParsed = DateTime.parse(startTimeISO);
-  final endParsed = DateTime.parse(endTimeISO);
+  // Convert UTC times to local (IST)
+  final startParsedLocal = startParsedUTC.toLocal();
+  final endParsedLocal = endParsedUTC.toLocal();
 
-  // Only take today's date but the time from parsed
   final start = DateTime(
     now.year,
     now.month,
     now.day,
-    startParsed.hour,
-    startParsed.minute,
+    startParsedLocal.hour,
+    startParsedLocal.minute,
   );
   final end = DateTime(
     now.year,
     now.month,
     now.day,
-    endParsed.hour,
-    endParsed.minute,
+    endParsedLocal.hour,
+    endParsedLocal.minute,
   );
 
   final slots = <DeliveryTimeSlot>[];
-
   DateTime currentStart = start;
 
   while (currentStart.isBefore(end)) {
@@ -2034,7 +2070,6 @@ List<DeliveryTimeSlot> generateDeliverySlots({
 
     final formattedStart = _formatTime(currentStart);
     final formattedEnd = _formatTime(currentEnd);
-
     final hideTime =
         currentStart.subtract(Duration(minutes: hideBeforeMinutes));
 
@@ -2047,46 +2082,49 @@ List<DeliveryTimeSlot> generateDeliverySlots({
     currentStart = currentEnd;
   }
 
-  print(slots);
   return slots;
 }
 
-String _formatTime(DateTime time) 
-  {
-  final hour = time.hour;
-  final minute = time.minute;
-
-  // Handle 11.59 instead of 12 to avoid AM/PM confusion
-  final displayHour = hour == 12
-      ? 11.59
-      : hour > 12
-          ? hour - 12
-          : hour;
-
-  // Format minutes with leading zero if needed
-  final minuteStr = minute < 10 ? '0$minute' : '$minute';
-
-  // Handle display for times like 11.59
-  if (displayHour == 11.59) {
-    return minute == 0 ? '11.59 AM' : '11.$minuteStr AM';
-  }
-
-  // Handle display for times like 12.1 (which would be 12:06 PM)
-  if (hour == 12 && minute > 0) {
-    final decimalMinute = minute / 10;
-    return '12.$decimalMinute PM';
-  }
-
-  // Standard formatting
-  final period = hour < 12 ? 'AM' : 'PM';
-  return '$displayHour.$minuteStr $period';
+String _formatTime(DateTime time) {
+  final hour = time.hour.toString().padLeft(2, '0');
+  final minute = time.minute.toString().padLeft(2, '0');
+  final period = time.hour < 12 ? 'AM' : 'PM';
+  final displayHour = time.hour % 12 == 0 ? 12 : time.hour % 12;
+  return '$displayHour:$minute $period';
 }
 
-//to hide passed time slot
+// String _formatTime(DateTime time) {
+//   final hour = time.hour;
+//   final minute = time.minute;
+
+//   // Handle 11.59 instead of 12 to avoid AM/PM confusion
+//   final displayHour = hour == 12
+//       ? 11.59
+//       : hour > 12
+//           ? hour - 12
+//           : hour;
+
+//   // Format minutes with leading zero if needed
+//   final minuteStr = minute < 10 ? '0$minute' : '$minute';
+
+//   // Handle display for times like 11.59
+//   if (displayHour == 11.59) {
+//     return minute == 0 ? '11.59 AM' : '11.$minuteStr AM';
+//   }
+
+//   // Handle display for times like 12.1 (which would be 12:06 PM)
+//   if (hour == 12 && minute > 0) {
+//     final decimalMinute = minute / 10;
+//     return '12.$decimalMinute PM';
+//   }
+
+//   // Standard formatting
+//   final period = hour < 12 ? 'AM' : 'PM';
+//   return '$displayHour.$minuteStr $period';
+// }
+
 bool isHideTimePassed(DateTime hideTime) {
   final now = DateTime.now();
-
-  // Create a time today from hideTime's hour and minute
   final hideTimeToday = DateTime(
     now.year,
     now.month,
@@ -2094,41 +2132,17 @@ bool isHideTimePassed(DateTime hideTime) {
     hideTime.hour,
     hideTime.minute,
   );
-
-  // Now compare the current time with hideTimeToday
   return now.isAfter(hideTimeToday);
-}
-
-void _payNow() {
-  final Razorpay _razorpay = Razorpay();
-  var options = {
-    'key': 'rzp_test_BQYhrtYkdExJNC', // Replace with your TEST key
-    'amount': 10000, // ₹100 (10000 paise)
-    'name': 'Kwik Store',
-    'description': 'Test Payment',
-    'prefill': {'contact': '9876543210', 'email': 'test@example.com'}
-  };
-
-  try {
-    _razorpay.open(options);
-  } catch (e) {
-    print('Error: $e');
-  }
 }
 
 String generateIsoTime(String timeRange) {
   final now = DateTime.now();
 
   try {
-    // Split the input by '-' and take the first part (start time)
     final startTimeString = timeRange.split('-').first.trim();
-
-    // Parse the time string
-    final format =
-        DateFormat('hh.mm a'); // because your input has dot (10.30 AM)
+    final format = DateFormat('hh.mm a');
     final parsedTime = format.parse(startTimeString);
 
-    // Combine today's date with parsed time
     final dateTime = DateTime(
       now.year,
       now.month,
@@ -2136,7 +2150,6 @@ String generateIsoTime(String timeRange) {
       parsedTime.hour,
       parsedTime.minute,
     );
-    print(dateTime.toIso8601String());
     return dateTime.toIso8601String();
   } catch (e) {
     print("Error parsing time string: $e");
@@ -2144,22 +2157,40 @@ String generateIsoTime(String timeRange) {
   }
 }
 
-void _handlePaymentSuccess(
-    PaymentSuccessResponse response, BuildContext context) {
-  // print('Payment Success');
-  // print('Payment ID: ${response.paymentId}');
-  // print('Order ID: ${response.orderId}');
-  // print('Signature: ${response.signature}');
+String convertTimeStringToISO(String timeString) {
+  // Get the current date in the local time zone.
+  final now = DateTime.now().toLocal();
 
-  // Here you get the paymentId — use it to verify payment status
-}
+  // Parse the time string.
+  final timeParts =
+      timeString.split(RegExp(r'[:\s]')); // Split by colon and space
+  if (timeParts.length < 3) {
+    throw const FormatException(
+        'Invalid time string format. Expected HH:MM AM/PM');
+  }
 
-void _handlePaymentError(PaymentFailureResponse response) {
-  // print('Payment Failed');
-  // print('Code: ${response.code}');
-  // print('Message: ${response.message}');
-}
+  int hour = int.parse(timeParts[0]);
+  final int minute = int.parse(timeParts[1]);
+  final String ampm = timeParts[2].toUpperCase();
 
-void _handleExternalWallet(ExternalWalletResponse response) {
-  print('External Wallet selected: ${response.walletName}');
+  if (hour < 1 || hour > 12) {
+    throw const FormatException('Hour must be between 1 and 12');
+  }
+
+  if (ampm != 'AM' && ampm != 'PM') {
+    throw const FormatException('Invalid AM/PM indicator. Must be AM or PM');
+  }
+
+  // Convert to 24-hour format.
+  if (ampm == 'PM' && hour != 12) {
+    hour += 12;
+  } else if (ampm == 'AM' && hour == 12) {
+    hour = 0;
+  }
+
+  // Create a new DateTime object with the current date and parsed time.
+  final dateTime = DateTime(now.year, now.month, now.day, hour, minute);
+
+  // Convert to ISO 8601 format with UTC offset.
+  return dateTime.toUtc().toIso8601String();
 }

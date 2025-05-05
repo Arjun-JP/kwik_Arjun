@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 import 'package:kwik/constants/colors.dart';
 import 'package:kwik/models/product_model.dart';
@@ -24,6 +25,7 @@ class CategoryModel10 extends StatelessWidget {
   final String title;
   final String image;
   final bool showcategory;
+  final String subCatID;
   const CategoryModel10({
     super.key,
     required this.bgcolor,
@@ -39,6 +41,7 @@ class CategoryModel10 extends StatelessWidget {
     required this.title,
     required this.image,
     required this.showcategory,
+    required this.subCatID,
   });
 
   @override
@@ -48,8 +51,7 @@ class CategoryModel10 extends StatelessWidget {
         ? BlocProvider(
             create: (context) =>
                 CategoryModel10Bloc(repository: CategoryModel10Repo())
-                  ..add(FetchSubCategoryProducts(
-                      subCategoryId: '6780ff720bfef51d79df1a06')),
+                  ..add(FetchSubCategoryProducts(subCategoryId: subCatID)),
             child: BlocBuilder<CategoryModel10Bloc, CategoryModel10State>(
               builder: (context, state) {
                 if (state is CategoryModel10Loading) {
@@ -125,37 +127,44 @@ class CategoryModel10 extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 20),
-          Container(
-            width: MediaQuery.of(context).size.width,
-            height: 48,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              color: parseColor(seeAllButtonBG),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Expanded(
-                  flex: 5,
-                  child: Align(
-                    alignment: Alignment.centerRight,
-                    child: Text('See all products',
-                        style: TextStyle(
-                            color: parseColor(seeAllButtontext), fontSize: 18)),
-                  ),
-                ),
-                Expanded(
-                  flex: 2,
-                  child: Align(
-                    alignment: Alignment.centerRight,
-                    child: Padding(
-                      padding: const EdgeInsets.only(right: 14.0),
-                      child: Icon(Icons.arrow_forward,
-                          color: parseColor(seeAllButtontext)),
+          InkWell(
+            onTap: () {
+              context.push(
+                  "/allsubcategorypage?=${products.first.subCategoryRef.where((element) => element.id == subCatID).first.categoryRef.catref}&selectedsubcategory=$subCatID");
+            },
+            child: Container(
+              width: MediaQuery.of(context).size.width,
+              height: 48,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: parseColor(seeAllButtonBG),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Expanded(
+                    flex: 5,
+                    child: Align(
+                      alignment: Alignment.centerRight,
+                      child: Text('See all products',
+                          style: TextStyle(
+                              color: parseColor(seeAllButtontext),
+                              fontSize: 18)),
                     ),
                   ),
-                ),
-              ],
+                  Expanded(
+                    flex: 2,
+                    child: Align(
+                      alignment: Alignment.centerRight,
+                      child: Padding(
+                        padding: const EdgeInsets.only(right: 14.0),
+                        child: Icon(Icons.arrow_forward,
+                            color: parseColor(seeAllButtontext)),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
           const SizedBox(height: 10)

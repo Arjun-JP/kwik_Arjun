@@ -5,6 +5,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:kwik/bloc/Address_bloc/Address_bloc.dart';
+import 'package:kwik/bloc/Address_bloc/address_state.dart';
 import 'package:kwik/bloc/Cart_bloc/cart_bloc.dart';
 import 'package:kwik/bloc/Cart_bloc/cart_event.dart';
 import 'package:kwik/bloc/Cart_bloc/cart_state.dart';
@@ -85,12 +87,6 @@ class _AllSubcategoryState extends State<AllSubcategory> {
             } else if (state is CategoryError) {
               return Center(child: Text(state.message));
             } else if (state is CategoryLoaded) {
-              // List<ProductModel> filtredproducts= state.products
-              //                             .where((product) => product
-              //                                 .subCategoryRef
-              //                                 .any((subcat) =>
-              //                                     subcat.id ==
-              //                                     state.selectedSubCategory)).to
               return Column(
                 children: [
                   /// Main Row
@@ -316,300 +312,350 @@ class ProductItemSubcategorypage extends StatelessWidget {
                       'buttontext': parseColor(buttonBgColor),
                     },
                   ),
-                  child: Stack(
-                    children: [
-                      Container(
-                        // width: 120,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          spacing: 3,
+                  child: BlocBuilder<AddressBloc, AddressState>(
+                      builder: (context, warstate) {
+                    if (warstate is LocationSearchResults) {
+                      String warehouseid = warstate.warehouse!.id;
+                      return Opacity(
+                        opacity: product.variations.length == 1
+                            ? product.variations.first.stock
+                                        .where((element) =>
+                                            element.warehouseRef == warehouseid)
+                                        .isEmpty ||
+                                    product.variations.first.stock
+                                            .where((element) =>
+                                                element.warehouseRef ==
+                                                warehouseid)
+                                            .first
+                                            .stockQty ==
+                                        0
+                                ? .5
+                                : 1
+                            : 1,
+                        child: Stack(
                           children: [
                             Container(
-                              height: 160,
+                              // width: 120,
                               decoration: BoxDecoration(
-                                color: parseColor("F9F9F9"),
                                 borderRadius: BorderRadius.circular(10),
                               ),
-                              child: Container(
-                                // width: 120,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10),
-                                  image: DecorationImage(
-                                    image:
-                                        NetworkImage(product.productImages[0]),
-                                    fit: BoxFit.contain,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(height: 1),
-                            SizedBox(
-                              // width: 120,
-                              child: Text(
-                                product.productName,
-                                textAlign: TextAlign.left,
-                                maxLines: 2,
-                                style: theme.textTheme.bodyMedium!.copyWith(
-                                  color: parseColor(productnamecolor),
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                            ),
-                            Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Container(
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: unitbgcolor == "FFFFFF" ||
-                                              unitbgcolor == "00FFFFFF"
-                                          ? 0
-                                          : 10,
-                                      vertical: 1),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(8),
-                                    color: parseColor(unitbgcolor),
-                                  ),
-                                  child: Text(
-                                    "${product.variations.first.qty}  ${product.variations.first.unit}",
-                                    style: theme.textTheme.bodyMedium!.copyWith(
-                                      color: parseColor(unitTextcolor),
-                                      fontWeight: FontWeight.w600,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                spacing: 3,
+                                children: [
+                                  Container(
+                                    height: 160,
+                                    decoration: BoxDecoration(
+                                      color: parseColor("F9F9F9"),
+                                      borderRadius: BorderRadius.circular(10),
                                     ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const Spacer(),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Expanded(
-                                  flex: 2,
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        "₹ 45",
-                                        style: theme.textTheme.bodyMedium!
-                                            .copyWith(
-                                          color: parseColor(mrpColor),
-                                          decoration:
-                                              TextDecoration.lineThrough,
+                                    child: Container(
+                                      // width: 120,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(10),
+                                        image: DecorationImage(
+                                          image: NetworkImage(
+                                              product.productImages[0]),
+                                          fit: BoxFit.contain,
                                         ),
                                       ),
-                                      Text(
-                                        "₹ 85",
-                                        style: theme.textTheme.bodyMedium!
-                                            .copyWith(
-                                          color: parseColor(sellingPriceColor),
-                                          fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 1),
+                                  SizedBox(
+                                    // width: 120,
+                                    child: Text(
+                                      product.productName,
+                                      textAlign: TextAlign.left,
+                                      maxLines: 2,
+                                      style:
+                                          theme.textTheme.bodyMedium!.copyWith(
+                                        color: parseColor(productnamecolor),
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ),
+                                  Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Container(
+                                        padding: EdgeInsets.symmetric(
+                                            horizontal: unitbgcolor ==
+                                                        "FFFFFF" ||
+                                                    unitbgcolor == "00FFFFFF"
+                                                ? 0
+                                                : 10,
+                                            vertical: 1),
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(8),
+                                          color: parseColor(unitbgcolor),
+                                        ),
+                                        child: Text(
+                                          "${product.variations.first.qty}  ${product.variations.first.unit}",
+                                          style: theme.textTheme.bodyMedium!
+                                              .copyWith(
+                                            color: parseColor(unitTextcolor),
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  const Spacer(),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Expanded(
+                                        flex: 2,
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              "₹ 45",
+                                              style: theme.textTheme.bodyMedium!
+                                                  .copyWith(
+                                                color: parseColor(mrpColor),
+                                                decoration:
+                                                    TextDecoration.lineThrough,
+                                              ),
+                                            ),
+                                            Text(
+                                              "₹ 85",
+                                              style: theme.textTheme.bodyMedium!
+                                                  .copyWith(
+                                                color: parseColor(
+                                                    sellingPriceColor),
+                                                fontWeight: FontWeight.w600,
+                                              ),
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                      Expanded(
+                                        flex: 4,
+                                        child: SizedBox(
+                                          height: 30,
+                                          child: cartItems.any((element) =>
+                                                  element.productRef.id ==
+                                                  product.id)
+                                              ? quantitycontrolbutton(
+                                                  buttonbgcolor:
+                                                      buttontextcolor,
+                                                  buttontextcolor:
+                                                      buttonBgColor,
+                                                  theme: theme,
+                                                  product: product,
+                                                  qty: cartItems
+                                                      .firstWhere((element) =>
+                                                          element
+                                                              .productRef.id ==
+                                                          product.id)
+                                                      .quantity
+                                                      .toString(),
+                                                )
+                                              : (product.variations.isNotEmpty
+                                                  ? ElevatedButton(
+                                                      onPressed: () async {
+                                                        HapticFeedback
+                                                            .mediumImpact();
+                                                        final firstVariation =
+                                                            product.variations
+                                                                .first;
+
+                                                        if (product.variations
+                                                                .length >
+                                                            1) {
+                                                          await showModalBottomSheet(
+                                                            isScrollControlled:
+                                                                true,
+                                                            backgroundColor:
+                                                                Colors
+                                                                    .transparent,
+                                                            enableDrag: false,
+                                                            context: context,
+                                                            builder: (context) {
+                                                              return GestureDetector(
+                                                                onTap: () =>
+                                                                    FocusScope.of(
+                                                                            context)
+                                                                        .unfocus(),
+                                                                child: Padding(
+                                                                  padding: MediaQuery
+                                                                      .viewInsetsOf(
+                                                                          context),
+                                                                  child:
+                                                                      SelectVarrientBottomSheet(
+                                                                    product:
+                                                                        product,
+                                                                    buttonBgColor:
+                                                                        buttontextcolor,
+                                                                    buttontextcolor:
+                                                                        buttonBgColor,
+                                                                  ),
+                                                                ),
+                                                              );
+                                                            },
+                                                          );
+                                                        } else {
+                                                          context
+                                                              .read<CartBloc>()
+                                                              .add(
+                                                                AddToCart(
+                                                                  cartProduct:
+                                                                      CartProduct(
+                                                                    productRef:
+                                                                        product,
+                                                                    variant:
+                                                                        firstVariation,
+                                                                    quantity: 1,
+                                                                    pincode:
+                                                                        "560003",
+                                                                    sellingPrice:
+                                                                        firstVariation
+                                                                            .sellingPrice,
+                                                                    mrp: firstVariation
+                                                                        .mrp,
+                                                                    buyingPrice:
+                                                                        firstVariation
+                                                                            .buyingPrice,
+                                                                    inStock:
+                                                                        true,
+                                                                    variationVisibility:
+                                                                        true,
+                                                                    finalPrice:
+                                                                        0,
+                                                                    cartAddedDate:
+                                                                        DateTime
+                                                                            .now(),
+                                                                  ),
+                                                                  userId:
+                                                                      user!.uid,
+                                                                  productRef:
+                                                                      product
+                                                                          .id,
+                                                                  variantId:
+                                                                      firstVariation
+                                                                          .id,
+                                                                  pincode:
+                                                                      "560003",
+                                                                ),
+                                                              );
+                                                        }
+                                                      },
+                                                      style: ElevatedButton
+                                                          .styleFrom(
+                                                        backgroundColor:
+                                                            parseColor(
+                                                                buttonBgColor),
+                                                        shape:
+                                                            RoundedRectangleBorder(
+                                                          side: BorderSide(
+                                                              color: parseColor(
+                                                                  buttontextcolor)),
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(5),
+                                                        ),
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .all(0),
+                                                      ),
+                                                      child: Text(
+                                                        product.variations
+                                                                        .length ==
+                                                                    1 &&
+                                                                (product
+                                                                        .variations
+                                                                        .first
+                                                                        .stock
+                                                                        .where((element) =>
+                                                                            element.warehouseRef ==
+                                                                            warehouseid)
+                                                                        .isEmpty ||
+                                                                    product
+                                                                            .variations
+                                                                            .first
+                                                                            .stock
+                                                                            .where((element) =>
+                                                                                element.warehouseRef ==
+                                                                                warehouseid)
+                                                                            .first
+                                                                            .stockQty ==
+                                                                        0)
+                                                            ? 'No stock'
+                                                            : "Add",
+                                                        style: theme.textTheme
+                                                            .bodyMedium!
+                                                            .copyWith(
+                                                          color: parseColor(
+                                                              buttontextcolor),
+                                                          fontFamily: "Inter",
+                                                          fontWeight:
+                                                              FontWeight.w900,
+                                                        ),
+                                                      ),
+                                                    )
+                                                  : const SizedBox()), // Return empty widget if no variations
                                         ),
                                       )
                                     ],
                                   ),
-                                ),
-                                Expanded(
-                                  flex: 4,
-                                  child: SizedBox(
-                                    height: 30,
-                                    child: cartItems.any((element) =>
-                                            element.productRef.id == product.id)
-                                        ? quantitycontrolbutton(
-                                            buttonbgcolor: buttontextcolor,
-                                            buttontextcolor: buttonBgColor,
-                                            theme: theme,
-                                            product: product,
-                                            qty: cartItems
-                                                .firstWhere((element) =>
-                                                    element.productRef.id ==
-                                                    product.id)
-                                                .quantity
-                                                .toString(),
-                                          )
-                                        : (product.variations.isNotEmpty
-                                            ? ElevatedButton(
-                                                onPressed: () async {
-                                                  HapticFeedback.mediumImpact();
-                                                  final firstVariation =
-                                                      product.variations.first;
-
-                                                  if (product
-                                                          .variations.length >
-                                                      1) {
-                                                    await showModalBottomSheet(
-                                                      isScrollControlled: true,
-                                                      backgroundColor:
-                                                          Colors.transparent,
-                                                      enableDrag: false,
-                                                      context: context,
-                                                      builder: (context) {
-                                                        return GestureDetector(
-                                                          onTap: () =>
-                                                              FocusScope.of(
-                                                                      context)
-                                                                  .unfocus(),
-                                                          child: Padding(
-                                                            padding: MediaQuery
-                                                                .viewInsetsOf(
-                                                                    context),
-                                                            child:
-                                                                SelectVarrientBottomSheet(
-                                                              product: product,
-                                                              buttonBgColor:
-                                                                  buttontextcolor,
-                                                              buttontextcolor:
-                                                                  buttonBgColor,
-                                                            ),
-                                                          ),
-                                                        );
-                                                      },
-                                                    );
-                                                  } else {
-                                                    context
-                                                        .read<CartBloc>()
-                                                        .add(
-                                                          AddToCart(
-                                                            cartProduct:
-                                                                CartProduct(
-                                                              productRef:
-                                                                  product,
-                                                              variant:
-                                                                  firstVariation,
-                                                              quantity: 1,
-                                                              pincode: "560003",
-                                                              sellingPrice:
-                                                                  firstVariation
-                                                                      .sellingPrice,
-                                                              mrp:
-                                                                  firstVariation
-                                                                      .mrp,
-                                                              buyingPrice:
-                                                                  firstVariation
-                                                                      .buyingPrice,
-                                                              inStock: true,
-                                                              variationVisibility:
-                                                                  true,
-                                                              finalPrice: 0,
-                                                              cartAddedDate:
-                                                                  DateTime
-                                                                      .now(),
-                                                            ),
-                                                            userId: user!.uid,
-                                                            productRef:
-                                                                product.id,
-                                                            variantId:
-                                                                firstVariation
-                                                                    .id,
-                                                            pincode: "560003",
-                                                          ),
-                                                        );
-                                                  }
-                                                },
-                                                style: ElevatedButton.styleFrom(
-                                                  backgroundColor:
-                                                      parseColor(buttonBgColor),
-                                                  shape: RoundedRectangleBorder(
-                                                    side: BorderSide(
-                                                        color: parseColor(
-                                                            buttontextcolor)),
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            5),
-                                                  ),
-                                                  padding:
-                                                      const EdgeInsets.all(0),
-                                                ),
-                                                child: Text(
-                                                  product.variations.first.stock
-                                                              .first.stockQty !=
-                                                          0
-                                                      ? 'Add'
-                                                      : "No stock",
-                                                  style: theme
-                                                      .textTheme.bodyMedium!
-                                                      .copyWith(
-                                                    color: parseColor(
-                                                        buttontextcolor),
-                                                    fontFamily: "Inter",
-                                                    fontWeight: FontWeight.w900,
-                                                  ),
-                                                ),
-                                              )
-                                            : const SizedBox()), // Return empty widget if no variations
+                                ],
+                              ),
+                            ),
+                            ClipPath(
+                              clipper: ZigZagClipper(),
+                              child: Container(
+                                width: 40,
+                                height: 50,
+                                decoration: BoxDecoration(
+                                  color: parseColor(offerbgcolor),
+                                  borderRadius: const BorderRadius.only(
+                                    topLeft: Radius.circular(10),
                                   ),
-                                )
-                              ],
+                                ),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      "${percentage(product.variations.first.mrp, product.variations.first.sellingPrice)}"
+                                      " "
+                                      "%",
+                                      textAlign: TextAlign.center,
+                                      style:
+                                          theme.textTheme.bodyMedium!.copyWith(
+                                        color: parseColor(offertextcolor),
+                                        fontSize: 11,
+                                        fontFamily: "Inter",
+                                        fontWeight: FontWeight.w900,
+                                      ),
+                                    ),
+                                    Text(
+                                      "OFF",
+                                      textAlign: TextAlign.center,
+                                      style:
+                                          theme.textTheme.bodyMedium!.copyWith(
+                                        color: parseColor(offertextcolor),
+                                        fontSize: 10,
+                                        fontFamily: "Inter",
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
                             ),
                           ],
                         ),
-                      ),
-                      ClipPath(
-                        clipper: ZigZagClipper(),
-                        child: Container(
-                          width: 40,
-                          height: 50,
-                          decoration: BoxDecoration(
-                            color: parseColor(offerbgcolor),
-                            borderRadius: const BorderRadius.only(
-                              topLeft: Radius.circular(10),
-                            ),
-                          ),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                "${percentage(product.variations.first.mrp, product.variations.first.sellingPrice)}"
-                                " "
-                                "%",
-                                textAlign: TextAlign.center,
-                                style: theme.textTheme.bodyMedium!.copyWith(
-                                  color: parseColor(offertextcolor),
-                                  fontSize: 11,
-                                  fontFamily: "Inter",
-                                  fontWeight: FontWeight.w900,
-                                ),
-                              ),
-                              Text(
-                                "OFF",
-                                textAlign: TextAlign.center,
-                                style: theme.textTheme.bodyMedium!.copyWith(
-                                  color: parseColor(offertextcolor),
-                                  fontSize: 10,
-                                  fontFamily: "Inter",
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
+                      );
+                    } else {
+                      return const SizedBox();
+                    }
+                  }),
                 ),
-                product.variations.first.stock.first.stockQty == 0
-                    ? Container(
-                        width: 120,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          color: Colors.grey.withOpacity(.2),
-                        ),
-                        child: Center(
-                          child: Padding(
-                            padding: const EdgeInsets.only(top: 30.0),
-                            child: Text(
-                              "out of stock",
-                              style: theme.textTheme.bodyMedium!.copyWith(
-                                  color: Colors.red,
-                                  fontWeight: FontWeight.w800),
-                            ),
-                          ),
-                        ),
-                      )
-                    : const SizedBox()
               ],
             );
           })
