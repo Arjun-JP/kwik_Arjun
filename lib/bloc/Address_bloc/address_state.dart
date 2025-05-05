@@ -42,6 +42,7 @@ class LocationSearchResults extends AddressState {
         pincode,
         currentplaceID,
         currentlocationaddress,
+        selecteaddress ?? const Object()
       ];
 }
 

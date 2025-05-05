@@ -123,7 +123,8 @@ class AddressRepository {
         headers: headers,
         body: json.encode({"userId": user!.uid, "AddressID": addressId}),
       );
-
+      print(response.statusCode);
+      print(response.body);
       if (response.statusCode != 200) {
         throw Exception('Failed to set default address');
       }
