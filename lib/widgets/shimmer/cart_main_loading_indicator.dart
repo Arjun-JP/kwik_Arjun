@@ -2,21 +2,21 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:go_router/go_router.dart'; // Import go_router
 
-class MainLoadingIndicator extends StatefulWidget {
+class CartaddressChange extends StatefulWidget {
   final Duration splashDuration;
   final String nextRoute; // Add nextRoute
 
-  const MainLoadingIndicator({
+  const CartaddressChange({
     Key? key,
     this.splashDuration = const Duration(seconds: 3),
-    this.nextRoute = '/home', // Default route
+    this.nextRoute = '/cart', // Default route
   }) : super(key: key);
 
   @override
-  _MainLoadingIndicatorState createState() => _MainLoadingIndicatorState();
+  _CartaddressChangeState createState() => _CartaddressChangeState();
 }
 
-class _MainLoadingIndicatorState extends State<MainLoadingIndicator>
+class _CartaddressChangeState extends State<CartaddressChange>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _opacityAnimation;

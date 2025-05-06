@@ -26,7 +26,9 @@ import 'package:kwik/pages/Order_details_page/order_details_page.dart';
 import 'package:kwik/pages/order_list_page.dart/order_list.dart.dart';
 import 'package:kwik/pages/product_details_page/product_details_page.dart';
 import 'package:kwik/pages/profile/profile_page.dart';
-import 'package:kwik/pages/subcategory_products/subcategory_products.dart'; // Import Firebase Auth
+import 'package:kwik/pages/subcategory_products/subcategory_products.dart';
+import 'package:kwik/widgets/shimmer/cart_main_loading_indicator.dart';
+import 'package:kwik/widgets/shimmer/main_loading_indicator.dart'; // Import Firebase Auth
 
 final GoRouter router = GoRouter(
   // * The initialRoute is set to splashScreen.
@@ -282,10 +284,22 @@ final GoRouter router = GoRouter(
         return const OrderSuccessPage();
       },
     ),
-     GoRoute(
+    GoRoute(
       path: '/order-error', // Define the path for your order success page
       builder: (BuildContext context, GoRouterState state) {
         return const OrderErrorPage();
+      },
+    ),
+    GoRoute(
+      path: '/mainloading', // Define the path for your order success page
+      builder: (BuildContext context, GoRouterState state) {
+        return const MainLoadingIndicator();
+      },
+    ),
+    GoRoute(
+      path: '/cartaddresschange', // Define the path for your order success page
+      builder: (BuildContext context, GoRouterState state) {
+        return const CartaddressChange();
       },
     ),
   ],

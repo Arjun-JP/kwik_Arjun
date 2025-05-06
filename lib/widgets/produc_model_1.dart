@@ -202,7 +202,7 @@ class ProductItem extends StatelessWidget {
                                             instock: state is CartUpdated
                                                 ? state.message
                                                 : false,
-                                            pincode: "560003",
+                                            pincode: warstate.pincode,
                                             buttonbgcolor: buttontextcolor,
                                             buttontextcolor: buttonBgColor,
                                             theme: theme,
@@ -286,7 +286,7 @@ class ProductItem extends StatelessWidget {
                                                                   firstVariation,
                                                               quantity: 1,
                                                               pincode: warstate
-                                                                  .currentlocationaddress,
+                                                                  .pincode,
                                                               sellingPrice:
                                                                   firstVariation
                                                                       .sellingPrice,
@@ -492,7 +492,7 @@ class ProductItem extends StatelessWidget {
               onTap: () {
                 HapticFeedback.mediumImpact();
                 ctx.read<CartBloc>().add(IncreaseCartQuantity(
-                    pincode: "560003",
+                    pincode: pincode,
                     productRef: product.id,
                     userId: user!.uid,
                     variantId: product.variations.first.id));

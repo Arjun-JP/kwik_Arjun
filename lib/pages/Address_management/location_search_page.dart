@@ -1,7 +1,10 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:kwik/bloc/Address_bloc/Address_bloc.dart';
@@ -29,7 +32,7 @@ class _LocationSearchPageState extends State<LocationSearchPage> {
   final FocusNode _searchFocusNode = FocusNode();
   GoogleMapPlace? selectedplace;
   List<GoogleMapPlace> suggestions = [];
-
+  List<String> currentaddress = [];
   @override
   void dispose() {
     _searchController.dispose();
@@ -40,8 +43,12 @@ class _LocationSearchPageState extends State<LocationSearchPage> {
   @override
   void initState() {
     context.read<AddressBloc>().add(const GetsavedAddressEvent());
-
+    updatecurrentlocation();
     super.initState();
+  }
+
+  updatecurrentlocation() async {
+    currentaddress = await _loadPlaceDetails();
   }
 
   @override
@@ -396,7 +403,7 @@ class _LocationSearchPageState extends State<LocationSearchPage> {
                     ),
                   ),
                   Text(
-                    address ?? "Select from map",
+                    currentaddress.lastOrNull ?? "Select from map",
                     style: theme.textTheme.bodyMedium!.copyWith(
                         fontSize: 12,
                         color: const Color.fromARGB(255, 156, 154, 154),
@@ -492,6 +499,7 @@ class _LocationSearchPageState extends State<LocationSearchPage> {
                                 padding: MediaQuery.viewInsetsOf(context),
                                 child: ChangeDefaultaddressBottomsheet(
                                   selectedaddress: state.addresslist[index],
+                                  iscart: false,
                                 ),
                               ),
                             );
@@ -574,5 +582,96 @@ class _LocationSearchPageState extends State<LocationSearchPage> {
         })
       ],
     );
+  }
+
+  Future<Map<String, dynamic>?> getPlaceDetailsFromCurrentLocation() async {
+    const String apiKey = 'AIzaSyAPLvvnotvyrbkQVynYChnZhyrgSWAjO1k';
+
+    try {
+      LocationPermission permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+        if (permission == LocationPermission.denied) {
+          print('Location permissions are denied.');
+          return null;
+        }
+      }
+
+      if (permission == LocationPermission.deniedForever) {
+        print(
+            'Location permissions are permanently denied, we cannot request them.');
+        return null;
+      }
+
+      Position position = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.high);
+
+      // 2. Construct the URL for the Google Maps Geocoding API (Reverse Geocoding)
+      final String url =
+          'https://maps.googleapis.com/maps/api/geocode/json?latlng=${position.latitude},${position.longitude}&key=$apiKey';
+
+      // 3. Make the API request using the http package
+      final response = await http.get(Uri.parse(url));
+
+      // 4. Check the response status code
+      if (response.statusCode == 200) {
+        // 5. Decode the JSON response
+        final Map<String, dynamic> data = json.decode(response.body);
+
+        // 6. Check the API status in the response
+        if (data['status'] == 'OK') {
+          // 7. Extract the relevant information from the results
+          final List<dynamic> results = data['results'];
+          if (results.isNotEmpty) {
+            // We take the first result as it is the most relevant
+            final Map<String, dynamic> firstResult = results[0];
+
+            // Create a map to hold the place details.  Customize this as needed.
+            Map<String, dynamic> placeDetails = {
+              'place_id': firstResult['place_id'],
+              'formatted_address': firstResult['formatted_address'],
+              // You can add more fields here, for example:
+              // 'address_components': firstResult['address_components'],
+              // 'geometry': firstResult['geometry'],
+              // 'types': firstResult['types'],
+            };
+
+            // print(placeDetails);
+            return placeDetails;
+          } else {
+            print('No results found for the given location.');
+            return null; // Or throw an exception if you prefer.
+          }
+        } else {
+          print('Google Maps API error: ${data['status']}');
+          return null; // Or throw an exception.
+        }
+      } else {
+        print(
+            'Failed to fetch place details. HTTP status code: ${response.statusCode}');
+        return null; // Or throw an exception.
+      }
+    } catch (e) {
+      // Handle any exceptions that occur during the process
+      print('Error getting place details: $e');
+      return null; // Or rethrow the exception if you want the caller to handle it.
+    }
+  }
+
+  Future<List<String>> _loadPlaceDetails() async {
+    try {
+      Map<String, dynamic>? placeDetails =
+          await getPlaceDetailsFromCurrentLocation();
+      if (placeDetails != null) {
+        return [placeDetails['place_id'], placeDetails['formatted_address']];
+      } else {
+        // Handle the error:  show a message to the user, etc.
+        print('Failed to get place details');
+        return ["", ""];
+      }
+    } catch (e) {
+      print('Exception occurred: $e');
+      return ["", ""];
+    }
   }
 }

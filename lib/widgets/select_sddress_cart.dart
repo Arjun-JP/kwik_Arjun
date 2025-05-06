@@ -279,6 +279,7 @@ class _AddressSelectionBottomSheetState
                                   padding: MediaQuery.viewInsetsOf(context),
                                   child: ChangeDefaultaddressBottomsheet(
                                     selectedaddress: state.addresslist[index],
+                                    iscart: true,
                                   ),
                                 ),
                               );
