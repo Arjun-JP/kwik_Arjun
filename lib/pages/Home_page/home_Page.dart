@@ -56,6 +56,7 @@ import 'package:kwik/pages/Home_page/widgets/category_model_3.dart';
 import 'package:kwik/pages/Home_page/widgets/category_model_4.dart';
 import 'package:kwik/pages/Home_page/widgets/category_model_9.dart';
 import 'package:kwik/pages/Home_page/widgets/descriptive_widget.dart';
+import 'package:kwik/pages/No_service_page/no_service_page.dart';
 import 'package:kwik/pages/No_service_page/under_maintanance_screen.dart';
 import 'package:kwik/widgets/location_permission_bottom_sheet.dart';
 import 'package:kwik/widgets/navbar/navbar.dart';
@@ -79,7 +80,6 @@ import '../../bloc/home_page_bloc/category_model_9_bloc/category_model_9_event.d
 import 'package:geolocator/geolocator.dart';
 import 'package:permission_handler/permission_handler.dart';
 import '../../bloc/navbar_bloc/navbar_event.dart';
-import '../../constants/colors.dart' as color;
 import 'widgets/category_model_1.dart';
 import 'widgets/category_model_5.dart';
 import 'widgets/category_model_6.dart';
@@ -99,83 +99,97 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     print("Init state called again");
-    context.read<HomeUiBloc>().add(FetchUiDataEvent());
-
-    context.read<CartBloc>().add(
-        SyncCartWithServer(userId: FirebaseAuth.instance.currentUser!.uid));
-    context.read<AddressBloc>().add(const GetsavedAddressEvent());
-
-    _initializeApp();
+    _initializeApp().then((_) {
+      {
+        context.read<HomeUiBloc>().add(FetchUiDataEvent());
+        context.read<CartBloc>().add(
+            SyncCartWithServer(userId: FirebaseAuth.instance.currentUser!.uid));
+        context.read<AddressBloc>().add(const GetsavedAddressEvent());
+      }
+    });
   }
 
   Future<void> _initializeApp() async {
-    print(context.read<AddressBloc>().state is LocationSearchResults);
-    if (context.read<AddressBloc>().state is! LocationSearchResults) {
-      print("Initialize state called again");
-      await _checkLocationAndFetchWarehouse();
-      if (_isInitialized) return;
-      _isInitialized = true;
+    print("Initialize state called");
+    final addressBloc = context.read<AddressBloc>();
+    final homeUiBloc = context.read<HomeUiBloc>();
+    final cartBloc = context.read<CartBloc>();
+    final user = FirebaseAuth.instance.currentUser;
 
-      final user = FirebaseAuth.instance.currentUser;
-      if (user == null) {
-        if (!mounted) return;
-        GoRouter.of(context).go('/loginPage');
-        return;
-      }
-
-      // Initialize BLoCs
-      context.read<HomeUiBloc>().add(FetchUiDataEvent());
-      context.read<CartBloc>().add(
-            SyncCartWithServer(userId: user.uid),
-          );
-      context.read<AddressBloc>().add(const GetsavedAddressEvent());
-
-      // Setup address listener
-      _addressSubscription = context.read<AddressBloc>().stream.listen((state) {
-        if (!mounted) return;
-
-        if (state is NowarehousefoudState) {
-          GoRouter.of(context).go('/no-service');
-        } else if (state is LocationSearchResults) {
-          if (state.warehouse?.underMaintenance == true) {
-            Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) =>
-                  UnderMaintananceScreen(warehouse: state.warehouse!),
-            ));
-          }
-        }
-      });
-    } else {
-      print("Skipped the initial call ");
+    if (user == null && mounted) {
+      GoRouter.of(context).go('/loginPage');
+      return;
     }
 
-    // Check location and fetch warehouse
+    if (_isInitialized) {
+      print("Skipped the initial call");
+      return;
+    }
+    _isInitialized = true;
+
+    // Initial data fetch
+    homeUiBloc.add(FetchUiDataEvent());
+    cartBloc.add(SyncCartWithServer(userId: user!.uid));
+    addressBloc.add(const GetsavedAddressEvent());
+
+    // Listen for address-related navigation events ONCE after initial load
+    _addressSubscription = addressBloc.stream.take(1).listen((state) {
+      if (!mounted) return;
+
+      if (state is NowarehousefoudState) {
+        GoRouter.of(context).go('/no-service');
+      } else if (state is LocationSearchResults &&
+          state.warehouse?.underMaintenance == true) {
+        Navigator.of(context).push(MaterialPageRoute(
+          builder: (context) =>
+              UnderMaintananceScreen(warehouse: state.warehouse!),
+        ));
+      }
+    });
+
+    // Fetch warehouse based on current location if no saved address is available initially
+    final addressState = addressBloc.state;
+    if (addressState is! LocationSearchResults ||
+        addressState.selecteaddress == null) {
+      await _checkLocationAndFetchWarehouse();
+    }
   }
 
   Future<void> _checkLocationAndFetchWarehouse() async {
-    print("get warehouse function called again ");
+    print("get warehouse function called");
     try {
       final hasPermission = await _checkLocationPermission();
       if (!hasPermission && mounted) {
         await _showLocationPermissionSheet();
+        return; // Don't proceed if permission is not granted
       }
 
       Position position = await Geolocator.getCurrentPosition();
-
       List<Placemark> placemarks = await placemarkFromCoordinates(
         position.latitude,
         position.longitude,
       );
-      print(placemarks.first.postalCode);
-      context.read<AddressBloc>().add(GetWarehousedetailsEvent(
-            placemarks.first.postalCode!,
-            locationmode.Location(
-              lat: position.latitude,
-              lang: position.longitude,
-            ),
-          ));
+      final postalCode = placemarks.first.postalCode;
+      if (postalCode != null) {
+        context.read<AddressBloc>().add(GetWarehousedetailsEvent(
+              postalCode,
+              locationmode.Location(
+                lat: position.latitude,
+                lang: position.longitude,
+              ),
+            ));
+      } else {
+        // Handle case where postal code is not available
+        if (mounted) {
+          // Optionally show an error or try a different approach
+          print("Postal code not found");
+        }
+      }
     } catch (e) {
-      if (!mounted) return;
+      if (mounted) {
+        print("Error fetching location or warehouse: $e");
+        // Optionally show an error to the user
+      }
     }
   }
 
@@ -280,19 +294,50 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<HomeUiBloc, HomeUiState>(
-      builder: (context, state) {
-        if (state is UiInitial || state is UiLoading) {
+      builder: (context, homeUiState) {
+        final addressState = context.watch<AddressBloc>().state;
+
+        if (homeUiState is UiInitial ||
+            homeUiState is UiLoading ||
+            addressState is AddressLoading) {
           return const Center(child: MainLoadingIndicator());
         }
 
-        if (state is UiLoaded) {
+        // Show HomePageContent ONLY when both HomeUi is loaded AND warehouse data is available
+        if (homeUiState is UiLoaded &&
+            addressState is LocationSearchResults &&
+            addressState.warehouse != null) {
           return _HomePageContent(
-            uiData: state.uiData,
-            searchTerm: state.searchterm,
+            uiData: homeUiState.uiData,
+            searchTerm: homeUiState.searchterm,
             onRefresh: _onRefresh,
           );
         }
 
+        // Navigate and show "No Service" Page
+        if (addressState is NowarehousefoudState) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            context.go('/no-service');
+          });
+          return const SizedBox(); // Return an empty widget,  Navigator is handled.
+        }
+
+        //show error
+        if (addressState is AddressError) {
+          return Scaffold(
+            appBar: AppBar(title: const Text('Home Page')),
+            body: Center(child: Text('Error: ${addressState.message}')),
+          );
+        }
+
+        // Handle cases where HomeUi is loaded but warehouse is still loading or not found
+        if (homeUiState is UiLoaded &&
+            addressState is LocationSearchResults &&
+            addressState.warehouse == null) {
+          return const NoServicePage();
+        }
+
+        // Default case when HomeUi might not be loaded yet or other AddressStates
         return const SizedBox();
       },
     );

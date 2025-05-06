@@ -19,7 +19,10 @@ class AddressRepository {
 
     try {
       final response = await http.get(url, headers: headers);
-
+      print("get all address");
+      print(user!.uid);
+      print(response.statusCode);
+      print(response.body);
       final Map<String, dynamic> body = json.decode(response.body);
 
       AddressModel? selectedAddress;

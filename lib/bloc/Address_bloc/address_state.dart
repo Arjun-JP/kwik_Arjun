@@ -25,6 +25,7 @@ class LocationSearchResults extends AddressState {
   final String pincode;
   AddressModel.AddressModel? selecteaddress;
   final WarehouseModel? warehouse;
+  final bool orderfordefferentaddress;
 
   LocationSearchResults(
       this.placelist,
@@ -33,7 +34,30 @@ class LocationSearchResults extends AddressState {
       this.currentlocationaddress,
       this.selecteaddress,
       this.warehouse,
-      this.pincode);
+      this.pincode,
+      this.orderfordefferentaddress);
+
+  LocationSearchResults copyWith({
+    List<GoogleMapPlace>? placelist,
+    List<AddressModel.AddressModel>? addresslist,
+    String? currentplaceID,
+    String? currentlocationaddress,
+    String? pincode,
+    AddressModel.AddressModel? selecteaddress,
+    WarehouseModel? warehouse,
+    bool? orderfordefferentaddress,
+  }) {
+    return LocationSearchResults(
+      placelist ?? this.placelist,
+      addresslist ?? this.addresslist,
+      currentplaceID ?? this.currentplaceID,
+      currentlocationaddress ?? this.currentlocationaddress,
+      selecteaddress ?? this.selecteaddress,
+      warehouse ?? this.warehouse,
+      pincode ?? this.pincode,
+      orderfordefferentaddress ?? this.orderfordefferentaddress,
+    );
+  }
 
   @override
   List<Object> get props => [
@@ -42,7 +66,9 @@ class LocationSearchResults extends AddressState {
         pincode,
         currentplaceID,
         currentlocationaddress,
-        selecteaddress ?? const Object()
+        orderfordefferentaddress,
+        selecteaddress ?? const Object(),
+        warehouse ?? const Object(),
       ];
 }
 

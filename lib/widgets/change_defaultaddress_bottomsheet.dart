@@ -3,20 +3,20 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kwik/bloc/Address_bloc/Address_bloc.dart';
 import 'package:kwik/bloc/Address_bloc/address_event.dart';
+import 'package:kwik/bloc/Address_bloc/address_state.dart';
 import 'package:kwik/constants/colors.dart';
 import 'package:kwik/models/address_model.dart';
 
 class ChangeDefaultaddressBottomsheet extends StatefulWidget {
   final AddressModel selectedaddress;
+  final bool iscart;
   const ChangeDefaultaddressBottomsheet(
-      {super.key, required this.selectedaddress});
+      {super.key, required this.selectedaddress, required this.iscart});
 
   @override
   State<ChangeDefaultaddressBottomsheet> createState() =>
       _ChangeDefaultaddressBottomsheetState();
 }
-
-TextEditingController lessoncontroller = TextEditingController();
 
 class _ChangeDefaultaddressBottomsheetState
     extends State<ChangeDefaultaddressBottomsheet> {
@@ -24,18 +24,20 @@ class _ChangeDefaultaddressBottomsheetState
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Container(
-      // height: MediaQuery.of(context).size.height * .26,
       width: MediaQuery.of(context).size.width,
       decoration: const BoxDecoration(
-          color: Colors.white,
-          border: Border(
-            top: BorderSide(
-              color: AppColors.buttonColorOrange, // Choose your color
-              width: 2.0, // Thickness of the border
-            ),
+        color: Colors.white,
+        border: Border(
+          top: BorderSide(
+            color: AppColors.buttonColorOrange,
+            width: 2.0,
           ),
-          borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(18), topRight: Radius.circular(18))),
+        ),
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(18),
+          topRight: Radius.circular(18),
+        ),
+      ),
       child: Padding(
         padding: const EdgeInsets.only(top: 10, left: 20, right: 20),
         child: Column(
@@ -46,13 +48,14 @@ class _ChangeDefaultaddressBottomsheetState
           children: [
             const SizedBox(height: 15),
             Text(
-                "Are you sure you want to set this as your new default delivery address?This will be used for all your future orders.",
-                // Your doorstep shopping buddy will be right here—just a tap away. Come back soon!
-                textAlign: TextAlign.center,
-                style: theme.textTheme.displayMedium?.copyWith(
-                    color: AppColors.textColorblack,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w700)),
+              "Are you sure you want to set this as your new default delivery address? This will be used for all your future orders.",
+              textAlign: TextAlign.center,
+              style: theme.textTheme.displayMedium?.copyWith(
+                color: AppColors.textColorblack,
+                fontSize: 14,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
             const SizedBox(height: 15),
             SizedBox(
               height: 35,
@@ -61,7 +64,7 @@ class _ChangeDefaultaddressBottomsheetState
                   Expanded(
                     flex: 1,
                     child: ElevatedButton(
-                      onPressed: () async {
+                      onPressed: () {
                         context.pop();
                       },
                       style: ElevatedButton.styleFrom(
@@ -72,7 +75,7 @@ class _ChangeDefaultaddressBottomsheetState
                               color: AppColors.buttonColorOrange, width: .3),
                           borderRadius: BorderRadius.circular(12),
                         ),
-                        foregroundColor: AppColors.textColorWhite,
+                        foregroundColor: AppColors.buttonColorOrange,
                         backgroundColor: AppColors.textColorWhite,
                       ),
                       child: Text(
@@ -88,28 +91,62 @@ class _ChangeDefaultaddressBottomsheetState
                   const SizedBox(width: 20),
                   Expanded(
                     flex: 1,
-                    child: ElevatedButton(
-                      onPressed: () async {
-                        context.read<AddressBloc>().add(
-                            UpdateselectedaddressEvent(widget.selectedaddress));
-
-                        context.pop();
+                    child: BlocListener<AddressBloc, AddressState>(
+                      listener: (context, state) {
+                        print(state);
+                        if (state is LocationSearchResults) {
+                          // context.go('/home');
+                        } else if (state is NowarehousefoudState) {
+                          // context.push('/no-service');
+                        } else if (state is AddressError) {
+                          context.pop();
+                        }
                       },
-                      style: ElevatedButton.styleFrom(
-                        minimumSize:
-                            Size(MediaQuery.of(context).size.width, 50),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
+                      child: ElevatedButton(
+                        onPressed: () {
+                          context.read<AddressBloc>().add(
+                                UpdateselectedaddressEvent(
+                                    widget.selectedaddress),
+                              );
+                          if (widget.iscart) {
+                            context.go('/cartaddresschange');
+                          } else {
+                            context.go('/mainloading');
+                          }
+                        },
+                        style: ElevatedButton.styleFrom(
+                          minimumSize:
+                              Size(MediaQuery.of(context).size.width, 50),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          foregroundColor: AppColors.kwhiteColor,
+                          backgroundColor: AppColors.buttonColorOrange,
                         ),
-                        foregroundColor: AppColors.buttonColorOrange,
-                        backgroundColor: AppColors.buttonColorOrange,
-                      ),
-                      child: Text(
-                        "Continue",
-                        style: theme.textTheme.bodyLarge!.copyWith(
-                          color: AppColors.kwhiteColor,
-                          fontSize: 14,
-                          fontWeight: FontWeight.w400,
+                        child: BlocBuilder<AddressBloc, AddressState>(
+                          buildWhen: (previous, current) =>
+                              current is AddressLoading,
+                          builder: (context, state) {
+                            if (state is AddressLoading) {
+                              return const SizedBox(
+                                height: 20,
+                                width: 20,
+                                child: CircularProgressIndicator(
+                                  color: Colors.white,
+                                  strokeWidth: 2,
+                                ),
+                              );
+                            } else {
+                              return Text(
+                                "Continue",
+                                style: theme.textTheme.bodyLarge!.copyWith(
+                                  color: AppColors.kwhiteColor,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              );
+                            }
+                          },
                         ),
                       ),
                     ),
