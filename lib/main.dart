@@ -1,3 +1,4 @@
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -6,10 +7,12 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:kwik/bloc/Add_Review_bloc/add_review_bloc.dart' show ReviewBloc;
 import 'package:kwik/bloc/Address_bloc/Address_bloc.dart';
 import 'package:kwik/bloc/Auth_bloc/auth_bloc.dart';
 import 'package:kwik/bloc/Cart_bloc/cart_bloc.dart';
 import 'package:kwik/bloc/Categories%20Page%20Bloc/category_model_bloc/category_model_bloc.dart';
+import 'package:kwik/bloc/Network_bloc/network_bloc.dart';
 import 'package:kwik/bloc/Order_management.dart/order_management_bloc.dart';
 import 'package:kwik/bloc/Search_bloc/Search_bloc.dart';
 import 'package:kwik/bloc/Super%20Saver%20Page%20Bloc/super_saver_ui_bloc/super_saver_ui_bloc.dart';
@@ -49,6 +52,7 @@ import 'package:kwik/models/Hiveadapter/review_model_adapter.dart';
 import 'package:kwik/models/Hiveadapter/stock_model_adapter.dart';
 import 'package:kwik/models/cart_model.dart';
 import 'package:kwik/models/product_model.dart' show ProductModel;
+import 'package:kwik/repositories/add_review.dart';
 import 'package:kwik/repositories/address_repo.dart';
 import 'package:kwik/repositories/allsubcategory_repo.dart';
 import 'package:kwik/repositories/auth_repo.dart';
@@ -79,7 +83,6 @@ import 'package:kwik/repositories/subcategory_product_repo.dart';
 import 'package:kwik/repositories/super_saver_ui_repo.dart';
 import 'package:kwik/routes/routes.dart';
 import 'package:kwik/pages/Error_pages/Error_widget.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'bloc/Categories Page Bloc/categories_UI_bloc/categories_ui_bloc.dart';
 import 'bloc/Categories Page Bloc/categories_page_model1/categories_page_model1_bloc.dart';
 import 'bloc/Categories Page Bloc/categories_page_model2/categories_page_model2_bloc.dart';
@@ -252,19 +255,17 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   final GoRouter _router = router;
+
   @override
   void initState() {
     super.initState();
     // Wait for context to be ready
     requestNotificationPermissions();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      NetworkMonitor().startMonitoring(context);
-    });
+    WidgetsBinding.instance.addPostFrameCallback((_) {});
   }
 
   @override
   void dispose() {
-    NetworkMonitor().dispose();
     super.dispose();
   }
 
@@ -432,21 +433,29 @@ class _MyAppState extends State<MyApp> {
         BlocProvider<OrderManagementBloc>(
             create: (_) => OrderManagementBloc(
                 orderRepository: OrderManagementRepository())),
-      ],
-      child: MaterialApp.router(
-        builder: (context, child) {
-          ErrorWidget.builder = (FlutterErrorDetails) {
-            return KwikErrorWidget(errordetails: FlutterErrorDetails);
-          };
-          return child!;
-        },
-        scaffoldMessengerKey: rootScaffoldMessengerKey,
-        routerConfig: _router,
-        title: 'Kwik',
 
-        theme: appTheme(context),
-        debugShowCheckedModeBanner: false,
-        //  home:
+        BlocProvider<ReviewBloc>(
+            create: (_) => ReviewBloc(reviewRepository: ReviewRepository())),
+        BlocProvider<NetworkBloc>(
+          create: (context) => NetworkBloc(),
+        ),
+      ],
+      child: NetworkAwareWidget(
+        child: MaterialApp.router(
+          builder: (context, child) {
+            ErrorWidget.builder = (FlutterErrorDetails) {
+              return KwikErrorWidget(errordetails: FlutterErrorDetails);
+            };
+            return child!;
+          },
+          scaffoldMessengerKey: rootScaffoldMessengerKey,
+          routerConfig: _router,
+          title: 'Kwik',
+
+          theme: appTheme(context),
+          debugShowCheckedModeBanner: false,
+          //  home:
+        ),
       ),
     );
   }
@@ -478,9 +487,3 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   print("Handling a background message: ${message.messageId}");
   // Process your data here
 }
-
-// void _handleDeepLink(PendingDynamicLinkData linkData) {
-//   final Uri deepLink = linkData.link;
-//   // Handle the deep link - you might want to navigate to a specific route
-//   debugPrint('Deep link: $deepLink');
-// }

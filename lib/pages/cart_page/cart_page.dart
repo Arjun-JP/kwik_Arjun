@@ -17,6 +17,7 @@ import 'package:kwik/bloc/Order_management.dart/order_management_event.dart';
 import 'package:kwik/bloc/Order_management.dart/order_management_state.dart';
 import 'package:kwik/bloc/navbar_bloc/navbar_bloc.dart';
 import 'package:kwik/bloc/navbar_bloc/navbar_event.dart';
+import 'package:kwik/bloc/order_bloc/order_state.dart';
 import 'package:kwik/bloc/product_details_page/recommended_products_bloc/recommended_products_bloc.dart';
 import 'package:kwik/bloc/product_details_page/recommended_products_bloc/recommended_products_event.dart';
 import 'package:kwik/bloc/product_details_page/recommended_products_bloc/recommended_products_state.dart';
@@ -1054,9 +1055,9 @@ class _CartPageState extends State<CartPage> {
                     if (addressState is LocationSearchResults) {
                       final deliverySlots = generateDeliverySlots(
                         startTimeISO:
-                            addressState.warehouse!.tumTumDeliveryEndTime,
-                        endTimeISO:
                             addressState.warehouse!.tumTumDeliveryStartTime,
+                        endTimeISO:
+                            addressState.warehouse!.tumTumDeliveryEndTime,
                       );
 
                       return InkWell(
@@ -1747,215 +1748,116 @@ class _CartPageState extends State<CartPage> {
       builder: (context, orderState) {
         return BlocBuilder<AddressBloc, AddressState>(
             builder: (context, addressState) {
-          return Container(
-            width: MediaQuery.of(context).size.width,
-            height: 55,
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-            decoration: const BoxDecoration(
-              color: Colors.white,
-            ),
-            child: Row(
-              spacing: 15,
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "To Pay",
-                      style: theme.textTheme.bodyMedium!.copyWith(fontSize: 12),
-                    ),
-                    Text(
-                      "₹${calculateTotal(orderState is DeliveryTypeUpdated ? orderState.deliveryType : "", cartItems, charges).toStringAsFixed(0)}",
-                      style: theme.textTheme.titleLarge!.copyWith(fontSize: 16),
-                    ),
-                  ],
-                ),
-                Expanded(
-                  flex: 2,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      if (orderState is DeliveryTypeUpdated) {
-                        if (orderState.deliveryType == 'slot' &&
-                            orderState.selectedslot != '0') {
-                          var options = {
-                            'key': 'rzp_test_BQYhrtYkdExJNC',
-                            'amount': (calculateTotal(
-                                    orderState.deliveryType ?? "",
-                                    cartItems,
-                                    charges)) *
-                                100,
-                            'name': 'kwik groceries',
-                            'description': 'Test Payment',
-                            'prefill': {
-                              'contact': user!.phoneNumber,
-                              'email': 'test@example.com'
-                            }
-                          };
-                          print(options);
-                          try {
-                            _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS,
-                                _handlePaymentSuccess);
-                            _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR,
-                                _handlePaymentError);
-                            _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET,
-                                _handleExternalWallet);
-                            _razorpay.open(options);
-                          } catch (e) {
-                            print('Error: $e');
-                          }
-                        } else if (orderState.deliveryType == "instant") {
-                          var options = {
-                            'key': 'rzp_test_BQYhrtYkdExJNC',
-                            'amount': (calculateTotal(
-                                    "instant", cartItems, charges)) *
-                                100,
-                            'name': 'kwik groceries',
-                            'description': 'Test Payment',
-                            'prefill': {
-                              'contact': '9876543210',
-                              'email': 'test@example.com'
-                            }
-                          };
-                          print(options);
-                          try {
-                            _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS,
-                                _handlePaymentSuccess);
-                            _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR,
-                                _handlePaymentError);
-                            _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET,
-                                _handleExternalWallet);
-                            _razorpay.open(options);
-                          } catch (e) {
-                            print('Error: $e');
-                          }
-                        }
-                        ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                                content: Text("select delivery type")));
-                      } else {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                                content: Text("select delivery type")));
-                      }
-                    },
-                    style: ElevatedButton.styleFrom(
-                      elevation: 0.1,
-                      backgroundColor: charges["enable_cod"]
-                          ? const Color.fromARGB(255, 255, 240, 240)
-                          : const Color(0xFFE23338),
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 10, vertical: 5),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
+          return BlocBuilder<OrderManagementBloc, OrderManagementState>(
+              builder: (context, createorderstate) {
+            return Container(
+              width: MediaQuery.of(context).size.width,
+              height: 55,
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+              decoration: const BoxDecoration(
+                color: Colors.white,
+              ),
+              child: Row(
+                spacing: 15,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "To Pay",
+                        style:
+                            theme.textTheme.bodyMedium!.copyWith(fontSize: 12),
                       ),
-                    ),
-                    child: Text(
-                      "Pay Online",
-                      style: theme.textTheme.bodyMedium!.copyWith(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w700,
-                        color: charges["enable_cod"]
-                            ? const Color(0xFF3F3F3F)
-                            : Colors.white,
+                      Text(
+                        "₹${calculateTotal(orderState is DeliveryTypeUpdated ? orderState.deliveryType : "", cartItems, charges).toStringAsFixed(0)}",
+                        style:
+                            theme.textTheme.titleLarge!.copyWith(fontSize: 16),
                       ),
-                    ),
+                    ],
                   ),
-                ),
-                if (charges["enable_cod"])
                   Expanded(
                     flex: 2,
                     child: ElevatedButton(
                       onPressed: () {
-                        HapticFeedback.mediumImpact();
                         if (orderState is DeliveryTypeUpdated) {
-                          if (orderState.deliveryType == 'slot') {
+                          if (orderState.deliveryType == 'slot' &&
+                              orderState.selectedslot != '0') {
                             context.read<OrderManagementBloc>().add(
-                                  PlaceOrder(
-                                    orderJson: {
-                                      "pincode":
-                                          addressState is LocationSearchResults
-                                              ? addressState.pincode
-                                              : "000000",
-                                      "user_ref": user!.uid,
-                                      "order_status": "Order placed",
-                                      "otp": generateRandomOTP(),
-                                      "order_placed_time":
-                                          DateTime.now().toIso8601String(),
-                                      "payment_type": "COD",
-                                      "discount_price": 10,
-                                      "type_of_delivery": "tum tum",
-                                      "selected_time_slot":
-                                          convertTimeStringToISO(
-                                        orderState is DeliveryTypeUpdated
-                                            ? orderState.selectedslot
-                                            : "00.00",
-                                      ),
-                                      "delivery_instructions":
-                                          _instructionsController.text
-                                    },
-                                  ),
+                                  CreateorderOnlinePayment(orderJson: {
+                                    "pincode":
+                                        addressState is LocationSearchResults
+                                            ? addressState.pincode
+                                            : "000000",
+                                    "user_ref": user!.uid,
+                                    "order_status": "Order placed",
+                                    "otp": generateRandomOTP(),
+                                    "order_placed_time":
+                                        DateTime.now().toIso8601String(),
+                                    "payment_type": "Online payment",
+                                    "discount_price": 0,
+                                    "type_of_delivery": "tum tum",
+                                    "selected_time_slot":
+                                        convertTimeStringToISO(
+                                      orderState is DeliveryTypeUpdated
+                                          ? orderState.selectedslot
+                                          : "00.00",
+                                    ),
+                                    "delivery_instructions":
+                                        _instructionsController.text
+                                  }, uid: user.uid),
                                 );
-
-                            if (orderState is OrderPlaced) {
-                              context.go('/order-success');
-                            } else {
-                              context.go('/order-error');
-                            }
+                            // var options = {
+                            //   'key': 'rzp_test_JukdKxCGZqamy4',
+                            //   'amount': (calculateTotal(
+                            //           orderState.deliveryType ?? "",
+                            //           cartItems,
+                            //           charges)) *
+                            //       100,
+                            //   'name': 'kwik groceries',
+                            //   'order_id':
+                            //       'order_QSK6Eb0IKhbxeq', //  Pass the order ID here
+                            //   'description': 'Payment for order',
+                            //   'description': 'Test Payment',
+                            //   'prefill': {
+                            //     'contact': user!.phoneNumber,
+                            //     'email': 'test@example.com'
+                            //   }
+                            // };
+                            // print(options);
+                            // try {
+                            //   _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS,
+                            //       _handlePaymentSuccess);
+                            //   _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR,
+                            //       _handlePaymentError);
+                            //   _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET,
+                            //       _handleExternalWallet);
+                            //   _razorpay.open(options);
+                            // } catch (e) {
+                            //   print('Error: $e');
+                            // }
                           } else if (orderState.deliveryType == "instant") {
-                            print(
-                              orderState ?? "empty state",
-                            );
-                            print(
-                              orderState.deliveryType ?? "empty state",
-                            );
-                            print(
-                              orderState.selectedslot ?? "empty state",
-                            );
-                            print(convertTimeStringToISO(
-                              orderState is DeliveryTypeUpdated
-                                  ? orderState.selectedslot
-                                  : "00.00",
-                            ));
-                            convertTimeStringToISO(
-                              orderState is DeliveryTypeUpdated
-                                  ? orderState.selectedslot
-                                  : "00.00",
-                            );
                             context.read<OrderManagementBloc>().add(
-                                  PlaceOrder(
-                                    orderJson: {
-                                      "pincode":
-                                          addressState is LocationSearchResults
-                                              ? addressState.pincode
-                                              : "000000",
-                                      "user_ref": user!.uid,
-                                      "order_status": "Order placed",
-                                      "otp": "123456",
-                                      "order_placed_time":
-                                          DateTime.now().toIso8601String(),
-                                      "payment_type": "COD",
-                                      "discount_price": 10,
-                                      "type_of_delivery": "",
-                                      "selected_time_slot":
-                                          convertTimeStringToISO(
-                                        orderState is DeliveryTypeUpdated
-                                            ? orderState.selectedslot
-                                            : "00.00",
-                                      ),
-                                      "delivery_instructions": "instruction"
-                                    },
-                                  ),
+                                  CreateorderOnlinePayment(orderJson: {
+                                    "pincode":
+                                        addressState is LocationSearchResults
+                                            ? addressState.pincode
+                                            : "000000",
+                                    "user_ref": user!.uid,
+                                    "order_status": "Order placed",
+                                    "otp": generateRandomOTP(),
+                                    "order_placed_time":
+                                        DateTime.now().toIso8601String(),
+                                    "payment_type": "Online payment",
+                                    "discount_price": 0,
+                                    "type_of_delivery": "instant",
+                                    "delivery_instructions":
+                                        _instructionsController.text
+                                  }, uid: user.uid),
                                 );
-
-                            if (orderState is OrderPlaced) {
-                              context.go('/order-success');
-                            } else {
-                              context.go('/order-error');
-                            }
                           }
-                          // ScaffoldMessenger.of(context).showSnackBar(
-                          //     const SnackBar(
-                          //         content: Text("select delivery type")));
+                          ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                  content: Text("select delivery type")));
                         } else {
                           ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
@@ -1963,40 +1865,149 @@ class _CartPageState extends State<CartPage> {
                         }
                       },
                       style: ElevatedButton.styleFrom(
-                        elevation: 0,
-                        backgroundColor: const Color(0xFFE23338),
+                        elevation: 0.1,
+                        backgroundColor: charges["enable_cod"]
+                            ? const Color.fromARGB(255, 255, 240, 240)
+                            : const Color(0xFFE23338),
                         padding: const EdgeInsets.symmetric(
                             horizontal: 10, vertical: 5),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8),
                         ),
                       ),
-                      child: Column(
-                        children: [
-                          Text(
-                            "Pay Cash/UPI",
-                            textAlign: TextAlign.center,
-                            style: theme.textTheme.bodyMedium!.copyWith(
-                              fontWeight: FontWeight.w700,
-                              fontSize: 13,
-                              color: Colors.white,
-                            ),
-                          ),
-                          Text(
-                            "(On Delivery)",
-                            textAlign: TextAlign.center,
-                            style: theme.textTheme.bodyMedium!.copyWith(
-                              fontSize: 10,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ],
+                      child: Text(
+                        "Pay Online",
+                        style: theme.textTheme.bodyMedium!.copyWith(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w700,
+                          color: charges["enable_cod"]
+                              ? const Color(0xFF3F3F3F)
+                              : Colors.white,
+                        ),
                       ),
                     ),
                   ),
-              ],
-            ),
-          );
+                  if (charges["enable_cod"])
+                    Expanded(
+                      flex: 2,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          HapticFeedback.mediumImpact();
+                          if (orderState is DeliveryTypeUpdated) {
+                            if (orderState.deliveryType == 'slot') {
+                              context.read<OrderManagementBloc>().add(
+                                    PlaceOrder(
+                                      orderJson: {
+                                        "pincode": addressState
+                                                is LocationSearchResults
+                                            ? addressState.pincode
+                                            : "000000",
+                                        "user_ref": user!.uid,
+                                        "order_status": "Order placed",
+                                        "otp": generateRandomOTP(),
+                                        "order_placed_time":
+                                            DateTime.now().toIso8601String(),
+                                        "payment_type": "COD",
+                                        "discount_price": 0,
+                                        "type_of_delivery": "tum tum",
+                                        "selected_time_slot":
+                                            convertTimeStringToISO(
+                                          orderState is DeliveryTypeUpdated
+                                              ? orderState.selectedslot
+                                              : "00.00",
+                                        ),
+                                        "delivery_instructions":
+                                            _instructionsController.text
+                                      },
+                                    ),
+                                  );
+                              if (createorderstate is OrderPlacing ||
+                                  createorderstate is PlaceorderOrderInitial) {
+                              } else if (createorderstate is OrderPlaced) {
+                                context.go('/order-success');
+                              }
+                              if (createorderstate is PlaceorderOrderError) {
+                                context.go('/order-error');
+                              } else {
+                                context.go('/order-processing');
+                              }
+                            } else if (orderState.deliveryType == "instant") {
+                              context.read<OrderManagementBloc>().add(
+                                    PlaceOrder(
+                                      orderJson: {
+                                        "pincode": addressState
+                                                is LocationSearchResults
+                                            ? addressState.pincode
+                                            : "000000",
+                                        "user_ref": user!.uid,
+                                        "order_status": "Order placed",
+                                        "otp": generateRandomOTP(),
+                                        "order_placed_time":
+                                            DateTime.now().toIso8601String(),
+                                        "payment_type": "COD",
+                                        "discount_price": 0,
+                                        "type_of_delivery": "instant",
+                                        "delivery_instructions":
+                                            _instructionsController.text
+                                      },
+                                    ),
+                                  );
+                              if (createorderstate is OrderPlacing ||
+                                  createorderstate is PlaceorderOrderInitial) {
+                              } else if (createorderstate is OrderPlaced) {
+                                context.go('/order-success');
+                              }
+                              if (createorderstate is PlaceorderOrderError) {
+                                context.go('/order-error');
+                              } else {
+                                context.go('/order-processing');
+                              }
+                            }
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                    content: Text("select delivery type")));
+                          }
+                        },
+                        style: ElevatedButton.styleFrom(
+                          elevation: 0,
+                          backgroundColor: const Color(0xFFE23338),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 5),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
+                        child: Column(
+                          children: [
+                            createorderstate is OrderPlacing
+                                ? const CircularProgressIndicator(
+                                    color: Colors.white)
+                                : Text(
+                                    "Pay Cash/UPI",
+                                    textAlign: TextAlign.center,
+                                    style: theme.textTheme.bodyMedium!.copyWith(
+                                      fontWeight: FontWeight.w700,
+                                      fontSize: 13,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                            Text(
+                              "(On Delivery)",
+                              textAlign: TextAlign.center,
+                              style: theme.textTheme.bodyMedium!.copyWith(
+                                fontSize: 10,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+            );
+          });
         });
       },
     );
@@ -2052,28 +2063,35 @@ class DeliveryTimeSlot {
       '$startTime - $endTime (hide at ${_formatTime(hideTime)})';
 }
 
+String _formatTime(DateTime time) {
+  return DateFormat('hh:mm a').format(time);
+}
+
 List<DeliveryTimeSlot> generateDeliverySlots({
   required String startTimeISO,
   required String endTimeISO,
   int slotDurationMinutes = 60,
   int hideBeforeMinutes = 15,
 }) {
+  print(startTimeISO);
+  print(endTimeISO);
   final now = DateTime.now();
   final startParsedUTC = DateTime.parse(startTimeISO);
   final endParsedUTC = DateTime.parse(endTimeISO);
 
-  // Convert UTC times to local (IST)
+  // Convert UTC times to local (IST or system timezone)
   final startParsedLocal = startParsedUTC.toLocal();
   final endParsedLocal = endParsedUTC.toLocal();
 
-  final start = DateTime(
+  // Use the current date with the times from startTimeISO and endTimeISO
+  final dayStart = DateTime(
     now.year,
     now.month,
     now.day,
     startParsedLocal.hour,
     startParsedLocal.minute,
   );
-  final end = DateTime(
+  DateTime dayEnd = DateTime(
     now.year,
     now.month,
     now.day,
@@ -2081,20 +2099,26 @@ List<DeliveryTimeSlot> generateDeliverySlots({
     endParsedLocal.minute,
   );
 
-  final slots = <DeliveryTimeSlot>[];
-  DateTime currentStart = start;
+  // If end time is before start time, assume it's on the next day
+  if (dayEnd.isBefore(dayStart)) {
+    dayEnd = dayEnd.add(Duration(days: 1));
+  }
 
-  while (currentStart.isBefore(end)) {
-    DateTime currentEnd =
-        currentStart.add(Duration(minutes: slotDurationMinutes));
-    if (currentEnd.isAfter(end)) {
-      currentEnd = end;
+  final List<DeliveryTimeSlot> slots = [];
+  DateTime currentSlotStart = dayStart;
+
+  // Generate slots for the day, within the calculated dayStart and dayEnd
+  while (currentSlotStart.isBefore(dayEnd)) {
+    DateTime currentSlotEnd =
+        currentSlotStart.add(Duration(minutes: slotDurationMinutes));
+    if (currentSlotEnd.isAfter(dayEnd)) {
+      currentSlotEnd = dayEnd;
     }
 
-    final formattedStart = _formatTime(currentStart);
-    final formattedEnd = _formatTime(currentEnd);
+    final formattedStart = _formatTime(currentSlotStart);
+    final formattedEnd = _formatTime(currentSlotEnd);
     final hideTime =
-        currentStart.subtract(Duration(minutes: hideBeforeMinutes));
+        currentSlotStart.subtract(Duration(minutes: hideBeforeMinutes));
 
     slots.add(DeliveryTimeSlot(
       startTime: formattedStart,
@@ -2102,13 +2126,14 @@ List<DeliveryTimeSlot> generateDeliverySlots({
       hideTime: hideTime,
     ));
 
-    currentStart = currentEnd;
+    currentSlotStart = currentSlotEnd;
   }
 
+  print(slots);
   return slots;
 }
 
-String _formatTime(DateTime time) {
+String _formatTimes(DateTime time) {
   final hour = time.hour.toString().padLeft(2, '0');
   final minute = time.minute.toString().padLeft(2, '0');
   final period = time.hour < 12 ? 'AM' : 'PM';

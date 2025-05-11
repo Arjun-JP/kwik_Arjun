@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kwik/bloc/Order_management.dart/order_management_event.dart';
 import 'package:kwik/bloc/Order_management.dart/order_management_state.dart';
@@ -7,8 +9,10 @@ class OrderManagementBloc
     extends Bloc<OrderManagementEvent, OrderManagementState> {
   final OrderManagementRepository orderRepository;
 
-  OrderManagementBloc({required this.orderRepository}) : super(OrderInitial()) {
+  OrderManagementBloc({required this.orderRepository})
+      : super(PlaceorderOrderInitial()) {
     on<PlaceOrder>(_onPlaceOrder);
+    on<CreateorderOnlinePayment>(_onCreateOrderonlinepayment);
     on<CheckOrderStatus>(_onCheckOrderStatus);
     on<CheckLiveOrders>(_onCheckLiveOrders);
     on<UpdateDeliveryType>(_onUpdateDeliveryType);
@@ -21,9 +25,14 @@ class OrderManagementBloc
     try {
       final response =
           await orderRepository.placeOrder(orderJson: event.orderJson);
-      emit(OrderPlaced(orderResponse: response));
+
+      if (response['success']) {
+        emit(OrderPlaced(orderResponse: response));
+      } else {
+        emit(PlaceorderOrderError(message: response['message']));
+      }
     } catch (e) {
-      emit(OrderError(message: e.toString()));
+      print(e);
     }
   }
 
@@ -34,7 +43,7 @@ class OrderManagementBloc
       final status = await orderRepository.getOrderStatus(event.orderId);
       emit(OrderStatusLoaded(status: status));
     } catch (e) {
-      emit(OrderError(message: e.toString()));
+      emit(PlaceorderOrderError(message: e.toString()));
     }
   }
 
@@ -45,7 +54,7 @@ class OrderManagementBloc
       final orders = await orderRepository.getLiveOrders(event.userId);
       emit(LiveOrdersLoaded(orders: orders));
     } catch (e) {
-      emit(OrderError(message: e.toString()));
+      emit(PlaceorderOrderError(message: e.toString()));
     }
   }
 
@@ -61,7 +70,25 @@ class OrderManagementBloc
             deliveryType: "slot", selectedslot: event.selectedSlot));
       }
     } catch (e) {
-      emit(OrderError(message: e.toString()));
+      emit(PlaceorderOrderError(message: e.toString()));
+    }
+  }
+
+  Future<void> _onCreateOrderonlinepayment(CreateorderOnlinePayment event,
+      Emitter<OrderManagementState> emit) async {
+    emit(CreateOrderOnlinepaymentLoading());
+
+    try {
+      final response = await orderRepository.createOrderOnlinepayment(
+          uid: event.uid, orderJson: event.orderJson);
+
+      if (response['success']) {
+        emit(OrderPlaced(orderResponse: response));
+      } else {
+        emit(PlaceorderOrderError(message: response['message']));
+      }
+    } catch (e) {
+      print(e);
     }
   }
 }

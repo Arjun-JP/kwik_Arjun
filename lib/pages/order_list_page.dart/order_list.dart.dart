@@ -42,7 +42,14 @@ class _OrderListingPageState extends State<OrderListingPage> {
               Icons.keyboard_arrow_left_rounded,
               size: 35,
             ),
-            onPressed: () => context.pop(), // FIXED: added parentheses
+            onPressed: () {
+              try {
+                context.pop();
+              } catch (e) {
+                context.read<NavbarBloc>().add(const UpdateNavBarIndex(0));
+                context.go('/homeWA');
+              }
+            }, // FIXED: added parentheses
           ),
         ),
         body: BlocBuilder<OrderBloc, OrderState>(builder: (context, state) {
@@ -282,7 +289,12 @@ class OrderCard extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      context.push('/product-rating',
+                          extra: orderData.products
+                              .map((e) => e.productRef)
+                              .toList());
+                    },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color.fromARGB(255, 230, 230, 230),
                       foregroundColor: Colors.black,
