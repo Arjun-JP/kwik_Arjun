@@ -1,6 +1,6 @@
 abstract class OrderManagementState {}
 
-class OrderInitial extends OrderManagementState {
+class PlaceorderOrderInitial extends OrderManagementState {
   final String deliveryTypel = '';
 }
 
@@ -36,8 +36,16 @@ class DeliveryTypeUpdated extends OrderManagementState {
   DeliveryTypeUpdated({required this.deliveryType, required this.selectedslot});
 }
 
-class OrderError extends OrderManagementState {
+class PlaceorderOrderError extends OrderManagementState {
   final String message;
 
-  OrderError({required this.message});
+  PlaceorderOrderError({required this.message});
+}
+
+class CreateOrderOnlinepaymentLoading extends OrderManagementState {}
+
+class CreateOrderOnlinepaymentplaced extends OrderManagementState {
+  final Map<String, dynamic> orderResponse;
+
+  CreateOrderOnlinepaymentplaced({required this.orderResponse});
 }

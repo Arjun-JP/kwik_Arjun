@@ -24,9 +24,8 @@ class OrderManagementRepository {
       },
       body: jsonEncode(orderJson), // <<<< pass orderJson directly
     );
-print(response.statusCode);
-print(response.body);
-    if (response.statusCode == 200) {
+    print(response.body);
+    if (response.statusCode == 201) {
       return json.decode(response.body);
     } else {
       throw Exception('Failed to place order');
@@ -74,5 +73,48 @@ print(response.body);
     );
 
     return response.statusCode == 200;
+  }
+
+  Future<Map<String, dynamic>> createOrderOnlinepayment(
+      {required Map<String, dynamic> orderJson, required String uid}) async {
+    final responseplaceorder = await http.post(
+      Uri.parse("$baseUrl/order"),
+      headers: {
+        'Content-Type': 'application/json',
+        'api_Key': 'arjun',
+        'api_Secret': 'digi9',
+      },
+      body: jsonEncode(orderJson), // <<<< pass orderJson directly
+    );
+    print(responseplaceorder.body);
+    print(responseplaceorder.statusCode);
+    Map<String, dynamic> orderdata = jsonDecode(responseplaceorder.body);
+    print(orderdata["data"]["total_amount"]);
+    print(orderdata["data"]["_id"]);
+    if (responseplaceorder.statusCode == 201) {
+      final response = await http.post(
+        Uri.parse("$baseUrl/payment/createOrder"),
+        headers: {
+          'Content-Type': 'application/json',
+          'api_Key': 'arjun',
+          'api_Secret': 'digi9',
+        },
+        body: jsonEncode({
+          "user_ref": uid,
+          "amount": orderdata["data"]["total_amount"],
+          "description": "Payment Test",
+          "order_id": orderdata["data"]["_id"]
+        }), // <<<< pass orderJson directly
+      );
+      print(response.body);
+      print(response.statusCode);
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
+      } else {
+        throw Exception('Failed to place online order1');
+      }
+    } else {
+      throw Exception('Failed to place online order');
+    }
   }
 }

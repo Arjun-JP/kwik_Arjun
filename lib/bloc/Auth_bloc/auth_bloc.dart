@@ -98,7 +98,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       }
     } catch (e) {
       debugPrint('OTP verification error: ${e.toString()}');
-      emit(AuthFailureState(_mapGenericError(e)));
+      emit(IncorrectOTP());
     }
   }
 

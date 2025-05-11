@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:kwik/bloc/Network_bloc/network_bloc.dart';
+import 'package:kwik/bloc/Network_bloc/network_state.dart';
 import 'package:kwik/models/category_model.dart';
 import 'package:kwik/models/product_model.dart';
 import 'package:kwik/pages/Category_page/category_page.dart';
@@ -12,6 +15,7 @@ import 'package:kwik/pages/Offer_Page/offer_page.dart';
 import 'package:kwik/pages/OnboardingScreen/onboarding_screen.dart';
 import 'package:kwik/pages/Order_status_page/order_error_page.dart';
 import 'package:kwik/pages/Order_status_page/order_placed_page.dart';
+import 'package:kwik/pages/Order_status_page/order_processing_page.dart';
 import 'package:kwik/pages/OtpVerificationPage/otp_verification_page.dart';
 import 'package:kwik/pages/PrivacyPolicy_Page/PrivacyPolicyPage.dart';
 import 'package:kwik/pages/Search%20page/search_page.dart';
@@ -27,6 +31,7 @@ import 'package:kwik/pages/order_list_page.dart/order_list.dart.dart';
 import 'package:kwik/pages/product_details_page/product_details_page.dart';
 import 'package:kwik/pages/profile/profile_page.dart';
 import 'package:kwik/pages/subcategory_products/subcategory_products.dart';
+import 'package:kwik/pages/Rate_Products/rate_produsts.dart';
 import 'package:kwik/widgets/shimmer/cart_main_loading_indicator.dart';
 import 'package:kwik/widgets/shimmer/main_loading_indicator.dart'; // Import Firebase Auth
 
@@ -259,9 +264,11 @@ final GoRouter router = GoRouter(
       },
     ),
     GoRoute(
-      path: '/network-error',
+      path: '/network_error',
       builder: (context, state) => const NetworkErrorPage(),
     ),
+    // Add your other routes as needed
+
     GoRoute(
       path: '/subcategory-products',
       builder: (context, state) {
@@ -285,6 +292,12 @@ final GoRouter router = GoRouter(
       },
     ),
     GoRoute(
+      path: '/order-processing', // Define the path for your order success page
+      builder: (BuildContext context, GoRouterState state) {
+        return const OrderProcessingPage();
+      },
+    ),
+    GoRoute(
       path: '/order-error', // Define the path for your order success page
       builder: (BuildContext context, GoRouterState state) {
         return const OrderErrorPage();
@@ -302,5 +315,27 @@ final GoRouter router = GoRouter(
         return const CartaddressChange();
       },
     ),
+    GoRoute(
+      path: '/product-rating',
+      builder: (context, state) {
+        final List<ProductModel> productList =
+            state.extra as List<ProductModel>;
+        return ProductRating(productlist: productList);
+      },
+    ),
   ],
+  redirect: (BuildContext context, GoRouterState state) {
+    final networkState = context.read<NetworkBloc>().state;
+    final isNetworkErrorRoute = state.uri.path == '/network_error';
+
+    if (networkState is NetworkFailure && !isNetworkErrorRoute) {
+      return '/network_error';
+    }
+
+    if (networkState is NetworkSuccess && isNetworkErrorRoute) {
+      return '/'; // Or your home route
+    }
+
+    return null;
+  },
 );

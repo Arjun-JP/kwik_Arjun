@@ -37,3 +37,5 @@ class AuthFailureState extends AuthState {
 }
 
 class LoggedOutState extends AuthState {}
+
+class IncorrectOTP extends AuthState {}
