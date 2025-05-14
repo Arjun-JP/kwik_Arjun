@@ -15,6 +15,8 @@ import 'package:kwik/bloc/Cart_bloc/cart_bloc.dart';
 import 'package:kwik/bloc/Cart_bloc/cart_event.dart';
 import 'package:kwik/bloc/Search_bloc/Search_bloc.dart';
 import 'package:kwik/bloc/Search_bloc/search_event.dart';
+import 'package:kwik/bloc/all_sub_category_bloc/all_sub_category_bloc.dart';
+import 'package:kwik/bloc/all_sub_category_bloc/all_sub_category_event.dart';
 import 'package:kwik/bloc/home_page_bloc/category_model_13_bloc/category_model_13_bloc.dart';
 import 'package:kwik/bloc/home_page_bloc/category_model_13_bloc/category_model_13_event.dart';
 import 'package:kwik/bloc/home_page_bloc/category_model_16_bloc/category_model_16_bloc.dart';
@@ -61,7 +63,7 @@ import 'package:kwik/pages/No_service_page/under_maintanance_screen.dart';
 import 'package:kwik/widgets/location_permission_bottom_sheet.dart';
 import 'package:kwik/widgets/navbar/navbar.dart';
 import 'package:kwik/widgets/shimmer/main_loading_indicator.dart';
-import 'package:kwik/widgets/shimmer/shimmer.dart';
+import 'package:kwik/widgets/shimmer/shimmer1.dart';
 import 'package:permission_handler/permission_handler.dart'
     show
         Permission,
@@ -281,7 +283,7 @@ class _HomePageState extends State<HomePage> {
       else if (bloc is RecommendedProductsBloc)
         bloc.add(ClearRecommendedproductCache());
     }
-
+    context.read<AllSubCategoryBloc>().add(const ClearAllCategoryCache());
     context.read<HomeUiBloc>().add(FetchUiDataEvent());
   }
 
@@ -726,7 +728,7 @@ class _HomePageContent extends StatelessWidget {
       {
         'template': const DescriptiveWidget(
           title: "Skip the store, we're at your door!",
-          logo: "assets/images/Screenshot 2025-01-31 at 6.20.37 PM.jpeg",
+          logo: "assets/images/kwiklogo.png",
           showcategory: true,
         ),
         'order': "88888"
@@ -876,20 +878,26 @@ class _AppBarContent extends StatelessWidget {
                       builder: (context) => const MainLoadingIndicator()),
                 );
               },
-              child: Container(
-                decoration: BoxDecoration(
-                  color: topText1Bg,
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                child: Text(
-                  topText1,
-                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                        fontSize: 10,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
+              child: InkWell(
+                onTap: () {
+                  // context.push('/check-payment-status',
+                  //     extra: "order_QRlNaRy1GjNfnN");
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: topText1Bg,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                  child: Text(
+                    topText1,
+                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                          fontSize: 10,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                  ),
                 ),
               ),
             ),
@@ -1590,7 +1598,7 @@ class SearchBarDelegate extends SliverPersistentHeaderDelegate {
 //           {
 //             'template': const DescriptiveWidget(
 //               title: "Skip the store, we're at your door!",
-//               logo: "assets/images/Screenshot 2025-01-31 at 6.20.37 PM.jpeg",
+//               logo: "assets/images/kwiklogo.png",
 //               showcategory: true,
 //             ),
 //             'order': "88888"

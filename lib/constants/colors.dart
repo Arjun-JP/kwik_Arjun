@@ -19,7 +19,7 @@ class AppColors {
 
   static final gradient2orange = const Color(0xffFC5B00).withOpacity(0.2);
 
-  static const secondaryColor = Color(0xffCEBEFB);
+  static final secondaryColor = const Color(0xffFC5B00).withOpacity(0.2);
 
   static const kwhiteColor = Colors.white;
   static const kpurple = Color(0xff612ACE);

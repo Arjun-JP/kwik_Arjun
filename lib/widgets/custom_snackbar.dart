@@ -17,10 +17,10 @@ class CustomSnackBars {
         elevation: 0,
         behavior: SnackBarBehavior.floating,
         margin: EdgeInsets.only(
-          top: 40 + paddingTop, // Add the top padding here
+          top: 80 + paddingTop, // Add the top padding here
           left: 10,
           right: 10,
-          bottom: mediaQuery.size.height - 200,
+          bottom: mediaQuery.size.height - 220,
         ),
         duration: duration,
         content: Container(
@@ -38,10 +38,16 @@ class CustomSnackBars {
           padding: const EdgeInsets.all(12),
           child: Row(
             children: [
-              Image.asset(
+              ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: Image.asset(
+                  'assets/images/kwik_logo_withwhite_bg.jpeg',
                   width: 50,
                   height: 50,
-                  'assets/images/Screenshot 2025-01-31 at 6.20.37 PM.jpeg'),
+                  fit: BoxFit
+                      .cover, // Optional: ensures the image fills the rounded corners
+                ),
+              ),
               const SizedBox(width: 12),
               Expanded(
                 child: Text(

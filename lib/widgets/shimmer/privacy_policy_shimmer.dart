@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:kwik/widgets/shimmer/shimmer.dart';
+import 'package:kwik/widgets/shimmer/shimmer1.dart';
 
 class PrivacyPolicyShimmer extends StatelessWidget {
   const PrivacyPolicyShimmer({super.key});
@@ -12,7 +12,7 @@ class PrivacyPolicyShimmer extends StatelessWidget {
         children: [
           Center(
             child: Image.asset(
-              "assets/images/Screenshot 2025-01-31 at 6.20.37 PM.jpeg",
+              "assets/images/kwiklogo.png",
               height: 120,
             ),
           ),

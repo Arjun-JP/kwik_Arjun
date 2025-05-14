@@ -42,10 +42,7 @@ class _LogoutBottomSheetState extends State<LogoutBottomSheet> {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Image.asset(
-                height: 80,
-                width: 80,
-                "assets/images/Screenshot 2025-01-31 at 6.20.37 PM.jpeg"),
+            Image.asset(height: 80, width: 80, "assets/images/kwiklogo.png"),
             Text("Taking a break?  We'll keep the cart warm for you!",
                 // Your doorstep shopping buddy will be right here—just a tap away. Come back soon!
                 textAlign: TextAlign.center,

@@ -116,3 +116,13 @@ class SyncCartWithServer extends CartEvent {
 class ClearCartCache extends CartEvent {
   ClearCartCache();
 }
+
+class ApplyCoupon extends CartEvent {
+  final String couponcode;
+  final double amount;
+
+  ApplyCoupon({required this.couponcode, required this.amount});
+
+  @override
+  List<Object> get props => [couponcode, amount];
+}

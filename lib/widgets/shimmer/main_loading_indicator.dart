@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
-import 'package:go_router/go_router.dart'; // Import go_router
+import 'package:go_router/go_router.dart';
+import 'package:lottie/lottie.dart'; // Import go_router
 
 class MainLoadingIndicator extends StatefulWidget {
   final Duration splashDuration;
@@ -26,7 +27,7 @@ class _MainLoadingIndicatorState extends State<MainLoadingIndicator>
   void initState() {
     super.initState();
     _controller = AnimationController(
-      duration: const Duration(milliseconds: 1000),
+      duration: const Duration(milliseconds: 0),
       vsync: this,
     );
 
@@ -69,27 +70,25 @@ class _MainLoadingIndicatorState extends State<MainLoadingIndicator>
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            FadeTransition(
-              opacity: _opacityAnimation,
-              child: Image.asset(
-                'assets/images/Screenshot 2025-01-31 at 6.20.37 PM.jpeg', // Replace with your logo asset path
-                width: 120,
-                height: 120,
-              ),
+            Lottie.asset(
+              'assets/images/kwik-page-animation.json',
+              width: 400,
+              height: 400,
+              fit: BoxFit.contain,
             ),
-            const SizedBox(height: 24),
-            if (_showLoading)
-              FadeTransition(
-                opacity: _opacityAnimation,
-                child: const Text(
-                  'Skip the store, we\'re at your door!',
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: Color.fromARGB(255, 144, 144, 144),
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ),
+
+            // if (_showLoading)
+            //   FadeTransition(
+            //     opacity: _opacityAnimation,
+            //     child: const Text(
+            //       'Skip the store, we\'re at your door!',
+            //       style: TextStyle(
+            //         fontSize: 16,
+            //         color: Color.fromARGB(255, 144, 144, 144),
+            //         fontWeight: FontWeight.w500,
+            //       ),
+            //     ),
+            //   ),
           ],
         ),
       ),

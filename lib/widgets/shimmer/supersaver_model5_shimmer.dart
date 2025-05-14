@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:kwik/widgets/shimmer/product_model_1_shimmer.dart';
-import 'package:kwik/widgets/shimmer/shimmer.dart';
+import 'package:kwik/widgets/shimmer/shimmer1.dart';
 
 class SupersaverModel5Shimmer extends StatelessWidget {
   const SupersaverModel5Shimmer({super.key});

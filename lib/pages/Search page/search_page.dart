@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:go_router/go_router.dart';
@@ -26,6 +27,7 @@ class _SearchPageState extends State<SearchPage> {
   @override
   void initState() {
     super.initState();
+
     context.read<SearchBloc>().add(LoadInitialProducts());
     _searchController.addListener(_onSearchChanged);
   }
@@ -176,7 +178,7 @@ class _SearchPageState extends State<SearchPage> {
             '/productdetails',
             extra: {
               'product': product,
-              'subcategoryref': product.subCategoryRef.first.categoryRef,
+              'subcategoryref': product.subCategoryRef.first.id,
               'buttonbg': parseColor("E23338"), // example color as a string
               'buttontext': parseColor("FFFFFF"),
             },
@@ -264,7 +266,27 @@ class _SearchPageState extends State<SearchPage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const SizedBox(height: 15),
-        const Text('Recent Searches'),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            const Text('Recent Searches'),
+            InkWell(
+              onTap: () {
+                if (searchHistory.isNotEmpty) {
+                  HapticFeedback.mediumImpact();
+                  context.read<SearchBloc>().add(Clearsearchhistory());
+                  context.pushReplacement('/searchpageWOA');
+                } else {
+                  HapticFeedback.heavyImpact();
+                }
+              },
+              child: const Padding(
+                padding: EdgeInsets.only(right: 8.0),
+                child: Text('Clear'),
+              ),
+            ),
+          ],
+        ),
         const SizedBox(height: 10),
         Wrap(
           children: searchHistory

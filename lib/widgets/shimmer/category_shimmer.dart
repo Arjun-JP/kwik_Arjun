@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kwik/constants/colors.dart';
-import 'package:kwik/widgets/shimmer/shimmer.dart';
+import 'package:kwik/widgets/shimmer/shimmer1.dart';
 
 class CategoryShimmer extends StatelessWidget {
   const CategoryShimmer({

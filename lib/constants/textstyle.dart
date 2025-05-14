@@ -24,11 +24,10 @@ ThemeData appTheme(BuildContext context) {
   final ScalerModule scaler = ScalerModule(context);
   return ThemeData(
     snackBarTheme: const SnackBarThemeData(
-      backgroundColor: Color.fromARGB(
-          255, 231, 201, 249), // Set your desired background color
+      backgroundColor:
+          AppColors.buttonColorOrange, // Set your desired background color
       contentTextStyle: TextStyle(
-        color: AppColors
-            .primaryColor, // Set the text color for the SnackBar content
+        color: Colors.white, // Set the text color for the SnackBar content
         fontSize: 16,
       ),
       actionTextColor: Colors.yellow, // Set action text color
@@ -157,13 +156,11 @@ ThemeData appTheme(BuildContext context) {
       fillColor: AppColors.backgroundColorWhite,
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(8),
-        borderSide:
-            const BorderSide(color: AppColors.secondaryColor, width: 2.5),
+        borderSide: BorderSide(color: AppColors.secondaryColor, width: 2.5),
       ),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(8),
-        borderSide:
-            const BorderSide(color: AppColors.secondaryColor, width: 2.5),
+        borderSide: BorderSide(color: AppColors.secondaryColor, width: 2.5),
       ),
     ),
     iconTheme: const IconThemeData(color: AppColors.textColorblack),
@@ -171,14 +168,14 @@ ThemeData appTheme(BuildContext context) {
       backgroundColor: AppColors.primaryColor,
       foregroundColor: AppColors.textColorblack,
     ),
-    colorScheme: const ColorScheme(
+    colorScheme: ColorScheme(
       brightness: Brightness.dark,
       primary: AppColors.primaryColor,
       onPrimary: AppColors.textColorblack,
       secondary: AppColors.secondaryColor,
       onSecondary: AppColors.textColorblack,
-      error: Color(0xFFE57373),
-      onError: Color(0xFFE53935),
+      error: const Color(0xFFE57373),
+      onError: const Color(0xFFE53935),
       surface: AppColors.backgroundColorWhite,
       onSurface: AppColors.textColorblack,
     ),

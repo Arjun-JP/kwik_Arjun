@@ -6,6 +6,7 @@ import 'package:kwik/bloc/Network_bloc/network_state.dart';
 import 'package:kwik/models/category_model.dart';
 import 'package:kwik/models/product_model.dart';
 import 'package:kwik/pages/Category_page/category_page.dart';
+import 'package:kwik/pages/Coupons_page/coupons_page.dart';
 import 'package:kwik/pages/Error_pages/network_error_page.dart';
 import 'package:kwik/pages/FAQ_page/faq_questions.dart';
 import 'package:kwik/pages/Home_page/home_page.dart';
@@ -13,6 +14,7 @@ import 'package:kwik/pages/LoginPage/login_page.dart';
 import 'package:kwik/pages/No_service_page/no_service_page.dart';
 import 'package:kwik/pages/Offer_Page/offer_page.dart';
 import 'package:kwik/pages/OnboardingScreen/onboarding_screen.dart';
+import 'package:kwik/pages/Order_status_page/online_payment_status.dart';
 import 'package:kwik/pages/Order_status_page/order_error_page.dart';
 import 'package:kwik/pages/Order_status_page/order_placed_page.dart';
 import 'package:kwik/pages/Order_status_page/order_processing_page.dart';
@@ -113,6 +115,19 @@ final GoRouter router = GoRouter(
       path: '/searchpage',
       builder: (BuildContext context, GoRouterState state) {
         return const SearchPage();
+      },
+    ),
+    GoRoute(
+      path: '/searchpageWOA',
+      pageBuilder: (BuildContext context, GoRouterState state) {
+        return CustomTransitionPage(
+          key: state.pageKey,
+          child: const SearchPage(),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            return child; // No animation
+          },
+          transitionDuration: Duration.zero, // Instantly load
+        );
       },
     ),
     GoRoute(
@@ -321,6 +336,19 @@ final GoRouter router = GoRouter(
         final List<ProductModel> productList =
             state.extra as List<ProductModel>;
         return ProductRating(productlist: productList);
+      },
+    ),
+    GoRoute(
+      path: '/check-payment-status',
+      builder: (context, state) {
+        final orderId = state.extra as String;
+        return PaymentStatusCheckPage(orderId: orderId);
+      },
+    ),
+    GoRoute(
+      path: '/coupons', // Define the path for your order success page
+      builder: (BuildContext context, GoRouterState state) {
+        return const CouponsPage();
       },
     ),
   ],

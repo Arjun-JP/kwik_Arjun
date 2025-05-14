@@ -49,6 +49,7 @@ class SupersaverModel1 extends StatelessWidget {
                     if (state is SupersaverModel1Loading) {
                       return const Center(child: SuperSaverModel1Shimmer());
                     } else if (state is SupersaverModel1Loaded) {
+                      print(state.subCategories);
                       return Container(
                         color: parseColor(bgcolor),
                         width: double.infinity,
@@ -84,7 +85,7 @@ class SupersaverModel1 extends StatelessWidget {
                                         (index) {
                                           return InkWell(
                                             onTap: () => context.push(
-                                                "/allsubcategorypage?categoryId=$categoryId&selectedsubcategory=${state.subCategories[index]}"),
+                                                "/allsubcategorypage?categoryId=${state.subCategories[index].categoryRef.catref}&selectedsubcategory=${state.subCategories[index].id}"),
                                             child: subcategoryItemOffer(
                                               theme: theme,
                                               titleColor: titleColor,

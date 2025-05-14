@@ -16,7 +16,7 @@ import 'package:kwik/pages/Category_page/Categories%20Page%20Widgets/category_mo
 import 'package:kwik/pages/Home_page/widgets/descriptive_widget.dart';
 import 'package:kwik/widgets/navbar/navbar.dart';
 import 'package:kwik/widgets/shimmer/main_loading_indicator.dart';
-import 'package:kwik/widgets/shimmer/shimmer.dart';
+import 'package:kwik/widgets/shimmer/shimmer1.dart';
 import '../../bloc/Categories Page Bloc/categories_UI_bloc/categories_ui_bloc.dart';
 import '../../bloc/Categories Page Bloc/categories_page_model1/categories_page_model1_bloc.dart';
 import 'package:kwik/bloc/Categories%20Page%20Bloc/category_model_bloc/category_model_event.dart';
@@ -143,7 +143,7 @@ class _CategoryPageState extends State<CategoryPage> {
             'template': const DescriptiveWidget(
               showcategory: true,
               title: "Skip the store, we're at your door!",
-              logo: "assets/images/Screenshot 2025-01-31 at 6.20.37 PM.jpeg",
+              logo: "assets/images/kwiklogo.png",
             ),
             'order': "88888"
           },

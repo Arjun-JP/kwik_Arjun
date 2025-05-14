@@ -24,7 +24,7 @@ import 'package:kwik/pages/Home_page/widgets/descriptive_widget.dart';
 import 'package:kwik/pages/Offer_Page/Super%20Saver%20Page%20Widgets/supersaver_model4.dart';
 import 'package:kwik/widgets/navbar/navbar.dart';
 import 'package:kwik/widgets/shimmer/main_loading_indicator.dart';
-import 'package:kwik/widgets/shimmer/shimmer.dart';
+import 'package:kwik/widgets/shimmer/shimmer1.dart';
 import '../../bloc/navbar_bloc/navbar_event.dart';
 import 'Super Saver Page Widgets/supersaver_model2.dart';
 import 'Super Saver Page Widgets/supersaver_model3.dart';
@@ -201,7 +201,7 @@ class _OfferPageState extends State<OfferPage> {
             'template': const DescriptiveWidget(
               showcategory: true,
               title: "Skip the store, we're at your door!",
-              logo: "assets/images/Screenshot 2025-01-31 at 6.20.37 PM.jpeg",
+              logo: "assets/images/kwiklogo.png",
             ),
             'order': "100"
           }

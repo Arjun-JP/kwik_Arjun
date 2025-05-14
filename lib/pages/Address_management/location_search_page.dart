@@ -17,6 +17,7 @@ import 'package:kwik/models/googlemap_place_model.dart';
 import 'package:kwik/pages/Address_management/map.dart';
 import 'package:http/http.dart' as http;
 import 'package:kwik/widgets/change_defaultaddress_bottomsheet.dart';
+import 'package:kwik/widgets/shimmer/address_shimmer.dart';
 
 class LocationSearchPage extends StatefulWidget {
   const LocationSearchPage({super.key});
@@ -474,7 +475,9 @@ class _LocationSearchPageState extends State<LocationSearchPage> {
           ),
         ),
         BlocBuilder<AddressBloc, AddressState>(builder: (context, state) {
-          if (state is LocationSearchResults) {
+          if (state is AddressInitial || state is AddressLoading) {
+            return const AddressShimmer();
+          } else if (state is LocationSearchResults) {
             return Column(
               children: List.generate(
                 state.addresslist.length,

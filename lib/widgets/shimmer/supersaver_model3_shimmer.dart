@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kwik/widgets/shimmer/product_model2_shimmer.dart';
-import 'package:kwik/widgets/shimmer/shimmer.dart';
+import 'package:kwik/widgets/shimmer/shimmer1.dart';
 
 class SupersaverModel3Shimmer extends StatelessWidget {
   const SupersaverModel3Shimmer({super.key});

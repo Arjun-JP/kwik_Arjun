@@ -131,7 +131,7 @@ class SupersaverModel5 extends StatelessWidget {
                               const SizedBox(height: 15),
                               InkWell(
                                 onTap: () => context.push(
-                                    "/allsubcategorypage?categoryId=${state.products.first.categoryRef.catref}&selectedsubcategory=$categoryId"),
+                                    "/allsubcategorypage?categoryId=${state.products.first.subCategoryRef.where((element) => element.id == maincategories[0]).first.categoryRef.catref}&selectedsubcategory=${maincategories[0]}"),
                                 child: Container(
                                   width: MediaQuery.of(context).size.width,
                                   height: 48,
