@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:kwik/widgets/shimmer/shimmer.dart';
+import 'package:kwik/widgets/shimmer/shimmer1.dart';
 
 class CategoryModel6Shimmer extends StatefulWidget {
   const CategoryModel6Shimmer({super.key});

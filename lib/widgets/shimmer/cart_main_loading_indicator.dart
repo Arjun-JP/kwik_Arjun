@@ -72,7 +72,7 @@ class _CartaddressChangeState extends State<CartaddressChange>
             FadeTransition(
               opacity: _opacityAnimation,
               child: Image.asset(
-                'assets/images/Screenshot 2025-01-31 at 6.20.37 PM.jpeg', // Replace with your logo asset path
+                'assets/images/kwiklogo.png', // Replace with your logo asset path
                 width: 120,
                 height: 120,
               ),

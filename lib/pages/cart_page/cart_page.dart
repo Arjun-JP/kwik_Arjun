@@ -12,12 +12,14 @@ import 'package:kwik/bloc/Address_bloc/address_state.dart';
 import 'package:kwik/bloc/Cart_bloc/cart_bloc.dart';
 import 'package:kwik/bloc/Cart_bloc/cart_event.dart';
 import 'package:kwik/bloc/Cart_bloc/cart_state.dart';
+import 'package:kwik/bloc/Coupon_bloc/Coupon_bloc.dart';
+import 'package:kwik/bloc/Coupon_bloc/coupon_event.dart';
+import 'package:kwik/bloc/Coupon_bloc/coupon_state.dart';
 import 'package:kwik/bloc/Order_management.dart/order_management_bloc.dart';
 import 'package:kwik/bloc/Order_management.dart/order_management_event.dart';
 import 'package:kwik/bloc/Order_management.dart/order_management_state.dart';
 import 'package:kwik/bloc/navbar_bloc/navbar_bloc.dart';
 import 'package:kwik/bloc/navbar_bloc/navbar_event.dart';
-import 'package:kwik/bloc/order_bloc/order_state.dart';
 import 'package:kwik/bloc/product_details_page/recommended_products_bloc/recommended_products_bloc.dart';
 import 'package:kwik/bloc/product_details_page/recommended_products_bloc/recommended_products_event.dart';
 import 'package:kwik/bloc/product_details_page/recommended_products_bloc/recommended_products_state.dart';
@@ -158,12 +160,15 @@ class _CartPageState extends State<CartPage> {
                     child:
                         BlocBuilder<OrderManagementBloc, OrderManagementState>(
                             builder: (context, orderstate) {
-                      return Text(
-                        "Saved ₹${((calculateTotalMRP(state.cartItems) - calculateTotalSellingPrice(state.cartItems, state.charges)) + (orderstate is DeliveryTypeUpdated && orderstate.deliveryType == "slot" && state.charges["delivery_charge_tum_tum"] == 0 ? 30 : 0) + (orderstate is DeliveryTypeUpdated && orderstate.deliveryType == "instant" && state.charges["delivery_charge"] == 0 ? 30 : 0)).toStringAsFixed(0)}",
-                        // "Saved ₹${calculateTotalSaved(orderstate is DeliveryTypeUpdated ? orderstate.deliveryType : "", state.cartItems, state.charges).toStringAsFixed(0)}",
-                        style:
-                            theme.textTheme.bodyMedium!.copyWith(fontSize: 18),
-                      );
+                      return BlocBuilder<CouponBloc, CouponState>(
+                          builder: (context, couponstate) {
+                        return Text(
+                          "Saved ₹${((calculateTotalMRP(state.cartItems) - calculateTotalSellingPrice(state.cartItems, state.charges)) + (orderstate is DeliveryTypeUpdated && orderstate.deliveryType == "slot" && state.charges["delivery_charge_tum_tum"] == 0 ? 30 : 0) + (orderstate is DeliveryTypeUpdated && orderstate.deliveryType == "instant" && state.charges["delivery_charge"] == 0 ? 30 : 0 + (couponstate is CouponApplied ? couponstate.disAmount : 0.0))).toStringAsFixed(0)}",
+                          // "Saved ₹${calculateTotalSaved(orderstate is DeliveryTypeUpdated ? orderstate.deliveryType : "", state.cartItems, state.charges).toStringAsFixed(0)}",
+                          style: theme.textTheme.bodyMedium!
+                              .copyWith(fontSize: 18),
+                        );
+                      });
                     }),
                   ),
                 ),
@@ -196,7 +201,7 @@ class _CartPageState extends State<CartPage> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Image.asset(
-                      "assets/images/Screenshot 2025-01-31 at 6.20.37 PM.jpeg",
+                      "assets/images/kwiklogo.png",
                       width: 80,
                       height: 100,
                     ),
@@ -309,7 +314,14 @@ class _CartPageState extends State<CartPage> {
                 _buildDeliveryTypeSelector(theme, state.charges),
                 const SizedBox(height: 15),
                 _buildDeliveryInstructions(theme),
-                _buildBillDetails(theme, state.cartItems, state.charges),
+                const SizedBox(height: 15),
+                _coupons(theme),
+                const SizedBox(height: 15),
+                _buildBillDetails(
+                  theme,
+                  state.cartItems,
+                  state.charges,
+                ),
                 const SizedBox(height: 15),
                 _buildAddressContainer(theme),
                 const SizedBox(height: 25),
@@ -317,7 +329,8 @@ class _CartPageState extends State<CartPage> {
             ),
           ),
         ),
-        _buildPaymentOptions(theme, state.cartItems, state.charges, user),
+        _buildPaymentOptions(theme, state.cartItems, state.charges, user,
+            state.appliedcouponsmount, state.couponcode),
       ],
     );
   }
@@ -545,6 +558,7 @@ class _CartPageState extends State<CartPage> {
                           context
                               .read<CartBloc>()
                               .add(SyncCartWithServer(userId: user.uid));
+                          // context.pushReplacement('/cart');
                         }
                       },
                       style: ElevatedButton.styleFrom(
@@ -696,6 +710,8 @@ class _CartPageState extends State<CartPage> {
                                 context.read<CartBloc>().add(
                                       SyncCartWithServer(userId: user.uid),
                                     );
+                                context.read<CouponBloc>().add(ResetCoupons());
+                                context.pushReplacement('/cart');
                               }
                             },
                             child: Text(
@@ -776,6 +792,8 @@ class _CartPageState extends State<CartPage> {
                               variantId: variationID,
                             ),
                           );
+                      context.read<CouponBloc>().add(ResetCoupons());
+                      context.read<CouponBloc>().add(FetchAllCoupons());
                     }
                   },
                   child: SizedBox(
@@ -824,6 +842,8 @@ class _CartPageState extends State<CartPage> {
                               variantId: variationID,
                             ),
                           );
+                      context.read<CouponBloc>().add(ResetCoupons());
+                      context.read<CouponBloc>().add(FetchAllCoupons());
                     }
                   },
                   child: const SizedBox(
@@ -993,7 +1013,7 @@ class _CartPageState extends State<CartPage> {
                             style: ElevatedButton.styleFrom(
                               backgroundColor: state is DeliveryTypeUpdated &&
                                       state.deliveryType == "instant"
-                                  ? const Color(0xFF8CCA97)
+                                  ? const Color(0xFF318616)
                                   : const Color(0xFFF6F7F9),
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 16, vertical: 12),
@@ -1037,7 +1057,7 @@ class _CartPageState extends State<CartPage> {
                         elevation: 0,
                         backgroundColor: state is DeliveryTypeUpdated &&
                                 state.deliveryType == "slot"
-                            ? const Color(0xFF8CCA97)
+                            ? const Color(0xFF318616)
                             : const Color(0xFFF6F7F9),
                         padding: const EdgeInsets.symmetric(
                             horizontal: 16, vertical: 12),
@@ -1098,7 +1118,7 @@ class _CartPageState extends State<CartPage> {
                                                         "slot" &&
                                                     state.selectedslot ==
                                                         "${slot.startTime} - ${slot.endTime}")
-                                                ? const Color(0xFF8CCA97)
+                                                ? const Color(0xFF318616)
                                                 : const Color.fromARGB(
                                                     255, 255, 251, 240),
                                             border: Border.all(
@@ -1338,10 +1358,34 @@ class _CartPageState extends State<CartPage> {
     );
   }
 
+  Widget _coupons(ThemeData theme) {
+    return InkWell(
+      onTap: () {
+        HapticFeedback.mediumImpact();
+        context.push('/coupons');
+      },
+      child: Container(
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10), color: Colors.white),
+        child: ListTile(
+          leading: SvgPicture.asset("assets/images/offer_selected.svg"),
+          title: Text(
+            "Use Coupons",
+            style: theme.textTheme.bodyLarge,
+          ),
+          trailing: const Icon(
+            Icons.arrow_forward_ios_rounded,
+            size: 15,
+          ),
+        ),
+      ),
+    );
+  }
+
   Widget _buildBillDetails(ThemeData theme, List<CartProduct> cartItems,
       Map<String, dynamic> charges) {
     return Container(
-      padding: const EdgeInsets.only(right: 10, left: 10, top: 30, bottom: 20),
+      padding: const EdgeInsets.only(right: 10, left: 10, top: 20, bottom: 20),
       color: Colors.white,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -1384,11 +1428,14 @@ class _CartPageState extends State<CartPage> {
                           borderRadius: BorderRadius.circular(10),
                           color: const Color.fromARGB(255, 109, 205, 125),
                         ),
-                        child: Text(
-                          "Saved ₹${((calculateTotalMRP(cartItems) - calculateTotalSellingPrice(cartItems, charges)) + (orderstate is DeliveryTypeUpdated && orderstate.deliveryType == "slot" && charges["delivery_charge_tum_tum"] == 0 ? 30 : 0) + (orderstate is DeliveryTypeUpdated && orderstate.deliveryType == "instant" && charges["delivery_charge"] == 0 ? 30 : 0)).toStringAsFixed(0)}",
-                          style: theme.textTheme.bodyMedium!
-                              .copyWith(color: Colors.white),
-                        ),
+                        child: BlocBuilder<CouponBloc, CouponState>(
+                            builder: (context, couponstate) {
+                          return Text(
+                            "Saved ₹${((calculateTotalMRP(cartItems) - calculateTotalSellingPrice(cartItems, charges)) + (orderstate is DeliveryTypeUpdated && orderstate.deliveryType == "slot" && charges["delivery_charge_tum_tum"] == 0 ? 30 : 0) + (orderstate is DeliveryTypeUpdated && orderstate.deliveryType == "instant" && charges["delivery_charge"] == 0 ? 30 : 0 + 0 + (couponstate is CouponApplied ? couponstate.disAmount : 0.0))).toStringAsFixed(0)}",
+                            style: theme.textTheme.bodyMedium!
+                                .copyWith(color: Colors.white),
+                          );
+                        }),
                       );
                     }),
                   ],
@@ -1470,6 +1517,7 @@ class _CartPageState extends State<CartPage> {
                               style: theme.textTheme.bodyMedium!.copyWith(
                                 decoration: TextDecoration.lineThrough,
                                 fontSize: 14,
+                                fontWeight: FontWeight.w700,
                                 color: const Color(0xFFA19DA3),
                               ),
                             ),
@@ -1539,6 +1587,7 @@ class _CartPageState extends State<CartPage> {
                       style: theme.textTheme.bodyMedium!.copyWith(
                         decoration: TextDecoration.lineThrough,
                         fontSize: 14,
+                        fontWeight: FontWeight.w700,
                         color: const Color(0xFFA19DA3),
                       ),
                     ),
@@ -1548,6 +1597,7 @@ class _CartPageState extends State<CartPage> {
                           : "FREE",
                       style: theme.textTheme.bodyMedium!.copyWith(
                         fontSize: 14,
+                        fontWeight: FontWeight.w700,
                         color: (charges.isNotEmpty &&
                                 charges["handling_charge"] != 0)
                             ? const Color(0xFF233D4D)
@@ -1592,6 +1642,7 @@ class _CartPageState extends State<CartPage> {
                       style: theme.textTheme.bodyMedium!.copyWith(
                         decoration: TextDecoration.lineThrough,
                         fontSize: 14,
+                        fontWeight: FontWeight.w700,
                         color: const Color(0xFFA19DA3),
                       ),
                     ),
@@ -1613,6 +1664,50 @@ class _CartPageState extends State<CartPage> {
               ),
             ],
           ),
+          Row(
+            children: [
+              Expanded(
+                flex: 1,
+                child: SvgPicture.asset(
+                  "assets/images/cartbill_4.svg",
+                  height: 20,
+                  width: 20,
+                ),
+              ),
+              Expanded(
+                flex: 5,
+                child: Text(
+                  "Coupon Discount ",
+                  style: theme.textTheme.bodyMedium!.copyWith(
+                    fontSize: 12,
+                    color: const Color(0xFF233D4D),
+                  ),
+                ),
+              ),
+              Expanded(
+                flex: 3,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  spacing: 10,
+                  children: [
+                    BlocBuilder<CouponBloc, CouponState>(
+                        builder: (context, couponstate) {
+                      return Text(
+                        couponstate is CouponApplied
+                            ? couponstate.disAmount.toString()
+                            : "0",
+                        style: theme.textTheme.bodyMedium!.copyWith(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w700,
+                          color: const Color(0xFF233D4D),
+                        ),
+                      );
+                    }),
+                  ],
+                ),
+              ),
+            ],
+          ),
           const Divider(color: Color.fromARGB(255, 221, 221, 221)),
           BlocBuilder<OrderManagementBloc, OrderManagementState>(
               builder: (context, state) {
@@ -1626,13 +1721,16 @@ class _CartPageState extends State<CartPage> {
                     color: const Color(0xFF233D4D),
                   ),
                 ),
-                Text(
-                  "₹${calculateTotal((state is DeliveryTypeUpdated) ? state.deliveryType : "", cartItems, charges).toStringAsFixed(0)}",
-                  style: theme.textTheme.bodyLarge!.copyWith(
-                    fontSize: 18,
-                    color: const Color(0xFF233D4D),
-                  ),
-                ),
+                BlocBuilder<CouponBloc, CouponState>(
+                    builder: (context, couponstate) {
+                  return Text(
+                    "₹${(calculateTotal((state is DeliveryTypeUpdated) ? state.deliveryType : "", cartItems, charges) - (couponstate is CouponApplied ? couponstate.disAmount : 0)).toStringAsFixed(0)}",
+                    style: theme.textTheme.bodyLarge!.copyWith(
+                      fontSize: 18,
+                      color: const Color(0xFF233D4D),
+                    ),
+                  );
+                }),
               ],
             );
           }),
@@ -1742,226 +1840,138 @@ class _CartPageState extends State<CartPage> {
     );
   }
 
-  Widget _buildPaymentOptions(ThemeData theme, List<CartProduct> cartItems,
-      Map<String, dynamic> charges, User? user) {
+  Widget _buildPaymentOptions(
+      ThemeData theme,
+      List<CartProduct> cartItems,
+      Map<String, dynamic> charges,
+      User? user,
+      double couponamount,
+      String couponid) {
     return BlocBuilder<OrderManagementBloc, OrderManagementState>(
       builder: (context, orderState) {
         return BlocBuilder<AddressBloc, AddressState>(
             builder: (context, addressState) {
-          return BlocBuilder<OrderManagementBloc, OrderManagementState>(
-              builder: (context, createorderstate) {
-            return Container(
-              width: MediaQuery.of(context).size.width,
-              height: 55,
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-              decoration: const BoxDecoration(
-                color: Colors.white,
-              ),
-              child: Row(
-                spacing: 15,
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "To Pay",
-                        style:
-                            theme.textTheme.bodyMedium!.copyWith(fontSize: 12),
-                      ),
-                      Text(
-                        "₹${calculateTotal(orderState is DeliveryTypeUpdated ? orderState.deliveryType : "", cartItems, charges).toStringAsFixed(0)}",
-                        style:
-                            theme.textTheme.titleLarge!.copyWith(fontSize: 16),
-                      ),
-                    ],
-                  ),
-                  Expanded(
-                    flex: 2,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        if (orderState is DeliveryTypeUpdated) {
-                          if (orderState.deliveryType == 'slot' &&
-                              orderState.selectedslot != '0') {
-                            context.read<OrderManagementBloc>().add(
-                                  CreateorderOnlinePayment(orderJson: {
-                                    "pincode":
-                                        addressState is LocationSearchResults
-                                            ? addressState.pincode
-                                            : "000000",
-                                    "user_ref": user!.uid,
-                                    "order_status": "Order placed",
-                                    "otp": generateRandomOTP(),
-                                    "order_placed_time":
-                                        DateTime.now().toIso8601String(),
-                                    "payment_type": "Online payment",
-                                    "discount_price": 0,
-                                    "type_of_delivery": "tum tum",
-                                    "selected_time_slot":
-                                        convertTimeStringToISO(
-                                      orderState is DeliveryTypeUpdated
-                                          ? orderState.selectedslot
-                                          : "00.00",
-                                    ),
-                                    "delivery_instructions":
-                                        _instructionsController.text
-                                  }, uid: user.uid),
-                                );
-                            // var options = {
-                            //   'key': 'rzp_test_JukdKxCGZqamy4',
-                            //   'amount': (calculateTotal(
-                            //           orderState.deliveryType ?? "",
-                            //           cartItems,
-                            //           charges)) *
-                            //       100,
-                            //   'name': 'kwik groceries',
-                            //   'order_id':
-                            //       'order_QSK6Eb0IKhbxeq', //  Pass the order ID here
-                            //   'description': 'Payment for order',
-                            //   'description': 'Test Payment',
-                            //   'prefill': {
-                            //     'contact': user!.phoneNumber,
-                            //     'email': 'test@example.com'
-                            //   }
-                            // };
-                            // print(options);
-                            // try {
-                            //   _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS,
-                            //       _handlePaymentSuccess);
-                            //   _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR,
-                            //       _handlePaymentError);
-                            //   _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET,
-                            //       _handleExternalWallet);
-                            //   _razorpay.open(options);
-                            // } catch (e) {
-                            //   print('Error: $e');
-                            // }
-                          } else if (orderState.deliveryType == "instant") {
-                            context.read<OrderManagementBloc>().add(
-                                  CreateorderOnlinePayment(orderJson: {
-                                    "pincode":
-                                        addressState is LocationSearchResults
-                                            ? addressState.pincode
-                                            : "000000",
-                                    "user_ref": user!.uid,
-                                    "order_status": "Order placed",
-                                    "otp": generateRandomOTP(),
-                                    "order_placed_time":
-                                        DateTime.now().toIso8601String(),
-                                    "payment_type": "Online payment",
-                                    "discount_price": 0,
-                                    "type_of_delivery": "instant",
-                                    "delivery_instructions":
-                                        _instructionsController.text
-                                  }, uid: user.uid),
-                                );
-                          }
-                          ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                  content: Text("select delivery type")));
-                        } else {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                  content: Text("select delivery type")));
-                        }
-                      },
-                      style: ElevatedButton.styleFrom(
-                        elevation: 0.1,
-                        backgroundColor: charges["enable_cod"]
-                            ? const Color.fromARGB(255, 255, 240, 240)
-                            : const Color(0xFFE23338),
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 10, vertical: 5),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
+          return BlocListener<OrderManagementBloc, OrderManagementState>(
+              listener: (context, state) {
+            if (state is OrderPlacedOnline) {
+              var options = {
+                'key': 'rzp_test_JukdKxCGZqamy4',
+                'name': 'kwik groceries',
+                'order_id': state.orderResponse["razorpayOrderId"],
+                'description': 'Test Payment',
+                'prefill': {
+                  'contact': user!.phoneNumber,
+                  'email': 'test@example.com'
+                }
+              };
+              context.go('/check-payment-status',
+                  extra: state.orderResponse["razorpayOrderId"]);
+              // Initialize Razorpay here and open the checkout
+              Razorpay razorpay = Razorpay();
+              razorpay.open(options);
+
+              // Optional: Add event handlers if needed
+              razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS,
+                  (PaymentSuccessResponse response) {
+                print("Payment Success: $response");
+              });
+              razorpay.on(Razorpay.EVENT_PAYMENT_ERROR,
+                  (PaymentFailureResponse response) {
+                print("Payment Error: $response");
+              });
+              razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET,
+                  (ExternalWalletResponse response) {
+                print("External Wallet: $response");
+              });
+            } else if (state is OrderPlaced) {
+              context.go('/order-processing');
+            }
+          }, child: Builder(builder: (context) {
+            return BlocBuilder<OrderManagementBloc, OrderManagementState>(
+                builder: (context, createorderstate) {
+              return Container(
+                width: MediaQuery.of(context).size.width,
+                height: 55,
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                ),
+                child: Row(
+                  spacing: 15,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "To Pay",
+                          style: theme.textTheme.bodyMedium!
+                              .copyWith(fontSize: 12),
                         ),
-                      ),
-                      child: Text(
-                        "Pay Online",
-                        style: theme.textTheme.bodyMedium!.copyWith(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w700,
-                          color: charges["enable_cod"]
-                              ? const Color(0xFF3F3F3F)
-                              : Colors.white,
+                        Text(
+                          "₹${calculateTotal(orderState is DeliveryTypeUpdated ? orderState.deliveryType : "", cartItems, charges).toStringAsFixed(0)}",
+                          style: theme.textTheme.titleLarge!
+                              .copyWith(fontSize: 16),
                         ),
-                      ),
+                      ],
                     ),
-                  ),
-                  if (charges["enable_cod"])
                     Expanded(
                       flex: 2,
                       child: ElevatedButton(
                         onPressed: () {
-                          HapticFeedback.mediumImpact();
                           if (orderState is DeliveryTypeUpdated) {
+                            print(orderState.deliveryType);
                             if (orderState.deliveryType == 'slot') {
                               context.read<OrderManagementBloc>().add(
-                                    PlaceOrder(
-                                      orderJson: {
-                                        "pincode": addressState
-                                                is LocationSearchResults
-                                            ? addressState.pincode
-                                            : "000000",
-                                        "user_ref": user!.uid,
-                                        "order_status": "Order placed",
-                                        "otp": generateRandomOTP(),
-                                        "order_placed_time":
-                                            DateTime.now().toIso8601String(),
-                                        "payment_type": "COD",
-                                        "discount_price": 0,
-                                        "type_of_delivery": "tum tum",
-                                        "selected_time_slot":
-                                            convertTimeStringToISO(
-                                          orderState is DeliveryTypeUpdated
-                                              ? orderState.selectedslot
-                                              : "00.00",
-                                        ),
-                                        "delivery_instructions":
-                                            _instructionsController.text
-                                      },
-                                    ),
+                                    CreateorderOnlinePayment(orderJson: {
+                                      "pincode":
+                                          addressState is LocationSearchResults
+                                              ? addressState.pincode
+                                              : "000000",
+                                      "user_ref": user!.uid,
+                                      "order_status": "Order placed",
+                                      "otp": generateRandomOTP(),
+                                      "order_placed_time":
+                                          DateTime.now().toIso8601String(),
+                                      "payment_type": "Online payment",
+                                      "discount_price": 0,
+                                      "type_of_delivery": "tum tum",
+                                      "coupon_code": couponid,
+                                      "selected_time_slot":
+                                          convertTimeStringToISO(
+                                        orderState is DeliveryTypeUpdated
+                                            ? orderState.selectedslot
+                                            : "00.00",
+                                      ),
+                                      "delivery_instructions":
+                                          _instructionsController.text
+                                    }, uid: user.uid),
                                   );
-                              if (createorderstate is OrderPlacing ||
-                                  createorderstate is PlaceorderOrderInitial) {
-                              } else if (createorderstate is OrderPlaced) {
-                                context.go('/order-success');
-                              }
-                              if (createorderstate is PlaceorderOrderError) {
-                                context.go('/order-error');
-                              } else {
-                                context.go('/order-processing');
-                              }
                             } else if (orderState.deliveryType == "instant") {
+                              print(createorderstate);
                               context.read<OrderManagementBloc>().add(
-                                    PlaceOrder(
-                                      orderJson: {
-                                        "pincode": addressState
-                                                is LocationSearchResults
-                                            ? addressState.pincode
-                                            : "000000",
-                                        "user_ref": user!.uid,
-                                        "order_status": "Order placed",
-                                        "otp": generateRandomOTP(),
-                                        "order_placed_time":
-                                            DateTime.now().toIso8601String(),
-                                        "payment_type": "COD",
-                                        "discount_price": 0,
-                                        "type_of_delivery": "instant",
-                                        "delivery_instructions":
-                                            _instructionsController.text
-                                      },
-                                    ),
+                                    CreateorderOnlinePayment(orderJson: {
+                                      "pincode":
+                                          addressState is LocationSearchResults
+                                              ? addressState.pincode
+                                              : "000000",
+                                      "user_ref": user!.uid,
+                                      "order_status": "Order placed",
+                                      "otp": generateRandomOTP(),
+                                      "order_placed_time":
+                                          DateTime.now().toIso8601String(),
+                                      "payment_type": "Online payment",
+                                      "discount_price": 0,
+                                      "type_of_delivery": "instant",
+                                      "coupon_code": couponamount,
+                                      "delivery_instructions":
+                                          _instructionsController.text
+                                    }, uid: user.uid),
                                   );
-                              if (createorderstate is OrderPlacing ||
-                                  createorderstate is PlaceorderOrderInitial) {
-                              } else if (createorderstate is OrderPlaced) {
-                                context.go('/order-success');
-                              }
-                              if (createorderstate is PlaceorderOrderError) {
-                                context.go('/order-error');
-                              } else {
-                                context.go('/order-processing');
-                              }
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                      content: Text("select delivery type")));
                             }
                           } else {
                             ScaffoldMessenger.of(context).showSnackBar(
@@ -1970,44 +1980,133 @@ class _CartPageState extends State<CartPage> {
                           }
                         },
                         style: ElevatedButton.styleFrom(
-                          elevation: 0,
-                          backgroundColor: const Color(0xFFE23338),
+                          elevation: 0.1,
+                          backgroundColor: charges["enable_cod"]
+                              ? const Color.fromARGB(255, 255, 240, 240)
+                              : const Color(0xFFE23338),
                           padding: const EdgeInsets.symmetric(
                               horizontal: 10, vertical: 5),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8),
                           ),
                         ),
-                        child: Column(
-                          children: [
-                            createorderstate is OrderPlacing
-                                ? const CircularProgressIndicator(
-                                    color: Colors.white)
-                                : Text(
-                                    "Pay Cash/UPI",
-                                    textAlign: TextAlign.center,
-                                    style: theme.textTheme.bodyMedium!.copyWith(
-                                      fontWeight: FontWeight.w700,
-                                      fontSize: 13,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                            Text(
-                              "(On Delivery)",
-                              textAlign: TextAlign.center,
-                              style: theme.textTheme.bodyMedium!.copyWith(
-                                fontSize: 10,
-                                color: Colors.white,
-                              ),
-                            ),
-                          ],
+                        child: Text(
+                          "Pay Online",
+                          style: theme.textTheme.bodyMedium!.copyWith(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w700,
+                            color: charges["enable_cod"]
+                                ? const Color(0xFF3F3F3F)
+                                : Colors.white,
+                          ),
                         ),
                       ),
                     ),
-                ],
-              ),
-            );
-          });
+                    if (charges["enable_cod"])
+                      Expanded(
+                        flex: 2,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            HapticFeedback.mediumImpact();
+                            if (orderState is DeliveryTypeUpdated) {
+                              if (orderState.deliveryType == 'slot') {
+                                context.read<OrderManagementBloc>().add(
+                                      PlaceOrder(
+                                        orderJson: {
+                                          "pincode": addressState
+                                                  is LocationSearchResults
+                                              ? addressState.pincode
+                                              : "000000",
+                                          "user_ref": user!.uid,
+                                          "order_status": "Order placed",
+                                          "otp": generateRandomOTP(),
+                                          "order_placed_time":
+                                              DateTime.now().toIso8601String(),
+                                          "payment_type": "COD",
+                                          "discount_price": 0,
+                                          "type_of_delivery": "tum tum",
+                                          "coupon_code": couponid,
+                                          "selected_time_slot":
+                                              convertTimeStringToISO(
+                                            orderState is DeliveryTypeUpdated
+                                                ? orderState.selectedslot
+                                                : "00.00",
+                                          ),
+                                          "delivery_instructions":
+                                              _instructionsController.text
+                                        },
+                                      ),
+                                    );
+                              } else if (orderState.deliveryType == "instant") {
+                                context.read<OrderManagementBloc>().add(
+                                      PlaceOrder(
+                                        orderJson: {
+                                          "pincode": addressState
+                                                  is LocationSearchResults
+                                              ? addressState.pincode
+                                              : "000000",
+                                          "user_ref": user!.uid,
+                                          "order_status": "Order placed",
+                                          "otp": generateRandomOTP(),
+                                          "order_placed_time":
+                                              DateTime.now().toIso8601String(),
+                                          "payment_type": "COD",
+                                          "coupon_code": couponid,
+                                          "discount_price": 0,
+                                          "type_of_delivery": "instant",
+                                          "delivery_instructions":
+                                              _instructionsController.text
+                                        },
+                                      ),
+                                    );
+                              }
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                      content: Text("select delivery type")));
+                            }
+                          },
+                          style: ElevatedButton.styleFrom(
+                            elevation: 0,
+                            backgroundColor: const Color(0xFFE23338),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 10, vertical: 5),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                          child: Column(
+                            children: [
+                              createorderstate is OrderPlacing
+                                  ? const CircularProgressIndicator(
+                                      color: Colors.white)
+                                  : Text(
+                                      "Pay Cash/UPI",
+                                      textAlign: TextAlign.center,
+                                      style:
+                                          theme.textTheme.bodyMedium!.copyWith(
+                                        fontWeight: FontWeight.w700,
+                                        fontSize: 13,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                              Text(
+                                "(On Delivery)",
+                                textAlign: TextAlign.center,
+                                style: theme.textTheme.bodyMedium!.copyWith(
+                                  fontSize: 10,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+              );
+            });
+          }));
         });
       },
     );
@@ -2034,8 +2133,8 @@ double calculateTotal(
           : charges["delivery_charge"] ?? 0);
 }
 
-double calculateTotalSaved(
-    String type, List<CartProduct> cartList, Map<String, dynamic> charges) {
+double calculateTotalSaved(String type, List<CartProduct> cartList,
+    Map<String, dynamic> charges, double couponamount) {
   final mrp = calculateTotalMRP(cartList);
   final sellingPrice = calculateTotalSellingPrice(cartList, charges);
   final savedCharges = (charges["high_demand_charge"] == 0 ? 40.0 : 0.0) +

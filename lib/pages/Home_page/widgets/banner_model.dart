@@ -1,7 +1,9 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:go_router/go_router.dart';
+import 'package:kwik/widgets/shimmer/shimmer1.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 import '../../../bloc/banner_bloc/banner_bloc.dart';
@@ -98,16 +100,22 @@ class _BannerModel1State extends State<BannerModel1> {
                                           '/subcategory-products?subcategoryid=${filteredBanners[index].subCategoryRef}&subcatname=Dry%20Fruits',
                                         );
                                       },
-                                      child: Container(
-                                        width: double.infinity,
-                                        decoration: BoxDecoration(
-                                          image: DecorationImage(
-                                            image: NetworkImage(
-                                                banner.bannerImage),
+                                      child: SizedBox(
+                                          width: double.infinity,
+                                          child: CachedNetworkImage(
+                                            imageUrl: banner.bannerImage,
+                                            width: double.infinity,
+                                            height:
+                                                200, // optional: set your desired height
                                             fit: BoxFit.fill,
-                                          ),
-                                        ),
-                                      ),
+                                            placeholder: (context, url) =>
+                                                const Shimmer(
+                                                    width: double.infinity,
+                                                    height: 200),
+                                            errorWidget:
+                                                (context, url, error) =>
+                                                    const Icon(Icons.error),
+                                          )),
                                     ),
                                   );
                                 },

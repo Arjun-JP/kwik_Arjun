@@ -13,9 +13,10 @@ class ReviewRepository {
   Future<void> addReview({
     required List<Map<String, dynamic>> review,
   }) async {
+    print(review);
     for (int i = 0; i < review.length; i++) {
       final response = await http.post(
-        Uri.parse("$baseUrl/addReview/${review[i]['id']}"),
+        Uri.parse("$baseUrl/product/addReview/${review[i]['id']}"),
         headers: headers,
         body: jsonEncode({
           "user_ref": user!.uid,
@@ -25,10 +26,11 @@ class ReviewRepository {
       );
       print(response.statusCode);
       print(response.body);
-      if (response.statusCode != 201) {
+      if (response.statusCode != 200) {
         throw Exception('Failed to add review');
       }
     }
+
     print(review);
   }
 }

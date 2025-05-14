@@ -6,7 +6,7 @@ import 'package:kwik/bloc/Cart_bloc/cart_bloc.dart';
 import 'package:kwik/bloc/Cart_bloc/cart_event.dart';
 import 'package:kwik/constants/colors.dart';
 import 'package:kwik/models/product_model.dart';
-import 'package:kwik/widgets/shimmer/shimmer.dart';
+import 'package:kwik/widgets/shimmer/shimmer1.dart';
 
 class ProductModel2Shimmer extends StatelessWidget {
   // final ProductModel product;

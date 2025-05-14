@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kwik/bloc/order%20details%20bloc/order_details_bloc.dart';
@@ -67,7 +68,8 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                           _buildOrderDetails(
                               theme: theme, orderdata: state.order),
                           const SizedBox(height: 24),
-                          _buildActionButtons(theme: theme, user: user),
+                          _buildActionButtons(
+                              theme: theme, user: user, orderdata: state.order),
                           const SizedBox(height: 35),
                         ],
                       ),
@@ -364,12 +366,30 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
     );
   }
 
-  Widget _buildActionButtons({required ThemeData theme, required User? user}) {
+  Widget _buildActionButtons(
+      {required ThemeData theme,
+      required User? user,
+      required Order orderdata}) {
     return Row(
       children: [
         Expanded(
           child: ElevatedButton(
-            onPressed: () {},
+            onPressed: () {
+              HapticFeedback.mediumImpact();
+              if (orderdata.orderStatus == "Delivered") {
+                context.push('/product-rating',
+                    extra:
+                        orderdata.products.map((e) => e.productRef).toList());
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text(
+                      "Thanks for your interest in reviewing! Please wait until the product is delivered to share your feedback.",
+                    ),
+                  ),
+                );
+              }
+            },
             style: OutlinedButton.styleFrom(
               backgroundColor: AppColors.buttonColorOrange,
               padding: const EdgeInsets.symmetric(vertical: 10),

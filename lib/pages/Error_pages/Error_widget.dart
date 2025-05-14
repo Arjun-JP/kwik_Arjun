@@ -22,7 +22,7 @@ class _KwikErrorWidgetState extends State<KwikErrorWidget> {
             Expanded(
               flex: 1,
               child: Image.asset(
-                'assets/images/Screenshot 2025-01-31 at 6.20.37 PM.jpeg',
+                'assets/images/kwiklogo.png',
                 width: 100,
                 height: 100,
               ),

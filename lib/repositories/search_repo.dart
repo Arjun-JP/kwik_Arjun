@@ -70,4 +70,18 @@ class SearchRepo {
       throw Exception("Failed to load initial products");
     }
   }
+
+  Future<void> clearsearch() async {
+    final response = await http.delete(
+      Uri.parse("$baseUrl/users/delete/allSearchHistory/${user!.uid}"),
+      headers: headers,
+    );
+    print(response.statusCode);
+    print(response.body);
+    if (response.statusCode == 200) {
+      print("history cleared");
+    } else {
+      throw Exception("Failed to load initial products");
+    }
+  }
 }

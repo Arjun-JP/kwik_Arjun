@@ -19,7 +19,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
     on<DecreaseCartQuantity>(_onDecreaseQuantity);
     on<SyncCartWithServer>(_onSyncCartWithServer);
     on<AddToCartFromWishlist>(_onAddtoCartfromWishlist);
-    // on<RemoveFromWishlist>(_onRemoveFromWishlist);
+    on<ApplyCoupon>(_onApplycoupon);
     on<AddToWishlistFromcart>(_onAddtowishlistfromcart);
   }
 
@@ -56,6 +56,8 @@ class CartBloc extends Bloc<CartEvent, CartState> {
               message: message,
               wishlist: wishlist,
               cartItems: updatedCartItems,
+              appliedcouponsmount: 0,
+              couponcode: "null",
               charges: currentState.charges));
         }
         // else {
@@ -98,6 +100,8 @@ class CartBloc extends Bloc<CartEvent, CartState> {
               message: message,
               wishlist: wishlist,
               cartItems: updatedCartItems,
+              appliedcouponsmount: 0,
+              couponcode: "null",
               charges: currentState.charges));
         }
       }
@@ -140,6 +144,8 @@ class CartBloc extends Bloc<CartEvent, CartState> {
               message: message,
               wishlist: wishlist,
               cartItems: updatedCartItems,
+              appliedcouponsmount: 0,
+              couponcode: "null",
               charges: currentState.charges));
         } else {
           final currentState = state as CartUpdated;
@@ -152,6 +158,8 @@ class CartBloc extends Bloc<CartEvent, CartState> {
               message: false,
               wishlist: wishlist,
               cartItems: updatedCartItems,
+              appliedcouponsmount: 0,
+              couponcode: "null",
               charges: currentState.charges));
         }
       }
@@ -196,6 +204,8 @@ class CartBloc extends Bloc<CartEvent, CartState> {
             message: true,
             wishlist: wishlist,
             cartItems: updatedCartItems,
+            appliedcouponsmount: 0,
+            couponcode: "null",
             charges: currentState.charges));
       }
     } catch (e) {
@@ -206,6 +216,13 @@ class CartBloc extends Bloc<CartEvent, CartState> {
   Future<void> _onSyncCartWithServer(
       SyncCartWithServer event, Emitter<CartState> emit) async {
     try {
+      double couponamount = 0.0;
+      String couponcode = '';
+      if (state is CartUpdated) {
+        final currentstate = state as CartUpdated;
+        couponcode = currentstate.couponcode;
+        couponamount = currentstate.appliedcouponsmount;
+      }
       Map<String, dynamic> serverCartData =
           await cartRepository.getUserCart(userId: event.userId);
 
@@ -251,6 +268,8 @@ class CartBloc extends Bloc<CartEvent, CartState> {
         emit(CartUpdated(
             message: true,
             cartItems: [],
+            appliedcouponsmount: 0,
+            couponcode: "null",
             wishlist: serverwishlistItems ?? [],
             charges: serverCartData["charges"]));
         return;
@@ -275,6 +294,8 @@ class CartBloc extends Bloc<CartEvent, CartState> {
         message: true,
         cartItems: serverCartItems,
         wishlist: serverwishlistItems,
+        appliedcouponsmount: couponamount,
+        couponcode: couponcode,
         charges: serverCartData[
             "charges"], // Make sure to include charges in your state
       ));
@@ -380,4 +401,26 @@ class CartBloc extends Bloc<CartEvent, CartState> {
   //     print("Error adfding prodct to wishlist");
   //   }
   // }
+
+  Future<void> _onApplycoupon(
+      ApplyCoupon event, Emitter<CartState> emit) async {
+    try {
+      if (state is CartUpdated) {
+        final currentState = state as CartUpdated;
+        List<CartProduct> updatedCartItems = List.from(currentState.cartItems);
+        List<WishlistItem> wishlist = currentState.wishlist;
+
+        // Emit updated state
+        emit(CartUpdated(
+            message: true,
+            wishlist: wishlist,
+            cartItems: updatedCartItems,
+            appliedcouponsmount: event.amount,
+            couponcode: event.couponcode,
+            charges: currentState.charges));
+      }
+    } catch (error) {
+      print(error);
+    }
+  }
 }

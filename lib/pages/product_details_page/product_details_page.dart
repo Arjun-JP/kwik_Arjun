@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -29,6 +30,7 @@ import 'package:kwik/repositories/recommended_product_repo.dart';
 import 'package:kwik/repositories/sub_category_product_repository.dart';
 import 'package:kwik/widgets/produc_model_1.dart';
 import 'package:kwik/widgets/shimmer/product_model1_list.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:video_player/video_player.dart';
 
 class ProductDetailsPage extends StatefulWidget {
@@ -551,6 +553,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.center,
         spacing: 15,
         children: [
           Expanded(
@@ -1184,10 +1187,21 @@ class _ProductImageSliderState extends State<ProductImageSlider> {
                   borderRadius: BorderRadius.circular(10),
                   child: InkWell(
                     onTap: () {},
-                    child: Image.network(
-                      widget.product.productImages[index],
+                    child: CachedNetworkImage(
+                      imageUrl: widget.product.productImages[index],
                       fit: BoxFit.contain,
                       width: double.infinity,
+                      placeholder: (context, url) => Shimmer.fromColors(
+                        baseColor: Colors.grey[300]!,
+                        highlightColor: Colors.grey[100]!,
+                        child: Container(
+                          width: double.infinity,
+                          height: 200, // Adjust height if needed
+                          color: Colors.white,
+                        ),
+                      ),
+                      errorWidget: (context, url, error) =>
+                          const Icon(Icons.error),
                     ),
                   ),
                 );

@@ -16,12 +16,15 @@ class CartUpdated extends CartState {
   final List<CartProduct> cartItems;
   final Map<String, dynamic> charges;
   final List<WishlistItem> wishlist;
-
+  final double appliedcouponsmount;
+  final String couponcode;
   CartUpdated({
     required this.wishlist,
     required this.message,
     required this.cartItems,
     required this.charges,
+    required this.appliedcouponsmount,
+    required this.couponcode,
   });
 
   CartUpdated copyWith({
@@ -31,15 +34,21 @@ class CartUpdated extends CartState {
     List<WishlistItem>? wishlist,
   }) {
     return CartUpdated(
-      wishlist: wishlist ?? this.wishlist,
-      message: message ?? this.message,
-      cartItems: cartItems ?? this.cartItems,
-      charges: charges ?? this.charges,
-    );
+        wishlist: wishlist ?? this.wishlist,
+        message: message ?? this.message,
+        cartItems: cartItems ?? this.cartItems,
+        charges: charges ?? this.charges,
+        appliedcouponsmount: appliedcouponsmount ?? this.appliedcouponsmount,
+        couponcode: couponcode ?? this.couponcode);
   }
 
   @override
-  List<Object> get props => [message, cartItems, wishlist, charges]; // Make sure to include charges here
+  List<Object> get props => [
+        message,
+        cartItems,
+        wishlist,
+        charges
+      ]; // Make sure to include charges here
 }
 
 class CartSynced extends CartState {

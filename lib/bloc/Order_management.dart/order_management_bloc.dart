@@ -83,7 +83,7 @@ class OrderManagementBloc
           uid: event.uid, orderJson: event.orderJson);
 
       if (response['success']) {
-        emit(OrderPlaced(orderResponse: response));
+        emit(OrderPlacedOnline(orderResponse: response));
       } else {
         emit(PlaceorderOrderError(message: response['message']));
       }

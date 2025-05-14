@@ -12,6 +12,24 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
   final Box searchHistoryBox = Hive.box('search_history');
 
   SearchBloc({required this.repository}) : super(ProductInitial()) {
+    on<Clearsearchhistory>((event, emit) async {
+      repository.clearsearch();
+
+      if (state is SearchresultProductLoaded) {
+        final currentState = state as SearchresultProductLoaded;
+        emit(SearchresultProductLoaded(
+          products: currentState.products,
+          searchHistory: [],
+        ));
+      } else if (state is ProductLoaded) {
+        final currentState = state as ProductLoaded;
+        emit(ProductLoaded(
+          products: currentState.products,
+          searchHistory: [],
+        ));
+      }
+    });
+
     on<SearchProducts>((event, emit) async {
       emit(ProductLoading());
       try {
@@ -46,7 +64,8 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
         // Load search history from Hive
         final storedHistory = searchHistoryBox.get('history');
         if (storedHistory != null && storedHistory is List) {
-          searchHistory = storedHistory.cast<String>();
+          // searchHistory = storedHistory.cast<String>();
+          needToFetchFromApi = true;
         } else {
           needToFetchFromApi = true;
         }
@@ -54,9 +73,10 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
         // Load product cache from Hive
         List<ProductModel> cachedProducts = [];
         if (box.containsKey('initialProducts')) {
-          cachedProducts = (jsonDecode(box.get('initialProducts')) as List)
-              .map((data) => ProductModel.fromJson(data))
-              .toList();
+          // cachedProducts = (jsonDecode(box.get('initialProducts')) as List)
+          //     .map((data) => ProductModel.fromJson(data))
+          //     .toList();
+          needToFetchFromApi = true;
         } else {
           needToFetchFromApi = true;
         }
@@ -66,10 +86,10 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
           final apiProducts = products["products"] as List<ProductModel>;
           final apiSearchHistory = List<String>.from(products["searchHistory"]);
 
-          // Cache both
-          await box.put('initialProducts',
-              jsonEncode(apiProducts.map((p) => p.toJson()).toList()));
-          await searchHistoryBox.put('history', apiSearchHistory);
+          // // Cache both
+          // await box.put('initialProducts',
+          //     jsonEncode(apiProducts.map((p) => p.toJson()).toList()));
+          // await searchHistoryBox.put('history', apiSearchHistory);
 
           emit(ProductLoaded(
               products: apiProducts, searchHistory: apiSearchHistory));

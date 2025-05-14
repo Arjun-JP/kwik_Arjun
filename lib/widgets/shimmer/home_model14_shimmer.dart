@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kwik/widgets/shimmer/product_model1_list.dart'
     show ProductModel1ListShimmer;
-import 'package:kwik/widgets/shimmer/shimmer.dart';
+import 'package:kwik/widgets/shimmer/shimmer1.dart';
 
 class HomeModel14Shimmer extends StatelessWidget {
   const HomeModel14Shimmer({

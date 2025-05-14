@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kwik/bloc/Cart_bloc/cart_bloc.dart';
@@ -154,6 +155,7 @@ class _OrderListingPageState extends State<OrderListingPage> {
               ],
             );
           }
+          print(state);
           return const SizedBox();
         }));
   }
@@ -290,13 +292,24 @@ class OrderCard extends StatelessWidget {
                 children: [
                   ElevatedButton(
                     onPressed: () {
-                      context.push('/product-rating',
-                          extra: orderData.products
-                              .map((e) => e.productRef)
-                              .toList());
+                      HapticFeedback.mediumImpact();
+                      if (orderData.orderStatus == "Delivered") {
+                        context.push('/product-rating',
+                            extra: orderData.products
+                                .map((e) => e.productRef)
+                                .toList());
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text(
+                              "Thanks for your interest in reviewing! Please wait until the product is delivered to share your feedback.",
+                            ),
+                          ),
+                        );
+                      }
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color.fromARGB(255, 230, 230, 230),
+                      backgroundColor: const Color.fromARGB(255, 243, 242, 242),
                       foregroundColor: Colors.black,
                     ),
                     child: const Text("Rate Order"),
@@ -314,6 +327,7 @@ class OrderCard extends StatelessWidget {
                             .add(const UpdateNavBarIndex(3));
                         context.go('/cart');
                       }
+                      context.go('/cart');
                     },
                     child: BlocBuilder<OrderBloc, OrderState>(
                       builder: (context, state) {

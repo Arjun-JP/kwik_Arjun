@@ -323,4 +323,33 @@ class CartRepository {
       throw Exception("Error adding to wishlist: $e");
     }
   }
+
+  Future<Map<String, dynamic>> applycoupon({
+    required String couponcode,
+  }) async {
+    final url = Uri.parse("$baseUrl/coupon/apply/validate");
+
+    final Map<String, dynamic> body = {"user_id": user!.uid};
+    print(body);
+    try {
+      final response = await http.post(
+        url,
+        headers: headers,
+        body: jsonEncode(body),
+      );
+      print(response.statusCode);
+      print(response.body);
+      Map<String, dynamic> coupondata = jsonDecode(response.body);
+      if (response.statusCode == 200) {
+        print("apply Coupon done");
+        return coupondata;
+      } else {
+        print("apply Coupon failed");
+        CustomSnackBars.showLimitedQuantityWarning();
+        return coupondata;
+      }
+    } catch (e) {
+      throw Exception("Error adding to cart");
+    }
+  }
 }

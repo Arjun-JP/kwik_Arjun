@@ -18,16 +18,14 @@ class OrderProcessingPage extends StatelessWidget {
     return Scaffold(
       body: BlocBuilder<OrderManagementBloc, OrderManagementState>(
           builder: (context, createorderstate) {
-        if (createorderstate is OrderPlacing ||
-            createorderstate is PlaceorderOrderInitial) {
+        if (createorderstate is OrderPlacing) {
           return Padding(
             padding: const EdgeInsets.all(10.0),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const SizedBox(height: 150),
                 Image.asset(
-                  "assets/images/Screenshot 2025-01-31 at 6.20.37 PM.jpeg",
+                  "assets/images/kwiklogo.png",
                   height: 100,
                   width: 100,
                 ),
@@ -72,9 +70,9 @@ class OrderProcessingPage extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const SizedBox(height: 150),
+                    const SizedBox(height: 50),
                     Image.asset(
-                      "assets/images/Screenshot 2025-01-31 at 6.20.37 PM.jpeg",
+                      "assets/images/kwiklogo.png",
                       height: 100,
                       width: 100,
                     ),
@@ -216,7 +214,7 @@ class OrderProcessingPage extends StatelessWidget {
                   children: [
                     const SizedBox(height: 150),
                     Image.asset(
-                      "assets/images/Screenshot 2025-01-31 at 6.20.37 PM.jpeg",
+                      "assets/images/kwiklogo.png",
                       height: 100,
                       width: 100,
                     ),

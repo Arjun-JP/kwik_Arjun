@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -13,9 +14,9 @@ import 'package:kwik/constants/colors.dart';
 import 'package:kwik/constants/constants.dart';
 import 'package:kwik/models/cart_model.dart';
 import 'package:kwik/models/product_model.dart';
-import 'package:kwik/pages/Address_management/address_form.dart';
 import 'package:kwik/widgets/custom_snackbar.dart';
 import 'package:kwik/widgets/select_Varrient_bottom_sheet.dart';
+import 'package:shimmer/shimmer.dart' show Shimmer;
 
 class ProductModel2 extends StatelessWidget {
   // final ProductModel product;
@@ -161,16 +162,26 @@ class ProductModel2 extends StatelessWidget {
                                     width: 143,
                                     child: Stack(
                                       children: [
-                                        Container(
+                                        SizedBox(
                                           height: 164,
                                           width: 143,
-                                          decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(10),
-                                              image: DecorationImage(
-                                                  image: NetworkImage(product
-                                                      .productImages.first),
-                                                  fit: BoxFit.contain)),
+                                          child: CachedNetworkImage(
+                                            imageUrl: product.productImages[0],
+                                            fit: BoxFit.contain,
+                                            placeholder: (context, url) =>
+                                                Shimmer.fromColors(
+                                              baseColor: Colors.grey[300]!,
+                                              highlightColor: Colors.grey[100]!,
+                                              child: Container(
+                                                width: double.infinity,
+                                                height: 200,
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                            errorWidget:
+                                                (context, url, error) =>
+                                                    const Icon(Icons.error),
+                                          ),
                                         ),
                                         Align(
                                           alignment: const Alignment(-.99, .9),

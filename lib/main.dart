@@ -12,6 +12,7 @@ import 'package:kwik/bloc/Address_bloc/Address_bloc.dart';
 import 'package:kwik/bloc/Auth_bloc/auth_bloc.dart';
 import 'package:kwik/bloc/Cart_bloc/cart_bloc.dart';
 import 'package:kwik/bloc/Categories%20Page%20Bloc/category_model_bloc/category_model_bloc.dart';
+import 'package:kwik/bloc/Coupon_bloc/Coupon_bloc.dart';
 import 'package:kwik/bloc/Network_bloc/network_bloc.dart';
 import 'package:kwik/bloc/Order_management.dart/order_management_bloc.dart';
 import 'package:kwik/bloc/Search_bloc/Search_bloc.dart';
@@ -20,6 +21,7 @@ import 'package:kwik/bloc/all_sub_category_bloc/all_sub_category_bloc.dart';
 import 'package:kwik/bloc/banner_bloc/banner_bloc.dart';
 import 'package:kwik/bloc/brand_products/brand_products_bloc.dart';
 import 'package:kwik/bloc/category_landing_page_bloc/category_landing_page_bloc.dart';
+import 'package:kwik/bloc/force_update_bloc/force_update_bloc.dart';
 import 'package:kwik/bloc/get_appdata_bloc/get_appdata_bloc.dart';
 import 'package:kwik/bloc/home_page_bloc/category_bloc/category_bloc.dart';
 import 'package:kwik/bloc/home_page_bloc/category_model_13_bloc/category_model_13_bloc.dart';
@@ -69,6 +71,7 @@ import 'package:kwik/repositories/category_model_3_repo_home.dart';
 import 'package:kwik/repositories/category_model_6_repo.dart';
 import 'package:kwik/repositories/category_model_8_repo.dart';
 import 'package:kwik/repositories/category_subcategory_product_repo.dart';
+import 'package:kwik/repositories/coupon_repo.dart';
 import 'package:kwik/repositories/get_app_data_repo.dart';
 import 'package:kwik/repositories/googlemap_service.dart';
 import 'package:kwik/repositories/home_Ui_repository.dart';
@@ -439,6 +442,12 @@ class _MyAppState extends State<MyApp> {
         BlocProvider<NetworkBloc>(
           create: (context) => NetworkBloc(),
         ),
+
+        //forceupdate
+        BlocProvider<UpdateBloc>(create: (_) => UpdateBloc(GetAppDataRepo())),
+//coupon bloc
+        BlocProvider<CouponBloc>(
+            create: (_) => CouponBloc(repository: CouponRepository())),
       ],
       child: NetworkAwareWidget(
         child: MaterialApp.router(

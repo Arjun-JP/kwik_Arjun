@@ -12,6 +12,12 @@ class OrderPlaced extends OrderManagementState {
   OrderPlaced({required this.orderResponse});
 }
 
+class OrderPlacedOnline extends OrderManagementState {
+  final Map<String, dynamic> orderResponse;
+
+  OrderPlacedOnline({required this.orderResponse});
+}
+
 class OrderStatusLoading extends OrderManagementState {}
 
 class OrderStatusLoaded extends OrderManagementState {

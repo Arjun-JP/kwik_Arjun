@@ -48,7 +48,7 @@ class _TermsAndConditionPageState extends State<TermsAndConditionPage> {
               children: [
                 Center(
                   child: Image.asset(
-                    "assets/images/Screenshot 2025-01-31 at 6.20.37 PM.jpeg",
+                    "assets/images/kwiklogo.png",
                     height: 120,
                   ),
                 ),
@@ -71,7 +71,7 @@ class _TermsAndConditionPageState extends State<TermsAndConditionPage> {
               children: [
                 Center(
                   child: Image.asset(
-                    "assets/images/Screenshot 2025-01-31 at 6.20.37 PM.jpeg",
+                    "assets/images/kwiklogo.png",
                     height: 120,
                   ),
                 ),

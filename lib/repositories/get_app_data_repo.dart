@@ -14,6 +14,7 @@ class GetAppDataRepo {
       'api_Secret': apiSecret,
     };
     final response = await http.get(Uri.parse(baseUrl), headers: headers);
+    print(response.statusCode);
 
     if (response.statusCode == 200) {
       Map<String, dynamic> data = jsonDecode(response.body);

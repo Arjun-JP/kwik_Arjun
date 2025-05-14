@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -16,6 +17,7 @@ import 'package:kwik/models/cart_model.dart';
 import 'package:kwik/models/product_model.dart';
 import 'package:kwik/widgets/custom_snackbar.dart';
 import 'package:kwik/widgets/select_Varrient_bottom_sheet.dart';
+import 'package:shimmer/shimmer.dart';
 
 class ProductItem extends StatelessWidget {
   final String subcategoryRef;
@@ -112,15 +114,21 @@ class ProductItem extends StatelessWidget {
                                 color: parseColor(productBgColor),
                                 borderRadius: BorderRadius.circular(10),
                               ),
-                              child: Container(
+                              child: SizedBox(
                                 width: 120,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10),
-                                  image: DecorationImage(
-                                    image:
-                                        NetworkImage(product.productImages[0]),
-                                    fit: BoxFit.contain,
+                                child: CachedNetworkImage(
+                                  imageUrl: product.productImages[0],
+                                  fit: BoxFit.contain,
+                                  placeholder: (context, url) =>
+                                      Shimmer.fromColors(
+                                    baseColor: Colors.grey[300]!,
+                                    highlightColor: Colors.grey[100]!,
+                                    child: Container(
+                                      color: Colors.white,
+                                    ),
                                   ),
+                                  errorWidget: (context, url, error) =>
+                                      const Icon(Icons.error),
                                 ),
                               ),
                             ),

@@ -15,3 +15,5 @@ class SearchProducts extends SearchEvent {
 class LoadInitialProducts extends SearchEvent {}
 
 class ClearCachesearch extends SearchEvent {}
+
+class Clearsearchhistory extends SearchEvent {}
