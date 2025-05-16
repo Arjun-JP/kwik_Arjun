@@ -1,0 +1,2 @@
+C:/Users/offic/OneDrive/Desktop/kwik123/kwik/android/app/.cxx/Debug/de6t666h/x86/CMakeFiles/edit_cache.dir
+C:/Users/offic/OneDrive/Desktop/kwik123/kwik/android/app/.cxx/Debug/de6t666h/x86/CMakeFiles/rebuild_cache.dir
