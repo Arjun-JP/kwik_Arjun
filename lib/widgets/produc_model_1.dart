@@ -11,6 +11,8 @@ import 'package:kwik/bloc/Address_bloc/address_state.dart';
 import 'package:kwik/bloc/Cart_bloc/cart_bloc.dart';
 import 'package:kwik/bloc/Cart_bloc/cart_event.dart';
 import 'package:kwik/bloc/Cart_bloc/cart_state.dart';
+import 'package:kwik/bloc/Coupon_bloc/Coupon_bloc.dart';
+import 'package:kwik/bloc/Coupon_bloc/coupon_event.dart' show ResetCoupons;
 import 'package:kwik/constants/colors.dart';
 import 'package:kwik/constants/constants.dart';
 import 'package:kwik/models/cart_model.dart';
@@ -215,6 +217,12 @@ class ProductItem extends StatelessWidget {
                                             buttontextcolor: buttonBgColor,
                                             theme: theme,
                                             product: product,
+                                            variationid: cartItems
+                                                .firstWhere((element) =>
+                                                    element.productRef.id ==
+                                                    product.id)
+                                                .variant
+                                                .id,
                                             qty: cartItems
                                                 .firstWhere((element) =>
                                                     element.productRef.id ==
@@ -322,6 +330,9 @@ class ProductItem extends StatelessWidget {
                                                                 .pincode,
                                                           ),
                                                         );
+                                                    context
+                                                        .read<CouponBloc>()
+                                                        .add(ResetCoupons());
                                                   } else {
                                                     HapticFeedback
                                                         .heavyImpact();
@@ -447,6 +458,7 @@ class ProductItem extends StatelessWidget {
       required String buttonbgcolor,
       required String buttontextcolor,
       required bool instock,
+      required String variationid,
       required ProductModel product,
       required String qty}) {
     return Container(
@@ -468,7 +480,8 @@ class ProductItem extends StatelessWidget {
                     pincode: pincode,
                     productRef: product.id,
                     userId: user!.uid,
-                    variantId: product.variations.first.id));
+                    variantId: variationid));
+                ctx.read<CouponBloc>().add(ResetCoupons());
               },
               child: SizedBox(
                   child: Center(
@@ -503,7 +516,8 @@ class ProductItem extends StatelessWidget {
                     pincode: pincode,
                     productRef: product.id,
                     userId: user!.uid,
-                    variantId: product.variations.first.id));
+                    variantId: variationid));
+                ctx.read<CouponBloc>().add(ResetCoupons());
               },
               child: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 4),

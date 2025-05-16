@@ -11,7 +11,6 @@ import 'package:kwik/models/address_model.dart';
 import 'package:kwik/models/googlemap_place_model.dart';
 import 'package:kwik/models/order_model.dart' as Location;
 import 'package:kwik/models/warehouse_model.dart';
-import 'package:kwik/pages/Address_management/address_form.dart';
 import 'package:kwik/repositories/address_repo.dart';
 import 'package:kwik/repositories/googlemap_service.dart';
 import 'package:http/http.dart' as http;
@@ -34,7 +33,7 @@ class AddressBloc extends Bloc<AddressEvent, AddressState> {
   FutureOr<void> _onupdateselectedaddress(
       UpdateselectedaddressEvent event, Emitter<AddressState> emit) async {
     emit(AddressLoading()); // Emit loading state
-    print("11111");
+
     try {
       await savedaddressrepository.setDefaultAddress(event.address.id!);
       // Fetch warehouse details for the newly selected address

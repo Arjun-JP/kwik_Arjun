@@ -10,6 +10,8 @@ import 'package:kwik/bloc/Address_bloc/address_state.dart';
 import 'package:kwik/bloc/Cart_bloc/cart_bloc.dart';
 import 'package:kwik/bloc/Cart_bloc/cart_event.dart';
 import 'package:kwik/bloc/Cart_bloc/cart_state.dart';
+import 'package:kwik/bloc/Coupon_bloc/Coupon_bloc.dart';
+import 'package:kwik/bloc/Coupon_bloc/coupon_event.dart';
 import 'package:kwik/constants/colors.dart';
 import 'package:kwik/constants/constants.dart';
 import 'package:kwik/models/cart_model.dart';
@@ -290,6 +292,11 @@ class ProductModel2 extends StatelessWidget {
                                     buttontext: buttonbgcolor,
                                     theme: theme,
                                     product: product,
+                                    variationid: cartItems
+                                        .firstWhere((element) =>
+                                            element.productRef.id == product.id)
+                                        .variant
+                                        .id,
                                     qty: cartItems
                                         .firstWhere(
                                           (element) =>
@@ -361,7 +368,8 @@ class ProductModel2 extends StatelessWidget {
                                                         variant: product
                                                             .variations.first,
                                                         quantity: 1,
-                                                        pincode: "560003",
+                                                        pincode:
+                                                            warstate.pincode,
                                                         sellingPrice: product
                                                             .variations
                                                             .first
@@ -383,9 +391,12 @@ class ProductModel2 extends StatelessWidget {
                                                       productRef: product.id,
                                                       variantId: product
                                                           .variations.first.id,
-                                                      pincode: "560003",
+                                                      pincode: warstate.pincode,
                                                     ),
                                                   );
+                                              context
+                                                  .read<CouponBloc>()
+                                                  .add(ResetCoupons());
                                             } else {
                                               HapticFeedback.heavyImpact();
                                               CustomSnackBars
@@ -458,6 +469,7 @@ class ProductModel2 extends StatelessWidget {
       required User? user,
       required String pincode,
       required ProductModel product,
+      required String variationid,
       required String qty}) {
     return Container(
       height: 35,
@@ -476,7 +488,8 @@ class ProductModel2 extends StatelessWidget {
                     pincode: pincode,
                     productRef: product.id,
                     userId: user!.uid,
-                    variantId: product.variations.first.id));
+                    variantId: variationid));
+                context.read<CouponBloc>().add(ResetCoupons());
               },
               child: SizedBox(
                   height: 24,
@@ -514,7 +527,8 @@ class ProductModel2 extends StatelessWidget {
                     pincode: pincode,
                     productRef: product.id,
                     userId: user!.uid,
-                    variantId: product.variations.first.id));
+                    variantId: variationid));
+                context.read<CouponBloc>().add(ResetCoupons());
               },
               child: SizedBox(
                   child: Center(

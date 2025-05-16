@@ -18,6 +18,7 @@ class CategoryModel6 extends StatelessWidget {
   final String offertextcolor;
   final String offerbgcolor;
   final bool showcategory;
+  final String outerbordercolor;
 
   const CategoryModel6({
     super.key,
@@ -30,6 +31,7 @@ class CategoryModel6 extends StatelessWidget {
     required this.offertextcolor,
     required this.offerbgcolor,
     required this.showcategory,
+    required this.outerbordercolor,
   });
 
   @override
@@ -69,7 +71,7 @@ class CategoryModel6 extends StatelessWidget {
                     ),
                     const SizedBox(height: 12),
                     SizedBox(
-                      height: 230,
+                      height: 185,
                       width: MediaQuery.of(context).size.width,
                       child: ListView.builder(
                         scrollDirection: Axis.horizontal,
@@ -77,6 +79,7 @@ class CategoryModel6 extends StatelessWidget {
                         itemBuilder: (context, index) {
                           var subCategory = filteredSubCategories[index];
                           return subcategoryItem(
+                            outerbordercolor: outerbordercolor,
                             name: subCategory.name,
                             offer: subCategory.offerPercentage,
                             bgcolor: bgcolor,
@@ -110,6 +113,7 @@ Widget subcategoryItem(
     required String catnamebgcolor,
     required String offertextcolor,
     required String offerbgcolor,
+    required String outerbordercolor,
     required String catnamecolor}) {
   return Column(
     mainAxisSize: MainAxisSize.max,
@@ -120,15 +124,16 @@ Widget subcategoryItem(
         child: Container(
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(25),
-              border: Border.all(color: Colors.blue, width: 2)),
-          height: 190,
+              border:
+                  Border.all(color: parseColor(outerbordercolor), width: 2)),
+          height: 170,
           width: 150,
           child: Stack(
             children: [
               Container(
-                margin: const EdgeInsets.all(2),
-                height: 220,
-                width: 170,
+                margin: const EdgeInsets.all(3),
+                height: 170,
+                width: 150,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(21),
                   color: parseColor(bgcolor),
@@ -145,6 +150,7 @@ Widget subcategoryItem(
                     Container(
                       width: 100,
                       height: 30,
+                      margin: const EdgeInsets.only(top: 3),
                       decoration: BoxDecoration(
                           color: parseColor(offerbgcolor),
                           borderRadius: const BorderRadius.only(
@@ -161,26 +167,26 @@ Widget subcategoryItem(
                       ),
                     ),
                     const SizedBox(height: 10),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                      child: Container(
-                        padding: const EdgeInsets.all(5),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadiusDirectional.circular(8),
-                          color: parseColor(catnamebgcolor),
-                        ),
-                        child: Center(
-                          child: Text(
-                            name,
-                            maxLines: 2,
-                            style: TextStyle(
-                                fontSize: 13,
-                                fontWeight: FontWeight.w700,
-                                color: parseColor(catnamecolor)),
-                          ),
-                        ),
-                      ),
-                    )
+                    // Padding(
+                    //   padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                    //   child: Container(
+                    //     padding: const EdgeInsets.all(5),
+                    //     decoration: BoxDecoration(
+                    //       borderRadius: BorderRadiusDirectional.circular(8),
+                    //       color: parseColor(catnamebgcolor),
+                    //     ),
+                    //     child: Center(
+                    //       child: Text(
+                    //         name,
+                    //         maxLines: 2,
+                    //         style: TextStyle(
+                    //             fontSize: 13,
+                    //             fontWeight: FontWeight.w700,
+                    //             color: parseColor(catnamecolor)),
+                    //       ),
+                    //     ),
+                    //   ),
+                    // )
                   ],
                 ),
               )

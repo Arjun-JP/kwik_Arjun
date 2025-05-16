@@ -10,6 +10,8 @@ import 'package:kwik/bloc/Address_bloc/address_state.dart';
 import 'package:kwik/bloc/Cart_bloc/cart_bloc.dart';
 import 'package:kwik/bloc/Cart_bloc/cart_event.dart';
 import 'package:kwik/bloc/Cart_bloc/cart_state.dart';
+import 'package:kwik/bloc/Coupon_bloc/Coupon_bloc.dart';
+import 'package:kwik/bloc/Coupon_bloc/coupon_event.dart';
 import 'package:kwik/bloc/all_sub_category_bloc/all_sub_category_bloc.dart';
 import 'package:kwik/bloc/all_sub_category_bloc/all_sub_category_event.dart';
 import 'package:kwik/bloc/all_sub_category_bloc/all_sub_category_state.dart';
@@ -437,7 +439,15 @@ class ProductItemSubcategorypage extends StatelessWidget {
                                             buttonbgcolor: buttontextcolor,
                                             buttontextcolor: buttonBgColor,
                                             theme: theme,
+                                            user: user,
+                                            pincode: warstate.pincode,
                                             product: product,
+                                            variationID: cartItems
+                                                .firstWhere((element) =>
+                                                    element.productRef.id ==
+                                                    product.id)
+                                                .variant
+                                                .id,
                                             qty: cartItems
                                                 .firstWhere((element) =>
                                                     element.productRef.id ==
@@ -495,7 +505,8 @@ class ProductItemSubcategorypage extends StatelessWidget {
                                                               variant:
                                                                   firstVariation,
                                                               quantity: 1,
-                                                              pincode: "560003",
+                                                              pincode: warstate
+                                                                  .pincode,
                                                               sellingPrice:
                                                                   firstVariation
                                                                       .sellingPrice,
@@ -519,9 +530,13 @@ class ProductItemSubcategorypage extends StatelessWidget {
                                                             variantId:
                                                                 firstVariation
                                                                     .id,
-                                                            pincode: "560003",
+                                                            pincode: warstate
+                                                                .pincode,
                                                           ),
                                                         );
+                                                    context
+                                                        .read<CouponBloc>()
+                                                        .add(ResetCoupons());
                                                   }
                                                 },
                                                 style: ElevatedButton.styleFrom(
@@ -633,10 +648,12 @@ class ProductItemSubcategorypage extends StatelessWidget {
 
   Widget quantitycontrolbutton(
       {required ThemeData theme,
-      final User? user,
+      required final User? user,
+      required final String pincode,
       required String buttonbgcolor,
       required String buttontextcolor,
       required ProductModel product,
+      required String variationID,
       required String qty}) {
     return Container(
       height: 30,
@@ -653,10 +670,11 @@ class ProductItemSubcategorypage extends StatelessWidget {
               onTap: () {
                 HapticFeedback.mediumImpact();
                 context.read<CartBloc>().add(DecreaseCartQuantity(
-                    pincode: "560003",
+                    pincode: pincode,
                     productRef: product.id,
                     userId: user!.uid,
-                    variantId: product.variations.first.id));
+                    variantId: variationID));
+                context.read<CouponBloc>().add(ResetCoupons());
               },
               child: SizedBox(
                   child: Center(
@@ -688,10 +706,11 @@ class ProductItemSubcategorypage extends StatelessWidget {
               onTap: () {
                 HapticFeedback.mediumImpact();
                 context.read<CartBloc>().add(IncreaseCartQuantity(
-                    pincode: "560003",
+                    pincode: pincode,
                     productRef: product.id,
                     userId: user!.uid,
-                    variantId: product.variations.first.id));
+                    variantId: variationID));
+                context.read<CouponBloc>().add(ResetCoupons());
               },
               child: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 4),

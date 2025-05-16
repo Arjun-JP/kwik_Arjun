@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kwik/bloc/Cart_bloc/cart_bloc.dart';
 import 'package:kwik/bloc/Cart_bloc/cart_event.dart' as cart;
@@ -19,7 +20,6 @@ class CouponsPage extends StatefulWidget {
 class _CouponsPageState extends State<CouponsPage> {
   @override
   void initState() {
-    context.read<CouponBloc>().add(FetchAllCoupons());
     super.initState();
   }
 
@@ -38,9 +38,7 @@ class _CouponsPageState extends State<CouponsPage> {
             amount: state.disAmount, couponcode: state.couponCode));
       }
     }, child: BlocBuilder<CouponBloc, CouponState>(builder: (context, state) {
-      if (state is ApplyCouponLoading) {
-        return const CircularProgressIndicator();
-      } else if (state is CouponInitial) {
+      if (state is CouponInitial || state is CouponError) {
         context.read<CouponBloc>().add(FetchAllCoupons());
         return Scaffold(
           appBar: AppBar(
@@ -103,6 +101,7 @@ class _CouponsPageState extends State<CouponsPage> {
                         (index) => couponWidget(
                             theme: theme,
                             coupon: state.coupons[index],
+                            loading: false,
                             appliedcouponcode: ""),
                       ),
                     ),
@@ -110,7 +109,7 @@ class _CouponsPageState extends State<CouponsPage> {
                 )
               ],
             ));
-      } else if (state is CouponApplied) {
+      } else if (state is ApplyCouponLoading) {
         return Scaffold(
             backgroundColor: const Color.fromARGB(255, 239, 239, 239),
             appBar: AppBar(
@@ -134,6 +133,40 @@ class _CouponsPageState extends State<CouponsPage> {
                         state.coupons.length,
                         (index) => couponWidget(
                             theme: theme,
+                            loading: true,
+                            coupon: state.coupons[index],
+                            appliedcouponcode: state.couponcode),
+                      ),
+                    ),
+                  ),
+                )
+              ],
+            ));
+      } else if (state is CouponApplied) {
+        return Scaffold(
+            backgroundColor: const Color.fromARGB(255, 239, 239, 239),
+            appBar: AppBar(
+              title: InkWell(
+                onTap: () {
+                  print(state.couponCode.toString());
+                },
+                child: Text(
+                  "Coupons",
+                  style: theme.textTheme.bodyMedium!.copyWith(fontSize: 18),
+                ),
+              ),
+            ),
+            body: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: List.generate(
+                        state.coupons.length,
+                        (index) => couponWidget(
+                            theme: theme,
+                            loading: false,
                             coupon: state.coupons[index],
                             appliedcouponcode: state.couponCode),
                       ),
@@ -169,119 +202,142 @@ class _CouponsPageState extends State<CouponsPage> {
   Widget couponWidget(
       {required ThemeData theme,
       required CouponModel coupon,
-      required String appliedcouponcode}) {
-    return Container(
-      margin: const EdgeInsets.symmetric(vertical: 7, horizontal: 15),
-      padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(
-          15,
+      required String appliedcouponcode,
+      required bool loading}) {
+    return Opacity(
+      opacity: coupon.startDate.isAfter(DateTime.now()) ||
+              coupon.endDate.isBefore(DateTime.now())
+          ? 0.6
+          : 1,
+      child: Container(
+        margin: const EdgeInsets.symmetric(vertical: 7, horizontal: 15),
+        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(
+            15,
+          ),
+          color: Colors.white,
         ),
-        color: Colors.white,
-      ),
-      width: double.infinity,
-      child: Column(
-        spacing: 5,
-        children: [
-          ListTile(
-            leading: Image.network(coupon.couponImage ??
-                "https://firebasestorage.googleapis.com/v0/b/kwikgroceries-8a11e.firebasestorage.app/o/sample%2Fdiscount%201.png?alt=media&token=95699213-a3e6-4335-8013-8f46d90f913a"),
-            title: Text(
-              coupon.couponName,
-              style: theme.textTheme.bodyLarge,
-            ),
-            subtitle: Text(
-              coupon.couponCode,
-              style: theme.textTheme.bodyMedium!.copyWith(color: Colors.grey),
-            ),
-            trailing: ElevatedButton.icon(
-              onPressed: () {
-                context.read<CouponBloc>().add(ResetCoupons());
-                // context.read<CouponBloc>().add(FetchAllCoupons());
-                context
-                    .read<CouponBloc>()
-                    .add(ApplyCoupon(couponCode: coupon.couponCode));
-              },
-              label: Text(
-                appliedcouponcode == "" ||
-                        coupon.couponCode != appliedcouponcode
-                    ? "Apply"
-                    : "Applied",
-                style: theme.textTheme.bodyMedium!.copyWith(
-                  fontSize: 14,
-                  color: Colors.white,
+        width: double.infinity,
+        child: Column(
+          spacing: 5,
+          children: [
+            ListTile(
+              leading: Image.network(coupon.couponImage ??
+                  "https://firebasestorage.googleapis.com/v0/b/kwikgroceries-8a11e.firebasestorage.app/o/sample%2Fdiscount%201.png?alt=media&token=95699213-a3e6-4335-8013-8f46d90f913a"),
+              title: Text(
+                coupon.couponName,
+                style: theme.textTheme.bodyLarge,
+              ),
+              subtitle: Text(
+                coupon.couponCode,
+                style: theme.textTheme.bodyMedium!.copyWith(color: Colors.grey),
+              ),
+              trailing: ElevatedButton.icon(
+                onPressed: () {
+                  if ((coupon.startDate.isAfter(DateTime.now()) ||
+                          coupon.endDate.isAfter(DateTime.now())) &&
+                      appliedcouponcode != coupon.couponCode) {
+                    HapticFeedback.mediumImpact();
+                    context
+                        .read<CouponBloc>()
+                        .add(ApplyCoupon(couponCode: coupon.couponCode));
+                  } else {
+                    HapticFeedback.heavyImpact();
+                    HapticFeedback.heavyImpact();
+                  }
+                },
+                label: appliedcouponcode != "" &&
+                        coupon.couponCode == appliedcouponcode &&
+                        loading == true
+                    ? Text(
+                        "Loading",
+                        style: theme.textTheme.bodyMedium!.copyWith(
+                          fontSize: 14,
+                          color: Colors.white,
+                        ),
+                      )
+                    : Text(
+                        appliedcouponcode != "" ||
+                                coupon.couponCode == appliedcouponcode
+                            ? "Applied"
+                            : "Apply",
+                        style: theme.textTheme.bodyMedium!.copyWith(
+                          fontSize: 14,
+                          color: Colors.white,
+                        ),
+                      ),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: appliedcouponcode == "" ||
+                          coupon.couponCode != appliedcouponcode
+                      ? const Color(0xFF318616)
+                      : const Color(0xffFF592E),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
                 ),
               ),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: appliedcouponcode == "" ||
-                        coupon.couponCode != appliedcouponcode
-                    ? const Color(0xFF318616)
-                    : const Color(0xffFF592E),
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
             ),
-          ),
-          const Padding(
-            padding: EdgeInsets.only(right: 18.0, left: 12),
-            child: DottedDivider(),
-          ),
-          Row(
-            children: [
-              const Expanded(flex: 1, child: Icon(Icons.arrow_right_rounded)),
-              Expanded(
-                flex: 5,
-                child: Text(
-                  "This coupon requires a minimum order of ${coupon.minOrderValue}",
-                  style: theme.textTheme.bodyMedium!
-                      .copyWith(color: Colors.grey, fontSize: 14),
-                ),
-              )
-            ],
-          ),
-          Row(
-            children: [
-              const Expanded(flex: 1, child: Icon(Icons.arrow_right_rounded)),
-              Expanded(
-                flex: 5,
-                child: Text(
-                  "Maximum discount available is ${coupon.discountMaxPrice}",
-                  style: theme.textTheme.bodyMedium!
-                      .copyWith(color: Colors.grey, fontSize: 14),
-                ),
-              )
-            ],
-          ),
-          Row(
-            children: [
-              const Expanded(flex: 1, child: Icon(Icons.arrow_right_rounded)),
-              Expanded(
-                flex: 5,
-                child: Text(
-                  "If you update your cart, you’ll need to apply the coupon again.",
-                  style: theme.textTheme.bodyMedium!
-                      .copyWith(color: Colors.grey, fontSize: 14),
-                ),
-              )
-            ],
-          ),
-          Row(
-            children: [
-              const Expanded(flex: 1, child: Icon(Icons.arrow_right_rounded)),
-              Expanded(
-                flex: 5,
-                child: Text(
-                  "This coupon is valid until ${formatIso8601Date(coupon.endDate.toIso8601String())}. Don’t miss out!",
-                  style: theme.textTheme.bodyMedium!
-                      .copyWith(color: Colors.grey, fontSize: 14),
-                ),
-              )
-            ],
-          )
-        ],
+            const Padding(
+              padding: EdgeInsets.only(right: 18.0, left: 12),
+              child: DottedDivider(),
+            ),
+            Row(
+              children: [
+                const Expanded(flex: 1, child: Icon(Icons.arrow_right_rounded)),
+                Expanded(
+                  flex: 5,
+                  child: Text(
+                    "This coupon requires a minimum order of ${coupon.minOrderValue}",
+                    style: theme.textTheme.bodyMedium!
+                        .copyWith(color: Colors.grey, fontSize: 14),
+                  ),
+                )
+              ],
+            ),
+            Row(
+              children: [
+                const Expanded(flex: 1, child: Icon(Icons.arrow_right_rounded)),
+                Expanded(
+                  flex: 5,
+                  child: Text(
+                    "Maximum discount available is ${coupon.discountMaxPrice}",
+                    style: theme.textTheme.bodyMedium!
+                        .copyWith(color: Colors.grey, fontSize: 14),
+                  ),
+                )
+              ],
+            ),
+            Row(
+              children: [
+                const Expanded(flex: 1, child: Icon(Icons.arrow_right_rounded)),
+                Expanded(
+                  flex: 5,
+                  child: Text(
+                    "If you update your cart, you’ll need to apply the coupon again.",
+                    style: theme.textTheme.bodyMedium!
+                        .copyWith(color: Colors.grey, fontSize: 14),
+                  ),
+                )
+              ],
+            ),
+            Row(
+              children: [
+                const Expanded(flex: 1, child: Icon(Icons.arrow_right_rounded)),
+                Expanded(
+                  flex: 5,
+                  child: Text(
+                    "This coupon is valid until ${formatIso8601Date(coupon.endDate.toIso8601String())}. Don’t miss out!",
+                    style: theme.textTheme.bodyMedium!
+                        .copyWith(color: Colors.grey, fontSize: 14),
+                  ),
+                )
+              ],
+            )
+          ],
+        ),
       ),
     );
   }
