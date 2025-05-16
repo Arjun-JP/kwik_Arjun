@@ -1,6 +1,9 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:kwik/bloc/Coupon_bloc/Coupon_bloc.dart';
+import 'package:kwik/bloc/Coupon_bloc/coupon_event.dart';
 import 'package:kwik/repositories/check_payment_status_repo.dart';
 import 'package:lottie/lottie.dart';
 
@@ -31,6 +34,7 @@ class _PaymentStatusCheckPageState extends State<PaymentStatusCheckPage> {
       if (status.toLowerCase() == 'paid') {
         _stopPolling();
         if (context.mounted) {
+          context.read<CouponBloc>().add(ResetCoupons());
           context.go('/order-success');
         }
       } else if (status.toLowerCase() == 'failed') {

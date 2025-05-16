@@ -10,6 +10,7 @@ import 'package:kwik/models/address_model.dart';
 import 'package:kwik/models/googlemap_place_model.dart';
 import 'package:kwik/pages/Address_management/map.dart';
 import 'package:kwik/widgets/change_defaultaddress_bottomsheet.dart';
+import 'package:kwik/widgets/shimmer/address_shimmer.dart';
 
 class AddressSelectionBottomSheet extends StatefulWidget {
   const AddressSelectionBottomSheet({super.key});
@@ -236,8 +237,26 @@ class _AddressSelectionBottomSheetState
                     padding:
                         const EdgeInsets.symmetric(horizontal: 0, vertical: 5),
                     child: ListTile(
-                      onTap: () {
-                        // Navigator.pop(context, state.addresslist[index].formattedAddress);
+                      onTap: () async {
+                        HapticFeedback.mediumImpact();
+                        await showModalBottomSheet(
+                          isScrollControlled: true,
+                          backgroundColor: Colors.transparent,
+                          enableDrag: false,
+                          context: context,
+                          builder: (context) {
+                            return GestureDetector(
+                              onTap: () => FocusScope.of(context).unfocus(),
+                              child: Padding(
+                                padding: MediaQuery.viewInsetsOf(context),
+                                child: ChangeDefaultaddressBottomsheet(
+                                  selectedaddress: state.addresslist[index],
+                                  iscart: true,
+                                ),
+                              ),
+                            );
+                          },
+                        );
                       },
                       dense: true,
                       leading: Container(
@@ -262,7 +281,7 @@ class _AddressSelectionBottomSheetState
                       ),
                       trailing: IconButton(
                         icon: const Icon(
-                          Icons.more_vert_rounded,
+                          Icons.keyboard_arrow_right_rounded,
                           color: Color.fromARGB(255, 66, 143, 68),
                         ),
                         onPressed: () async {
@@ -331,7 +350,7 @@ class _AddressSelectionBottomSheetState
               ),
             );
           } else if (state is AddressLoading) {
-            return const Center(child: CircularProgressIndicator());
+            return const Center(child: AddressShimmer());
           } else {
             return const Center(
               child: Text("No Address added yet"),

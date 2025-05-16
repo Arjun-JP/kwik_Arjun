@@ -9,6 +9,8 @@ import 'package:kwik/bloc/Address_bloc/address_state.dart';
 import 'package:kwik/bloc/Cart_bloc/cart_bloc.dart';
 import 'package:kwik/bloc/Cart_bloc/cart_event.dart';
 import 'package:kwik/bloc/Cart_bloc/cart_state.dart';
+import 'package:kwik/bloc/Coupon_bloc/Coupon_bloc.dart';
+import 'package:kwik/bloc/Coupon_bloc/coupon_event.dart';
 import 'package:kwik/constants/colors.dart';
 import 'package:kwik/constants/constants.dart';
 import 'package:kwik/models/cart_model.dart';
@@ -236,6 +238,11 @@ Widget productModel3(
                             context: context,
                             theme: theme,
                             product: product,
+                            variationID: cartItems
+                                .firstWhere((element) =>
+                                    element.productRef.id == product.id)
+                                .variant
+                                .id,
                             qty: cartItems
                                 .firstWhere(
                                   (element) =>
@@ -326,6 +333,9 @@ Widget productModel3(
                                             pincode: warstate.pincode,
                                           ),
                                         );
+                                    context
+                                        .read<CouponBloc>()
+                                        .add(ResetCoupons());
                                   } else {
                                     HapticFeedback.heavyImpact();
                                     CustomSnackBars
@@ -398,6 +408,7 @@ Widget quantitycontrolbutton(
     required String buttonbgcolor,
     required String buttontextcolor,
     required ProductModel product,
+    required String variationID,
     required BuildContext context,
     required String qty}) {
   return Container(
@@ -419,7 +430,8 @@ Widget quantitycontrolbutton(
                   pincode: pincode,
                   productRef: product.id,
                   userId: user!.uid,
-                  variantId: product.variations.first.id));
+                  variantId: variationID));
+              context.read<CouponBloc>().add(ResetCoupons());
             },
             child: SizedBox(
                 child: Center(
@@ -454,7 +466,8 @@ Widget quantitycontrolbutton(
                   pincode: pincode,
                   productRef: product.id,
                   userId: user!.uid,
-                  variantId: product.variations.first.id));
+                  variantId: variationID));
+              context.read<CouponBloc>().add(ResetCoupons());
             },
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 4),

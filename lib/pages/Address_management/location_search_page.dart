@@ -16,6 +16,7 @@ import 'package:kwik/models/address_model.dart';
 import 'package:kwik/models/googlemap_place_model.dart';
 import 'package:kwik/pages/Address_management/map.dart';
 import 'package:http/http.dart' as http;
+import 'package:kwik/repositories/address_repo.dart';
 import 'package:kwik/widgets/change_defaultaddress_bottomsheet.dart';
 import 'package:kwik/widgets/shimmer/address_shimmer.dart';
 
@@ -34,6 +35,7 @@ class _LocationSearchPageState extends State<LocationSearchPage> {
   GoogleMapPlace? selectedplace;
   List<GoogleMapPlace> suggestions = [];
   List<String> currentaddress = [];
+  final AddressRepository addressrepo = AddressRepository();
   @override
   void dispose() {
     _searchController.dispose();
@@ -530,9 +532,21 @@ class _LocationSearchPageState extends State<LocationSearchPage> {
                           ),
                         ),
                       ),
-                      trailing: const Icon(
-                        Icons.keyboard_arrow_right_rounded,
-                        color: Color.fromARGB(255, 66, 143, 68),
+                      trailing: GestureDetector(
+                        onTapDown: (detals) {
+                          HapticFeedback.heavyImpact();
+                          showCustomTooltip(context, 'Tap & hold\nto delete',
+                              detals.globalPosition);
+                        },
+                        onLongPress: () {
+                          HapticFeedback.heavyImpact();
+                          addressrepo.deleteaddress(savedaddress[index].id!);
+                          context
+                              .read<AddressBloc>()
+                              .add(const GetsavedAddressEvent());
+                        },
+                        child: const Icon(Icons.delete_outline_rounded,
+                            size: 25, color: Color.fromARGB(255, 231, 53, 53)),
                       ),
                       title: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -676,5 +690,37 @@ class _LocationSearchPageState extends State<LocationSearchPage> {
       print('Exception occurred: $e');
       return ["", ""];
     }
+  }
+
+  void showCustomTooltip(
+      BuildContext context, String message, Offset position) {
+    final overlay = Overlay.of(context);
+    final overlayEntry = OverlayEntry(
+      builder: (context) => Positioned(
+        top: position.dy - 50, // Position above the icon
+        left: position.dx - 50,
+        child: Material(
+          color: Colors.transparent,
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+            decoration: BoxDecoration(
+              color: Colors.black87,
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Text(
+              message,
+              textAlign: TextAlign.center,
+              style: const TextStyle(color: Colors.white),
+            ),
+          ),
+        ),
+      ),
+    );
+
+    overlay.insert(overlayEntry);
+
+    Future.delayed(const Duration(seconds: 2), () {
+      overlayEntry.remove();
+    });
   }
 }

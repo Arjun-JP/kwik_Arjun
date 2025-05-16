@@ -8,6 +8,8 @@ import 'package:kwik/bloc/Address_bloc/address_state.dart';
 import 'package:kwik/bloc/Cart_bloc/cart_bloc.dart';
 import 'package:kwik/bloc/Cart_bloc/cart_event.dart';
 import 'package:kwik/bloc/Cart_bloc/cart_state.dart';
+import 'package:kwik/bloc/Coupon_bloc/Coupon_bloc.dart' show CouponBloc;
+import 'package:kwik/bloc/Coupon_bloc/coupon_event.dart';
 import 'package:kwik/constants/colors.dart';
 import 'package:kwik/constants/constants.dart';
 import 'package:kwik/models/cart_model.dart';
@@ -96,20 +98,21 @@ class _SelectVarrientBottomSheetState extends State<SelectVarrientBottomSheet> {
                       child: ListView.separated(
                           itemBuilder: (context, index) {
                             return BlocBuilder<AddressBloc, AddressState>(
-                                builder: (context, state) {
-                              if (state is LocationSearchResults) {
+                                builder: (context, addressstate) {
+                              if (addressstate is LocationSearchResults) {
                                 return Opacity(
                                   opacity: filtredvariations[index]
                                               .stock
                                               .where((element) =>
                                                   element.warehouseRef ==
-                                                  state.warehouse!.id)
+                                                  addressstate.warehouse!.id)
                                               .isNotEmpty &&
                                           filtredvariations[index]
                                                   .stock
                                                   .where((element) =>
                                                       element.warehouseRef ==
-                                                      state.warehouse!.id)
+                                                      addressstate
+                                                          .warehouse!.id)
                                                   .first
                                                   .stockQty !=
                                               0
@@ -210,6 +213,8 @@ class _SelectVarrientBottomSheetState extends State<SelectVarrientBottomSheet> {
                                                                       .id)
                                                       ? quantitycontrolbutton(
                                                           user: user,
+                                                          pincode: addressstate
+                                                              .pincode,
                                                           variationid: widget
                                                               .product
                                                               .variations[index]
@@ -270,7 +275,7 @@ class _SelectVarrientBottomSheetState extends State<SelectVarrientBottomSheet> {
                                                                         quantity:
                                                                             1,
                                                                         pincode:
-                                                                            "560003",
+                                                                            addressstate.pincode,
                                                                         sellingPrice:
                                                                             firstVariation.sellingPrice,
                                                                         mrp: firstVariation
@@ -296,9 +301,15 @@ class _SelectVarrientBottomSheetState extends State<SelectVarrientBottomSheet> {
                                                                           firstVariation
                                                                               .id,
                                                                       pincode:
-                                                                          "560003",
+                                                                          addressstate
+                                                                              .pincode,
                                                                     ),
                                                                   );
+                                                              context
+                                                                  .read<
+                                                                      CouponBloc>()
+                                                                  .add(
+                                                                      ResetCoupons());
                                                             }
                                                           },
                                                           style: ElevatedButton
@@ -400,6 +411,7 @@ Widget quantitycontrolbutton(
     {required ThemeData theme,
     required String variationid,
     required User? user,
+    required String pincode,
     required ProductModel product,
     required String buttonbgcolor,
     required String buttontextcolor,
@@ -418,10 +430,11 @@ Widget quantitycontrolbutton(
             onTap: () {
               HapticFeedback.mediumImpact();
               ctx.read<CartBloc>().add(DecreaseCartQuantity(
-                  pincode: "560003",
+                  pincode: pincode,
                   productRef: product.id,
                   userId: user!.uid,
                   variantId: variationid));
+              ctx.read<CouponBloc>().add(ResetCoupons());
             },
             child: SizedBox(
                 child: Center(
@@ -451,10 +464,11 @@ Widget quantitycontrolbutton(
             onTap: () {
               HapticFeedback.mediumImpact();
               ctx.read<CartBloc>().add(IncreaseCartQuantity(
-                  pincode: "560003",
+                  pincode: pincode,
                   productRef: product.id,
                   userId: user!.uid,
                   variantId: variationid));
+              ctx.read<CouponBloc>().add(ResetCoupons());
             },
             child: SizedBox(
                 child: Center(

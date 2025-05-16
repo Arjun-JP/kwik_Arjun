@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:kwik/bloc/Coupon_bloc/Coupon_bloc.dart';
+import 'package:kwik/bloc/Coupon_bloc/coupon_event.dart';
 import 'package:kwik/bloc/navbar_bloc/navbar_bloc.dart';
 import 'package:kwik/bloc/navbar_bloc/navbar_event.dart';
 // import 'package:lottie/lottie.dart';
@@ -13,6 +15,7 @@ class OrderSuccessPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+     context.read<CouponBloc>().add(ResetCoupons());
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(10.0),

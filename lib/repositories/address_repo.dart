@@ -103,17 +103,17 @@ class AddressRepository {
     }
   }
 
-  Future<void> deleteAddress(String addressId) async {
-    final url = Uri.parse('$baseUrl/address/delete/$addressId');
-    try {
-      final response = await http.delete(url, headers: headers);
-      if (response.statusCode != 200) {
-        throw Exception('Failed to delete address');
-      }
-    } catch (e) {
-      throw Exception("Error deleting address: $e");
-    }
-  }
+  // Future<void> deleteAddress(String addressId) async {
+  //   final url = Uri.parse('$baseUrl/address/delete/$addressId');
+  //   try {
+  //     final response = await http.delete(url, headers: headers);
+  //     if (response.statusCode != 200) {
+  //       throw Exception('Failed to delete address');
+  //     }
+  //   } catch (e) {
+  //     throw Exception("Error deleting address: $e");
+  //   }
+  // }
 
   Future<void> setDefaultAddress(String addressId) async {
     final url = Uri.parse('$baseUrl/users/select/address/change');
@@ -193,6 +193,28 @@ class AddressRepository {
       }
     } catch (e) {
       throw Exception("Error getting warehouse details: $e");
+    }
+  }
+
+  Future<void> deleteaddress(String addressID) async {
+    final url = Uri.parse('$baseUrl/users/remove/address');
+    try {
+      // Create the request body with the Address nested object
+      final requestBody = {"addressId": addressID, "user_ref": user!.uid};
+
+      final response = await http.delete(
+        url,
+        headers: headers,
+        body: json.encode(requestBody),
+      );
+      print(response.body);
+      print(response.statusCode);
+      if (response.statusCode != 200) {
+        throw Exception(
+            'Failed to add address. Status code: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception("Error adding address: $e");
     }
   }
 }

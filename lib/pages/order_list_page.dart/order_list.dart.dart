@@ -13,6 +13,7 @@ import 'package:kwik/bloc/order_bloc/order_state.dart';
 import 'package:kwik/constants/colors.dart';
 import 'package:kwik/constants/format_time.dart';
 import 'package:kwik/models/order_model.dart';
+import 'package:kwik/pages/Order_status_page/track_order_status.dart';
 import 'package:kwik/widgets/shimmer/order_list_page_shimmer.dart';
 
 class OrderListingPage extends StatefulWidget {
@@ -287,90 +288,153 @@ class OrderCard extends StatelessWidget {
               ),
               const SizedBox(height: 5),
 
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  ElevatedButton(
-                    onPressed: () {
-                      HapticFeedback.mediumImpact();
-                      if (orderData.orderStatus == "Delivered") {
-                        context.push('/product-rating',
-                            extra: orderData.products
-                                .map((e) => e.productRef)
-                                .toList());
-                      } else {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text(
-                              "Thanks for your interest in reviewing! Please wait until the product is delivered to share your feedback.",
-                            ),
-                          ),
-                        );
-                      }
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color.fromARGB(255, 243, 242, 242),
-                      foregroundColor: Colors.black,
-                    ),
-                    child: const Text("Rate Order"),
-                  ),
-                  BlocListener<OrderBloc, OrderState>(
-                    listenWhen: (previous, current) => current
-                        is Orderagaincompleted, // only listen for this state
-                    listener: (context, state) {
-                      if (state is Orderagaincompleted) {
-                        context
-                            .read<CartBloc>()
-                            .add(SyncCartWithServer(userId: user!.uid));
-                        context
-                            .read<NavbarBloc>()
-                            .add(const UpdateNavBarIndex(3));
-                        context.go('/cart');
-                      }
-                      context.go('/cart');
-                    },
-                    child: BlocBuilder<OrderBloc, OrderState>(
-                      builder: (context, state) {
-                        if (state is Orderagainloading &&
-                            state.orderid == orderData.id) {
-                          return const SizedBox(
-                            height: 35,
-                            child: CircularProgressIndicator(
-                              color: AppColors.buttonColorOrange,
-                            ),
-                          );
-                        } else if (state is Orderagainfaild) {
-                          return TextButton(
-                            onPressed: () {
-                              context.read<OrderBloc>().add(Orderagain(
-                                  orderid: orderData.id, userId: user!.uid));
-                            },
-                            child: const Text(
-                              "Order Again",
-                              style: TextStyle(
-                                  color: Colors.pink,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                          );
-                        }
-
-                        return TextButton(
+              orderData.orderStatus == "Delivered"
+                  ? Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        ElevatedButton(
                           onPressed: () {
-                            context.read<OrderBloc>().add(Orderagain(
-                                orderid: orderData.id, userId: user!.uid));
+                            HapticFeedback.mediumImpact();
+                            if (orderData.orderStatus == "Delivered") {
+                              context.push('/product-rating',
+                                  extra: orderData.products
+                                      .map((e) => e.productRef)
+                                      .toList());
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text(
+                                    "Thanks for your interest in reviewing! Please wait until the product is delivered to share your feedback.",
+                                  ),
+                                ),
+                              );
+                            }
                           },
-                          child: const Text(
-                            "Order Again",
-                            style: TextStyle(
-                                color: Colors.pink,
-                                fontWeight: FontWeight.bold),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor:
+                                const Color.fromARGB(255, 243, 242, 242),
+                            foregroundColor: Colors.black,
                           ),
-                        );
-                      },
+                          child: const Text("Rate Order"),
+                        ),
+                        BlocListener<OrderBloc, OrderState>(
+                          listenWhen: (previous, current) => current
+                              is Orderagaincompleted, // only listen for this state
+                          listener: (context, state) {
+                            if (state is Orderagaincompleted) {
+                              context
+                                  .read<CartBloc>()
+                                  .add(SyncCartWithServer(userId: user!.uid));
+                              context
+                                  .read<NavbarBloc>()
+                                  .add(const UpdateNavBarIndex(3));
+                              context.go('/cart');
+                            }
+                            context.go('/cart');
+                          },
+                          child: BlocBuilder<OrderBloc, OrderState>(
+                            builder: (context, state) {
+                              if (state is Orderagainloading &&
+                                  state.orderid == orderData.id) {
+                                return const SizedBox(
+                                  height: 35,
+                                  child: CircularProgressIndicator(
+                                    color: AppColors.buttonColorOrange,
+                                  ),
+                                );
+                              } else if (state is Orderagainfaild) {
+                                return TextButton(
+                                  onPressed: () {
+                                    context.read<OrderBloc>().add(Orderagain(
+                                        orderid: orderData.id,
+                                        userId: user!.uid));
+                                  },
+                                  child: const Text(
+                                    "Order Again",
+                                    style: TextStyle(
+                                        color: Colors.pink,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                );
+                              }
+
+                              return TextButton(
+                                onPressed: () {
+                                  context.read<OrderBloc>().add(Orderagain(
+                                      orderid: orderData.id,
+                                      userId: user!.uid));
+                                },
+                                child: const Text(
+                                  "Order Again",
+                                  style: TextStyle(
+                                      color: Colors.pink,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                      ],
+                    )
+                  : Padding(
+                      padding: const EdgeInsets.only(top: 10.0, bottom: 5),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            flex: 2,
+                            child: Column(
+                              spacing: 5,
+                              children: [
+                                Text(
+                                  orderData.otp,
+                                  style: theme.textTheme.bodyLarge!.copyWith(
+                                      fontWeight: FontWeight.w800,
+                                      color: const Color.fromARGB(
+                                          255, 249, 13, 13)),
+                                ),
+                                Text(
+                                  "(OTP Code)",
+                                  style: theme.textTheme.bodyLarge!.copyWith(
+                                      fontWeight: FontWeight.w500,
+                                      color: const Color.fromARGB(
+                                          255, 53, 53, 53)),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Expanded(
+                            flex: 3,
+                            child: SizedBox(
+                              height: 40,
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  HapticFeedback.mediumImpact();
+                                  if (orderData.orderStatus != "Delivered" ||
+                                      orderData.orderStatus !=
+                                          "Delivery failed") {
+                                    Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                OrderStatusPage(
+                                                    orderID: orderData.id)));
+                                  } else {}
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor:
+                                      const Color.fromARGB(255, 235, 72, 17),
+                                  foregroundColor: Colors.black,
+                                ),
+                                child: Text(
+                                  "Track Your Order",
+                                  style: theme.textTheme.bodyLarge!
+                                      .copyWith(color: Colors.white),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
-              ),
             ],
           ),
         ),

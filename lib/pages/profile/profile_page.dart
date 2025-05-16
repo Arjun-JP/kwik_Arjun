@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kwik/constants/doted_devider.dart';
+import 'package:kwik/widgets/edit_profile_bottom_sheet.dart';
 import 'package:kwik/widgets/logout_bottomsheet.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -69,7 +70,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     spacing: 5,
                     children: [
                       Text(
-                        "Your account",
+                        user!.displayName ?? "Your account",
                         style: theme.textTheme.headlineMedium!.copyWith(
                             fontSize: 20,
                             fontWeight: FontWeight.w800,
@@ -151,28 +152,39 @@ class _ProfilePageState extends State<ProfilePage> {
                     ),
                   ),
                   Expanded(
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 20, vertical: 10),
-                      decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(10),
-                          border:
-                              Border.all(color: Colors.blueGrey, width: .1)),
-                      child: Column(
-                        children: [
-                          const Icon(
-                            Icons.person_outlined,
-                            size: 30,
-                          ),
-                          Text(
-                            "Edit &\nProfile",
-                            textAlign: TextAlign.center,
-                            style: theme.textTheme.bodyLarge!.copyWith(
-                                color: Colors.black,
-                                fontWeight: FontWeight.w700),
-                          )
-                        ],
+                    child: InkWell(
+                      onTap: () {
+                        HapticFeedback.mediumImpact();
+                        showModalBottomSheet(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return const UpdateProfileBottomSheet();
+                          },
+                        );
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 20, vertical: 10),
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(10),
+                            border:
+                                Border.all(color: Colors.blueGrey, width: .1)),
+                        child: Column(
+                          children: [
+                            const Icon(
+                              Icons.person_outlined,
+                              size: 30,
+                            ),
+                            Text(
+                              "Edit &\nProfile",
+                              textAlign: TextAlign.center,
+                              style: theme.textTheme.bodyLarge!.copyWith(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.w700),
+                            )
+                          ],
+                        ),
                       ),
                     ),
                   )
