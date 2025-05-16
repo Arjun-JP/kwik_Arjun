@@ -1,17 +1,20 @@
 import 'dart:convert';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:kwik/models/address_model.dart';
 import 'package:kwik/models/warehouse_model.dart';
 
 class AddressRepository {
-  String baseUrl = "https://kwik-backend.vercel.app";
+  String baseUrl = dotenv.env['API_URL']!;
 
   final headers = {
     'Content-Type': 'application/json',
     'api_Key': 'arjun',
     'api_Secret': 'digi9',
   };
+  final apiUrl = dotenv.env['API_URL'];
+  final apiKey = dotenv.env['API_KEY'];
   final user = FirebaseAuth.instance.currentUser;
 
   Future<Map<String, dynamic>> getAddressesFromServer() async {
