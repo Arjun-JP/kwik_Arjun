@@ -10,8 +10,8 @@ class AddressRepository {
 
   final headers = {
     'Content-Type': 'application/json',
-    'api_Key': 'arjun',
-    'api_Secret': 'digi9',
+     'api_Key': dotenv.env['API_KEY']!,
+    'api_Secret': dotenv.env['API_SECRET']!,
   };
   final apiUrl = dotenv.env['API_URL'];
   final apiKey = dotenv.env['API_KEY'];

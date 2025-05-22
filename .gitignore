@@ -49,3 +49,7 @@ app.*.map.json
 
 # Ignore Gradle build output directory
 build
+# EMV variables
+*.env
+
+

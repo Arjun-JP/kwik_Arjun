@@ -19,7 +19,7 @@ class UpdateBloc extends Bloc<UpdateEvent, UpdateState> {
       CheckForUpdate event, Emitter<UpdateState> emit) async {
     try {
       final info = await PackageInfo.fromPlatform();
-      final currentVersion = 0;
+      final currentVersion = info.version;
 
       Map<String, dynamic> appdata = await repository.getappdata();
 
@@ -30,31 +30,28 @@ class UpdateBloc extends Bloc<UpdateEvent, UpdateState> {
           ? appdata['force_update_android']
           : appdata['force_update_ios'];
 
-      final downloadUrl = "https://pramctraining.in/";
-      print(title);
-      print(description);
-      print(forceUpdateVersion);
-      print("object");
-      // Compare versions safely
-      if (forceUpdateVersion > currentVersion) {
-        Navigator.push(
-          event.context,
-          MaterialPageRoute(
-            builder: (context) => ForceUpdatePage(
-              title: title,
-              description: description,
-              imageUrl: "https://via.placeholder.com/300", // Dummy image
-              downloadUrl: downloadUrl,
-            ),
-          ),
-        );
+      final downloadUrl = Platform.isAndroid
+          ? appdata['new_update_des_android']
+          : appdata['new_update_title_android'];
 
+      // Compare versions safely
+      if (_isVersionGreater(forceUpdateVersion, currentVersion)) {
         emit(UpdateAvailable(
           title: title,
           description: description,
           updateType: "force",
           downloadUrl: downloadUrl,
         ));
+        Navigator.push(
+          event.context,
+          MaterialPageRoute(
+            builder: (context) => ForceUpdatePage(
+              title: title,
+              description: description,
+              downloadUrl: downloadUrl,
+            ),
+          ),
+        );
       } else {
         emit(NoUpdateRequired());
       }
@@ -64,20 +61,20 @@ class UpdateBloc extends Bloc<UpdateEvent, UpdateState> {
   }
 
   /// Compares two semantic version strings (e.g., "1.2.3" > "1.0.0")
-//   bool _isVersionGreater(String serverVersion, int currentVersion) {
-//     List<int> serverParts =
-//         serverVersion.split('.').map((e) => int.tryParse(e) ?? 0).toList();
-//     List<int> currentParts =
-//         currentVersion.split('.').map((e) => int.tryParse(e) ?? 0).toList();
+  bool _isVersionGreater(String serverVersion, String currentVersion) {
+    List<int> serverParts =
+        serverVersion.split('.').map((e) => int.tryParse(e) ?? 0).toList();
+    List<int> currentParts =
+        currentVersion.split('.').map((e) => int.tryParse(e) ?? 0).toList();
 
-//     for (int i = 0; i < serverParts.length; i++) {
-//       if (i >= currentParts.length || serverParts[i] > currentParts[i]) {
-//         return true;
-//       } else if (serverParts[i] < currentParts[i]) {
-//         return false;
-//       }
-//     }
+    for (int i = 0; i < serverParts.length; i++) {
+      if (i >= currentParts.length || serverParts[i] > currentParts[i]) {
+        return true;
+      } else if (serverParts[i] < currentParts[i]) {
+        return false;
+      }
+    }
 
-//     return false;
-//   }
+    return false;
+  }
 }

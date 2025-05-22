@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dash/flutter_dash.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kwik/bloc/Address_bloc/Address_bloc.dart';
@@ -1857,7 +1858,7 @@ class _CartPageState extends State<CartPage> {
               listener: (context, state) {
             if (state is OrderPlacedOnline) {
               var options = {
-                'key': 'rzp_test_JukdKxCGZqamy4',
+                'key': dotenv.env['RAZORPAY_APIKEY']!,
                 'name': 'kwik groceries',
                 'order_id': state.orderResponse["razorpayOrderId"],
                 'description': 'Test Payment',

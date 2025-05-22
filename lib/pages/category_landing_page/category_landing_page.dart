@@ -5,6 +5,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:kwik/bloc/category_landing_page_bloc/category_landing_page__state.dart';
 import 'package:kwik/bloc/category_landing_page_bloc/category_landing_page_bloc.dart';
 import 'package:kwik/bloc/category_landing_page_bloc/category_landing_page_event.dart';
+import 'package:kwik/constants/colors.dart';
 import 'package:kwik/models/product_model.dart';
 import 'package:kwik/models/subcategory_model.dart';
 import 'package:kwik/pages/Home_page/widgets/banner_model.dart';

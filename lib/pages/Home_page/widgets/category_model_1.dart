@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kwik/constants/colors.dart';
+import 'package:kwik/pages/category_landing_page/category_landingpage_new.dart';
 import 'package:kwik/widgets/shimmer/topcategory_shimmer.dart';
 
 import '../../../bloc/home_page_bloc/category_bloc/category_bloc.dart';
@@ -72,8 +73,22 @@ class _CategoryModel1State extends State<CategoryModel1> {
                                     .contains(category.catref)) {
                                   return InkWell(
                                     onTap: () {
-                                      context.push(
-                                          "/allsubcategorypage?categoryId=${category.catref}&selectedsubcategory=");
+                                      // context.push(
+                                      //     "/allsubcategorypage?categoryId=${category.catref}&selectedsubcategory=");
+                                      Navigator.of(context)
+                                          .push(MaterialPageRoute(
+                                        builder: (context) =>
+                                            CategoryLandingPageNew(
+                                          category: category,
+                                          subcategoryIDs: category
+                                              .selectedSubCategoryRef!
+                                              .where((element) => element
+                                                  is String) // Filter out non-strings
+                                              .cast<
+                                                  String>() // Cast the filtered elements to String
+                                              .toList(),
+                                        ),
+                                      ));
                                     },
                                     child: Container(
                                       margin: const EdgeInsetsDirectional.only(

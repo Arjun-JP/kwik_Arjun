@@ -3,6 +3,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:ui';
 import 'package:bloc/bloc.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:kwik/bloc/Address_bloc/address_event.dart';
@@ -342,7 +343,7 @@ class AddressBloc extends Bloc<AddressEvent, AddressState> {
 }
 
 Future<Map<String, dynamic>?> getPlaceDetailsFromCurrentLocation() async {
-  const String apiKey = 'AIzaSyAPLvvnotvyrbkQVynYChnZhyrgSWAjO1k';
+  final String apiKey = dotenv.env['GOOGLEMAP_APIKEY']!;
 
   try {
     LocationPermission permission = await Geolocator.checkPermission();

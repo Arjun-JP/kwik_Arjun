@@ -1,15 +1,16 @@
 import 'dart:convert';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 
 class OrderManagementRepository {
   OrderManagementRepository();
-  final String baseUrl = "https://kwik-backend.vercel.app";
+  final String baseUrl = dotenv.env['API_URL']!;
 
   final headers = {
     'Content-Type': 'application/json',
-    'api_Key': 'arjun',
-    'api_Secret': 'digi9',
+    'api_Key': dotenv.env['API_KEY']!,
+    'api_Secret': dotenv.env['API_SECRET']!,
   };
   final user = FirebaseAuth.instance.currentUser;
   Future<Map<String, dynamic>> placeOrder(
@@ -21,8 +22,8 @@ class OrderManagementRepository {
       Uri.parse("$baseUrl/order"),
       headers: {
         'Content-Type': 'application/json',
-        'api_Key': 'arjun',
-        'api_Secret': 'digi9',
+        'api_Key': dotenv.env['API_KEY']!,
+        'api_Secret': dotenv.env['API_SECRET']!,
       },
       body: jsonEncode(orderJson), // <<<< pass orderJson directly
     );
@@ -85,8 +86,8 @@ class OrderManagementRepository {
       Uri.parse("$baseUrl/order"),
       headers: {
         'Content-Type': 'application/json',
-        'api_Key': 'arjun',
-        'api_Secret': 'digi9',
+        'api_Key': dotenv.env['API_KEY']!,
+        'api_Secret': dotenv.env['API_SECRET']!,
       },
       body: jsonEncode(orderJson), // <<<< pass orderJson directly
     );

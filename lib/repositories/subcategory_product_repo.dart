@@ -1,16 +1,17 @@
 import 'dart:convert';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:kwik/models/product_model.dart';
 
 class SubcategProductRepository {
   SubcategProductRepository();
-  String baseUrl = "https://kwik-backend.vercel.app";
+  String baseUrl = dotenv.env['API_URL']!;
 
   final headers = {
     'Content-Type':
         'application/json', // Add this to specify the content type as JSON
-    'api_Key': 'arjun',
-    'api_Secret': 'digi9',
+    'api_Key': dotenv.env['API_KEY']!,
+    'api_Secret': dotenv.env['API_SECRET']!,
   };
   Future<List<ProductModel>> fetchProductsBySubcategory(
       String subcategoryId) async {

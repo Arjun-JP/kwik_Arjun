@@ -1,16 +1,15 @@
 import 'dart:convert';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 
 class OrderDeiailsRepo {
-  static const String _baseUrl = 'https://kwik-backend.vercel.app';
+  static final String _baseUrl = dotenv.env['API_URL']!;
 
   Future<Map<String, dynamic>> getorderdetails(
       {required String orderID}) async {
-    const String apiKey = 'arjun';
-    const String apiSecret = 'digi9';
     final headers = {
-      'api_Key': apiKey,
-      'api_Secret': apiSecret,
+      'api_Key': dotenv.env['API_KEY']!,
+      'api_Secret': dotenv.env['API_SECRET']!,
     };
 
     // Fetch from API

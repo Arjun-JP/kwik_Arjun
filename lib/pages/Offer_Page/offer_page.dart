@@ -17,6 +17,7 @@ import 'package:kwik/bloc/home_page_bloc/category_model_10_bloc/category_model_1
 import 'package:kwik/bloc/navbar_bloc/navbar_bloc.dart';
 import 'package:kwik/bloc/product_details_page/recommended_products_bloc/recommended_products_bloc.dart';
 import 'package:kwik/bloc/product_details_page/recommended_products_bloc/recommended_products_event.dart';
+import 'package:kwik/constants/colors.dart';
 import 'package:kwik/pages/Address_management/location_search_page.dart';
 import 'package:kwik/pages/Offer_Page/Super%20Saver%20Page%20Widgets/supersaver_model1.dart';
 import 'package:kwik/pages/Home_page/widgets/banner_model.dart';

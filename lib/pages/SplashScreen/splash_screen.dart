@@ -3,10 +3,7 @@ import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:kwik/bloc/force_update_bloc/force_update_bloc.dart';
-import 'package:kwik/bloc/force_update_bloc/force_update_event.dart';
 import 'package:kwik/widgets/location_permission_bottom_sheet.dart';
 
 class SplashScreen extends StatefulWidget {

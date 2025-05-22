@@ -1,22 +1,23 @@
 import 'dart:convert';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 
 import '../models/product_model.dart';
 import '../models/subcategory_model.dart';
 
 class CategoryLandingPageRepo {
-  String baseUrl = "https://kwik-backend.vercel.app";
+  String baseUrl = dotenv.env['API_URL']!;
 
   final headers = {
     'Content-Type':
         'application/json', // Add this to specify the content type as JSON
-    'api_Key': 'arjun',
-    'api_Secret': 'digi9',
+    'api_Key': dotenv.env['API_KEY']!,
+    'api_Secret': dotenv.env['API_SECRET']!,
   };
 
   /// Fetch all subcategories of a given category ID (GET request)
   Future<List<SubCategoryModel>> fetchSubCategories(String categoryId) async {
-    final url = Uri.parse('$baseUrl/subcategory/allsubcategories/$categoryId');
+    final url = Uri.parse('$baseUrl/subcategory/allsubcategories');
 
     try {
       final response = await http.get(url, headers: headers);
@@ -39,23 +40,23 @@ class CategoryLandingPageRepo {
 
   /// Fetch all products for the selected subcategories (POST request)
   Future<List<ProductModel>> fetchProductsFromSubCategories(
-      List<String> subCategoryIds) async {
-    final url = Uri.parse('$baseUrl/product/products-by-subcategories');
+      String categoryID, List<String> subCategoryIds) async {
+    final url = Uri.parse('$baseUrl/product/allproducts');
 
     try {
-      final response = await http.post(
+      final response = await http.get(
         url,
         headers: headers,
-        body: json.encode({"subCategoryIds": subCategoryIds}),
       );
-
+      print(response.statusCode);
+      print(response.body);
       if (response.statusCode == 200) {
-        Map<String, dynamic> bodydata = json.decode(response.body);
+        List<dynamic> bodydata = json.decode(response.body);
 
-        if (bodydata.containsKey("data") && bodydata["data"] is List) {
-          List<dynamic> data = bodydata["data"];
+        if (bodydata.isNotEmpty) {
+          // List<dynamic> data = bodydata;
 
-          return data.map((json) => ProductModel.fromJson(json)).toList();
+          return bodydata.map((json) => ProductModel.fromJson(json)).toList();
         } else {
           return []; // Return an empty list if "data" is missing or not a list.
         }

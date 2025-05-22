@@ -97,88 +97,120 @@ class _AllSubcategoryState extends State<AllSubcategory> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         /// Left Column (Scrollable)
-                        Expanded(
-                          flex: 1,
-                          child: Container(
-                            decoration: const BoxDecoration(
-                              border: Border(
-                                right: BorderSide(
-                                  color: Color.fromARGB(
-                                      255, 212, 212, 212), // Border color
-                                  width: .3, // Border width
+                        state.subCategories.length > 1
+                            ? Expanded(
+                                flex: 1,
+                                child: Container(
+                                  margin: const EdgeInsets.only(bottom: 15),
+                                  decoration: const BoxDecoration(
+                                    border: Border(
+                                      right: BorderSide(
+                                        color: Color.fromARGB(
+                                            255, 212, 212, 212), // Border color
+                                        width: .3, // Border width
+                                      ),
+                                    ),
+                                    color: Color.fromARGB(255, 250, 250, 250),
+                                  ),
+                                  height: MediaQuery.of(context).size.height,
+                                  child: SingleChildScrollView(
+                                    child: Column(
+                                      spacing: 15,
+                                      children: List.generate(
+                                        state.subCategories.length,
+                                        (index) => subcategoryModel(
+                                            categoryID: widget.categoryrId,
+                                            selectedsubcategoryID:
+                                                state.selectedSubCategory,
+                                            subcategory:
+                                                state.subCategories[index],
+                                            theme: theme,
+                                            categorycolor: state.subCategories
+                                                .first.categoryRef.color),
+                                      ),
+                                    ),
+                                  ),
                                 ),
-                              ),
-                              color: Color.fromARGB(255, 250, 250, 250),
-                            ),
-                            height: MediaQuery.of(context).size.height,
-                            child: SingleChildScrollView(
-                              child: Column(
-                                spacing: 15,
-                                children: List.generate(
-                                  state.subCategories.length,
-                                  (index) => subcategoryModel(
-                                      categoryID: widget.categoryrId,
-                                      selectedsubcategoryID:
-                                          state.selectedSubCategory,
-                                      subcategory: state.subCategories[index],
-                                      theme: theme,
-                                      categorycolor: state.subCategories.first
-                                          .categoryRef.color),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
+                              )
+                            : const SizedBox(),
 
                         /// Right Column (Scrollable)
-                        Expanded(
-                          flex: 3,
-                          child: Container(
-                            height: MediaQuery.of(context).size.height,
-                            padding: const EdgeInsets.all(10),
-                            color: const Color.fromARGB(255, 255, 255, 255),
-                            child: StaggeredGrid.count(
-                              mainAxisSpacing: 30,
-                              crossAxisSpacing: 20,
-                              crossAxisCount: 2,
-                              children: List.generate(
-                                state.products
-                                    .where((product) => product.subCategoryRef
-                                        .any((subcat) =>
-                                            subcat.id ==
-                                                state.selectedSubCategory &&
-                                            product.variations.isNotEmpty))
-                                    .length,
-                                (index) => SizedBox(
-                                  height: 278,
-                                  child: ProductItemSubcategorypage(
-                                      product: state.products
-                                          .where((product) => product
-                                              .subCategoryRef
-                                              .any((subcat) =>
-                                                  subcat.id ==
-                                                  state.selectedSubCategory))
-                                          .toList()[index],
-                                      buttonBgColor: "FFFFFF",
-                                      mrpColor: "A19DA3",
-                                      offertextcolor: "000000",
-                                      productBgColor: "FFFFFF",
-                                      productnamecolor: "233D4D",
-                                      sellingPriceColor: "233D4D",
-                                      subcategoryRef: widget
-                                              .selectedsubcategory ??
-                                          state.products[index].subCategoryRef
-                                              .first.id,
-                                      unitTextcolor: "A19DA3",
-                                      unitbgcolor: "00FFFFFF",
-                                      buttontextcolor: "E23338",
-                                      offerbgcolor: "FFFA76",
-                                      context: context),
+                        state.products
+                                .where((product) => product.subCategoryRef.any(
+                                    (subcat) =>
+                                        subcat.id == state.selectedSubCategory))
+                                .toList()
+                                .isNotEmpty
+                            ? Expanded(
+                                flex: 3,
+                                child: Container(
+                                  height: MediaQuery.of(context).size.height,
+                                  padding: const EdgeInsets.all(10),
+                                  color:
+                                      const Color.fromARGB(255, 255, 255, 255),
+                                  child: SingleChildScrollView(
+                                    physics: const BouncingScrollPhysics(),
+                                    scrollDirection: Axis.vertical,
+                                    child: StaggeredGrid.count(
+                                      mainAxisSpacing: 30,
+                                      crossAxisSpacing: 20,
+                                      crossAxisCount:
+                                          state.subCategories.length > 1
+                                              ? 2
+                                              : 3,
+                                      children: List.generate(
+                                        state.products
+                                            .where((product) => product
+                                                .subCategoryRef
+                                                .any((subcat) =>
+                                                    subcat.id ==
+                                                        state
+                                                            .selectedSubCategory &&
+                                                    product
+                                                        .variations.isNotEmpty))
+                                            .length,
+                                        (index) => SizedBox(
+                                          height: 278,
+                                          child: ProductItemSubcategorypage(
+                                              product: state.products
+                                                  .where((product) => product
+                                                      .subCategoryRef
+                                                      .any((subcat) =>
+                                                          subcat.id ==
+                                                          state
+                                                              .selectedSubCategory))
+                                                  .toList()[index],
+                                              buttonBgColor: "FFFFFF",
+                                              mrpColor: "A19DA3",
+                                              offertextcolor: "000000",
+                                              productBgColor: "FFFFFF",
+                                              productnamecolor: "233D4D",
+                                              sellingPriceColor: "233D4D",
+                                              subcategoryRef:
+                                                  widget.selectedsubcategory ??
+                                                      state
+                                                          .products[index]
+                                                          .subCategoryRef
+                                                          .first
+                                                          .id,
+                                              unitTextcolor: "A19DA3",
+                                              unitbgcolor: "00FFFFFF",
+                                              buttontextcolor: "E23338",
+                                              offerbgcolor: "FFFA76",
+                                              context: context),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
                                 ),
-                              ),
-                            ),
-                          ),
-                        ),
+                              )
+                            : const Expanded(
+                                flex: 3,
+                                child: SizedBox(
+                                  child: Center(
+                                    child: Text("No Data Available"),
+                                  ),
+                                )),
                       ],
                     ),
                   ),

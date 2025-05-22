@@ -1,5 +1,6 @@
 // lib/core/services/google_maps_service.dart
 import 'dart:convert';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:kwik/models/googlemap_place_model.dart';
 
@@ -8,7 +9,7 @@ class GoogleMapsService {
 
   Future<List<GoogleMapPlace>> searchPlaces(String query) async {
     final url = Uri.parse(
-        'https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$query&types=(regions)&components=country:IN&key=AIzaSyAPLvvnotvyrbkQVynYChnZhyrgSWAjO1k');
+        'https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$query&types=(regions)&components=country:IN&key=${dotenv.env['GOOGLEMAP_APIKEY']!}');
 
     final response = await http.get(url);
 
@@ -32,7 +33,7 @@ class GoogleMapsService {
 
   Future<Map<String, dynamic>> getPlaceDetails(String placeId) async {
     final url = Uri.parse(
-      'https://maps.googleapis.com/maps/api/place/details/json?place_id=$placeId&key=AIzaSyAPLvvnotvyrbkQVynYChnZhyrgSWAjO1k',
+      'https://maps.googleapis.com/maps/api/place/details/json?place_id=$placeId&key=${dotenv.env['GOOGLEMAP_APIKEY']!}',
     );
 
     final response = await http.get(url);
