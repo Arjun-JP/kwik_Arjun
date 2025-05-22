@@ -17,6 +17,10 @@ import 'package:kwik/bloc/Search_bloc/Search_bloc.dart';
 import 'package:kwik/bloc/Search_bloc/search_event.dart';
 import 'package:kwik/bloc/all_sub_category_bloc/all_sub_category_bloc.dart';
 import 'package:kwik/bloc/all_sub_category_bloc/all_sub_category_event.dart';
+import 'package:kwik/bloc/force_update_bloc/force_update_bloc.dart'
+    show UpdateBloc;
+import 'package:kwik/bloc/force_update_bloc/force_update_event.dart';
+import 'package:kwik/bloc/force_update_bloc/force_update_state.dart';
 import 'package:kwik/bloc/home_page_bloc/category_model_13_bloc/category_model_13_bloc.dart';
 import 'package:kwik/bloc/home_page_bloc/category_model_13_bloc/category_model_13_event.dart';
 import 'package:kwik/bloc/home_page_bloc/category_model_16_bloc/category_model_16_bloc.dart';
@@ -42,8 +46,10 @@ import 'package:kwik/bloc/product_details_page/recommended_products_bloc/recomme
 import 'package:kwik/bloc/product_details_page/recommended_products_bloc/recommended_products_event.dart';
 import 'package:kwik/bloc/product_details_page/similerproduct_bloc/similar_product_bloc.dart';
 import 'package:kwik/bloc/product_details_page/similerproduct_bloc/similar_product_event.dart';
+import 'package:kwik/constants/colors.dart';
 import 'package:kwik/models/order_model.dart' as locationmode;
 import 'package:kwik/pages/Address_management/location_search_page.dart';
+import 'package:kwik/pages/Force%20Update%20page/force_update.dart';
 import 'package:kwik/pages/Home_page/widgets/banner_model.dart';
 import 'package:kwik/pages/Home_page/widgets/category_model_10.dart';
 import 'package:kwik/pages/Home_page/widgets/category_model_12.dart';
@@ -64,6 +70,8 @@ import 'package:kwik/widgets/location_permission_bottom_sheet.dart';
 import 'package:kwik/widgets/navbar/navbar.dart';
 import 'package:kwik/widgets/shimmer/main_loading_indicator.dart';
 import 'package:kwik/widgets/shimmer/shimmer1.dart';
+import 'package:kwik/widgets/soft_update_popup.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:permission_handler/permission_handler.dart'
     show
         Permission,
@@ -96,10 +104,19 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   late final StreamSubscription<AddressState> _addressSubscription;
   bool _isInitialized = false;
-
+  PackageInfo _packageInfo = PackageInfo(
+    appName: 'Unknown',
+    packageName: 'Unknown',
+    version: 'Unknown',
+    buildNumber: 'Unknown',
+    buildSignature: 'Unknown',
+    installerStore: 'Unknown',
+  );
   @override
   void initState() {
     super.initState();
+    forceupdate();
+
     print("Init state called again");
     _initializeApp().then((_) {
       {
@@ -108,6 +125,13 @@ class _HomePageState extends State<HomePage> {
             SyncCartWithServer(userId: FirebaseAuth.instance.currentUser!.uid));
         context.read<AddressBloc>().add(const GetsavedAddressEvent());
       }
+    });
+  }
+
+  Future<void> _initPackageInfo() async {
+    final info = await PackageInfo.fromPlatform();
+    setState(() {
+      _packageInfo = info;
     });
   }
 
@@ -155,6 +179,25 @@ class _HomePageState extends State<HomePage> {
         addressState.selecteaddress == null) {
       await _checkLocationAndFetchWarehouse();
     }
+  }
+
+  forceupdate() async {
+    context.read<UpdateBloc>().add(CheckForUpdate(context));
+    final updateBloc = BlocProvider.of<UpdateBloc>(context);
+    final updateState = updateBloc.state;
+    print(updateState);
+    if (updateState is UpdateAvailable) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ForceUpdatePage(
+            title: updateState.title,
+            description: updateState.description,
+            downloadUrl: updateState.downloadUrl,
+          ),
+        ),
+      );
+    } else {}
   }
 
   Future<void> _checkLocationAndFetchWarehouse() async {
@@ -385,7 +428,6 @@ class _HomePageContent extends StatelessWidget {
         ),
         'order': uiData["template5"]["ui_order_number"]
       },
-
       {
         'template': BannerModel1(
           titlecolor: uiData["template21"]["title_color"],
@@ -397,7 +439,7 @@ class _HomePageContent extends StatelessWidget {
           borderradious: 20,
           showbanner: uiData["template21"]["show_Category"],
         ),
-        'order': "9"
+        'order': uiData["template21"]["ui_order_number"]
       },
 
       // Home page dynamic widgets in the created order

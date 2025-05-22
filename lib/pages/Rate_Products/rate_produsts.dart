@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kwik/bloc/Add_Review_bloc/add_review_bloc.dart';
 import 'package:kwik/bloc/Add_Review_bloc/add_review_event.dart';
@@ -325,12 +326,12 @@ List<ProductModel> getUniqueProducts(List<ProductModel> products) {
 }
 
 Future<String?> getUsermogoid({required String userId}) async {
-  String baseUrl = "https://kwik-backend.vercel.app";
+  String baseUrl = dotenv.env['API_URL']!;
 
   final headers = {
     'Content-Type': 'application/json',
-    'api_Key': 'arjun',
-    'api_Secret': 'digi9',
+    'api_Key': dotenv.env['API_KEY']!,
+    'api_Secret': dotenv.env['API_SECRET']!,
   };
   final url = Uri.parse("$baseUrl/users/$userId");
 

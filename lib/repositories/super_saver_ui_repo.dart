@@ -1,17 +1,16 @@
 import 'dart:convert';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
 
 class SuperSaverRepository {
-  static const String _baseUrl = 'https://kwik-backend.vercel.app';
+  static final String _baseUrl = dotenv.env['API_URL']!;
   static const String _cacheKey = 'Super_saver_ui_cache';
 
   Future<Map<String, dynamic>> fetchUiData({bool forceRefresh = false}) async {
-    const String apiKey = 'arjun';
-    const String apiSecret = 'digi9';
     final headers = {
-      'api_Key': apiKey,
-      'api_Secret': apiSecret,
+      'api_Key': dotenv.env['API_KEY']!,
+      'api_Secret': dotenv.env['API_SECRET']!,
     };
 
     // Open Hive Box

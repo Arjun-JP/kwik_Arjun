@@ -1,17 +1,15 @@
 import 'dart:convert';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import '../models/banner_model.dart';
 
 class BannerRepository {
-  final String apiUrl = "https://kwik-backend.vercel.app/banner/allbanners";
+  final String apiUrl = "${dotenv.env['API_URL']!}/banner/allbanners";
 
   Future<List<BannerModel>> fetchBanners() async {
-    const String apiKey = 'arjun';
-    const String apiSecret = 'digi9';
-
     final headers = {
-      'api_Key': apiKey,
-      'api_Secret': apiSecret,
+      'api_Key': dotenv.env['API_KEY']!,
+      'api_Secret': dotenv.env['API_SECRET']!,
     };
 
     try {

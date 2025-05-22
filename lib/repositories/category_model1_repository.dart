@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:kwik/models/subcategory_model.dart';
@@ -6,16 +7,12 @@ import 'package:kwik/models/subcategory_model.dart';
 import '../models/category_model.dart';
 
 class CategoryRepositoryModel1 {
-  final String baseUrl =
-      "https://kwik-backend.vercel.app"; // Replace with your API
+  final String baseUrl = dotenv.env['API_URL']!; // Replace with your API
   Future<List<Category>> fetchCategoryDetails() async {
     try {
-      const String apiKey = 'arjun';
-      const String apiSecret = 'digi9';
-
       final headers = {
-        'api_Key': apiKey,
-        'api_Secret': apiSecret,
+        'api_Key': dotenv.env['API_KEY']!,
+        'api_Secret': dotenv.env['API_SECRET']!,
       };
 
       final response = await http
@@ -38,12 +35,9 @@ class CategoryRepositoryModel1 {
 
   Future<List<SubCategoryModel>> fetchSubCategories(String categoryId) async {
     try {
-      const String apiKey = 'arjun';
-      const String apiSecret = 'digi9';
-
       final headers = {
-        'api_Key': apiKey,
-        'api_Secret': apiSecret,
+        'api_Key': dotenv.env['API_KEY']!,
+        'api_Secret': dotenv.env['API_SECRET']!,
       };
       final response = await http.get(
           Uri.parse('$baseUrl/subcategory/allsubcategories'),

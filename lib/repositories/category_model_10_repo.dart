@@ -1,17 +1,16 @@
 import 'dart:convert';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import '../models/product_model.dart';
 
 class CategoryModel10Repo {
-  final String baseUrl = "https://kwik-backend.vercel.app";
+  final String baseUrl = dotenv.env['API_URL']!;
 
   Future<List<ProductModel>> getProductsBySubCategory(
       String subCategoryId) async {
-    const String apiKey = 'arjun';
-    const String apiSecret = 'digi9';
     final headers = {
-      'api_Key': apiKey,
-      'api_Secret': apiSecret,
+      'api_Key': dotenv.env['API_KEY']!,
+      'api_Secret': dotenv.env['API_SECRET']!,
     };
 
     final response = await http.get(

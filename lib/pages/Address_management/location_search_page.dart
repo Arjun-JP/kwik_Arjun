@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
@@ -602,7 +603,7 @@ class _LocationSearchPageState extends State<LocationSearchPage> {
   }
 
   Future<Map<String, dynamic>?> getPlaceDetailsFromCurrentLocation() async {
-    const String apiKey = 'AIzaSyAPLvvnotvyrbkQVynYChnZhyrgSWAjO1k';
+    final String apiKey = dotenv.env['GOOGLEMAP_APIKEY']!;
 
     try {
       LocationPermission permission = await Geolocator.checkPermission();

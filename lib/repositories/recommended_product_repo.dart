@@ -1,17 +1,16 @@
 import 'dart:convert';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import '../models/product_model.dart';
 
 class RecommendedProductRepo {
-  final String baseUrl = "https://kwik-backend.vercel.app";
+  final String baseUrl = dotenv.env['API_URL']!;
   final user = FirebaseAuth.instance.currentUser;
   Future<List<ProductModel>> getProductsBySubCategory(String categoryId) async {
-    const String apiKey = 'arjun';
-    const String apiSecret = 'digi9';
     final headers = {
-      'api_Key': apiKey,
-      'api_Secret': apiSecret,
+      'api_Key': dotenv.env['API_KEY']!,
+      'api_Secret': dotenv.env['API_SECRET']!,
     };
 
     final response = await http.get(

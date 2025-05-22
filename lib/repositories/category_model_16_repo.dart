@@ -1,19 +1,16 @@
 import 'dart:convert';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:kwik/models/subcategory_model.dart';
 
 class categoryRepositoryModel16 {
-  final String baseUrl =
-      "https://kwik-backend.vercel.app"; // Replace with your API
+  final String baseUrl = dotenv.env['API_URL']!; // Replace with your API
 
   Future<List<SubCategoryModel>> fetchSubCategories() async {
     try {
-      const String apiKey = 'arjun';
-      const String apiSecret = 'digi9';
-
       final headers = {
-        'api_Key': apiKey,
-        'api_Secret': apiSecret,
+        'api_Key': dotenv.env['API_KEY']!,
+        'api_Secret': dotenv.env['API_SECRET']!,
       };
       final response = await http.get(
           Uri.parse('$baseUrl/subcategory/allsubcategories'),

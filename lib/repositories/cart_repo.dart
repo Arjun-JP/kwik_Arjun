@@ -1,16 +1,17 @@
 import 'dart:convert';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:kwik/models/wishlist_model.dart';
 import 'package:kwik/widgets/custom_snackbar.dart';
 
 class CartRepository {
-  final String baseUrl = "https://kwik-backend.vercel.app/users";
+  final String baseUrl = "${dotenv.env['API_URL']!}/users";
 
   final headers = {
     'Content-Type': 'application/json',
-    "api_Key": "arjun",
-    "api_Secret": "digi9",
+    'api_Key': dotenv.env['API_KEY']!,
+    'api_Secret': dotenv.env['API_SECRET']!,
   };
   final user = FirebaseAuth.instance.currentUser;
   Future<bool> addToCart({
@@ -66,8 +67,8 @@ class CartRepository {
         url,
         headers: {
           'Content-Type': 'application/json',
-          "api_Key": "arjun",
-          "api_Secret": "digi9",
+          'api_Key': dotenv.env['API_KEY']!,
+          'api_Secret': dotenv.env['API_SECRET']!,
         },
         body: jsonEncode(body),
       );

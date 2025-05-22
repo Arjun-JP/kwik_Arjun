@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -15,6 +16,7 @@ import 'package:kwik/constants/colors.dart';
 import 'package:kwik/constants/constants.dart';
 import 'package:kwik/models/cart_model.dart';
 import 'package:kwik/models/product_model.dart';
+import 'package:kwik/models/review_model.dart';
 import 'package:kwik/widgets/custom_snackbar.dart' show CustomSnackBars;
 import 'package:kwik/widgets/produc_model_1.dart';
 import 'package:kwik/widgets/select_Varrient_bottom_sheet.dart';
@@ -144,34 +146,46 @@ Widget productModel3(
                           ),
                         ),
                         const Spacer(),
-                        const SizedBox(
+                        SizedBox(
                             child: Row(
                           children: [
-                            Icon(
+                            const Icon(
                               Icons.star_rounded,
                               color: Colors.amber,
                               size: 15,
                             ),
                             Icon(
-                              Icons.star_rounded,
+                              averagerating(product.reviews) > 1
+                                  ? Icons.star_rounded
+                                  : Icons.star_outline_rounded,
                               color: Colors.amber,
                               size: 15,
                             ),
                             Icon(
-                              Icons.star_rounded,
+                              averagerating(product.reviews) > 2
+                                  ? Icons.star_rounded
+                                  : Icons.star_outline_rounded,
                               color: Colors.amber,
                               size: 15,
                             ),
                             Icon(
-                              Icons.star_rounded,
+                              averagerating(product.reviews) > 3
+                                  ? Icons.star_rounded
+                                  : Icons.star_outline_rounded,
                               color: Colors.amber,
                               size: 15,
                             ),
                             Icon(
-                              Icons.star_outline_rounded,
+                              averagerating(product.reviews) > 4
+                                  ? Icons.star_rounded
+                                  : Icons.star_outline_rounded,
                               color: Colors.amber,
                               size: 15,
                             ),
+                            Text(
+                              "(${product.reviews.isEmpty ? "1" : product.reviews.length.toString()})",
+                              style: theme.textTheme.bodyMedium,
+                            )
                           ],
                         )),
                         Row(
@@ -274,6 +288,7 @@ Widget productModel3(
                               right: 8,
                               child: InkWell(
                                 onTap: () async {
+                                  HapticFeedback.mediumImpact();
                                   if (product.variations.length > 1) {
                                     await showModalBottomSheet(
                                       isScrollControlled: true,
@@ -485,4 +500,17 @@ Widget quantitycontrolbutton(
       ],
     ),
   );
+}
+
+averagerating(List<ReviewModel> reviews) {
+  if (reviews.isEmpty) {
+    return 4;
+  } else {
+    double sum = 0;
+    for (int i = 0; i < reviews.length; i++) {
+      sum += reviews[i].rating;
+    }
+    double average = sum / reviews.length;
+    return average;
+  }
 }

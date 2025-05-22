@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart' as gmap;
 import 'package:kwik/constants/colors.dart';
@@ -55,7 +56,7 @@ class _AddadressState extends State<MapPage> {
 
   Future<void> _getLatLngFromPlaceId(String placeId) async {
     // Replace YOUR_API_KEY with your actual Google Places API key
-    const String apiKey = 'AIzaSyAPLvvnotvyrbkQVynYChnZhyrgSWAjO1k';
+    final String apiKey = dotenv.env['GOOGLEMAP_APIKEY']!;
     final String url =
         'https://maps.googleapis.com/maps/api/geocode/json?place_id=$placeId&key=$apiKey';
 
@@ -348,7 +349,7 @@ class _AddadressState extends State<MapPage> {
     }
 
     // Replace YOUR_API_KEY with your actual Google Places API key
-    const String apiKey = 'AIzaSyAPLvvnotvyrbkQVynYChnZhyrgSWAjO1k';
+    final String apiKey = dotenv.env['GOOGLEMAP_APIKEY']!;
     final String url =
         'https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$input&key=$apiKey&sessiontoken=1234567890'; // Use a session token
 

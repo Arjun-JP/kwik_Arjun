@@ -87,6 +87,7 @@ import 'package:kwik/repositories/subcategory_product_repo.dart';
 import 'package:kwik/repositories/super_saver_ui_repo.dart';
 import 'package:kwik/routes/routes.dart';
 import 'package:kwik/pages/Error_pages/Error_widget.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'bloc/Categories Page Bloc/categories_UI_bloc/categories_ui_bloc.dart';
 import 'bloc/Categories Page Bloc/categories_page_model1/categories_page_model1_bloc.dart';
 import 'bloc/Categories Page Bloc/categories_page_model2/categories_page_model2_bloc.dart';
@@ -115,6 +116,8 @@ final GlobalKey<ScaffoldMessengerState> rootScaffoldMessengerKey =
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: ".env");
+
+  PackageInfo packageInfo = await PackageInfo.fromPlatform();
   debugProfilePlatformChannelsEnabled:
   true;
   // debugPaintSizeEnabled = true;

@@ -17,7 +17,7 @@ class OrderStatusPage extends StatefulWidget {
 class _OrderStatusPageState extends State<OrderStatusPage> {
   final TrackorderRepo trackRepo = TrackorderRepo();
 
-  String _orderStatus = 'processing';
+  String _orderStatus = 'Order placed';
   Timer? _pollingTimer;
   Map<String, dynamic> status = {};
 
@@ -32,7 +32,7 @@ class _OrderStatusPageState extends State<OrderStatusPage> {
     _checkOrderStatus();
 
     // Start polling every 30 seconds
-    _pollingTimer = Timer.periodic(const Duration(seconds: 30), (timer) {
+    _pollingTimer = Timer.periodic(const Duration(seconds: 10), (timer) {
       _checkOrderStatus();
     });
   }
