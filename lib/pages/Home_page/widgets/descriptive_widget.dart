@@ -25,8 +25,9 @@ class DescriptiveWidget extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Image.asset(
-                  logo,
-                  height: 80,
+                  "assets/images/kwik_logo_withwhite_bg.jpeg",
+                  height: 120,
+                  fit: BoxFit.cover,
                 ),
                 const SizedBox(height: 15),
                 Text(

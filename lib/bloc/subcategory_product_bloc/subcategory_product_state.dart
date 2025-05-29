@@ -6,11 +6,14 @@ abstract class SubcategoryProductStatesubcategory extends Equatable {
   List<Object> get props => [];
 }
 
-class SubcategoryproductInitialsubcategory extends SubcategoryProductStatesubcategory {}
+class SubcategoryproductInitialsubcategory
+    extends SubcategoryProductStatesubcategory {}
 
-class SubcategoryProductLoadingsubcategory extends SubcategoryProductStatesubcategory {}
+class SubcategoryProductLoadingsubcategory
+    extends SubcategoryProductStatesubcategory {}
 
-class SubcategoryProductLoadedsubcategory extends SubcategoryProductStatesubcategory {
+class SubcategoryProductLoadedsubcategory
+    extends SubcategoryProductStatesubcategory {
   final List<ProductModel> products;
 
   SubcategoryProductLoadedsubcategory(this.products);
@@ -19,7 +22,8 @@ class SubcategoryProductLoadedsubcategory extends SubcategoryProductStatesubcate
   List<Object> get props => [products];
 }
 
-class SubcategoryProductErrorsubcategory extends SubcategoryProductStatesubcategory {
+class SubcategoryProductErrorsubcategory
+    extends SubcategoryProductStatesubcategory {
   final String message;
 
   SubcategoryProductErrorsubcategory(this.message);

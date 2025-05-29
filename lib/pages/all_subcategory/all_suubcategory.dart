@@ -20,6 +20,7 @@ import 'package:kwik/constants/constants.dart';
 import 'package:kwik/models/cart_model.dart';
 import 'package:kwik/models/product_model.dart';
 import 'package:kwik/models/subcategory_model.dart';
+import 'package:kwik/widgets/product_model_3.dart';
 import 'package:kwik/widgets/select_Varrient_bottom_sheet.dart';
 import 'package:kwik/widgets/shimmer/all%20subcategory_page%20shimmer.dart';
 
@@ -170,7 +171,7 @@ class _AllSubcategoryState extends State<AllSubcategory> {
                                                         .variations.isNotEmpty))
                                             .length,
                                         (index) => SizedBox(
-                                          height: 278,
+                                          height: 288,
                                           child: ProductItemSubcategorypage(
                                               product: state.products
                                                   .where((product) => product
@@ -204,20 +205,62 @@ class _AllSubcategoryState extends State<AllSubcategory> {
                                   ),
                                 ),
                               )
-                            : const Expanded(
+                            : Expanded(
                                 flex: 3,
                                 child: SizedBox(
-                                  child: Center(
-                                    child: Text("No Data Available"),
+                                  width: double.infinity,
+                                  height: double.infinity,
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Image.asset(
+                                        "assets/images/kwiklogo.png",
+                                        width: 200,
+                                        height: 200,
+                                      ),
+                                      Text(
+                                        "All out for now!\n\nswe’re restocking to serve you better!",
+                                        textAlign: TextAlign.center,
+                                        style: theme.textTheme.bodyMedium!
+                                            .copyWith(
+                                          fontSize: 16,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 70)
+                                    ],
                                   ),
-                                )),
+                                ))
                       ],
                     ),
                   ),
                 ],
               );
             }
-            return const Center(child: Text('No Data Available'));
+            return SizedBox(
+              width: double.infinity,
+              height: double.infinity,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Image.asset(
+                    "assets/images/kwiklogo.png",
+                    width: 200,
+                    height: 200,
+                  ),
+                  Text(
+                    "All out for now!\n\nswe’re restocking to serve you better!",
+                    textAlign: TextAlign.center,
+                    style: theme.textTheme.bodyMedium!.copyWith(
+                      fontSize: 16,
+                    ),
+                  ),
+                  const SizedBox(height: 70)
+                ],
+              ),
+            );
           });
         }));
   }
@@ -375,7 +418,7 @@ class ProductItemSubcategorypage extends StatelessWidget {
                           spacing: 3,
                           children: [
                             Container(
-                              height: 160,
+                              height: 165,
                               decoration: BoxDecoration(
                                 color: parseColor("F9F9F9"),
                                 borderRadius: BorderRadius.circular(10),
@@ -431,6 +474,49 @@ class ProductItemSubcategorypage extends StatelessWidget {
                                 ),
                               ],
                             ),
+                            SizedBox(
+                                child: Row(
+                              children: [
+                                const Icon(
+                                  Icons.star_rounded,
+                                  color: Colors.amber,
+                                  size: 12,
+                                ),
+                                Icon(
+                                  averagerating(product.reviews) > 1
+                                      ? Icons.star_rounded
+                                      : Icons.star_outline_rounded,
+                                  color: Colors.amber,
+                                  size: 12,
+                                ),
+                                Icon(
+                                  averagerating(product.reviews) > 2
+                                      ? Icons.star_rounded
+                                      : Icons.star_outline_rounded,
+                                  color: Colors.amber,
+                                  size: 12,
+                                ),
+                                Icon(
+                                  averagerating(product.reviews) > 3
+                                      ? Icons.star_rounded
+                                      : Icons.star_outline_rounded,
+                                  color: Colors.amber,
+                                  size: 12,
+                                ),
+                                Icon(
+                                  averagerating(product.reviews) > 4
+                                      ? Icons.star_rounded
+                                      : Icons.star_outline_rounded,
+                                  color: Colors.amber,
+                                  size: 12,
+                                ),
+                                Text(
+                                  "(${product.reviews.isEmpty ? "1" : product.reviews.length.toString()})",
+                                  style: theme.textTheme.bodyMedium!
+                                      .copyWith(fontSize: 12),
+                                )
+                              ],
+                            )),
                             const Spacer(),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,

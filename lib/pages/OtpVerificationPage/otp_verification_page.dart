@@ -5,6 +5,7 @@ import 'package:kwik/bloc/Auth_bloc/auth_bloc.dart';
 import 'package:kwik/bloc/Auth_bloc/auth_event.dart';
 import 'package:kwik/bloc/Auth_bloc/auth_state.dart';
 import 'package:kwik/constants/colors.dart';
+import 'package:kwik/constants/network_check.dart';
 import 'package:kwik/pages/Error_pages/Error_widget.dart';
 import 'package:kwik/widgets/kiwi_button.dart';
 import 'package:kwik/widgets/shimmer/main_loading_indicator.dart';
@@ -21,6 +22,13 @@ class OtpVerificationPage extends StatefulWidget {
 class _OtpVerificationPageState extends State<OtpVerificationPage> {
   final TextEditingController _otpController = TextEditingController();
   final FocusNode _focusNode = FocusNode();
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      NetworkUtils.checkConnection(context);
+    });
+    super.initState();
+  }
 
   @override
   void dispose() {

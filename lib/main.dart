@@ -454,22 +454,20 @@ class _MyAppState extends State<MyApp> {
         BlocProvider<CouponBloc>(
             create: (_) => CouponBloc(repository: CouponRepository())),
       ],
-      child: NetworkAwareWidget(
-        child: MaterialApp.router(
-          builder: (context, child) {
-            ErrorWidget.builder = (FlutterErrorDetails) {
-              return KwikErrorWidget(errordetails: FlutterErrorDetails);
-            };
-            return child!;
-          },
-          scaffoldMessengerKey: rootScaffoldMessengerKey,
-          routerConfig: _router,
-          title: 'Kwik',
+      child: MaterialApp.router(
+        builder: (context, child) {
+          ErrorWidget.builder = (FlutterErrorDetails) {
+            return KwikErrorWidget(errordetails: FlutterErrorDetails);
+          };
+          return child!;
+        },
+        scaffoldMessengerKey: rootScaffoldMessengerKey,
+        routerConfig: _router,
+        title: 'Kwik',
 
-          theme: appTheme(context),
-          debugShowCheckedModeBanner: false,
-          //  home:
-        ),
+        theme: appTheme(context),
+        debugShowCheckedModeBanner: false,
+        //  home:
       ),
     );
   }

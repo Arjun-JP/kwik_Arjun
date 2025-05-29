@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kwik/constants/doted_devider.dart';
+import 'package:kwik/constants/network_check.dart';
 import 'package:kwik/widgets/edit_profile_bottom_sheet.dart';
 import 'package:kwik/widgets/logout_bottomsheet.dart';
 
@@ -14,6 +15,14 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      NetworkUtils.checkConnection(context);
+    });
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     final user = FirebaseAuth.instance.currentUser;

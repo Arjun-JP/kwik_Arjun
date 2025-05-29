@@ -22,6 +22,7 @@ import 'package:kwik/bloc/product_details_page/similerproduct_bloc/similar_produ
 import 'package:kwik/bloc/product_details_page/similerproduct_bloc/similar_products_state.dart';
 import 'package:kwik/constants/colors.dart';
 import 'package:kwik/constants/constants.dart';
+import 'package:kwik/constants/network_check.dart';
 import 'package:kwik/models/brand_model.dart';
 import 'package:kwik/models/cart_model.dart';
 import 'package:kwik/models/product_model.dart';
@@ -59,6 +60,9 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      NetworkUtils.checkConnection(context);
+    });
     if (widget.product.variations.isNotEmpty) {
       context
           .read<VariationBloc>()

@@ -152,39 +152,40 @@ Widget productModel3(
                             const Icon(
                               Icons.star_rounded,
                               color: Colors.amber,
-                              size: 15,
+                              size: 12,
                             ),
                             Icon(
                               averagerating(product.reviews) > 1
                                   ? Icons.star_rounded
                                   : Icons.star_outline_rounded,
                               color: Colors.amber,
-                              size: 15,
+                              size: 12,
                             ),
                             Icon(
                               averagerating(product.reviews) > 2
                                   ? Icons.star_rounded
                                   : Icons.star_outline_rounded,
                               color: Colors.amber,
-                              size: 15,
+                              size: 12,
                             ),
                             Icon(
                               averagerating(product.reviews) > 3
                                   ? Icons.star_rounded
                                   : Icons.star_outline_rounded,
                               color: Colors.amber,
-                              size: 15,
+                              size: 12,
                             ),
                             Icon(
                               averagerating(product.reviews) > 4
                                   ? Icons.star_rounded
                                   : Icons.star_outline_rounded,
                               color: Colors.amber,
-                              size: 15,
+                              size: 12,
                             ),
                             Text(
                               "(${product.reviews.isEmpty ? "1" : product.reviews.length.toString()})",
-                              style: theme.textTheme.bodyMedium,
+                              style: theme.textTheme.bodyMedium!
+                                  .copyWith(fontSize: 12),
                             )
                           ],
                         )),
@@ -193,14 +194,17 @@ Widget productModel3(
                           spacing: 8,
                           children: [
                             Text(
-                                product.variations.first.buyingPrice
-                                    .toStringAsFixed(1),
+                                "₹${product.variations.first.buyingPrice.toStringAsFixed(1)}",
                                 style: theme.textTheme.bodyMedium!.copyWith(
+                                    fontWeight: FontWeight.w800,
+                                    fontSize: 12,
                                     color: parseColor(sellingpricecolor))),
                             Text(
-                                product.variations.first.mrp.toStringAsFixed(1),
+                                "₹${product.variations.first.mrp.toStringAsFixed(1)}",
                                 style: theme.textTheme.bodyMedium!.copyWith(
                                     decoration: TextDecoration.lineThrough,
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 8,
                                     color: parseColor(mrpColor)))
                           ],
                         )

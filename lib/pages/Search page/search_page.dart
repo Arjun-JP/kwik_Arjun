@@ -8,6 +8,7 @@ import 'package:kwik/bloc/Search_bloc/Search_bloc.dart';
 import 'package:kwik/bloc/Search_bloc/search_event.dart';
 import 'package:kwik/bloc/Search_bloc/search_state.dart';
 import 'package:kwik/constants/colors.dart';
+import 'package:kwik/constants/network_check.dart';
 import 'package:kwik/models/product_model.dart';
 import 'package:kwik/widgets/produc_model_1.dart';
 import 'package:kwik/widgets/shimmer/search_page_shimmer.dart';
@@ -27,7 +28,9 @@ class _SearchPageState extends State<SearchPage> {
   @override
   void initState() {
     super.initState();
-
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      NetworkUtils.checkConnection(context);
+    });
     context.read<SearchBloc>().add(LoadInitialProducts());
     _searchController.addListener(_onSearchChanged);
   }

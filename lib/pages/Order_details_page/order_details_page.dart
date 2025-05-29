@@ -10,6 +10,7 @@ import 'package:kwik/bloc/order_bloc/order_bloc.dart';
 import 'package:kwik/bloc/order_bloc/order_event.dart';
 import 'package:kwik/constants/colors.dart';
 import 'package:kwik/constants/format_time.dart';
+import 'package:kwik/constants/network_check.dart';
 import 'package:kwik/models/cart_model.dart';
 import 'package:kwik/models/order_model.dart';
 import 'package:kwik/widgets/shimmer/orderdetails_page_shimmer.dart';
@@ -28,6 +29,9 @@ class OrderDetailsPage extends StatefulWidget {
 class _OrderDetailsPageState extends State<OrderDetailsPage> {
   @override
   void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      NetworkUtils.checkConnection(context);
+    });
     context.read<OrderDetailsBloc>().add(FetchOrderDetails(widget.orderID));
   }
 

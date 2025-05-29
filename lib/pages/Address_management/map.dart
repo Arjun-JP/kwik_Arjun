@@ -56,7 +56,7 @@ class _AddadressState extends State<MapPage> {
 
   Future<void> _getLatLngFromPlaceId(String placeId) async {
     // Replace YOUR_API_KEY with your actual Google Places API key
-    final String apiKey = dotenv.env['GOOGLEMAP_APIKEY']!;
+    final String apiKey = "AIzaSyAPLvvnotvyrbkQVynYChnZhyrgSWAjO1k";
     final String url =
         'https://maps.googleapis.com/maps/api/geocode/json?place_id=$placeId&key=$apiKey';
 
@@ -349,7 +349,7 @@ class _AddadressState extends State<MapPage> {
     }
 
     // Replace YOUR_API_KEY with your actual Google Places API key
-    final String apiKey = dotenv.env['GOOGLEMAP_APIKEY']!;
+    final String apiKey = "AIzaSyAPLvvnotvyrbkQVynYChnZhyrgSWAjO1k";
     final String url =
         'https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$input&key=$apiKey&sessiontoken=1234567890'; // Use a session token
 

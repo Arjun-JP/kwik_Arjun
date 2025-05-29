@@ -2,15 +2,16 @@ import 'package:bloc/bloc.dart';
 import 'package:hive/hive.dart';
 import 'package:kwik/bloc/category_landing_page_bloc/category_landing_page__state.dart';
 import 'package:kwik/bloc/category_landing_page_bloc/category_landing_page_event.dart';
+import 'package:kwik/models/product_model.dart';
 import 'package:kwik/repositories/category_landing_page_repo.dart';
 
 class CategoryLandingpageBloc
     extends Bloc<CategoryLandingpageEvent, CategorylandingpageState> {
   final CategoryLandingPageRepo categoryRepository;
-  late Box _cachedSubCategoriesBox;
-  late Box _cachedProductsBox;
-  bool _isHiveInitialized =
-      false; // Flag to ensure Hive is initialized only once
+  // late Box _cachedSubCategoriesBox;
+  // late Box _cachedProductsBox;
+  // bool _isHiveInitialized =
+  //     false; // Flag to ensure Hive is initialized only once
 
   CategoryLandingpageBloc({required this.categoryRepository})
       : super(SubCategoriesInitial()) {

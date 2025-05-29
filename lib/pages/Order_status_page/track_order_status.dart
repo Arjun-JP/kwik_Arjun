@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
+import 'package:kwik/constants/network_check.dart';
 import 'package:kwik/repositories/track_order_status_repo.dart';
 import 'package:lottie/lottie.dart';
 
@@ -23,6 +24,9 @@ class _OrderStatusPageState extends State<OrderStatusPage> {
 
   @override
   void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      NetworkUtils.checkConnection(context);
+    });
     super.initState();
     _startPolling();
   }

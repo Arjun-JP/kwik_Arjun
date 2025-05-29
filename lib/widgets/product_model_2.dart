@@ -17,6 +17,7 @@ import 'package:kwik/constants/constants.dart';
 import 'package:kwik/models/cart_model.dart';
 import 'package:kwik/models/product_model.dart';
 import 'package:kwik/widgets/custom_snackbar.dart';
+import 'package:kwik/widgets/product_model_3.dart';
 import 'package:kwik/widgets/select_Varrient_bottom_sheet.dart';
 import 'package:shimmer/shimmer.dart' show Shimmer;
 
@@ -115,7 +116,7 @@ class ProductModel2 extends StatelessWidget {
                               children: [
                                 Padding(
                                   padding: const EdgeInsets.only(
-                                      left: 20, right: 20, top: 10),
+                                      left: 20, right: 20, top: 5),
                                   child: Container(
                                     height: 58,
                                     width: 154,
@@ -141,7 +142,7 @@ class ProductModel2 extends StatelessWidget {
                                         Text(
                                           "₹${product.variations.first.sellingPrice.toStringAsFixed(0)}",
                                           style: TextStyle(
-                                              fontSize: 22,
+                                              fontSize: 20,
                                               fontWeight: FontWeight.w900,
                                               color: parseColor(
                                                   sellingpricecolor)),
@@ -149,7 +150,9 @@ class ProductModel2 extends StatelessWidget {
                                         Text(
                                             "MRP ${product.variations.first.mrp.toStringAsFixed(0)}",
                                             style: TextStyle(
-                                                fontSize: 16,
+                                                fontSize: 14,
+                                                decoration:
+                                                    TextDecoration.lineThrough,
                                                 fontWeight: FontWeight.w900,
                                                 color: parseColor(mrpColor))),
                                       ],
@@ -259,7 +262,6 @@ class ProductModel2 extends StatelessWidget {
                               ),
                             ),
                           ),
-                          const SizedBox(height: 5),
                           Padding(
                             padding: const EdgeInsets.only(
                               left: 10.0,
@@ -277,7 +279,53 @@ class ProductModel2 extends StatelessWidget {
                                   fontWeight: FontWeight.w700),
                             ),
                           ),
-                          const SizedBox(height: 5),
+                          SizedBox(
+                              child: Padding(
+                            padding: const EdgeInsets.only(left: 8.0),
+                            child: Row(
+                              children: [
+                                const Icon(
+                                  Icons.star_rounded,
+                                  color: Colors.amber,
+                                  size: 12,
+                                ),
+                                Icon(
+                                  averagerating(product.reviews) > 1
+                                      ? Icons.star_rounded
+                                      : Icons.star_outline_rounded,
+                                  color: Colors.amber,
+                                  size: 12,
+                                ),
+                                Icon(
+                                  averagerating(product.reviews) > 2
+                                      ? Icons.star_rounded
+                                      : Icons.star_outline_rounded,
+                                  color: Colors.amber,
+                                  size: 12,
+                                ),
+                                Icon(
+                                  averagerating(product.reviews) > 3
+                                      ? Icons.star_rounded
+                                      : Icons.star_outline_rounded,
+                                  color: Colors.amber,
+                                  size: 12,
+                                ),
+                                Icon(
+                                  averagerating(product.reviews) > 4
+                                      ? Icons.star_rounded
+                                      : Icons.star_outline_rounded,
+                                  color: Colors.amber,
+                                  size: 12,
+                                ),
+                                Text(
+                                  "(${product.reviews.isEmpty ? "1" : product.reviews.length.toString()})",
+                                  style: theme.textTheme.bodyMedium!
+                                      .copyWith(fontSize: 12),
+                                )
+                              ],
+                            ),
+                          )),
+                          const SizedBox(height: 3),
                           Padding(
                             padding: const EdgeInsets.only(
                               left: 5.0,

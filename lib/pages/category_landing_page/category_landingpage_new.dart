@@ -9,10 +9,11 @@ import 'package:kwik/bloc/category_landing_page_bloc/category_landing_page_event
 import 'package:kwik/constants/colors.dart';
 import 'package:kwik/models/product_model.dart';
 import 'package:kwik/models/subcategory_model.dart';
+import 'package:kwik/pages/Home_page/widgets/descriptive_widget.dart';
 import 'package:kwik/repositories/category_landing_page_repo.dart';
 import 'package:kwik/models/category_model.dart';
-import 'package:kwik/widgets/produc_model_1.dart';
 import 'package:kwik/widgets/product_model_3.dart';
+import 'package:kwik/widgets/shimmer/category_landing_shimmer.dart';
 
 class CategoryLandingPageNew extends StatefulWidget {
   final Category category;
@@ -45,7 +46,7 @@ class _CategoryLandingPageNewState extends State<CategoryLandingPageNew> {
         body: BlocBuilder<CategoryLandingpageBloc, CategorylandingpageState>(
           builder: (context, state) {
             if (state is SubCategoriesLoading) {
-              return const Center(child: CircularProgressIndicator());
+              return const Center(child: CategoryLandingPageShimmmer());
             } else if (state is CategoryErrorState) {
               return Center(child: Text(state.message));
             } else if (state is CategoryLoadedState) {
@@ -58,8 +59,7 @@ class _CategoryLandingPageNewState extends State<CategoryLandingPageNew> {
                       subcat.categoryRef.catref == widget.category.catref)
                   .toList();
 
-              List<String> mainsubcart = state
-                  .subCategories.first.categoryRef.selectedSubCategoryRef!
+              List<String> mainsubcart = widget.category.selectedSubCategoryRef!
                   .map((item) => item.toString())
                   .toList();
 
@@ -67,11 +67,10 @@ class _CategoryLandingPageNewState extends State<CategoryLandingPageNew> {
                 child: Column(
                   children: [
                     Container(
-                      decoration: const BoxDecoration(
+                      decoration: BoxDecoration(
                           // color: const Color.fromARGB(255, 255, 240, 194),
                           image: DecorationImage(
-                        image: NetworkImage(
-                            "https://firebasestorage.googleapis.com/v0/b/kwikgroceries-8a11e.firebasestorage.app/o/sample%2FUntitled%20design.jpeg?alt=media&token=ac698a40-4c1e-4306-9c6d-e8e03a042b2d"),
+                        image: NetworkImage(widget.category.bannerImage),
                         fit: BoxFit.cover,
                       )),
                       child: Column(
@@ -124,78 +123,81 @@ class _CategoryLandingPageNewState extends State<CategoryLandingPageNew> {
                       padding: const EdgeInsets.only(left: 10.0),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        children: remainingSubcategories.map((subcat) {
+                        children: remainingSubcategories.map((subcategory) {
                           final List<ProductModel> filteredProducts = state
                               .products
-                              .where(
-                                  (product) => product.subCategoryRef.any((sc) {
-                                        print(sc.id);
-                                        print(subcat.id);
-                                        return sc.id == subcat.id;
-                                      }))
+                              .where((product) => product.subCategoryRef
+                                  .where(
+                                      (element) => element.id == subcategory.id)
+                                  .isNotEmpty)
                               .toList();
 
-                          return InkWell(
-                            onTap: () {
-                              print("Tapped on: ${subcat.name}");
-                              print(
-                                  "Filtered Products Count: ${filteredProducts.length}");
-                              print(subcat.id);
-                            },
-                            child: SizedBox(
-                              height: 320,
-                              width: double.infinity,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  const SizedBox(height: 1),
-                                  Text(
-                                    subcat.name,
-                                    style: theme.textTheme.titleLarge,
-                                  ),
-                                  SizedBox(
-                                    height: 280,
+                          return filteredProducts.isNotEmpty
+                              ? InkWell(
+                                  onTap: () {},
+                                  child: SizedBox(
+                                    height: 320,
                                     width: double.infinity,
-                                    child: ListView.builder(
-                                      scrollDirection: Axis.horizontal,
-                                      itemCount: filteredProducts.length,
-                                      itemBuilder: (context, idx) {
-                                        ProductModel product =
-                                            filteredProducts[idx];
-                                        return Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: SizedBox(
-                                            width: 130,
-                                            child: productModel3(
-                                              buttontextcolor: "E23338",
-                                              product: product,
-                                              mrpColor: "000000",
-                                              context: context,
-                                              seeAllButtontext: "000000",
-                                              sellingpricecolor: "000000",
-                                              theme: theme,
-                                              offertextcolor: "FFFFFF",
-                                              unitbgcolor: "FFFFFF",
-                                              productBgColor: "FFFFFF",
-                                              productcolor: "000000",
-                                              sellingPriceColor: "000000",
-                                              seeAllButtonBG: "FFFFFF",
-                                              unitTextcolor: "000000",
-                                              offerBGcolor: "E3520D",
-                                            ),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        const SizedBox(height: 1),
+                                        Text(
+                                          subcategory.name,
+                                          style: theme.textTheme.titleLarge,
+                                        ),
+                                        SizedBox(
+                                          height: 280,
+                                          width: double.infinity,
+                                          child: ListView.builder(
+                                            scrollDirection: Axis.horizontal,
+                                            itemCount: filteredProducts.length,
+                                            itemBuilder: (context, idx) {
+                                              ProductModel product =
+                                                  filteredProducts[idx];
+                                              return Padding(
+                                                padding:
+                                                    const EdgeInsets.all(8.0),
+                                                child: SizedBox(
+                                                  width: 130,
+                                                  child: productModel3(
+                                                    buttontextcolor: "E23338",
+                                                    product: product,
+                                                    mrpColor: "000000",
+                                                    context: context,
+                                                    seeAllButtontext: "000000",
+                                                    sellingpricecolor: "000000",
+                                                    theme: theme,
+                                                    offertextcolor: "FFFFFF",
+                                                    unitbgcolor: "FFFFFF",
+                                                    productBgColor: "FFFFFF",
+                                                    productcolor: "000000",
+                                                    sellingPriceColor: "000000",
+                                                    seeAllButtonBG: "FFFFFF",
+                                                    unitTextcolor: "000000",
+                                                    offerBGcolor: "E3520D",
+                                                  ),
+                                                ),
+                                              );
+                                            },
                                           ),
-                                        );
-                                      },
+                                        ),
+                                      ],
                                     ),
                                   ),
-                                ],
-                              ),
-                            ),
-                          );
+                                )
+                              : const SizedBox();
                         }).toList(),
                       ),
+                    ),
+                    const SizedBox(height: 20),
+                    const DescriptiveWidget(
+                      title: "Skip the store, we're at your door!",
+                      logo: "assets/images/kwiklogo.png",
+                      showcategory: true,
                     ),
                   ],
                 ),

@@ -9,7 +9,7 @@ class GoogleMapsService {
 
   Future<List<GoogleMapPlace>> searchPlaces(String query) async {
     final url = Uri.parse(
-        'https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$query&types=(regions)&components=country:IN&key=${dotenv.env['GOOGLEMAP_APIKEY']!}');
+        'https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$query&types=(regions)&components=country:IN&key=AIzaSyAPLvvnotvyrbkQVynYChnZhyrgSWAjO1k');
 
     final response = await http.get(url);
 
@@ -33,7 +33,7 @@ class GoogleMapsService {
 
   Future<Map<String, dynamic>> getPlaceDetails(String placeId) async {
     final url = Uri.parse(
-      'https://maps.googleapis.com/maps/api/place/details/json?place_id=$placeId&key=${dotenv.env['GOOGLEMAP_APIKEY']!}',
+      'https://maps.googleapis.com/maps/api/place/details/json?place_id=$placeId&key=AIzaSyAPLvvnotvyrbkQVynYChnZhyrgSWAjO1k',
     );
 
     final response = await http.get(url);

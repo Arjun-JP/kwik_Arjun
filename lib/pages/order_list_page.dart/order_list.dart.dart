@@ -12,6 +12,7 @@ import 'package:kwik/bloc/order_bloc/order_event.dart';
 import 'package:kwik/bloc/order_bloc/order_state.dart';
 import 'package:kwik/constants/colors.dart';
 import 'package:kwik/constants/format_time.dart';
+import 'package:kwik/constants/network_check.dart';
 import 'package:kwik/models/order_model.dart';
 import 'package:kwik/pages/Order_status_page/track_order_status.dart';
 import 'package:kwik/widgets/shimmer/order_list_page_shimmer.dart';
@@ -24,7 +25,9 @@ class OrderListingPage extends StatefulWidget {
 class _OrderListingPageState extends State<OrderListingPage> {
   @override
   void initState() {
-    // TODO: implement initState
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      NetworkUtils.checkConnection(context);
+    });
     context
         .read<OrderBloc>()
         .add(FetchOrders(FirebaseAuth.instance.currentUser!.uid));
