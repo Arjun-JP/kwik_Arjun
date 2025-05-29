@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kwik/constants/colors.dart';
 import 'package:kwik/models/product_model.dart';
-import 'package:kwik/pages/Home_page/widgets/category_model_7.dart';
 import 'package:kwik/repositories/sub_category_product_repository.dart';
 import 'package:kwik/widgets/produc_model_1.dart';
 import 'package:kwik/widgets/shimmer/super_saver_model2_shimmer.dart';

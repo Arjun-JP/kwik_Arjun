@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kwik/bloc/get_appdata_bloc/get_appdata_bloc.dart';
 import 'package:kwik/bloc/get_appdata_bloc/get_appdata_event.dart';
 import 'package:kwik/bloc/get_appdata_bloc/get_appdata_state.dart';
+import 'package:kwik/constants/network_check.dart';
 import 'package:kwik/widgets/shimmer/privacy_policy_shimmer.dart';
 
 class TermsAndConditionPage extends StatefulWidget {
@@ -21,6 +22,9 @@ class _TermsAndConditionPageState extends State<TermsAndConditionPage> {
 
   @override
   void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      NetworkUtils.checkConnection(context);
+    });
     context.read<GetAppdataBloc>().add(Loadappdata());
     super.initState();
   }

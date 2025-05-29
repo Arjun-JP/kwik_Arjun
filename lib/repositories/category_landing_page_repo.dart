@@ -48,14 +48,11 @@ class CategoryLandingPageRepo {
         url,
         headers: headers,
       );
-      print(response.statusCode);
-      print(response.body);
+
       if (response.statusCode == 200) {
         List<dynamic> bodydata = json.decode(response.body);
 
         if (bodydata.isNotEmpty) {
-          // List<dynamic> data = bodydata;
-
           return bodydata.map((json) => ProductModel.fromJson(json)).toList();
         } else {
           return []; // Return an empty list if "data" is missing or not a list.

@@ -603,7 +603,7 @@ class _LocationSearchPageState extends State<LocationSearchPage> {
   }
 
   Future<Map<String, dynamic>?> getPlaceDetailsFromCurrentLocation() async {
-    final String apiKey = dotenv.env['GOOGLEMAP_APIKEY']!;
+    final String apiKey = "AIzaSyAPLvvnotvyrbkQVynYChnZhyrgSWAjO1k";
 
     try {
       LocationPermission permission = await Geolocator.checkPermission();

@@ -11,6 +11,7 @@ import 'package:kwik/bloc/all_sub_category_bloc/all_sub_category_state.dart';
 import 'package:kwik/bloc/navbar_bloc/navbar_bloc.dart';
 import 'package:kwik/bloc/product_details_page/recommended_products_bloc/recommended_products_bloc.dart';
 import 'package:kwik/bloc/product_details_page/recommended_products_bloc/recommended_products_event.dart';
+import 'package:kwik/constants/network_check.dart';
 import 'package:kwik/pages/Address_management/location_search_page.dart';
 import 'package:kwik/pages/Category_page/Categories%20Page%20Widgets/category_model.dart';
 import 'package:kwik/pages/Home_page/widgets/descriptive_widget.dart';
@@ -42,6 +43,9 @@ class _CategoryPageState extends State<CategoryPage> {
 
   @override
   void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      NetworkUtils.checkConnection(context);
+    });
     super.initState();
     context.read<CategoriesUiBloc>().add(FetchCatUiDataEvent());
     context.read<AddressBloc>().add(const GetsavedAddressEvent());

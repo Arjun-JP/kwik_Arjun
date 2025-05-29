@@ -7,6 +7,7 @@ import 'package:kwik/bloc/Coupon_bloc/Coupon_bloc.dart';
 import 'package:kwik/bloc/Coupon_bloc/coupon_event.dart';
 import 'package:kwik/bloc/Coupon_bloc/coupon_state.dart';
 import 'package:kwik/constants/doted_devider.dart';
+import 'package:kwik/constants/network_check.dart';
 import 'package:kwik/models/coupon_model.dart';
 import 'package:kwik/widgets/shimmer/coupon_list_shimmer.dart';
 
@@ -21,6 +22,9 @@ class _CouponsPageState extends State<CouponsPage> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      NetworkUtils.checkConnection(context);
+    });
   }
 
   double couponamount = 0.0;

@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:go_router/go_router.dart';
@@ -47,6 +48,7 @@ import 'package:kwik/bloc/product_details_page/recommended_products_bloc/recomme
 import 'package:kwik/bloc/product_details_page/similerproduct_bloc/similar_product_bloc.dart';
 import 'package:kwik/bloc/product_details_page/similerproduct_bloc/similar_product_event.dart';
 import 'package:kwik/constants/colors.dart';
+import 'package:kwik/constants/network_check.dart';
 import 'package:kwik/models/order_model.dart' as locationmode;
 import 'package:kwik/pages/Address_management/location_search_page.dart';
 import 'package:kwik/pages/Force%20Update%20page/force_update.dart';
@@ -68,6 +70,7 @@ import 'package:kwik/pages/No_service_page/no_service_page.dart';
 import 'package:kwik/pages/No_service_page/under_maintanance_screen.dart';
 import 'package:kwik/widgets/location_permission_bottom_sheet.dart';
 import 'package:kwik/widgets/navbar/navbar.dart';
+import 'package:kwik/widgets/shimmer/category_landing_shimmer.dart';
 import 'package:kwik/widgets/shimmer/main_loading_indicator.dart';
 import 'package:kwik/widgets/shimmer/shimmer1.dart';
 import 'package:kwik/widgets/soft_update_popup.dart';
@@ -115,6 +118,9 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      NetworkUtils.checkConnection(context);
+    });
     forceupdate();
 
     print("Init state called again");
@@ -923,8 +929,9 @@ class _AppBarContent extends StatelessWidget {
               },
               child: InkWell(
                 onTap: () {
-                  // context.push('/check-payment-status',
-                  //     extra: "order_QRlNaRy1GjNfnN");
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) =>
+                          const CategoryLandingPageShimmmer()));
                 },
                 child: Container(
                   decoration: BoxDecoration(

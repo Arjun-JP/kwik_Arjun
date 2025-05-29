@@ -18,6 +18,7 @@ import 'package:kwik/constants/constants.dart';
 import 'package:kwik/models/cart_model.dart';
 import 'package:kwik/models/product_model.dart';
 import 'package:kwik/widgets/custom_snackbar.dart';
+import 'package:kwik/widgets/product_model_3.dart';
 import 'package:kwik/widgets/select_Varrient_bottom_sheet.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -108,7 +109,7 @@ class ProductItem extends StatelessWidget {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.start,
-                          spacing: 3,
+                          spacing: 2,
                           children: [
                             Container(
                               height: 160,
@@ -134,7 +135,6 @@ class ProductItem extends StatelessWidget {
                                 ),
                               ),
                             ),
-                            const SizedBox(height: 1),
                             SizedBox(
                               width: 120,
                               child: Text(
@@ -171,6 +171,49 @@ class ProductItem extends StatelessWidget {
                                 ),
                               ],
                             ),
+                            SizedBox(
+                                child: Row(
+                              children: [
+                                const Icon(
+                                  Icons.star_rounded,
+                                  color: Colors.amber,
+                                  size: 12,
+                                ),
+                                Icon(
+                                  averagerating(product.reviews) > 1
+                                      ? Icons.star_rounded
+                                      : Icons.star_outline_rounded,
+                                  color: Colors.amber,
+                                  size: 12,
+                                ),
+                                Icon(
+                                  averagerating(product.reviews) > 2
+                                      ? Icons.star_rounded
+                                      : Icons.star_outline_rounded,
+                                  color: Colors.amber,
+                                  size: 12,
+                                ),
+                                Icon(
+                                  averagerating(product.reviews) > 3
+                                      ? Icons.star_rounded
+                                      : Icons.star_outline_rounded,
+                                  color: Colors.amber,
+                                  size: 12,
+                                ),
+                                Icon(
+                                  averagerating(product.reviews) > 4
+                                      ? Icons.star_rounded
+                                      : Icons.star_outline_rounded,
+                                  color: Colors.amber,
+                                  size: 12,
+                                ),
+                                Text(
+                                  "(${product.reviews.isEmpty ? "1" : product.reviews.length.toString()})",
+                                  style: theme.textTheme.bodyMedium!
+                                      .copyWith(fontSize: 12),
+                                )
+                              ],
+                            )),
                             const Spacer(),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -183,8 +226,11 @@ class ProductItem extends StatelessWidget {
                                     children: [
                                       Text(
                                         "₹${product.variations.first.mrp.toStringAsFixed(0)}",
+                                        maxLines: 2,
                                         style: theme.textTheme.bodyMedium!
                                             .copyWith(
+                                          fontSize: 8,
+                                          fontWeight: FontWeight.w600,
                                           color: parseColor(mrpColor),
                                           decoration:
                                               TextDecoration.lineThrough,
@@ -194,8 +240,9 @@ class ProductItem extends StatelessWidget {
                                         "₹${product.variations.first.sellingPrice.toStringAsFixed(0)}",
                                         style: theme.textTheme.bodyMedium!
                                             .copyWith(
+                                          fontSize: 10,
+                                          fontWeight: FontWeight.w800,
                                           color: parseColor(sellingPriceColor),
-                                          fontWeight: FontWeight.w600,
                                         ),
                                       )
                                     ],

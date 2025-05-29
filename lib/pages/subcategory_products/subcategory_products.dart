@@ -8,6 +8,7 @@ import 'package:kwik/bloc/subcategory_product_bloc/subcategory_product_bloc.dart
 import 'package:kwik/bloc/subcategory_product_bloc/subcategory_product_event.dart';
 import 'package:kwik/bloc/subcategory_product_bloc/subcategory_product_state.dart';
 import 'package:kwik/constants/colors.dart';
+import 'package:kwik/constants/network_check.dart';
 import 'package:kwik/pages/Home_page/widgets/descriptive_widget.dart';
 import 'package:kwik/widgets/produc_model_1.dart';
 import 'package:kwik/widgets/shimmer/product1_grid_Shimnmer.dart';
@@ -31,6 +32,9 @@ class _SubcategoryProductsPageState extends State<SubcategoryProductsPage> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      NetworkUtils.checkConnection(context);
+    });
     context.read<SubcategoryProductBlocSubcategory>().add(
         FetchSubcategoryProductsSubcategory(
             subcategoryID: widget.subcategoryid));
@@ -42,110 +46,206 @@ class _SubcategoryProductsPageState extends State<SubcategoryProductsPage> {
     return BlocBuilder<SubcategoryProductBlocSubcategory,
         SubcategoryProductStatesubcategory>(
       builder: (context, state) {
-        return Scaffold(
-          appBar: AppBar(
-            title: Text(widget.subcatname),
-            backgroundColor: lightenColor(
-                parseColor(state is SubcategoryProductLoadedsubcategory
-                    ? state.products.first.categoryRef.color
-                    : "FFFFFF"),
-                .9),
-            foregroundColor: lightenColor(
-                parseColor(state is SubcategoryProductLoadedsubcategory
-                    ? state.products.first.categoryRef.color
-                    : "FFFFFF"),
-                .9),
-            toolbarHeight: 40,
-            leading: InkWell(
-              onTap: () {
-                context.pop();
-              },
-              child: const Icon(
-                Icons.arrow_back_ios_new_rounded,
-                size: 18,
-                color: Color.fromARGB(255, 0, 0, 0),
-              ),
-            ),
-            actions: [
-              InkWell(
+        if (state is SubcategoryProductLoadedsubcategory &&
+            state.products.isNotEmpty) {
+          return Scaffold(
+            appBar: AppBar(
+              title: Text(state is SubcategoryProductLoadedsubcategory
+                  ? state.products.first.subCategoryRef
+                      .where((element) => element.id == widget.subcategoryid)
+                      .toList()
+                      .first
+                      .name
+                  : ""),
+              backgroundColor: lightenColor(
+                  parseColor(state is SubcategoryProductLoadedsubcategory
+                      ? state.products.first.categoryRef.color
+                      : "FFFFFF"),
+                  .9),
+              foregroundColor: lightenColor(
+                  parseColor(state is SubcategoryProductLoadedsubcategory
+                      ? state.products.first.categoryRef.color
+                      : "FFFFFF"),
+                  .9),
+              toolbarHeight: 40,
+              leading: InkWell(
                 onTap: () {
-                  HapticFeedback.selectionClick();
-                  context.push('/searchpage');
+                  context.pop();
                 },
-                child: SvgPicture.asset(
-                  "assets/images/search.svg",
-                  fit: BoxFit.contain,
-                  width: 30,
-                  height: 20,
-                  color: const Color.fromARGB(255, 0, 0, 0),
+                child: const Icon(
+                  Icons.arrow_back_ios_new_rounded,
+                  size: 18,
+                  color: Color.fromARGB(255, 0, 0, 0),
                 ),
               ),
-              const SizedBox(width: 20),
-            ],
-          ),
-          body: SingleChildScrollView(
-            // Prevents layout overflow
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(height: 10),
-                  const SizedBox(height: 20),
-                  BlocBuilder<SubcategoryProductBlocSubcategory,
-                      SubcategoryProductStatesubcategory>(
-                    builder: (context, state) {
-                      if (state is SubcategoryProductLoadingsubcategory) {
-                        return const Center(child: ProductModel1GridShimmer());
-                      } else if (state is SubcategoryProductLoadedsubcategory) {
-                        if (state.products.isEmpty) {
+              actions: [
+                InkWell(
+                  onTap: () {
+                    HapticFeedback.selectionClick();
+                    context.push('/searchpage');
+                  },
+                  child: SvgPicture.asset(
+                    "assets/images/search.svg",
+                    fit: BoxFit.contain,
+                    width: 30,
+                    height: 20,
+                    color: const Color.fromARGB(255, 0, 0, 0),
+                  ),
+                ),
+                const SizedBox(width: 20),
+              ],
+            ),
+            body: SingleChildScrollView(
+              // Prevents layout overflow
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: 20),
+                    BlocBuilder<SubcategoryProductBlocSubcategory,
+                        SubcategoryProductStatesubcategory>(
+                      builder: (context, state) {
+                        if (state is SubcategoryProductLoadingsubcategory) {
                           return const Center(
-                              child: Text("No products available"));
-                        }
-                        return StaggeredGrid.count(
-                          crossAxisCount: 3,
-                          mainAxisSpacing: 20,
-                          crossAxisSpacing: 10,
-                          children: List.generate(
-                            state.products.length,
-                            (index) => SizedBox(
-                              height: 278,
-                              child: ProductItem(
-                                subcategoryRef: state
-                                    .products[index].subCategoryRef.first.id,
-                                productnamecolor: "000000",
-                                mrpColor: "A19DA3",
-                                offertextcolor: "FFFFFF",
-                                productBgColor: "FFFFFF",
-                                sellingPriceColor: "000000",
-                                buttontextcolor: "E23338",
-                                buttonBgColor: "FFFFFF",
-                                unitTextcolor: "A19DA3",
-                                unitbgcolor: "FFFFFF",
-                                offerbgcolor: "E3520D",
-                                ctx: context,
-                                product: state.products[index],
+                              child: ProductModel1GridShimmer());
+                        } else if (state
+                            is SubcategoryProductLoadedsubcategory) {
+                          if (state.products.isEmpty) {
+                            return const Center(
+                                child: Text("No products available"));
+                          }
+                          return StaggeredGrid.count(
+                            crossAxisCount: 3,
+                            mainAxisSpacing: 20,
+                            crossAxisSpacing: 10,
+                            children: List.generate(
+                              state.products.length,
+                              (index) => SizedBox(
+                                height: 278,
+                                child: ProductItem(
+                                  subcategoryRef: state
+                                      .products[index].subCategoryRef.first.id,
+                                  productnamecolor: "000000",
+                                  mrpColor: "A19DA3",
+                                  offertextcolor: "FFFFFF",
+                                  productBgColor: "FFFFFF",
+                                  sellingPriceColor: "000000",
+                                  buttontextcolor: "E23338",
+                                  buttonBgColor: "FFFFFF",
+                                  unitTextcolor: "A19DA3",
+                                  unitbgcolor: "FFFFFF",
+                                  offerbgcolor: "E3520D",
+                                  ctx: context,
+                                  product: state.products[index],
+                                ),
                               ),
                             ),
-                          ),
-                        );
-                      } else if (state is SubcategoryProductErrorsubcategory) {
-                        return Center(child: Text(state.message));
-                      }
-                      return const SizedBox.shrink(); // Avoids layout errors
-                    },
-                  ),
-                  const SizedBox(height: 20),
-                  const DescriptiveWidget(
-                    title: "Skip the store, we're at your door!",
-                    logo: "assets/images/kwiklogo.png",
-                    showcategory: true,
-                  ),
-                ],
+                          );
+                        } else if (state
+                            is SubcategoryProductErrorsubcategory) {
+                          return Center(child: Text(state.message));
+                        }
+                        return const SizedBox.shrink(); // Avoids layout errors
+                      },
+                    ),
+                    const SizedBox(height: 20),
+                    const DescriptiveWidget(
+                      title: "Skip the store, we're at your door!",
+                      logo: "assets/images/kwiklogo.png",
+                      showcategory: true,
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
-        );
+          );
+        } else if (state is SubcategoryProductLoadingsubcategory ||
+            state is SubcategoryproductInitialsubcategory) {
+          return Scaffold(
+              appBar: AppBar(
+                leading: InkWell(
+                  onTap: () {
+                    context.pop();
+                  },
+                  child: const Icon(
+                    Icons.arrow_back_ios_new_rounded,
+                    size: 18,
+                    color: Color.fromARGB(255, 0, 0, 0),
+                  ),
+                ),
+                actions: [
+                  InkWell(
+                    onTap: () {
+                      HapticFeedback.selectionClick();
+                      context.push('/searchpage');
+                    },
+                    child: SvgPicture.asset(
+                      "assets/images/search.svg",
+                      fit: BoxFit.contain,
+                      width: 30,
+                      height: 20,
+                      color: const Color.fromARGB(255, 0, 0, 0),
+                    ),
+                  ),
+                  const SizedBox(width: 20),
+                ],
+              ),
+              body: const ProductModel1GridShimmer());
+        } else {
+          return Scaffold(
+              appBar: AppBar(
+                leading: InkWell(
+                  onTap: () {
+                    context.pop();
+                  },
+                  child: const Icon(
+                    Icons.arrow_back_ios_new_rounded,
+                    size: 18,
+                    color: Color.fromARGB(255, 0, 0, 0),
+                  ),
+                ),
+                actions: [
+                  InkWell(
+                    onTap: () {
+                      HapticFeedback.selectionClick();
+                      context.push('/searchpage');
+                    },
+                    child: SvgPicture.asset(
+                      "assets/images/search.svg",
+                      fit: BoxFit.contain,
+                      width: 30,
+                      height: 20,
+                      color: const Color.fromARGB(255, 0, 0, 0),
+                    ),
+                  ),
+                  const SizedBox(width: 20),
+                ],
+              ),
+              body: SizedBox(
+                width: double.infinity,
+                height: double.infinity,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Image.asset(
+                      "assets/images/kwiklogo.png",
+                      width: 200,
+                      height: 200,
+                    ),
+                    Text(
+                      "All out for now!\n\nswe’re restocking to serve you better!",
+                      textAlign: TextAlign.center,
+                      style: theme.textTheme.bodyMedium!.copyWith(
+                        fontSize: 16,
+                      ),
+                    ),
+                    const SizedBox(height: 70)
+                  ],
+                ),
+              ));
+        }
       },
     );
   }

@@ -9,6 +9,7 @@ import 'package:kwik/bloc/Add_Review_bloc/add_review_bloc.dart';
 import 'package:kwik/bloc/Add_Review_bloc/add_review_event.dart';
 import 'package:kwik/bloc/order_bloc/order_bloc.dart';
 import 'package:kwik/bloc/order_bloc/order_event.dart';
+import 'package:kwik/constants/network_check.dart';
 import 'package:kwik/models/product_model.dart';
 import 'package:http/http.dart' as http;
 import 'package:kwik/widgets/shimmer/shimmer1.dart';
@@ -32,6 +33,9 @@ class _ProductRatingState extends State<ProductRating> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      NetworkUtils.checkConnection(context);
+    });
     currentFirebaseUid = FirebaseAuth.instance.currentUser?.uid ?? '';
     productReviews = {};
     _commentControllers = {};
