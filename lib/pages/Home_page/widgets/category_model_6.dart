@@ -56,51 +56,53 @@ class CategoryModel6 extends StatelessWidget {
                   )
                   .toList();
 
-              return Container(
-                color: parseColor(bgcolor),
-                width: double.infinity,
-                padding: const EdgeInsets.symmetric(horizontal: 10),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(height: 15),
-                    Text(
-                      title,
-                      style: TextStyle(
-                        color: parseColor(titleColor),
-                        fontSize: 18,
-                        fontWeight: FontWeight.w800,
+              return showcategory
+                  ? Container(
+                      color: parseColor(bgcolor),
+                      width: double.infinity,
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const SizedBox(height: 15),
+                          Text(
+                            title,
+                            style: TextStyle(
+                              color: parseColor(titleColor),
+                              fontSize: 18,
+                              fontWeight: FontWeight.w800,
+                            ),
+                          ),
+                          const SizedBox(height: 12),
+                          SizedBox(
+                            height: 185,
+                            width: MediaQuery.of(context).size.width,
+                            child: ListView.builder(
+                              scrollDirection: Axis.horizontal,
+                              itemCount: filteredSubCategories.length,
+                              itemBuilder: (context, index) {
+                                var subCategory = filteredSubCategories[index];
+                                return subcategoryItem(
+                                  context: context,
+                                  subcat: subCategory,
+                                  outerbordercolor: outerbordercolor,
+                                  name: subCategory.name,
+                                  offer: subCategory.offerPercentage,
+                                  bgcolor: bgcolor,
+                                  imageurl: subCategory.imageUrl,
+                                  catnamecolor: catnamecolor,
+                                  catnamebgcolor: catnamebgcolor,
+                                  offerbgcolor: offerbgcolor,
+                                  offertextcolor: offertextcolor,
+                                );
+                              },
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                        ],
                       ),
-                    ),
-                    const SizedBox(height: 12),
-                    SizedBox(
-                      height: 185,
-                      width: MediaQuery.of(context).size.width,
-                      child: ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: filteredSubCategories.length,
-                        itemBuilder: (context, index) {
-                          var subCategory = filteredSubCategories[index];
-                          return subcategoryItem(
-                            context: context,
-                            subcat: subCategory,
-                            outerbordercolor: outerbordercolor,
-                            name: subCategory.name,
-                            offer: subCategory.offerPercentage,
-                            bgcolor: bgcolor,
-                            imageurl: subCategory.imageUrl,
-                            catnamecolor: catnamecolor,
-                            catnamebgcolor: catnamebgcolor,
-                            offerbgcolor: offerbgcolor,
-                            offertextcolor: offertextcolor,
-                          );
-                        },
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                  ],
-                ),
-              );
+                    )
+                  : const SizedBox();
             } else if (state is CategoryError) {
               return Center(child: Text(state.message));
             }

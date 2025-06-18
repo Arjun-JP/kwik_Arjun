@@ -13,10 +13,11 @@ class SearchRepo {
   };
   final user = FirebaseAuth.instance.currentUser;
   Future<Map<String, dynamic>> searchProducts(
-      String query, String userId) async {
+      String query, String userId, bool isSearch) async {
     try {
       final response = await http.get(
-        Uri.parse("$baseUrl/product/search/product/user/$userId?query=$query"),
+        Uri.parse(
+            "$baseUrl/product/search/product/user/$userId?query=$query&saveHistory=$isSearch"),
         headers: headers,
       );
 

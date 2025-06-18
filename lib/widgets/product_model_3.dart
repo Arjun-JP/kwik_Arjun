@@ -1,5 +1,4 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -34,8 +33,8 @@ Widget productModel3(
     required String buttontextcolor,
     required String unitbgcolor,
     required String unitTextcolor,
-    required String seeAllButtonBG,
-    required String seeAllButtontext,
+    required String buttonBG,
+    required String buttontext,
     required ThemeData theme,
     required BuildContext context}) {
   final user = FirebaseAuth.instance.currentUser;
@@ -216,9 +215,9 @@ Widget productModel3(
                     child: Container(
                       width: 40,
                       height: 50,
-                      decoration: const BoxDecoration(
-                          color: Colors.orange,
-                          borderRadius: BorderRadius.only(
+                      decoration: BoxDecoration(
+                          color: parseColor(offerBGcolor),
+                          borderRadius: const BorderRadius.only(
                             topLeft: Radius.circular(10),
                           )),
                       child: Column(
@@ -228,14 +227,14 @@ Widget productModel3(
                           Text(
                             "${percentage(product.variations.first.mrp, product.variations.first.sellingPrice)}",
                             style: theme.textTheme.bodyMedium!.copyWith(
-                                color: parseColor("233D4D"),
+                                color: parseColor(offertextcolor),
                                 fontFamily: "Inter",
                                 fontWeight: FontWeight.w900),
                           ),
                           Text(
                             "OFF",
                             style: theme.textTheme.bodyMedium!.copyWith(
-                              color: parseColor("233D4D"),
+                              color: parseColor(offertextcolor),
                               fontFamily: "Inter",
                             ),
                           ),
@@ -251,8 +250,8 @@ Widget productModel3(
                           child: quantitycontrolbutton(
                             user: user,
                             pincode: warstate.pincode,
-                            buttontextcolor: seeAllButtonBG,
-                            buttonbgcolor: seeAllButtontext,
+                            buttontext: buttonBG,
+                            buttonbgcolor: buttontext,
                             context: context,
                             theme: theme,
                             product: product,
@@ -307,8 +306,8 @@ Widget productModel3(
                                             padding: MediaQuery.viewInsetsOf(
                                                 context),
                                             child: SelectVarrientBottomSheet(
-                                              buttonBgColor: seeAllButtontext,
-                                              buttontextcolor: seeAllButtonBG,
+                                              buttonBgColor: buttontext,
+                                              buttontextcolor: buttonBG,
                                               product: product,
                                             ),
                                           ),
@@ -366,10 +365,10 @@ Widget productModel3(
                                   padding: const EdgeInsets.symmetric(
                                       vertical: 5, horizontal: 15),
                                   decoration: BoxDecoration(
-                                    color: parseColor(seeAllButtonBG),
+                                    color: parseColor(buttonBG),
                                     borderRadius: BorderRadius.circular(12),
                                     border: Border.all(
-                                        color: parseColor(buttontextcolor)),
+                                        color: parseColor(buttontext)),
                                   ),
                                   child: Center(
                                     child: Text(
@@ -400,7 +399,7 @@ Widget productModel3(
                                       style: TextStyle(
                                         fontSize: 12,
                                         fontWeight: FontWeight.w800,
-                                        color: parseColor(seeAllButtontext),
+                                        color: parseColor(buttontext),
                                       ),
                                     ),
                                   ),
@@ -425,7 +424,7 @@ Widget quantitycontrolbutton(
     required User? user,
     required String pincode,
     required String buttonbgcolor,
-    required String buttontextcolor,
+    required String buttontext,
     required ProductModel product,
     required String variationID,
     required BuildContext context,
@@ -458,7 +457,7 @@ Widget quantitycontrolbutton(
               width: 12,
               height: 2,
               decoration: BoxDecoration(
-                  color: parseColor(buttontextcolor),
+                  color: parseColor(buttontext),
                   borderRadius: BorderRadius.circular(3)),
             ))),
           ),
@@ -470,7 +469,7 @@ Widget quantitycontrolbutton(
             child: Text(
               qty,
               style: theme.textTheme.bodyMedium!.copyWith(
-                  color: parseColor(buttontextcolor),
+                  color: parseColor(buttontext),
                   fontSize: 14,
                   fontWeight: FontWeight.w800),
             ),
@@ -495,7 +494,7 @@ Widget quantitycontrolbutton(
                 child: Icon(
                   Icons.add,
                   size: 20,
-                  color: parseColor(buttontextcolor),
+                  color: parseColor(buttontext),
                 ),
               )),
             ),

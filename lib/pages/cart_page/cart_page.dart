@@ -1697,7 +1697,7 @@ class _CartPageState extends State<CartPage> {
                         builder: (context, couponstate) {
                       return Text(
                         couponstate is CouponApplied
-                            ? couponstate.disAmount.toString()
+                            ? couponstate.disAmount.toStringAsFixed(0)
                             : "0",
                         style: theme.textTheme.bodyMedium!.copyWith(
                           fontSize: 14,

@@ -404,7 +404,8 @@ class ProductModel2 extends StatelessWidget {
                                                   );
                                                 },
                                               );
-                                            } else if (product.variations ==
+                                            } else if (product
+                                                        .variations.length ==
                                                     1 &&
                                                 product.variations.first.stock
                                                         .first.stockQty !=

@@ -11,6 +11,8 @@ import 'package:kwik/bloc/Cart_bloc/cart_bloc.dart';
 import 'package:kwik/bloc/Cart_bloc/cart_event.dart';
 import 'package:kwik/bloc/Cart_bloc/cart_state.dart'
     show CartState, CartUpdated;
+import 'package:kwik/bloc/Coupon_bloc/Coupon_bloc.dart';
+import 'package:kwik/bloc/Coupon_bloc/coupon_event.dart';
 import 'package:kwik/bloc/product_details_page/product_details_bloc/product_details_page_bloc.dart';
 import 'package:kwik/bloc/product_details_page/product_details_bloc/product_details_page_event.dart';
 import 'package:kwik/bloc/product_details_page/product_details_bloc/product_details_page_state.dart';
@@ -918,6 +920,7 @@ Widget quantitycontrolbutton(
                   productRef: product.id,
                   userId: user!.uid,
                   variantId: variationID));
+              ctx.read<CouponBloc>().add(ResetCoupons());
             },
             child: SizedBox(
                 child: Center(
@@ -951,6 +954,7 @@ Widget quantitycontrolbutton(
                   productRef: product.id,
                   userId: user!.uid,
                   variantId: variationID));
+              ctx.read<CouponBloc>().add(ResetCoupons());
             },
             child: SizedBox(
                 child: Center(

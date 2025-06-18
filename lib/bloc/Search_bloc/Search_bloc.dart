@@ -33,8 +33,8 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     on<SearchProducts>((event, emit) async {
       emit(ProductLoading());
       try {
-        final response =
-            await repository.searchProducts(event.query, event.userId);
+        final response = await repository.searchProducts(
+            event.query, event.userId, event.isSearch);
 
         // Parse the products
         final products = (response['products'] as List)

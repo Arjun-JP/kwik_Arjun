@@ -168,7 +168,8 @@ class _CategoryLandingPageNewState extends State<CategoryLandingPageNew> {
                                                     product: product,
                                                     mrpColor: "000000",
                                                     context: context,
-                                                    seeAllButtontext: "000000",
+                                                    buttontext:
+                                                        widget.category.color,
                                                     sellingpricecolor: "000000",
                                                     theme: theme,
                                                     offertextcolor: "FFFFFF",
@@ -176,7 +177,7 @@ class _CategoryLandingPageNewState extends State<CategoryLandingPageNew> {
                                                     productBgColor: "FFFFFF",
                                                     productcolor: "000000",
                                                     sellingPriceColor: "000000",
-                                                    seeAllButtonBG: "FFFFFF",
+                                                    buttonBG: "FFFFFF",
                                                     unitTextcolor: "000000",
                                                     offerBGcolor: "E3520D",
                                                   ),

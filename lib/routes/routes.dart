@@ -57,7 +57,11 @@ final GoRouter router = GoRouter(
       path: '/OtpVerificationPage/:verificationId',
       builder: (BuildContext context, GoRouterState state) {
         final verificationId = state.pathParameters['verificationId']!;
-        return OtpVerificationPage(verificationId: verificationId);
+        final phoneNumber = state.pathParameters['phoneNumber']!;
+        return OtpVerificationPage(
+          verificationId: verificationId,
+          phoneNumber: phoneNumber,
+        );
       },
     ),
     GoRoute(

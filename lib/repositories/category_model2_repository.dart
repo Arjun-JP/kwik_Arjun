@@ -10,12 +10,9 @@ class CategoryRepositoryModel2 {
 
   Future<Category> fetchCategoryDetails(String categoryId) async {
     try {
-
- 
-
       final headers = {
         'api_Key': dotenv.env['API_KEY']!,
-    'api_Secret': dotenv.env['API_SECRET']!,
+        'api_Secret': dotenv.env['API_SECRET']!,
       };
 
       final response = await http
@@ -34,11 +31,9 @@ class CategoryRepositoryModel2 {
 
   Future<List<SubCategoryModel>> fetchSubCategories(String categoryId) async {
     try {
-      
-
       final headers = {
-         'api_Key': dotenv.env['API_KEY']!,
-    'api_Secret': dotenv.env['API_SECRET']!,
+        'api_Key': dotenv.env['API_KEY']!,
+        'api_Secret': dotenv.env['API_SECRET']!,
       };
       final response = await http.get(
           Uri.parse('$baseUrl/subcategory/allsubcategories'),
