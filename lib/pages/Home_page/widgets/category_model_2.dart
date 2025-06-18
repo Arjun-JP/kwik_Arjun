@@ -42,6 +42,9 @@ class CategoryModel2 extends StatelessWidget {
                     if (state is CategoryLoading) {
                       return const Center(child: Categorymodel2Shimmer());
                     } else if (state is CategoryLoaded) {
+                      final selectedSubCategoryRef = List<String>.from(
+                          state.category.selectedSubCategoryRef!);
+
                       return Container(
                         color: parseColor(bgcolor),
                         width: double.infinity,
@@ -61,7 +64,11 @@ class CategoryModel2 extends StatelessWidget {
                               height: 294,
                               width: MediaQuery.of(context).size.width,
                               child: GridView.builder(
-                                itemCount: state.subCategories.length,
+                                itemCount: state.subCategories
+                                    .where((element) => selectedSubCategoryRef
+                                        .contains(element.id))
+                                    .toList()
+                                    .length,
                                 scrollDirection: Axis.horizontal,
                                 gridDelegate:
                                     const SliverGridDelegateWithFixedCrossAxisCount(
@@ -77,11 +84,20 @@ class CategoryModel2 extends StatelessWidget {
                                           "/allsubcategorypage?categoryId=$categoryId&selectedsubcategory=${state.subCategories[index].id}");
                                     },
                                     child: subcategoryItem(
-                                        name: state.subCategories[index].name,
+                                        name: state.subCategories
+                                            .where((element) =>
+                                                selectedSubCategoryRef
+                                                    .contains(element.id))
+                                            .toList()[index]
+                                            .name,
                                         bgcolor: state.category.color,
                                         textcolor: subcatColor,
-                                        imageurl:
-                                            state.subCategories[index].imageUrl,
+                                        imageurl: state.subCategories
+                                            .where((element) =>
+                                                selectedSubCategoryRef
+                                                    .contains(element.id))
+                                            .toList()[index]
+                                            .imageUrl,
                                         theme: theme),
                                   );
                                 },

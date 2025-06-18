@@ -23,6 +23,7 @@ class CategoryModel9 extends StatelessWidget {
   final String mrpColor;
   final String sellingPriceColor;
   final String buttontextcolor;
+  final String buttonbgcolor;
   final String unitbgcolor;
   final String unitTextcolor;
   final String seeAllButtonBG;
@@ -48,6 +49,7 @@ class CategoryModel9 extends StatelessWidget {
     required this.unitbgcolor,
     required this.unitTextcolor,
     required this.showcategory,
+    required this.buttonbgcolor,
   });
 
   @override
@@ -123,9 +125,8 @@ class CategoryModel9 extends StatelessWidget {
                                                   sellingPriceColor,
                                               unitTextcolor: unitTextcolor,
                                               unitbgcolor: unitbgcolor,
-                                              seeAllButtonBG: seeAllButtonBG,
-                                              seeAllButtontext:
-                                                  seeAllButtontext,
+                                              buttonBG: buttonbgcolor,
+                                              buttontext: buttontextcolor,
                                               theme: theme),
                                         ),
                                       );
@@ -171,7 +172,7 @@ class CategoryModel9 extends StatelessWidget {
                                 padding: const EdgeInsets.only(right: 14.0),
                                 child: Icon(
                                   Icons.arrow_forward,
-                                  color: parseColor("00AE11"),
+                                  color: parseColor(seeAllButtontext),
                                 ),
                               ),
                             ),

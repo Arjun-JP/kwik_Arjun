@@ -1,0 +1,31 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "kwik_Arjun",
+            "request": "launch",
+            "type": "dart",
+            "env": {
+                "PATH": "/Users/arjun/.gem/ruby/2.6.0/bin:${env:PATH}"
+            }
+        },
+        {
+            "name": "kwik_Arjun (profile mode)",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile",
+            "env": {
+                "PATH": "/Users/arjun/.gem/ruby/2.6.0/bin:${env:PATH}"
+            }
+        },
+        {
+            "name": "kwik_Arjun (release mode)",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release",
+            "env": {
+                "PATH": "/Users/arjun/.gem/ruby/2.6.0/bin:${env:PATH}"
+            }
+        }
+    ]
+}

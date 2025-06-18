@@ -26,6 +26,13 @@ class CategoryModel10 extends StatelessWidget {
   final String image;
   final bool showcategory;
   final String subCatID;
+  final String offerbgcolor;
+  final String offertextcolor;
+  final String buttonbgcolor;
+  final String buttontextcolor;
+  final String unitTextcolor;
+  final String unitbgcolor;
+
   const CategoryModel10({
     super.key,
     required this.bgcolor,
@@ -42,6 +49,12 @@ class CategoryModel10 extends StatelessWidget {
     required this.image,
     required this.showcategory,
     required this.subCatID,
+    required this.offerbgcolor,
+    required this.offertextcolor,
+    required this.buttonbgcolor,
+    required this.buttontextcolor,
+    required this.unitTextcolor,
+    required this.unitbgcolor,
   });
 
   @override
@@ -108,18 +121,18 @@ class CategoryModel10 extends StatelessWidget {
                 final product = products[index];
                 return productModel3(
                   buttontextcolor: seeAllButtontext,
-                  seeAllButtonBG: seeAllButtonBG,
-                  seeAllButtontext: seeAllButtontext,
+                  buttonBG: buttonbgcolor,
+                  buttontext: buttontextcolor,
                   productBgColor: prodoductbgcolor,
                   context: context,
-                  offerBGcolor: "000000",
-                  offertextcolor: "FFFFFF",
-                  productcolor: "FFFFFF",
+                  offerBGcolor: offerbgcolor,
+                  offertextcolor: offertextcolor,
+                  productcolor: prodoductbgcolor,
                   sellingpricecolor: sellingpricecolor,
                   theme: theme,
                   product: product,
-                  unitTextcolor: "000000",
-                  unitbgcolor: "FFFFFF",
+                  unitTextcolor: unitTextcolor,
+                  unitbgcolor: unitbgcolor,
                   mrpColor: mrpcolor,
                   sellingPriceColor: sellingpricecolor,
                 );
@@ -159,7 +172,7 @@ class CategoryModel10 extends StatelessWidget {
                       child: Padding(
                         padding: const EdgeInsets.only(right: 14.0),
                         child: Icon(Icons.arrow_forward,
-                            color: parseColor(seeAllButtontext)),
+                            color: parseColor("FFFFFF")),
                       ),
                     ),
                   ),

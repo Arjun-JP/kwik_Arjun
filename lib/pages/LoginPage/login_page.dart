@@ -48,6 +48,7 @@ class _LoginPageState extends State<LoginPage> {
                 MaterialPageRoute(
                   builder: (context) => OtpVerificationPage(
                     verificationId: state.verificationId,
+                    phoneNumber: mobileNumberController.text,
                   ),
                 ),
               );

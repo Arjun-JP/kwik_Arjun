@@ -44,14 +44,13 @@ class _SearchPageState extends State<SearchPage> {
     }
   }
 
-  void _onSearch(String query) {
+  void _onSearch(String query, bool isSearch) {
     if (query.isNotEmpty) {
       setState(() {
         _showInitialContent = false;
       });
-      context
-          .read<SearchBloc>()
-          .add(SearchProducts(query, FirebaseAuth.instance.currentUser!.uid));
+      context.read<SearchBloc>().add(SearchProducts(
+          query, FirebaseAuth.instance.currentUser!.uid, isSearch));
     }
   }
 
@@ -115,9 +114,11 @@ class _SearchPageState extends State<SearchPage> {
         return TextField(
           controller: controller,
           focusNode: focusNode,
-          onSubmitted: _onSearch,
+          onSubmitted: (value) {
+            _onSearch(value, true);
+          },
           onChanged: (value) {
-            _onSearch(value);
+            _onSearch(value, false);
           },
           decoration: InputDecoration(
             focusedBorder: OutlineInputBorder(
@@ -150,7 +151,7 @@ class _SearchPageState extends State<SearchPage> {
                     icon: const Icon(Icons.clear),
                     onPressed: () {
                       _searchController.clear();
-                      _onSearch('');
+                      _onSearch('', false);
                     },
                   )
                 : null,
@@ -234,7 +235,7 @@ class _SearchPageState extends State<SearchPage> {
       },
       onSelected: (product) {
         _searchController.text = product.productName;
-        _onSearch(product.productName);
+        _onSearch(product.productName, false);
       },
       decorationBuilder: (context, child) => DecoratedBox(
         decoration: BoxDecoration(
@@ -296,7 +297,7 @@ class _SearchPageState extends State<SearchPage> {
               .map((query) => InkWell(
                     onTap: () {
                       _searchController.text = query;
-                      _onSearch(query);
+                      _onSearch(query, false);
                     },
                     child: Container(
                       margin: const EdgeInsets.symmetric(

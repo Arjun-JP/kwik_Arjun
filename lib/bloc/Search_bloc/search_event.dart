@@ -8,8 +8,9 @@ abstract class SearchEvent extends Equatable {
 class SearchProducts extends SearchEvent {
   final String query;
   final String userId;
+  final bool isSearch;
 
-  SearchProducts(this.query, this.userId);
+  SearchProducts(this.query, this.userId, this.isSearch);
 }
 
 class LoadInitialProducts extends SearchEvent {}

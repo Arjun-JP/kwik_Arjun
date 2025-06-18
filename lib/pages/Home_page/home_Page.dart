@@ -51,6 +51,7 @@ import 'package:kwik/constants/colors.dart';
 import 'package:kwik/constants/network_check.dart';
 import 'package:kwik/models/order_model.dart' as locationmode;
 import 'package:kwik/pages/Address_management/location_search_page.dart';
+import 'package:kwik/pages/Error_pages/network_error_page.dart';
 import 'package:kwik/pages/Force%20Update%20page/force_update.dart';
 import 'package:kwik/pages/Home_page/widgets/banner_model.dart';
 import 'package:kwik/pages/Home_page/widgets/category_model_10.dart';
@@ -589,6 +590,7 @@ class _HomePageContent extends StatelessWidget {
           productBgColor: uiData["template12"]["productBgColor"],
           sellingPriceColor: uiData["template12"]["sellingPriceColor"],
           buttontextcolor: uiData["template12"]["buttontextcolor"],
+          buttonbgcolor: uiData["template12"]["button_bgcolor"],
           offerTextcolor: uiData["template12"]["offerTextcolor"],
           title: uiData["template12"]["title"],
           unitTextcolor: uiData["template12"]["unitTextcolor"],
@@ -600,6 +602,8 @@ class _HomePageContent extends StatelessWidget {
       {
         'template': CategoryModel10(
           subCatID: uiData["template13"]["category_ref"],
+          offerbgcolor: uiData["template13"]["offer_bg_color"],
+          offertextcolor: uiData["template13"]["offer_text_color"],
           title: uiData["template13"]["title"],
           titleColor: uiData["template13"]["titleColor"],
           bgcolor: uiData["template13"]["background_color"],
@@ -613,6 +617,10 @@ class _HomePageContent extends StatelessWidget {
           seeAllButtonBG: uiData["template13"]["seeAllButtonBG"],
           seeAllButtontext: uiData["template13"]["seeAllButtontext"],
           showcategory: uiData["template13"]["show_Category"],
+          buttonbgcolor: uiData["template13"]["Button_bg_color"],
+          buttontextcolor: uiData["template13"]["button_text_color"],
+          unitTextcolor: uiData["template13"]["unitTextcolor"],
+          unitbgcolor: uiData["template13"]["unitbgcolor"],
         ),
         'order': uiData["template13"]["ui_order_number"]
       },
@@ -930,8 +938,7 @@ class _AppBarContent extends StatelessWidget {
               child: InkWell(
                 onTap: () {
                   Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) =>
-                          const CategoryLandingPageShimmmer()));
+                      builder: (context) => const NetworkErrorPage()));
                 },
                 child: Container(
                   decoration: BoxDecoration(

@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -6,14 +9,14 @@ import 'package:kwik/bloc/Auth_bloc/auth_event.dart';
 import 'package:kwik/bloc/Auth_bloc/auth_state.dart';
 import 'package:kwik/constants/colors.dart';
 import 'package:kwik/constants/network_check.dart';
-import 'package:kwik/pages/Error_pages/Error_widget.dart';
-import 'package:kwik/widgets/kiwi_button.dart';
 import 'package:kwik/widgets/shimmer/main_loading_indicator.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 
 class OtpVerificationPage extends StatefulWidget {
   final String verificationId;
-  const OtpVerificationPage({super.key, required this.verificationId});
+  final String phoneNumber;
+  const OtpVerificationPage(
+      {super.key, required this.verificationId, required this.phoneNumber});
 
   @override
   State<OtpVerificationPage> createState() => _OtpVerificationPageState();
@@ -27,6 +30,7 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       NetworkUtils.checkConnection(context);
     });
+    _startCountdown();
     super.initState();
   }
 
@@ -35,6 +39,98 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
     _otpController.dispose();
     _focusNode.dispose();
     super.dispose();
+  }
+
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  int _countdown = 60; // Initial countdown in seconds
+  bool _isResending = false; // Flag to prevent multiple resend requests
+  String? _successMessage; // Message for successful OTP send
+  String? _errorMessage; // Message for errors during OTP send
+  Timer? _timer;
+  void _startCountdown() {
+    _countdown = 60; // Reset countdown
+    _timer?.cancel(); // Cancel any existing timer
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (_countdown == 0) {
+        timer.cancel(); // Stop the timer
+        setState(() {}); // Rebuild to enable the resend button
+      } else {
+        setState(() {
+          _countdown--; // Decrement countdown
+        });
+      }
+    });
+  }
+
+  Future<void> resendOtp() async {
+    if (_isResending || _countdown > 0) {
+      // Prevent resending if already in progress or countdown is active
+      return;
+    }
+
+    setState(() {
+      _isResending = true; // Set resending flag to true
+      _successMessage = null; // Clear previous messages
+      _errorMessage = null;
+    });
+
+    try {
+      await _auth.verifyPhoneNumber(
+        phoneNumber: "+91${widget.phoneNumber}",
+        timeout: const Duration(seconds: 60), // OTP timeout
+        verificationCompleted: (PhoneAuthCredential credential) async {
+          // Auto-retrieval of OTP on Android, or instant verification
+          // This typically happens if the user has enabled auto-fill for OTPs
+          // or if the phone number is already verified.
+          print('Verification completed: ${credential.smsCode}');
+          setState(() {
+            _successMessage = 'Phone number automatically verified!';
+            _isResending = false;
+            _countdown = 0; // End countdown as verification is complete
+            _timer?.cancel();
+          });
+          // You might sign in the user here
+          // await _auth.signInWithCredential(credential);
+        },
+        verificationFailed: (FirebaseAuthException e) {
+          // Handle errors during verification
+          print('Verification failed: ${e.message}');
+          setState(() {
+            _errorMessage = 'OTP verification failed: ${e.message}';
+            _isResending = false;
+            // Do not reset countdown here, let user retry after current countdown ends
+          });
+        },
+        codeSent: (String verificationId, int? resendToken) {
+          // OTP code sent successfully
+          print(
+              'Code sent to ${widget.phoneNumber}. Verification ID: $verificationId');
+          setState(() {
+            _successMessage = 'New OTP sent successfully!';
+            _isResending = false;
+            _startCountdown(); // Restart countdown for the new OTP
+          });
+          // Store verificationId and resendToken if needed for manual OTP entry
+          // You'll need verificationId to complete sign-in later
+        },
+        codeAutoRetrievalTimeout: (String verificationId) {
+          // Auto-retrieval timed out (e.g., on Android)
+          print('Auto-retrieval timed out. Verification ID: $verificationId');
+          setState(() {
+            _errorMessage =
+                'OTP auto-retrieval timed out. Please enter manually.';
+            _isResending = false;
+            // The countdown will naturally end here if it hasn't already
+          });
+        },
+      );
+    } catch (e) {
+      print('Error initiating phone verification: $e');
+      setState(() {
+        _errorMessage = 'An unexpected error occurred: $e';
+        _isResending = false;
+      });
+    }
   }
 
   @override
@@ -128,6 +224,30 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
                             autovalidateMode:
                                 AutovalidateMode.onUserInteraction,
                           ),
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            _countdown > 0
+                                ? Text(
+                                    "($_countdown)",
+                                    style: theme.textTheme.bodyMedium!.copyWith(
+                                        color: AppColors.dotColorSelected),
+                                  )
+                                : const SizedBox(),
+                            TextButton(
+                                onPressed: () {
+                                  _startCountdown();
+                                  resendOtp();
+                                },
+                                child: Text(
+                                  "Resend OTP",
+                                  style: theme.textTheme.bodyMedium!.copyWith(
+                                      color: _countdown > 0
+                                          ? Colors.grey
+                                          : AppColors.textColorblack),
+                                )),
+                          ],
                         ),
                         ElevatedButton(
                           onPressed: () {
