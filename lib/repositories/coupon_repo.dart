@@ -16,7 +16,8 @@ class CouponRepository {
   Future<List<CouponModel>> getAllCoupons() async {
     final response = await http
         .get(Uri.parse('$baseUrl/coupon/get/userCoupons/${user!.uid}'));
-
+    print(response.statusCode);
+    print(response.body);
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
       final List<dynamic> couponList = data['data'];
@@ -40,10 +41,7 @@ class CouponRepository {
           "coupon_code": couponcode,
         }),
       );
-      print(couponcode);
-      print(user!.uid);
-      print(response.statusCode);
-      print(response.body);
+
       Map<String, dynamic> coupondata = jsonDecode(response.body);
 
       if (response.statusCode == 200) {

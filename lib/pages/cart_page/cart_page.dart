@@ -29,6 +29,9 @@ import 'package:kwik/constants/doted_devider.dart';
 import 'package:kwik/models/cart_model.dart';
 import 'package:kwik/models/product_model.dart';
 import 'package:kwik/models/wishlist_model.dart';
+import 'package:kwik/pages/cart_page/updatecart_loadingpage.dart';
+import 'package:kwik/pages/cart_page/wishlist_to_cart_bottom_sheet.dart';
+import 'package:kwik/pages/cart_page/wishlist_transfer_bottomsheet.dart';
 import 'package:kwik/widgets/produc_model_1.dart';
 import 'package:kwik/widgets/select_address_cart.dart';
 import 'package:kwik/widgets/shimmer/product_model1_list.dart';
@@ -37,8 +40,7 @@ import '../../widgets/navbar/navbar.dart';
 import 'package:intl/intl.dart';
 
 class CartPage extends StatefulWidget {
-  const CartPage({super.key});
-
+  const CartPage({Key? key}) : super(key: key);
   @override
   State<CartPage> createState() => _CartPageState();
 }
@@ -52,6 +54,11 @@ class _CartPageState extends State<CartPage> {
     super.initState();
     _razorpay = Razorpay();
     _loadInitialData();
+  }
+
+  Future<void> refreshPage() async {
+    await Future.delayed(Duration(milliseconds: 100));
+    context.push('/cart'); // push cart again to rebuild
   }
 
   @override
@@ -99,6 +106,7 @@ class _CartPageState extends State<CartPage> {
   void _handleExternalWallet(ExternalWalletResponse response) {
     // Handle external wallet
   }
+  Key _cartPageKey = UniqueKey();
 
   @override
   Widget build(BuildContext context) {
@@ -381,14 +389,14 @@ class _CartPageState extends State<CartPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "Get FREE delivery",
+                        "Skip the lines, skip the traffic",
                         style: theme.textTheme.bodyMedium!.copyWith(
                           fontSize: 14,
                           color: const Color(0xFF0743B2),
                         ),
                       ),
                       Text(
-                        "Add products worth ₹102 more ",
+                        "we deliver straight to you. ",
                         style: theme.textTheme.bodyMedium,
                       ),
                     ],
@@ -397,24 +405,31 @@ class _CartPageState extends State<CartPage> {
               ),
             ),
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Image.asset(
-                height: 25,
-                width: 25,
-                "assets/images/couponimage.png",
-              ),
-              const SizedBox(width: 10),
-              Text(
-                "Add products worth ₹102 more ",
-                style: theme.textTheme.bodyMedium,
-              ),
-              const Icon(
-                Icons.arrow_right_rounded,
-                size: 20,
-              ),
-            ],
+          InkWell(
+            onTap: () {
+              HapticFeedback.mediumImpact();
+              context.push('/coupons');
+            },
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.asset(
+                  height: 25,
+                  width: 25,
+                  "assets/images/couponimage.png",
+                ),
+                const SizedBox(width: 10),
+                Text(
+                  "Don’t miss out! Check available coupons \nbefore you checkout. ",
+                  style: theme.textTheme.bodyMedium,
+                  maxLines: 2,
+                ),
+                const Icon(
+                  Icons.arrow_right_rounded,
+                  size: 20,
+                ),
+              ],
+            ),
           ),
           const SizedBox(height: 10),
         ],
@@ -547,21 +562,41 @@ class _CartPageState extends State<CartPage> {
                 child: BlocBuilder<AddressBloc, AddressState>(
                   builder: (context, addressState) {
                     return ElevatedButton(
-                      onPressed: () {
-                        if (user != null) {
-                          context.read<CartBloc>().add(AddToCartFromWishlist(
-                                userId: user.uid,
-                                wishlistID: item.id,
-                                pincode: addressState is LocationSearchResults
-                                    ? addressState.pincode
-                                    : "000000",
-                              ));
-                          context
-                              .read<CartBloc>()
-                              .add(SyncCartWithServer(userId: user.uid));
-                          context.read<CouponBloc>().add(ResetCoupons());
-                          // context.pushReplacement('/cart');
-                        }
+                      onPressed: () async {
+                        await showModalBottomSheet(
+                          isScrollControlled: true,
+                          backgroundColor: Colors.transparent,
+                          enableDrag: false,
+                          context: context,
+                          builder: (context) {
+                            return GestureDetector(
+                              onTap: () => FocusScope.of(context).unfocus(),
+                              child: Padding(
+                                padding: MediaQuery.viewInsetsOf(context),
+                                child: MovetoCart(
+                                    pincode:
+                                        addressState is LocationSearchResults
+                                            ? addressState.pincode
+                                            : "000000",
+                                    wishlistid: item.id),
+                              ),
+                            );
+                          },
+                        );
+                        // if (user != null) {
+                        //   context.read<CartBloc>().add(AddToCartFromWishlist(
+                        //         userId: user.uid,
+                        //         wishlistID: item.id,
+                        //         pincode: addressState is LocationSearchResults
+                        //             ? addressState.pincode
+                        //             : "000000",
+                        //       ));
+                        //   context
+                        //       .read<CartBloc>()
+                        //       .add(SyncCartWithServer(userId: user.uid));
+                        //   context.read<CouponBloc>().add(ResetCoupons());
+                        //   // context.pushReplacement('/cart');
+                        //  }
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFFE23338),
@@ -700,20 +735,45 @@ class _CartPageState extends State<CartPage> {
                           ),
                           const SizedBox(height: 3),
                           InkWell(
-                            onTap: () {
+                            onTap: () async {
                               if (user != null) {
-                                context.read<CartBloc>().add(
-                                      AddToWishlistFromcart(
-                                        userId: user.uid,
-                                        productref: item.productRef.id,
-                                        variationID: item.variant.id,
+                                bool refresh = await showModalBottomSheet(
+                                  isScrollControlled: true,
+                                  backgroundColor: Colors.transparent,
+                                  enableDrag: false,
+                                  context: context,
+                                  builder: (context) {
+                                    return GestureDetector(
+                                      onTap: () =>
+                                          FocusScope.of(context).unfocus(),
+                                      child: Padding(
+                                        padding:
+                                            MediaQuery.viewInsetsOf(context),
+                                        child: Movetowishlist(
+                                            productref: item.productRef.id,
+                                            variationID: item.variant.id),
                                       ),
                                     );
-                                context.read<CartBloc>().add(
-                                      SyncCartWithServer(userId: user.uid),
-                                    );
-                                context.read<CouponBloc>().add(ResetCoupons());
-                                context.pushReplacement('/cart');
+                                  },
+                                );
+                                if (refresh) {
+                                  print("its true");
+                                  refreshPage();
+                                } else {
+                                  print("its not true");
+                                }
+                                // context.read<CartBloc>().add(
+                                //       AddToWishlistFromcart(
+                                //         userId: user.uid,
+                                //         productref: item.productRef.id,
+                                //         variationID: item.variant.id,
+                                //       ),
+                                //     );
+                                // context.read<CartBloc>().add(
+                                //       SyncCartWithServer(userId: user.uid),
+                                //     );
+                                // context.read<CouponBloc>().add(ResetCoupons());
+                                // context.pushReplacement('/cart');
                               }
                             },
                             child: Text(
@@ -1927,67 +1987,76 @@ class _CartPageState extends State<CartPage> {
                           builder: (context, couponstate) {
                         return ElevatedButton(
                           onPressed: () {
-                            if (orderState is DeliveryTypeUpdated) {
-                              print(orderState.deliveryType);
-                              if (orderState.deliveryType == 'slot') {
-                                context.read<OrderManagementBloc>().add(
-                                      CreateorderOnlinePayment(orderJson: {
-                                        "pincode": addressState
-                                                is LocationSearchResults
-                                            ? addressState.pincode
-                                            : "000000",
-                                        "user_ref": user!.uid,
-                                        "order_status": "Order placed",
-                                        "otp": generateRandomOTP(),
-                                        "order_placed_time":
-                                            DateTime.now().toIso8601String(),
-                                        "payment_type": "Online payment",
-                                        "discount_price":
-                                            couponstate is CouponApplied
-                                                ? couponstate.disAmount
-                                                : 0.0,
-                                        "type_of_delivery": "tum tum",
-                                        "coupon_code":
-                                            couponstate is CouponApplied
-                                                ? couponstate.couponCode
-                                                : "null",
-                                        "selected_time_slot":
-                                            convertTimeStringToISO(
-                                          orderState is DeliveryTypeUpdated
-                                              ? orderState.selectedslot
-                                              : "00.00",
-                                        ),
-                                        "delivery_instructions":
-                                            _instructionsController.text
-                                      }, uid: user.uid),
-                                    );
-                              } else if (orderState.deliveryType == "instant") {
-                                print(createorderstate);
-                                context.read<OrderManagementBloc>().add(
-                                      CreateorderOnlinePayment(orderJson: {
-                                        "pincode": addressState
-                                                is LocationSearchResults
-                                            ? addressState.pincode
-                                            : "000000",
-                                        "user_ref": user!.uid,
-                                        "order_status": "Order placed",
-                                        "otp": generateRandomOTP(),
-                                        "order_placed_time":
-                                            DateTime.now().toIso8601String(),
-                                        "payment_type": "Online payment",
-                                        "discount_price":
-                                            couponstate is CouponApplied
-                                                ? couponstate.disAmount
-                                                : 0.0,
-                                        "type_of_delivery": "instant",
-                                        "coupon_code":
-                                            couponstate is CouponApplied
-                                                ? couponstate.couponCode
-                                                : "null",
-                                        "delivery_instructions":
-                                            _instructionsController.text
-                                      }, uid: user.uid),
-                                    );
+                            if (addressState is LocationSearchResults &&
+                                addressState.selecteaddress != null) {
+                              if (orderState is DeliveryTypeUpdated) {
+                                print(orderState.deliveryType);
+                                if (orderState.deliveryType == 'slot') {
+                                  context.read<OrderManagementBloc>().add(
+                                        CreateorderOnlinePayment(orderJson: {
+                                          "pincode": addressState
+                                                  is LocationSearchResults
+                                              ? addressState.pincode
+                                              : "000000",
+                                          "user_ref": user!.uid,
+                                          "order_status": "Order placed",
+                                          "otp": generateRandomOTP(),
+                                          "order_placed_time":
+                                              DateTime.now().toIso8601String(),
+                                          "payment_type": "Online payment",
+                                          "discount_price":
+                                              couponstate is CouponApplied
+                                                  ? couponstate.disAmount
+                                                  : 0.0,
+                                          "type_of_delivery": "tum tum",
+                                          "coupon_code":
+                                              couponstate is CouponApplied
+                                                  ? couponstate.couponCode
+                                                  : "null",
+                                          "selected_time_slot":
+                                              convertTimeStringToISO(
+                                            orderState is DeliveryTypeUpdated
+                                                ? orderState.selectedslot
+                                                : "00.00",
+                                          ),
+                                          "delivery_instructions":
+                                              _instructionsController.text
+                                        }, uid: user.uid),
+                                      );
+                                } else if (orderState.deliveryType ==
+                                    "instant") {
+                                  print(createorderstate);
+                                  context.read<OrderManagementBloc>().add(
+                                        CreateorderOnlinePayment(orderJson: {
+                                          "pincode": addressState
+                                                  is LocationSearchResults
+                                              ? addressState.pincode
+                                              : "000000",
+                                          "user_ref": user!.uid,
+                                          "order_status": "Order placed",
+                                          "otp": generateRandomOTP(),
+                                          "order_placed_time":
+                                              DateTime.now().toIso8601String(),
+                                          "payment_type": "Online payment",
+                                          "discount_price":
+                                              couponstate is CouponApplied
+                                                  ? couponstate.disAmount
+                                                  : 0.0,
+                                          "type_of_delivery": "instant",
+                                          "coupon_code":
+                                              couponstate is CouponApplied
+                                                  ? couponstate.couponCode
+                                                  : "null",
+                                          "delivery_instructions":
+                                              _instructionsController.text
+                                        }, uid: user.uid),
+                                      );
+                                } else {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                          content:
+                                              Text("select delivery type")));
+                                }
                               } else {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(
@@ -1996,7 +2065,8 @@ class _CartPageState extends State<CartPage> {
                             } else {
                               ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
-                                      content: Text("select delivery type")));
+                                      content:
+                                          Text("select Delivery Address")));
                             }
                           },
                           style: ElevatedButton.styleFrom(
@@ -2030,76 +2100,88 @@ class _CartPageState extends State<CartPage> {
                           flex: 2,
                           child: ElevatedButton(
                             onPressed: () {
-                              HapticFeedback.mediumImpact();
-                              if (orderState is DeliveryTypeUpdated) {
-                                if (orderState.deliveryType == 'slot') {
-                                  context.read<OrderManagementBloc>().add(
-                                        PlaceOrder(
-                                          orderJson: {
-                                            "pincode": addressState
-                                                    is LocationSearchResults
-                                                ? addressState.pincode
-                                                : "000000",
-                                            "user_ref": user!.uid,
-                                            "order_status": "Order placed",
-                                            "otp": generateRandomOTP(),
-                                            "order_placed_time": DateTime.now()
-                                                .toIso8601String(),
-                                            "payment_type": "COD",
-                                            "discount_price":
-                                                couponstate is CouponApplied
-                                                    ? couponstate.disAmount
-                                                    : 0.0,
-                                            "type_of_delivery": "tum tum",
-                                            "coupon_code":
-                                                couponstate is CouponApplied
-                                                    ? couponstate.couponCode
-                                                    : "null",
-                                            "selected_time_slot":
-                                                convertTimeStringToISO(
-                                              orderState is DeliveryTypeUpdated
-                                                  ? orderState.selectedslot
-                                                  : "00.00",
-                                            ),
-                                            "delivery_instructions":
-                                                _instructionsController.text
-                                          },
-                                        ),
-                                      );
-                                } else if (orderState.deliveryType ==
-                                    "instant") {
-                                  context.read<OrderManagementBloc>().add(
-                                        PlaceOrder(
-                                          orderJson: {
-                                            "pincode": addressState
-                                                    is LocationSearchResults
-                                                ? addressState.pincode
-                                                : "000000",
-                                            "user_ref": user!.uid,
-                                            "order_status": "Order placed",
-                                            "otp": generateRandomOTP(),
-                                            "order_placed_time": DateTime.now()
-                                                .toIso8601String(),
-                                            "payment_type": "COD",
-                                            "coupon_code":
-                                                couponstate is CouponApplied
-                                                    ? couponstate.couponCode
-                                                    : "null",
-                                            "discount_price":
-                                                couponstate is CouponApplied
-                                                    ? couponstate.disAmount
-                                                    : 0.0,
-                                            "type_of_delivery": "instant",
-                                            "delivery_instructions":
-                                                _instructionsController.text
-                                          },
-                                        ),
-                                      );
+                              if (addressState is LocationSearchResults &&
+                                  addressState.selecteaddress != null) {
+                                HapticFeedback.mediumImpact();
+                                if (orderState is DeliveryTypeUpdated) {
+                                  if (orderState.deliveryType == 'slot') {
+                                    context.read<OrderManagementBloc>().add(
+                                          PlaceOrder(
+                                            orderJson: {
+                                              "pincode": addressState
+                                                      is LocationSearchResults
+                                                  ? addressState.pincode
+                                                  : "000000",
+                                              "user_ref": user!.uid,
+                                              "order_status": "Order placed",
+                                              "otp": generateRandomOTP(),
+                                              "order_placed_time":
+                                                  DateTime.now()
+                                                      .toIso8601String(),
+                                              "payment_type": "COD",
+                                              "discount_price":
+                                                  couponstate is CouponApplied
+                                                      ? couponstate.disAmount
+                                                      : 0.0,
+                                              "type_of_delivery": "tum tum",
+                                              "coupon_code":
+                                                  couponstate is CouponApplied
+                                                      ? couponstate.couponCode
+                                                      : "null",
+                                              "selected_time_slot":
+                                                  convertTimeStringToISO(
+                                                orderState
+                                                        is DeliveryTypeUpdated
+                                                    ? orderState.selectedslot
+                                                    : "00.00",
+                                              ),
+                                              "delivery_instructions":
+                                                  _instructionsController.text
+                                            },
+                                          ),
+                                        );
+                                  } else if (orderState.deliveryType ==
+                                      "instant") {
+                                    context.read<OrderManagementBloc>().add(
+                                          PlaceOrder(
+                                            orderJson: {
+                                              "pincode": addressState
+                                                      is LocationSearchResults
+                                                  ? addressState.pincode
+                                                  : "000000",
+                                              "user_ref": user!.uid,
+                                              "order_status": "Order placed",
+                                              "otp": generateRandomOTP(),
+                                              "order_placed_time":
+                                                  DateTime.now()
+                                                      .toIso8601String(),
+                                              "payment_type": "COD",
+                                              "coupon_code":
+                                                  couponstate is CouponApplied
+                                                      ? couponstate.couponCode
+                                                      : "null",
+                                              "discount_price":
+                                                  couponstate is CouponApplied
+                                                      ? couponstate.disAmount
+                                                      : 0.0,
+                                              "type_of_delivery": "instant",
+                                              "delivery_instructions":
+                                                  _instructionsController.text
+                                            },
+                                          ),
+                                        );
+                                  }
+                                } else {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                          content:
+                                              Text("select delivery type")));
                                 }
                               } else {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(
-                                        content: Text("select delivery type")));
+                                        content:
+                                            Text("select Delivery Address")));
                               }
                             },
                             style: ElevatedButton.styleFrom(

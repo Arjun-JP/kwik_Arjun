@@ -10,6 +10,8 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:kwik/bloc/Address_bloc/Address_bloc.dart';
 import 'package:kwik/bloc/Address_bloc/address_event.dart';
 import 'package:kwik/bloc/Address_bloc/address_state.dart';
+import 'package:kwik/bloc/navbar_bloc/navbar_bloc.dart';
+import 'package:kwik/bloc/navbar_bloc/navbar_event.dart';
 import 'package:kwik/models/address_model.dart';
 import 'package:kwik/models/order_model.dart' show Location;
 
@@ -348,35 +350,37 @@ class _AddressFormPageState extends State<AddressFormPage> {
                     width: double.infinity,
                     child: ElevatedButton(
                       onPressed: () {
-                        // if (_formKey.currentState!.validate()) {
-
-                        final AddressModel address = AddressModel(
-                          location: Location(
-                              lat: widget.latlanglocation.latitude,
-                              lang: widget.latlanglocation.longitude),
-                          addressType: _addressType,
-                          flatNoName: _flatNoNameController.text,
-                          floor: _floorController.text.isEmpty
-                              ? null
-                              : _floorController.text,
-                          area: _areaController.text,
-                          landmark: _landmarkController.text.isEmpty
-                              ? null
-                              : _landmarkController.text,
-                          phoneNo: _phoneNoController.text,
-                          pincode: _pincodeController.text,
-                        );
-                        context
-                            .read<AddressBloc>()
-                            .add(AddanewAddressEvent(address, user!.uid));
-                        context
-                            .read<AddressBloc>()
-                            .add(const GetsavedAddressEvent());
-                        context.go("/homeWA");
-
-                        // } else {
-                        //   print("validation faild ${_formKey.currentState}");
-                        // }
+                        if (_formKey.currentState!.validate()) {
+                          print(_formKey.currentState);
+                          final AddressModel address = AddressModel(
+                            location: Location(
+                                lat: widget.latlanglocation.latitude,
+                                lang: widget.latlanglocation.longitude),
+                            addressType: _addressType,
+                            flatNoName: _flatNoNameController.text,
+                            floor: _floorController.text.isEmpty
+                                ? null
+                                : _floorController.text,
+                            area: _areaController.text,
+                            landmark: _landmarkController.text.isEmpty
+                                ? null
+                                : _landmarkController.text,
+                            phoneNo: _phoneNoController.text,
+                            pincode: _pincodeController.text,
+                          );
+                          context
+                              .read<AddressBloc>()
+                              .add(AddanewAddressEvent(address, user!.uid));
+                          context
+                              .read<AddressBloc>()
+                              .add(const GetsavedAddressEvent());
+                          context
+                              .read<NavbarBloc>()
+                              .add(const UpdateNavBarIndex(0));
+                          context.go("/homeWA");
+                        } else {
+                          print("validation faild ${_formKey.currentState}");
+                        }
                       },
                       style: ElevatedButton.styleFrom(
                         foregroundColor: Colors.white,

@@ -10,7 +10,7 @@ class AddressRepository {
 
   final headers = {
     'Content-Type': 'application/json',
-     'api_Key': dotenv.env['API_KEY']!,
+    'api_Key': dotenv.env['API_KEY']!,
     'api_Secret': dotenv.env['API_SECRET']!,
   };
   final apiUrl = dotenv.env['API_URL'];
@@ -210,6 +210,30 @@ class AddressRepository {
         headers: headers,
         body: json.encode(requestBody),
       );
+      print(response.body);
+      print(response.statusCode);
+      if (response.statusCode != 200) {
+        throw Exception(
+            'Failed to add address. Status code: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception("Error adding address: $e");
+    }
+  }
+
+  Future<void> updatecurrentpincode(String pincode) async {
+    final url = Uri.parse('$baseUrl/users/update/currentPincode');
+    print("update pincode is called");
+    try {
+      // Create the request body with the Address nested object
+      final requestBody = {"userId": user!.uid, "pincode": pincode};
+
+      final response = await http.delete(
+        url,
+        headers: headers,
+        body: json.encode(requestBody),
+      );
+      print("update pincode is called");
       print(response.body);
       print(response.statusCode);
       if (response.statusCode != 200) {

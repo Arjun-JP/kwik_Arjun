@@ -109,8 +109,8 @@ class ProductModel2 extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Card(
-                            shadowColor:
-                                const Color.fromARGB(255, 233, 233, 233),
+                            color: parseColor(productBgColor),
+                            shadowColor: parseColor(productBgColor),
                             elevation: .1,
                             child: Column(
                               children: [
@@ -229,7 +229,7 @@ class ProductModel2 extends StatelessWidget {
                                                       fontWeight:
                                                           FontWeight.w900,
                                                       color: parseColor(
-                                                          offertextcolor2),
+                                                          offertextcolor),
                                                       fontFamily: "Inter",
                                                     ),
                                                   ),
@@ -257,8 +257,10 @@ class ProductModel2 extends StatelessWidget {
                                 product.productName,
                                 textAlign: TextAlign.start,
                                 maxLines: 2,
-                                style: const TextStyle(
-                                    fontSize: 14, fontWeight: FontWeight.w500),
+                                style: TextStyle(
+                                    color: parseColor(productcolor),
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w500),
                               ),
                             ),
                           ),
@@ -525,6 +527,7 @@ class ProductModel2 extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
       decoration: BoxDecoration(
           color: parseColor(buttonbgcolor),
+          border: Border.all(color: parseColor(buttontext), width: .5),
           borderRadius: BorderRadius.circular(8)),
       child: Row(
         spacing: 10,

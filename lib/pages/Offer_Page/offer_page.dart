@@ -61,7 +61,7 @@ class _OfferPageState extends State<OfferPage> {
       NetworkUtils.checkConnection(context);
     });
     context.read<SuperSaverUiBloc>().add(FetchUiDataEvent());
-    context.read<AddressBloc>().add(const GetsavedAddressEvent());
+    // context.read<AddressBloc>().add(const GetsavedAddressEvent());
   }
 
   @override
@@ -93,8 +93,8 @@ class _OfferPageState extends State<OfferPage> {
             'template': SupersaverModel1(
               showCategory: uiData["template2"]["show_Category"],
               title: uiData["template2"]["title"],
-              seeAllButtonBG: uiData["template2"]["seeAllButtonBG"],
-              seeAllButtontext: uiData["template2"]["seeAllButtontext"],
+              startattext: uiData["template2"]["seeAllButtonBG"],
+              cattitleColor: uiData["template2"]["seeAllButtontext"],
               vegOrNonIcon: 'assets/images/vegicon.png',
               categoryId: uiData["template2"]["categoryId"],
               bgcolor: uiData["template2"]["bgcolor"],
@@ -130,7 +130,7 @@ class _OfferPageState extends State<OfferPage> {
           },
           {
             'template': SupersaverModel3(
-                showCategory: uiData["template4"]["show_Category"],
+                showCategory: true,
                 categoryID: uiData["template4"]["categoryID"],
                 title: uiData["template4"]["title"],
                 titleColor: uiData["template4"]["titleColor"],
@@ -158,7 +158,9 @@ class _OfferPageState extends State<OfferPage> {
             'template': SupersaverModel4(
               title: uiData["template5"]["title"],
               showCategory: uiData["template5"]["show_Category"],
-              addButtonColor: uiData["template5"]["addButtonColor"],
+              addButtontextColor: uiData["template5"]["addButtonColor"],
+              addButtonbgColor: uiData["template5"]["addButtonbgColor"],
+              unitTextcolor: uiData["template5"]["unittextcolor"],
               offertextcolor: uiData["template5"]["offertextcolor"],
               offerbgcolor: uiData["template5"]["offerbgcolor"],
               subCategoryId: uiData["template5"]["subCategoryId"],
@@ -186,6 +188,8 @@ class _OfferPageState extends State<OfferPage> {
               categoryId: uiData["template6"]["categoryId"],
               bgcolor: uiData["template6"]["bgcolor"],
               titleColor: uiData["template6"]["titleColor"],
+              addbuttonbgcolor: uiData["template6"]["buttonbgcolor"],
+              addbuttontextcolor: uiData["template6"]["buttontextcolor"],
               subcatColor: uiData["template6"]["subcatColor"],
               offerBGcolor: uiData["template6"]["offerBGcolor"],
               mrpColor: uiData["template6"]["mrpColor"],

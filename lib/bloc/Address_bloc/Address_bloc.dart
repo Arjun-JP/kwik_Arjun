@@ -108,6 +108,8 @@ class AddressBloc extends Bloc<AddressEvent, AddressState> {
         String fetchedAddress = curentlocationdetails.lastOrNull ?? "";
         String fetchedPincode =
             extractAddressDetails(fetchedAddress)["pin"] ?? "";
+        print("XXXXXXXXX");
+        print(fetchedPincode);
         if (state is LocationSearchResults) {
           existingLovationlist = (state as LocationSearchResults).placelist;
           warehouse = (state as LocationSearchResults).warehouse;
@@ -220,6 +222,7 @@ class AddressBloc extends Bloc<AddressEvent, AddressState> {
     GetCurrentLocation event,
     Emitter<AddressState> emit,
   ) async {
+    print("current loacation called");
     emit(AddressLoading());
     try {
       bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
@@ -262,7 +265,7 @@ class AddressBloc extends Bloc<AddressEvent, AddressState> {
         lat: position.latitude,
         lang: position.longitude,
       );
-
+      await savedaddressrepository.updatecurrentpincode(placemark.postalCode!);
       emit(LocationSelected(location, address));
     } catch (e) {
       emit(AddressError('Failed to get current location: $e'));
@@ -291,6 +294,7 @@ class AddressBloc extends Bloc<AddressEvent, AddressState> {
         differentaddress =
             (state as LocationSearchResults).orderfordefferentaddress;
         warehouse = (state as LocationSearchResults).warehouse;
+        print("warehouse: $warehouse");
       }
       emit(LocationSearchResults(
           existingLovationlist,
@@ -302,6 +306,7 @@ class AddressBloc extends Bloc<AddressEvent, AddressState> {
           extractAddressDetails(address)["pin"]!,
           differentaddress));
     } catch (error) {
+      print(error);
       print("faild to add address");
     }
   }
@@ -310,6 +315,8 @@ class AddressBloc extends Bloc<AddressEvent, AddressState> {
       GetWarehousedetailsEvent event, Emitter<AddressState> emit) async {
     try {
       emit(AddressLoading());
+      print("GetWarehousedataEventcalled");
+      // await savedaddressrepository.updatecurrentpincode(event.pincode!);
       WarehouseModel? warehouse =
           await savedaddressrepository.getwarehousedetails(event.pincode,
               event.location.lat.toString(), event.location.lang.toString());
@@ -317,10 +324,15 @@ class AddressBloc extends Bloc<AddressEvent, AddressState> {
         // Get the current state and update warehouse
         if (state is LocationSearchResults) {
           final currentState = state as LocationSearchResults;
-          emit(currentState.copyWith(warehouse: warehouse));
+          emit(currentState.copyWith(
+            warehouse: warehouse,
+            pincode: currentState.pincode.isNotEmpty
+                ? currentState.pincode
+                : event.pincode,
+          ));
         } else {
           emit(LocationSearchResults(
-              [], [], "", "", null, warehouse, "", false));
+              [], [], "", "", null, warehouse, event.pincode, false));
         }
       } else {
         emit(const NowarehousefoudState());
@@ -419,14 +431,23 @@ Future<List<String>> _loadPlaceDetails() async {
 }
 
 Map<String, String> extractAddressDetails(String formattedAddress) {
-  final parts = formattedAddress.split(', ');
-  String? pin;
-  if (parts.isNotEmpty) {
-    final lastPart = parts.last;
-    final pinMatch = RegExp(r'\d{6}').firstMatch(lastPart);
-    if (pinMatch != null) {
-      pin = pinMatch.group(0);
-    }
-  }
-  return {'pin': pin ?? ''};
+  print(formattedAddress);
+  // final parts = formattedAddress.split(', ');
+  // String? pin;
+  // if (parts.isNotEmpty) {
+  //   final lastPart = parts.last;
+  //   final pinMatch = RegExp(r'\d{6}').firstMatch(lastPart);
+  //   if (pinMatch != null) {
+  //     pin = pinMatch.group(0);
+  //   }
+  // }
+  // print(pin);
+  // return {'pin': pin ?? ''};
+  final pinMatch = RegExp(r'\b\d{6}\b').firstMatch(formattedAddress);
+
+  // Extract the matched pin code
+  final pin = pinMatch?.group(0) ?? '';
+
+  print('Extracted Pincode: $pin');
+  return {'pin': pin};
 }

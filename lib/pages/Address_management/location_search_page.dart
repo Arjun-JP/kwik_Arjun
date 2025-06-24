@@ -63,7 +63,13 @@ class _LocationSearchPageState extends State<LocationSearchPage> {
       appBar: AppBar(
         leading: InkWell(
             onTap: () {
-              context.pop();
+              try {
+                context.pop();
+              } catch (e) {
+                print(e);
+                context.go("/home");
+              }
+
               // context.read<AddressBloc>().add(const GetsavedAddressEvent());
             },
             child: const Icon(

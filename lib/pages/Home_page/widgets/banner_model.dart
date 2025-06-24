@@ -30,10 +30,10 @@ class BannerModel1 extends StatefulWidget {
     required this.height,
     required this.bannerId,
     required this.showbanner,
-    this.verticalpadding = 0,
-    this.borderradious = 0,
+    this.verticalpadding = 10,
+    this.borderradious = 10,
     this.viewportFraction = 1.0,
-    this.horizontalpadding = 0,
+    this.horizontalpadding = 10,
   });
 
   @override

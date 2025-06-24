@@ -123,8 +123,7 @@ class _HomePageState extends State<HomePage> {
       NetworkUtils.checkConnection(context);
     });
     forceupdate();
-
-    print("Init state called again");
+    getwarehousedata();
     _initializeApp().then((_) {
       {
         context.read<HomeUiBloc>().add(FetchUiDataEvent());
@@ -142,8 +141,46 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+  Future<void> getwarehousedata() async {
+    print("calledddddd");
+    try {
+      final hasPermission = await _checkLocationPermission();
+      if (!hasPermission && mounted) {
+        await _showLocationPermissionSheet();
+        // return; // Don't proceed if permission is not granted
+      }
+      context.read<AddressBloc>().add(const GetsavedAddressEvent());
+      Position position = await Geolocator.getCurrentPosition();
+      List<Placemark> placemarks = await placemarkFromCoordinates(
+        position.latitude,
+        position.longitude,
+      );
+      print("print placemark ${placemarks}");
+      final postalCode = placemarks.first.postalCode;
+      print(postalCode);
+      if (postalCode != null) {
+        context.read<AddressBloc>().add(GetWarehousedetailsEvent(
+              postalCode,
+              locationmode.Location(
+                lat: position.latitude,
+                lang: position.longitude,
+              ),
+            ));
+      } else {
+        // Handle case where postal code is not available
+        if (mounted) {
+          // Optionally show an error or try a different approach
+          print("Postal code not found");
+        }
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
   Future<void> _initializeApp() async {
-    print("Initialize state called");
+    print("Initialize state calledaaa");
+
     final addressBloc = context.read<AddressBloc>();
     final homeUiBloc = context.read<HomeUiBloc>();
     final cartBloc = context.read<CartBloc>();
@@ -153,7 +190,20 @@ class _HomePageState extends State<HomePage> {
       GoRouter.of(context).go('/loginPage');
       return;
     }
+    final currentState = context.read<AddressBloc>().state;
+    print(currentState);
+    print(currentState);
+    if (currentState is LocationSearchResults &&
+        currentState.addresslist.isEmpty) {
+      print("1111111111111111111");
+      print(currentState.addresslist.length);
+      print(currentState.pincode);
 
+      // HapticFeedback.mediumImpact();
+      // Navigator.of(context).push(
+      //   MaterialPageRoute(builder: (context) => const LocationSearchPage()),
+      // );
+    }
     if (_isInitialized) {
       print("Skipped the initial call");
       return;
@@ -168,11 +218,13 @@ class _HomePageState extends State<HomePage> {
     // Listen for address-related navigation events ONCE after initial load
     _addressSubscription = addressBloc.stream.take(1).listen((state) {
       if (!mounted) return;
-
+      print("address state");
+      print(state);
       if (state is NowarehousefoudState) {
         GoRouter.of(context).go('/no-service');
       } else if (state is LocationSearchResults &&
           state.warehouse?.underMaintenance == true) {
+        print("status ${state.warehouse?.underMaintenance}");
         Navigator.of(context).push(MaterialPageRoute(
           builder: (context) =>
               UnderMaintananceScreen(warehouse: state.warehouse!),
@@ -192,7 +244,7 @@ class _HomePageState extends State<HomePage> {
     context.read<UpdateBloc>().add(CheckForUpdate(context));
     final updateBloc = BlocProvider.of<UpdateBloc>(context);
     final updateState = updateBloc.state;
-    print(updateState);
+
     if (updateState is UpdateAvailable) {
       Navigator.push(
         context,
@@ -208,7 +260,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> _checkLocationAndFetchWarehouse() async {
-    print("get warehouse function called");
+    print("calledddddd");
     try {
       final hasPermission = await _checkLocationPermission();
       if (!hasPermission && mounted) {
@@ -221,7 +273,9 @@ class _HomePageState extends State<HomePage> {
         position.latitude,
         position.longitude,
       );
+      print("print placemark ${placemarks}");
       final postalCode = placemarks.first.postalCode;
+      print(postalCode);
       if (postalCode != null) {
         context.read<AddressBloc>().add(GetWarehousedetailsEvent(
               postalCode,
@@ -524,6 +578,7 @@ class _HomePageContent extends StatelessWidget {
           subCategoryId: uiData["template6"]["sub_category_ref"],
           bgcolor: uiData["template6"]["background_color"],
           titleColor: uiData["template6"]["title_color"],
+          subtitlecolor: uiData["template6"]["title_color"],
           productColor: uiData["template6"]["subcat_color"],
           showcategory: uiData["template6"]["show_Category"],
         ),
@@ -858,6 +913,10 @@ class _HomePageContent extends StatelessWidget {
                       topText2: uiData["template1"]["toptext2"],
                       topText2Color: topText2Color,
                       iconColor: iconColor,
+                      toptextclr:
+                          parseColor(uiData["template1"]["toptext1clr"]),
+                      addresscolor:
+                          parseColor(uiData["template1"]["addressclr"]),
                     ),
                     actions: [
                       Padding(
@@ -908,6 +967,8 @@ class _AppBarContent extends StatelessWidget {
   final String topText2;
   final Color topText2Color;
   final Color iconColor;
+  final Color toptextclr;
+  final Color addresscolor;
 
   const _AppBarContent({
     required this.topText1,
@@ -916,6 +977,8 @@ class _AppBarContent extends StatelessWidget {
     required this.topText2Color,
     required this.iconColor,
     required this.bgcolor,
+    required this.toptextclr,
+    required this.addresscolor,
   });
 
   @override
@@ -952,7 +1015,7 @@ class _AppBarContent extends StatelessWidget {
                     style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                           fontSize: 10,
                           fontWeight: FontWeight.bold,
-                          color: Colors.white,
+                          color: toptextclr,
                         ),
                   ),
                 ),
@@ -1012,7 +1075,7 @@ class _AppBarContent extends StatelessWidget {
                           style:
                               Theme.of(context).textTheme.bodyMedium!.copyWith(
                                     fontSize: 12,
-                                    color: Colors.black,
+                                    color: addresscolor,
                                   ),
                         );
                       }

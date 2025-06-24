@@ -41,7 +41,13 @@ class CartRepository {
         return true;
       } else {
         print("safsssssssssss");
-        CustomSnackBars.showLimitedQuantityWarning();
+        print(userId);
+        print(productRef);
+        print(variant);
+        print(pincode);
+        print(userId);
+
+        // CustomSnackBars.showLimitedQuantityWarning();
         return false;
       }
     } catch (e) {
@@ -49,7 +55,44 @@ class CartRepository {
     }
   }
 
-  Future<void> addToCartfromwishlist({
+  // Future<void> addToCartfromwishlist({
+  //   required String userId,
+  //   required String wishlistitemid,
+  //   required String pincode,
+  // }) async {
+  //   final url = Uri.parse("$baseUrl/move/whislistToCart");
+
+  //   final Map<String, dynamic> body = {
+  //     "whishlist_itemId": wishlistitemid,
+  //     "user_ref": userId,
+  //     "pincode": pincode
+  //   };
+
+  //   try {
+  //     final response = await http.post(
+  //       url,
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //         'api_Key': dotenv.env['API_KEY']!,
+  //         'api_Secret': dotenv.env['API_SECRET']!,
+  //       },
+  //       body: jsonEncode(body),
+  //     );
+  //     print(response.statusCode);
+  //     print(response.body);
+  //     if (response.statusCode == 201) {
+  //       print("Product added to cart from wish list");
+  //     } else {
+  //       print("sudghfvauygrsfbvu");
+  //       // CustomSnackBars.showLimitedQuantityWarning();
+  //       throw Exception("Failed to add product to cart: ${response.body}");
+  //     }
+  //   } catch (e) {
+  //     throw Exception("Error adding to cart");
+  //   }
+  // }
+
+  Future<Map<String, dynamic>> addToCartfromwishlist({
     required String userId,
     required String wishlistitemid,
     required String pincode,
@@ -59,7 +102,7 @@ class CartRepository {
     final Map<String, dynamic> body = {
       "whishlist_itemId": wishlistitemid,
       "user_ref": userId,
-      "pincode": pincode
+      "pincode": pincode,
     };
 
     try {
@@ -72,18 +115,56 @@ class CartRepository {
         },
         body: jsonEncode(body),
       );
-      print(body);
-      print(response.statusCode);
-      print(response.body);
-      if (response.statusCode == 200) {
-        print("Product added to cart from wish list");
-      } else {
-        print("sudghfvauygrsfbvu");
-        CustomSnackBars.showLimitedQuantityWarning();
-        throw Exception("Failed to add product to cart: ${response.body}");
+
+      final data = jsonDecode(response.body) as Map<String, dynamic>;
+
+      if (response.statusCode != 201) {
+        throw Exception(
+            "Failed to add to cart from wishlist: ${response.body}");
       }
+
+      // Validate response structure
+      if (!data.containsKey("cartProducts") ||
+          !data.containsKey("charges") ||
+          !data.containsKey("whishlist")) {
+        throw Exception("Unexpected response format");
+      }
+
+      final cartProductList = data["cartProducts"];
+      final wishlist = data["whishlist"];
+      final charges = data["charges"];
+
+      // Validate cart products
+      if (cartProductList is! List) {
+        throw Exception("'cartProducts' is not a List");
+      }
+
+      final validatedList = cartProductList.map((item) {
+        if (item is! Map<String, dynamic>) {
+          throw Exception("Invalid cart product item format");
+        }
+        return Map<String, dynamic>.from(item);
+      }).toList();
+
+      // Validate wishlist items
+      if (wishlist is! List) {
+        throw Exception("'whishlist' is not a List");
+      }
+
+      final parsedWishlist = wishlist.map((wishlistItem) {
+        if (wishlistItem is! Map<String, dynamic>) {
+          throw Exception("Invalid wishlist item format");
+        }
+        return WishlistItem.fromJson(Map<String, dynamic>.from(wishlistItem));
+      }).toList();
+
+      return {
+        "cartproducts": validatedList,
+        "charges": charges,
+        "wishlist": parsedWishlist,
+      };
     } catch (e) {
-      throw Exception("Error adding to cart");
+      throw Exception("Error adding to cart from wishlist: $e");
     }
   }
 
@@ -163,7 +244,11 @@ class CartRepository {
     required String pincode,
   }) async {
     final url = Uri.parse("$baseUrl/decreseqty");
-
+    print(userId);
+    print(productRef);
+    print(variantId);
+    print(pincode);
+    print(userId);
     try {
       final response = await http.post(
         url,

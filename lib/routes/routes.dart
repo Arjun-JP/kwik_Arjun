@@ -102,6 +102,14 @@ final GoRouter router = GoRouter(
       },
     ),
     GoRoute(
+      path: '/cartWOA',
+      pageBuilder: (BuildContext context, GoRouterState state) {
+        return const NoTransitionPage(
+          child: CartPage(), // Replace with your actual cart page widget
+        );
+      },
+    ),
+    GoRoute(
       path: '/profile',
       pageBuilder: (BuildContext context, GoRouterState state) {
         return const NoTransitionPage(

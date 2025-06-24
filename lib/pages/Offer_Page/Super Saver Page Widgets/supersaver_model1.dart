@@ -16,22 +16,24 @@ class SupersaverModel1 extends StatelessWidget {
   final String titleColor;
   final String priceColor;
   final String vegOrNonIcon;
-  final String seeAllButtonBG;
-  final String seeAllButtontext;
+  final String startattext;
+  final String cattitleColor;
+
   final bool showCategory;
-  const SupersaverModel1(
-      {super.key,
-      required this.categoryId,
-      required this.bgcolor,
-      required this.subcatcolor1,
-      required this.subcatcolor2,
-      required this.titleColor,
-      required this.priceColor,
-      required this.vegOrNonIcon,
-      required this.seeAllButtonBG,
-      required this.seeAllButtontext,
-      required this.title,
-      required this.showCategory});
+  const SupersaverModel1({
+    super.key,
+    required this.categoryId,
+    required this.bgcolor,
+    required this.subcatcolor1,
+    required this.subcatcolor2,
+    required this.titleColor,
+    required this.priceColor,
+    required this.vegOrNonIcon,
+    required this.startattext,
+    required this.cattitleColor,
+    required this.title,
+    required this.showCategory,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +51,6 @@ class SupersaverModel1 extends StatelessWidget {
                     if (state is SupersaverModel1Loading) {
                       return const Center(child: SuperSaverModel1Shimmer());
                     } else if (state is SupersaverModel1Loaded) {
-                      print(state.subCategories);
                       return Container(
                         color: parseColor(bgcolor),
                         width: double.infinity,
@@ -87,30 +88,30 @@ class SupersaverModel1 extends StatelessWidget {
                                             onTap: () => context.push(
                                                 "/allsubcategorypage?categoryId=${state.subCategories[index].categoryRef.catref}&selectedsubcategory=${state.subCategories[index].id}"),
                                             child: subcategoryItemOffer(
-                                              theme: theme,
-                                              titleColor: titleColor,
-                                              name: state
-                                                  .subCategories[index].name,
-                                              offer: state.subCategories[index]
-                                                  .offerPercentage,
-                                              bgcolor: state.category.color,
-                                              textcolor: titleColor,
-                                              imageurl: state
-                                                  .subCategories[index]
-                                                  .imageUrl,
-                                              subcatcolor1: subcatcolor1,
-                                              subcatcolor2: subcatcolor2,
-                                              priceColor: priceColor,
-                                              vegOrNonIcon: vegOrNonIcon,
-                                            ),
+                                                theme: theme,
+                                                titleColor: titleColor,
+                                                name: state
+                                                    .subCategories[index].name,
+                                                offer: state
+                                                    .subCategories[index]
+                                                    .offerPercentage,
+                                                bgcolor: state.category.color,
+                                                textcolor: titleColor,
+                                                imageurl: state
+                                                    .subCategories[index]
+                                                    .imageUrl,
+                                                subcatcolor1: subcatcolor1,
+                                                subcatcolor2: subcatcolor2,
+                                                priceColor: priceColor,
+                                                vegOrNonIcon: vegOrNonIcon,
+                                                cattitleColor: cattitleColor),
                                           );
                                         },
                                       ),
                                     ),
                                   )),
                             ),
-                            const SizedBox(height: 15),
-                            const SizedBox(height: 10),
+                            const SizedBox(height: 20),
                           ],
                         ),
                       );
@@ -132,6 +133,7 @@ class SupersaverModel1 extends StatelessWidget {
       required String name,
       required String bgcolor,
       required String textcolor,
+      required String cattitleColor,
       required String subcatcolor1,
       required String subcatcolor2,
       required String priceColor,
@@ -165,12 +167,12 @@ class SupersaverModel1 extends StatelessWidget {
                 child: Text(name,
                     maxLines: 2,
                     style: theme.textTheme.bodyMedium!
-                        .copyWith(color: parseColor(titleColor))),
+                        .copyWith(color: parseColor(cattitleColor))),
               ),
               const SizedBox(height: 5),
-              const Text(
+              Text(
                 "Starts at",
-                style: TextStyle(fontSize: 12, color: Colors.black),
+                style: TextStyle(fontSize: 12, color: parseColor(startattext)),
               ),
               const SizedBox(height: 3),
               RichText(

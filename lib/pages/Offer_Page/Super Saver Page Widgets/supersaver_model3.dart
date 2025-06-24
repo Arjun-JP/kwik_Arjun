@@ -153,7 +153,7 @@ class SupersaverModel3 extends StatelessWidget {
               height: 48,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
-                color: lightenColor(parseColor(seeAllButtonBG), .8),
+                color: parseColor(seeAllButtonBG),
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
