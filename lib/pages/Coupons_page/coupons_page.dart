@@ -24,6 +24,7 @@ class _CouponsPageState extends State<CouponsPage> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       NetworkUtils.checkConnection(context);
+      context.read<CouponBloc>().add(FetchAllCoupons());
     });
   }
 
@@ -43,7 +44,7 @@ class _CouponsPageState extends State<CouponsPage> {
       }
     }, child: BlocBuilder<CouponBloc, CouponState>(builder: (context, state) {
       if (state is CouponInitial || state is CouponError) {
-        context.read<CouponBloc>().add(FetchAllCoupons());
+        // context.read<CouponBloc>().add(FetchAllCoupons());
         return Scaffold(
           appBar: AppBar(
             title: InkWell(

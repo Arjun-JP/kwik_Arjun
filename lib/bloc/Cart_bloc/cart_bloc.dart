@@ -307,16 +307,47 @@ class CartBloc extends Bloc<CartEvent, CartState> {
   Future<void> _onAddtoCartfromWishlist(
       AddToCartFromWishlist event, Emitter<CartState> emit) async {
     try {
+      if (state is! CartUpdated) {
+        emit(CartError(
+            message: "Invalid state for adding to wishlist from cart"));
+        return;
+      }
+
+      final currentState = state as CartUpdated;
+
       final success = await cartRepository.addToCartfromwishlist(
           pincode: event.pincode,
           userId: event.userId,
           wishlistitemid: event.wishlistID);
-      if (state is CartUpdated) {
-        emit((state as CartUpdated).copyWith(message: true));
-      } else {
-        emit(CartError(
-            message: "Initial state error during add to cart from wishlist"));
+
+      // if (state is CartUpdated) {
+      emit(CartLoading());
+      if (success.isNotEmpty) {
+        emit(currentState.copyWith(message: false));
+        return;
       }
+      final updatedCartProducts = success["cartproducts"];
+
+      // 3. Get updated wishlist (or you could add the item locally)
+      final updatedWishlist = success["wishlist"];
+      // Alternative: Add locally without fetching
+      // final wishlistItem = convertCartItemToWishlist(currentState.cartItems.firstWhere(...));
+      // final updatedWishlist = [...currentState.wishlist, wishlistItem];
+
+      // 4. Emit new state with ALL previous data preserved
+      emit(currentState.copyWith(
+        cartItems: updatedCartProducts,
+        wishlist: updatedWishlist,
+        // Keep all other state properties unchanged
+        charges: currentState.charges,
+        message: true,
+        // Add any other properties your state has
+      ));
+      // emit((state as CartUpdated).copyWith(message: true));
+      // } else {
+      //   emit(CartError(
+      //       message: "Initial state error during add to cart from wishlist"));
+      // }
     } catch (error) {
       if (state is CartUpdated) {
         emit((state as CartUpdated)
@@ -345,7 +376,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
         productRef: event.productref,
         varient: event.variationID,
       );
-
+      emit(CartLoading());
       if (success.isNotEmpty) {
         emit(currentState.copyWith(message: false));
         return;

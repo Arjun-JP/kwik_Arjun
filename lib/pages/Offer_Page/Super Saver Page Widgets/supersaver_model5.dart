@@ -27,6 +27,8 @@ class SupersaverModel5 extends StatelessWidget {
   final String unitTextcolor;
   final String seeAllButtonBG;
   final String seeAllButtontext;
+  final String addbuttonbgcolor;
+  final String addbuttontextcolor;
   final String topbanner;
   final bool showCategory;
   const SupersaverModel5({
@@ -49,6 +51,8 @@ class SupersaverModel5 extends StatelessWidget {
     required this.unitTextcolor,
     required this.topbanner,
     required this.showCategory,
+    required this.addbuttonbgcolor,
+    required this.addbuttontextcolor,
   });
 
   @override
@@ -63,7 +67,7 @@ class SupersaverModel5 extends StatelessWidget {
                     maincategories, // Dispatch event to fetch category and products
               )),
             child: Container(
-              color: lightenColor(parseColor(bgcolor), .8),
+              color: parseColor(bgcolor),
               width: double.infinity,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -108,19 +112,19 @@ class SupersaverModel5 extends StatelessWidget {
                                           mainAxisExtent: 278,
                                           child: ProductItem(
                                             subcategoryRef: categoryId,
-                                            productnamecolor: subcatColor,
+                                            productnamecolor: titleColor,
                                             product: state.products[index],
                                             mrpColor: mrpColor,
                                             offertextcolor: offerTextcolor,
-                                            buttonBgColor: productBgColor,
-                                            buttontextcolor: buttontextcolor,
+                                            buttonBgColor: addbuttonbgcolor,
+                                            buttontextcolor: addbuttontextcolor,
                                             ctx: context,
                                             productBgColor: productBgColor,
                                             sellingPriceColor:
                                                 sellingPriceColor,
                                             unitTextcolor: unitTextcolor,
                                             unitbgcolor: unitbgcolor,
-                                            offerbgcolor: unitbgcolor,
+                                            offerbgcolor: offerBGcolor,
                                           ),
                                         );
                                       }),

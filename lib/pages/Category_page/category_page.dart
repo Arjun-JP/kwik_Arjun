@@ -48,7 +48,7 @@ class _CategoryPageState extends State<CategoryPage> {
     });
     super.initState();
     context.read<CategoriesUiBloc>().add(FetchCatUiDataEvent());
-    context.read<AddressBloc>().add(const GetsavedAddressEvent());
+    // context.read<AddressBloc>().add(const GetsavedAddressEvent());
   }
 
   @override
@@ -309,8 +309,9 @@ class _CategoryPageState extends State<CategoryPage> {
                                                       .textTheme.bodyMedium!
                                                       .copyWith(
                                                           fontSize: 12,
-                                                          color: AppColors
-                                                              .textColorblack));
+                                                          color: parseColor(uiData[
+                                                                  "template11"]
+                                                              ["addressclr"])));
                                             } else {
                                               return const Shimmer(
                                                   width: 200, height: 12);

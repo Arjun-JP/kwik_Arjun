@@ -44,7 +44,7 @@ class NetworkErrorPage extends StatelessWidget {
                         await Connectivity().checkConnectivity();
 
                     if (connectivityResult != ConnectivityResult.none) {
-                      context.pop();
+                      context.go('/home');
                     } else {}
                   },
                   style: ElevatedButton.styleFrom(

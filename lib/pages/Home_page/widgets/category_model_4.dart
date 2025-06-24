@@ -16,6 +16,7 @@ class CategoryModel4 extends StatelessWidget {
   final String subCategoryId;
   final String bgcolor;
   final String titleColor;
+  final String subtitlecolor;
   final String productColor;
   final String sellingpricecolor;
   final String mrpColor;
@@ -52,6 +53,7 @@ class CategoryModel4 extends StatelessWidget {
     required this.title,
     required this.subtitle,
     required this.categoryref,
+    required this.subtitlecolor,
   });
 
   @override

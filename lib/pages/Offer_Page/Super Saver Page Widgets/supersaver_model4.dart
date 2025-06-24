@@ -19,10 +19,12 @@ class SupersaverModel4 extends StatelessWidget {
   final String bgColor;
   final String offerbgcolor;
   final String offertextcolor;
-  final String addButtonColor;
+  final String addButtontextColor;
+  final String addButtonbgColor;
   final String ratingBgColor;
   final String ratingTextColor;
   final String seeAllButtonBG;
+  final String unitTextcolor;
   final String seeAllButtontext;
   final bool showCategory;
   final String bannerimage;
@@ -38,7 +40,7 @@ class SupersaverModel4 extends StatelessWidget {
       required this.sellPriceBgColor,
       required this.bgColor,
       required this.offerbgcolor,
-      required this.addButtonColor,
+      required this.addButtontextColor,
       required this.offertextcolor,
       required this.ratingBgColor,
       required this.seeAllButtonBG,
@@ -46,7 +48,9 @@ class SupersaverModel4 extends StatelessWidget {
       required this.ratingTextColor,
       required this.showCategory,
       required this.title,
-      required this.bannerimage});
+      required this.bannerimage,
+      required this.addButtonbgColor,
+      required this.unitTextcolor});
 
   @override
   Widget build(BuildContext context) {
@@ -105,20 +109,20 @@ class SupersaverModel4 extends StatelessWidget {
                                       product: product,
                                       subcategoryref:
                                           product.subCategoryRef.first.id,
-                                      productcolor: "000000",
-                                      sellingpricecolor: "FFFFFF",
-                                      mrpColor: "FFFFFF",
-                                      offertextcolor: "FFFFFF",
-                                      productBgColor: "DF2401",
-                                      buttontextcolor: "E23338",
-                                      unitbgcolor: "FFFFFF",
-                                      unitTextcolor: "A19DA3",
+                                      productcolor: titleColor,
+                                      sellingpricecolor: sellTextColor,
+                                      mrpColor: mrpTextColor,
+                                      offertextcolor: offertextcolor,
+                                      productBgColor: productColor,
+                                      buttontextcolor: addButtontextColor,
+                                      unitbgcolor: "#ffffff00",
+                                      unitTextcolor: unitTextcolor,
                                       context: context,
-                                      offertextcolor2: "FFFFFF",
-                                      offerbordercolor: "FCFF3B",
-                                      buttonbgcolor: "FFFFFF",
-                                      offerbgcolor1: "DF2401",
-                                      offerbgcolor2: "2DB164");
+                                      offertextcolor2: offertextcolor,
+                                      offerbordercolor: sellPriceBgColor,
+                                      buttonbgcolor: addButtonbgColor,
+                                      offerbgcolor1: mrpBgColor,
+                                      offerbgcolor2: offerbgcolor);
                                 },
                               ),
                             ),
@@ -134,8 +138,7 @@ class SupersaverModel4 extends StatelessWidget {
                               height: 48,
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(10),
-                                color: lightenColor(
-                                    parseColor(seeAllButtonBG), .8),
+                                color: parseColor(seeAllButtonBG),
                               ),
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,

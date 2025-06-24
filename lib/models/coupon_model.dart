@@ -41,7 +41,9 @@ class CouponModel {
       discountPercentage: (json['discount_percentage'] ?? 0).toDouble(),
       couponImage: json['coupon_image'] ?? '',
       couponType: json['coupon_type'] ?? '',
-      userList: List<String>.from(json['user_list'] ?? []),
+      userList: (json['user_list'] as List<dynamic>? ?? [])
+          .map((user) => user['_id'] as String)
+          .toList(),
       couponCode: json['coupon_code'] ?? '',
       createdTime: DateTime.parse(json['created_time']),
     );
