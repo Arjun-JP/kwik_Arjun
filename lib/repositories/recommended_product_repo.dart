@@ -17,10 +17,10 @@ class RecommendedProductRepo {
         Uri.parse(
             '$baseUrl/product/get/recommendedProducts/${user!.uid}?categoryId=$categoryId'),
         headers: headers);
-    print(user!.uid ?? "null");
-    print(categoryId);
-    print(response.statusCode);
-    print(response.body);
+    // print(user!.uid ?? "null");
+    // print(categoryId);
+    // print(response.statusCode);
+    // print(response.body);
     if (response.statusCode == 200) {
       Map<String, dynamic> bodydata = json.decode(response.body);
 

@@ -20,27 +20,27 @@ class RecommendedProductsBloc
       Emitter<RecommendedProductsState> emit) async {
     emit(RecommendedProductLoading());
     try {
-      var box = await Hive.openBox('Recommended_product_cache');
+      // var box = await Hive.openBox('Recommended_product_cache');
 
-      // // Check if cached data exists and no force refresh
-      if (!event.forceRefresh && box.containsKey(_cacheKey)) {
-        final cachedData = (box.get(_cacheKey) as List)
-            .map((json) =>
-                ProductModel.fromJson(Map<String, dynamic>.from(json)))
-            .toList();
+      // // // Check if cached data exists and no force refresh
+      // if (!event.forceRefresh && box.containsKey(_cacheKey)) {
+      //   final cachedData = (box.get(_cacheKey) as List)
+      //       .map((json) =>
+      //           ProductModel.fromJson(Map<String, dynamic>.from(json)))
+      //       .toList();
 
-        emit(RecommendedProductLoaded(products: cachedData));
-        return;
-      }
+      //   emit(RecommendedProductLoaded(products: cachedData));
+      //   return;
+      // }
 
       // Fetch from API if no cache
       final products =
           await productRepository.getProductsBySubCategory(event.subCategoryId);
-      await box.put(
-          _cacheKey,
-          products
-              .map((product) => product.toJson())
-              .toList()); // Save to cache
+      // await box.put(
+      //     _cacheKey,
+      //     products
+      //         .map((product) => product.toJson())
+      //         .toList()); // Save to cache
 
       emit(RecommendedProductLoaded(products: products));
     } catch (e) {

@@ -79,9 +79,7 @@ class CategoryModel19 extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Image.network(
-                      height: 80,
-                      width: MediaQuery.of(context).size.width,
-                      topimage),
+                      width: MediaQuery.of(context).size.width, topimage),
                   const SizedBox(height: 10),
                   BlocBuilder<CategoryBloc19, CategoryModel19State>(
                     builder: (context, state) {

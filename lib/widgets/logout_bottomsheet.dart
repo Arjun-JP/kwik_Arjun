@@ -1,7 +1,10 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:kwik/bloc/Address_bloc/Address_bloc.dart';
+import 'package:kwik/bloc/Address_bloc/address_event.dart';
 import 'package:kwik/bloc/Auth_bloc/auth_bloc.dart';
 import 'package:kwik/bloc/Auth_bloc/auth_event.dart';
 import 'package:kwik/bloc/navbar_bloc/navbar_bloc.dart';
@@ -86,14 +89,36 @@ class _LogoutBottomSheetState extends State<LogoutBottomSheet> {
                   Expanded(
                     flex: 1,
                     child: ElevatedButton(
-                      onPressed: () {
+                      onPressed: () async {
+                        // Provide haptic feedback
                         HapticFeedback.mediumImpact();
 
-                        context.read<AuthBloc>().add(LogoutEvent());
-                        context
-                            .read<NavbarBloc>()
-                            .add(const UpdateNavBarIndex(0));
-                        context.go('/loginPage');
+                        try {
+                          // 1. Reset address state first
+                          // context.read<AddressBloc>().add(ResetaddressEvent());
+
+                          // 2. Trigger logout
+                          context.read<AuthBloc>().add(LogoutEvent());
+                          await FirebaseAuth.instance.signOut();
+                          // 3. Reset navigation state
+                          context
+                              .read<NavbarBloc>()
+                              .add(const UpdateNavBarIndex(0));
+
+                          // 4. Navigate to login page
+                          if (mounted) {
+                            context.go('/loginPage');
+                          }
+                        } catch (e) {
+                          // Handle any errors during logout
+                          if (mounted) {
+                            // ScaffoldMessenger.of(context).showSnackBar(
+                            //   SnackBar(
+                            //       content:
+                            //           Text('Logout failed: ${e.toString()}')),
+                            // );
+                          }
+                        }
                       },
                       style: ElevatedButton.styleFrom(
                         minimumSize:

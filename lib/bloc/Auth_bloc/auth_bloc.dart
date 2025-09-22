@@ -103,6 +103,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   }
 
   void _handleAuthError(OnPhoneAuthErrorEvent event, Emitter<AuthState> emit) {
+    print('Authentication error: ${event.error}');
     debugPrint('Authentication error: ${event.error}');
     emit(AuthFailureState(event.error));
   }
@@ -286,7 +287,19 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   ) async {
     emit(AuthLoading()); // Set loading state
     try {
-      await _auth.signOut(); // Sign out the user
+      await _auth.signOut();
+      // 1. Sign out from Firebase
+      await FirebaseAuth.instance.signOut();
+
+      // 2. Wait for the sign-out to complete
+      await FirebaseAuth.instance.authStateChanges().first;
+
+      // 3. Clear any cached data
+      await FirebaseAuth.instance
+          .useAuthEmulator('localhost', 9099); // Only for debug
+      await FirebaseAuth.instance.setPersistence(Persistence.NONE); // Optional
+
+      print('Sign out completed successfully'); // Sign out the user
       debugPrint('User signed out');
       emit(LoggedOutState()); // Emit unauthenticated state
     } catch (e) {

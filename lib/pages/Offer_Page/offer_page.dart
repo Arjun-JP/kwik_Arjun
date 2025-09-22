@@ -81,13 +81,15 @@ class _OfferPageState extends State<OfferPage> {
             'template': BannerModel1(
               titlecolor: uiData["template1"]["title_color"],
               bgColor: uiData["template1"]["background_color"],
-              bannerId: uiData["template1"]["bannerId"],
-              height: double.parse((uiData["template1"]["height"]).toString()),
-              borderradious: double.parse(
-                  (uiData["template1"]["borderradious"]).toString()),
+              bannerId: 4,
+              height: .5,
+              borderradious: 10,
+              horizontalpadding: 10,
+              verticalpadding: 10,
               showbanner: uiData["template1"]["showbanner"],
             ),
-            'order': uiData["template1"]["ui_order_number"]
+            'order': "0"
+            // 'order': uiData["template1"]["ui_order_number"]
           },
           {
             'template': SupersaverModel1(
@@ -258,6 +260,7 @@ class _OfferPageState extends State<OfferPage> {
                         slivers: [
                           SliverAppBar(
                             pinned: false,
+                            automaticallyImplyLeading: false,
                             expandedHeight: 93,
                             backgroundColor:
                                 parseColor(uiData["template15"]["appbarcolor"]),

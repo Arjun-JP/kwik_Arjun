@@ -50,11 +50,12 @@ class AddanewAddressEvent extends AddressEvent {
 class GetWarehousedetailsEvent extends AddressEvent {
   final String pincode;
   final Location location;
+  final String usedaddress;
 
-  const GetWarehousedetailsEvent(this.pincode, this.location);
+  const GetWarehousedetailsEvent(this.pincode, this.location, this.usedaddress);
 
   @override
-  List<Object> get props => [pincode, location];
+  List<Object> get props => [pincode, location, usedaddress];
 }
 
 class UpdateselectedaddressEvent extends AddressEvent {
@@ -86,3 +87,8 @@ class SaveAddress extends AddressEvent {
 }
 
 class GetCurrentLocation extends AddressEvent {}
+
+class ResetaddressEvent extends AddressEvent {
+  @override
+  List<Object> get props => []; // Important for Equatable
+}

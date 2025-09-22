@@ -5,6 +5,7 @@ import 'package:kwik/bloc/Network_bloc/network_bloc.dart';
 import 'package:kwik/bloc/Network_bloc/network_state.dart';
 import 'package:kwik/models/category_model.dart';
 import 'package:kwik/models/product_model.dart';
+import 'package:kwik/pages/Address_management/location_search_page.dart';
 import 'package:kwik/pages/Category_page/category_page.dart';
 import 'package:kwik/pages/Coupons_page/coupons_page.dart';
 import 'package:kwik/pages/Error_pages/network_error_page.dart';
@@ -150,6 +151,16 @@ final GoRouter router = GoRouter(
         );
       },
     ),
+    GoRoute(
+      path: '/locatiopage',
+      pageBuilder: (BuildContext context, GoRouterState state) {
+        return const NoTransitionPage(
+          child:
+              LocationSearchPage(), // Replace with your actual home page widget
+        );
+      },
+    ),
+
     GoRoute(
       path: '/homeWA',
       pageBuilder: (BuildContext context, GoRouterState state) {

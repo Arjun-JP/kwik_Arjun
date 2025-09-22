@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kwik/constants/doted_devider.dart';
 import 'package:kwik/constants/network_check.dart';
+import 'package:kwik/pages/Home_page/widgets/banner_model.dart';
 import 'package:kwik/widgets/edit_profile_bottom_sheet.dart';
 import 'package:kwik/widgets/logout_bottomsheet.dart';
 

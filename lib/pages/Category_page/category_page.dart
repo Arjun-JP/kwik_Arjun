@@ -193,6 +193,7 @@ class _CategoryPageState extends State<CategoryPage> {
                       slivers: [
                         SliverAppBar(
                           pinned: false,
+                          automaticallyImplyLeading: false,
                           expandedHeight: 93,
                           backgroundColor: parseColor(
                               uiData["template11"]["appbarcolor"] ?? ''),

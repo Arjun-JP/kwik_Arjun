@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kwik/constants/colors.dart';
+import 'package:kwik/widgets/shimmer/banner_shimmer.dart';
 import 'package:kwik/widgets/shimmer/shimmer1.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
@@ -56,7 +57,18 @@ class _BannerModel1State extends State<BannerModel1> {
                 return BlocBuilder<BannerBloc, BannerState>(
                   builder: (context, state) {
                     if (state is BannerLoading) {
-                      return const Center(child: CircularProgressIndicator());
+                      return Center(
+                          child: BannerModel1Shimmer(
+                        bannerId: widget.bannerId,
+                        bgColor: widget.bgColor,
+                        height: widget.height,
+                        showbanner: true,
+                        titlecolor: "",
+                        borderradious: widget.borderradious,
+                        horizontalpadding: widget.horizontalpadding,
+                        verticalpadding: widget.verticalpadding,
+                        viewportFraction: widget.viewportFraction,
+                      ));
                     } else if (state is BannerLoaded) {
                       final filteredBanners = state.banners
                           .where((banner) => banner.bannerId == widget.bannerId)
@@ -79,7 +91,8 @@ class _BannerModel1State extends State<BannerModel1> {
                                     _carouselController, // Sync Controller
                                 itemCount: filteredBanners.length,
                                 options: CarouselOptions(
-                                  height: widget.height,
+                                  height: MediaQuery.of(context).size.width *
+                                      widget.height,
                                   autoPlay: true,
                                   autoPlayInterval: const Duration(seconds: 3),
                                   enlargeCenterPage: true,
@@ -106,8 +119,8 @@ class _BannerModel1State extends State<BannerModel1> {
                                           child: CachedNetworkImage(
                                             imageUrl: banner.bannerImage,
                                             width: double.infinity,
-                                            height:
-                                                200, // optional: set your desired height
+
+                                            /// optional: set your desired height
                                             fit: BoxFit.fill,
                                             placeholder: (context, url) =>
                                                 const Shimmer(
