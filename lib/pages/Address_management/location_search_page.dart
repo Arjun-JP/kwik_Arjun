@@ -1,22 +1,22 @@
+import 'dart:async';
 import 'dart:convert';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:kwik/bloc/Address_bloc/Address_bloc.dart';
 import 'package:kwik/bloc/Address_bloc/address_event.dart';
 import 'package:kwik/bloc/Address_bloc/address_state.dart';
-import 'package:kwik/constants/colors.dart';
 import 'package:kwik/constants/doted_devider.dart';
 import 'package:kwik/models/address_model.dart';
 import 'package:kwik/models/googlemap_place_model.dart';
 import 'package:kwik/pages/Address_management/map.dart';
 import 'package:http/http.dart' as http;
+import 'package:kwik/pages/Home_page/home_Page.dart';
 import 'package:kwik/repositories/address_repo.dart';
 import 'package:kwik/widgets/change_defaultaddress_bottomsheet.dart';
 import 'package:kwik/widgets/shimmer/address_shimmer.dart';
@@ -37,16 +37,27 @@ class _LocationSearchPageState extends State<LocationSearchPage> {
   List<GoogleMapPlace> suggestions = [];
   List<String> currentaddress = [];
   final AddressRepository addressrepo = AddressRepository();
+  StreamSubscription<User?>? _authSubscription;
   @override
   void dispose() {
     _searchController.dispose();
     _searchFocusNode.dispose();
+    _authSubscription?.cancel();
     super.dispose();
   }
 
   @override
   void initState() {
-    context.read<AddressBloc>().add(const GetsavedAddressEvent());
+    _authSubscription = FirebaseAuth.instance.authStateChanges().listen((user) {
+      if (user == null) {
+        // Clear addresses when user logs out
+        context.read<AddressBloc>().add(ResetaddressEvent());
+      } else {
+        // Refresh addresses when user changes
+        context.read<AddressBloc>().add(GetsavedAddressEvent());
+      }
+    });
+    // context.read<AddressBloc>().add(const GetsavedAddressEvent());
     updatecurrentlocation();
     super.initState();
   }
@@ -63,12 +74,8 @@ class _LocationSearchPageState extends State<LocationSearchPage> {
       appBar: AppBar(
         leading: InkWell(
             onTap: () {
-              try {
-                context.pop();
-              } catch (e) {
-                print(e);
-                context.go("/home");
-              }
+              // safePopOrGoHome(context);
+              context.pop();
 
               // context.read<AddressBloc>().add(const GetsavedAddressEvent());
             },
@@ -545,12 +552,33 @@ class _LocationSearchPageState extends State<LocationSearchPage> {
                           showCustomTooltip(context, 'Tap & hold\nto delete',
                               detals.globalPosition);
                         },
-                        onLongPress: () {
-                          HapticFeedback.heavyImpact();
-                          addressrepo.deleteaddress(savedaddress[index].id!);
-                          context
-                              .read<AddressBloc>()
-                              .add(const GetsavedAddressEvent());
+                        onLongPress: () async {
+                          try {
+                            HapticFeedback.heavyImpact();
+                            final response = await addressrepo
+                                .deleteaddress(savedaddress[index].id!);
+
+                            // Only proceed if the deletion was successful
+                            if (response) {
+                              // or whatever success condition you have
+                              context
+                                  .read<AddressBloc>()
+                                  .add(const GetsavedAddressEvent());
+                            } else {
+                              context
+                                  .read<AddressBloc>()
+                                  .add(const GetsavedAddressEvent());
+                            }
+                          } catch (e) {
+                            // Handle the error appropriately
+                            debugPrint('Error deleting address: $e');
+                            // Optionally show a snackbar or alert to the user
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                  content: Text(
+                                      'Failed to delete address: ${e.toString()}')),
+                            );
+                          }
                         },
                         child: const Icon(Icons.delete_outline_rounded,
                             size: 25, color: Color.fromARGB(255, 231, 53, 53)),
@@ -729,5 +757,24 @@ class _LocationSearchPageState extends State<LocationSearchPage> {
     Future.delayed(const Duration(seconds: 2), () {
       overlayEntry.remove();
     });
+  }
+}
+
+void safePopOrGoHome(BuildContext context) {
+  try {
+    // Check if we can pop
+    if (Navigator.canPop(context)) {
+      context.go('/home');
+      // Navigator.of(context)
+      //     .push(MaterialPageRoute(builder: (context) => HomePage()));
+      // Navigator.pop(context);
+    } else {
+      // Use goRouter with replacement to prevent back stack issues
+      GoRouter.of(context).go('/home');
+    }
+  } catch (e) {
+    print('Navigation error: $e');
+    // Complete replacement of navigation stack
+    // GoRouter.of(context).go('/home');
   }
 }

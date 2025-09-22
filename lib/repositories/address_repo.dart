@@ -22,7 +22,11 @@ class AddressRepository {
 
     try {
       final response = await http.get(url, headers: headers);
-
+      await user?.reload();
+      print("UserID : ${user!.uid}");
+      print("UserID : ${user!.phoneNumber}");
+      print("UserID : ${user!.displayName}");
+      print("UserID : ${user!.uid}");
       final Map<String, dynamic> body = json.decode(response.body);
 
       AddressModel? selectedAddress;
@@ -167,24 +171,28 @@ class AddressRepository {
         body: json.encode({
           "pincode": pincode,
           "destinationLat": destinationLat,
-          "destinationLon": destinationLon
+          "destinationLon": destinationLon,
+          "UID": user!.uid
         }),
       );
-      // print(response.statusCode);
-      // print(response.body);
+      print(response.statusCode);
+      print(response.body);
       if (response.statusCode == 200) {
         final responseData = json.decode(response.body);
 
         // Add comprehensive null checks
         if (responseData == null) {
+          print("object;");
           throw Exception('Error: Empty response data');
         }
         if (responseData['warehouse'] == null) {
+          print("object;123");
           throw Exception('Error: Missing "warehouse" in response');
         }
 
         final warehouseData = responseData['warehouse'];
-
+        print("00000000");
+        print(responseData['warehouse']);
         if (warehouseData['warehouse_location'] == null) {
           throw Exception(
               'Error: Missing "warehouse_location" in warehouse data');
@@ -199,7 +207,7 @@ class AddressRepository {
     }
   }
 
-  Future<void> deleteaddress(String addressID) async {
+  Future<bool> deleteaddress(String addressID) async {
     final url = Uri.parse('$baseUrl/users/remove/address');
     try {
       // Create the request body with the Address nested object
@@ -212,9 +220,13 @@ class AddressRepository {
       );
       print(response.body);
       print(response.statusCode);
+
       if (response.statusCode != 200) {
         throw Exception(
             'Failed to add address. Status code: ${response.statusCode}');
+        return false;
+      } else {
+        return true;
       }
     } catch (e) {
       throw Exception("Error adding address: $e");

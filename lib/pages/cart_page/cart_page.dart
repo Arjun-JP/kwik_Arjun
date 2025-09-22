@@ -229,6 +229,8 @@ class _CartPageState extends State<CartPage> {
                       child: BlocBuilder<RecommendedProductsBloc,
                           RecommendedProductsState>(
                         builder: (context, state) {
+                          print(state);
+
                           if (state is RecommendedProductLoading) {
                             return const Center(
                                 child: ProductModel1ListShimmer());

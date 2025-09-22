@@ -292,8 +292,7 @@ class _AddadressState extends State<MapPage> {
     return Center(
       child: SizedBox(
         width: 100,
-        child: Lottie.network(
-            "https://lottie.host/3f2ce26a-5954-4b7c-9ebd-da368483468f/vouedJMJBR.json"),
+        child: Lottie.asset("assets/images/map_select_point_lotti.json"),
       ),
     );
   }

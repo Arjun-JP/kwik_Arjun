@@ -28,6 +28,7 @@
     <key>CFBundleSignature</key>
     <string>????</string>
     
+    <!-- URL Schemes - Updated for reCAPTCHA verification -->
     <key>CFBundleURLTypes</key>
     <array>
         <dict>
@@ -36,16 +37,6 @@
             <key>CFBundleURLSchemes</key>
             <array>
                 <string>app-1-760883509884-ios-b1d63b641cf421e2c4a7f9</string>
-            </array>
-        </dict>
-        <dict>
-            <key>CFBundleTypeRole</key>
-            <string>Editor</string>
-            <key>CFBundleURLName</key>
-            <string>razorpay</string>
-            <key>CFBundleURLSchemes</key>
-            <array>
-                <string>kwikpay</string>
             </array>
         </dict>
         <dict>
@@ -60,10 +51,30 @@
             <key>CFBundleTypeRole</key>
             <string>Editor</string>
             <key>CFBundleURLName</key>
+            <string>razorpay</string>
+            <key>CFBundleURLSchemes</key>
+            <array>
+                <string>kwikpay</string>
+            </array>
+        </dict>
+        
+        <dict>
+            <key>CFBundleTypeRole</key>
+            <string>Editor</string>
+            <key>CFBundleURLName</key>
             <string>Bundle ID</string>
             <key>CFBundleURLSchemes</key>
             <array>
                 <string>com.digi9.kwik</string>
+            </array>
+        </dict>
+        <!-- Added for Firebase reCAPTCHA -->
+        <dict>
+            <key>CFBundleTypeRole</key>
+            <string>Editor</string>
+            <key>CFBundleURLSchemes</key>
+            <array>
+                <string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
             </array>
         </dict>
     </array>
@@ -71,9 +82,16 @@
     <key>CFBundleVersion</key>
     <string>$(FLUTTER_BUILD_NUMBER)</string>
 
-    <!-- Firebase AppDelegate manually enabled -->
+    <!-- Firebase Configuration -->
     <key>FirebaseAppDelegateProxyEnabled</key>
     <false/>
+    <key>FirebaseScreenReportingEnabled</key>
+<false/>
+    <!-- Added for Firebase reCAPTCHA -->
+    <key>firebaseScreen</key>
+    <string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+    <key>firebaseWebClientId</key>
+    <string>760883509884-qvn353fqq34pfq5mhk8mq2cj7r958o4d</string>
 
     <!-- Google Sign-In -->
     <key>GoogleSignInReversedClientId</key>

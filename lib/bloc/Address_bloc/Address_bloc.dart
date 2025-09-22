@@ -1,9 +1,7 @@
 // lib/features/address/presentation/bloc/address_bloc.dart
 import 'dart:async';
 import 'dart:convert';
-import 'dart:ui';
 import 'package:bloc/bloc.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:kwik/bloc/Address_bloc/address_event.dart';
@@ -29,6 +27,7 @@ class AddressBloc extends Bloc<AddressEvent, AddressState> {
     on<UpdateselectedaddressEvent>(_onupdateselectedaddress);
     on<AddanewAddressEvent>(_onaddnewaddress);
     on<GetWarehousedetailsEvent>(_ongetwarehousedetails);
+    on<ResetaddressEvent>(_onResetAddress);
   }
 
   FutureOr<void> _onupdateselectedaddress(
@@ -68,6 +67,18 @@ class AddressBloc extends Bloc<AddressEvent, AddressState> {
     GetsavedAddressEvent event,
     Emitter<AddressState> emit,
   ) async {
+    print("GetSavedAddressEventcalled11111");
+    List<GoogleMapPlace> existingLovationlist = [];
+    WarehouseModel? warehouse;
+    String currentPlaceId = "";
+    String currentLocationAddress = "";
+    String currentPincode = "";
+
+    // Preserve existing warehouse if available
+    if (state is LocationSearchResults) {
+      existingLovationlist = (state as LocationSearchResults).placelist;
+      warehouse = (state as LocationSearchResults).warehouse;
+    }
     emit(AddressLoading()); // Emit loading state
     try {
       final useraddressdata =
@@ -77,28 +88,26 @@ class AddressBloc extends Bloc<AddressEvent, AddressState> {
       final AddressModel? selectedaddressfromdb =
           useraddressdata["selectedAddress"];
 
-      List<GoogleMapPlace> existingLovationlist = [];
-      WarehouseModel? warehouse;
-      String currentPlaceId = "";
-      String currentLocationAddress = "";
-      String currentPincode = "";
+      // Get existing state data if available
 
       if (selectedaddressfromdb != null) {
         currentLocationAddress =
             "${selectedaddressfromdb.flatNoName}, ${selectedaddressfromdb.area}, ${selectedaddressfromdb.pincode}";
         currentPincode = selectedaddressfromdb.pincode;
-        warehouse = await _fetchWarehouseDetails(
-            selectedaddressfromdb.pincode, selectedaddressfromdb.location);
-        if (state is LocationSearchResults) {
-          existingLovationlist = (state as LocationSearchResults).placelist;
+
+        // Only fetch warehouse if we don't already have one
+        if (warehouse == null) {
+          warehouse = await _fetchWarehouseDetails(
+              selectedaddressfromdb.pincode, selectedaddressfromdb.location);
         }
+        print("addresslength: ${savedaddress.length}");
         emit(LocationSearchResults(
           existingLovationlist,
           savedaddress,
           currentPlaceId,
           currentLocationAddress,
           selectedaddressfromdb,
-          warehouse,
+          warehouse, // Use existing or newly fetched warehouse
           currentPincode,
           false,
         ));
@@ -108,25 +117,20 @@ class AddressBloc extends Bloc<AddressEvent, AddressState> {
         String fetchedAddress = curentlocationdetails.lastOrNull ?? "";
         String fetchedPincode =
             extractAddressDetails(fetchedAddress)["pin"] ?? "";
-        print("XXXXXXXXX");
-        print(fetchedPincode);
-        if (state is LocationSearchResults) {
-          existingLovationlist = (state as LocationSearchResults).placelist;
-          warehouse = (state as LocationSearchResults).warehouse;
-        }
+
         emit(LocationSearchResults(
           existingLovationlist,
           savedaddress,
           fetchedPlaceId,
           fetchedAddress,
           null,
-          warehouse,
+          warehouse, // Use existing warehouse if available
           fetchedPincode,
           false,
         ));
       }
     } catch (error) {
-      // Handle error case
+      // Handle error case - preserve existing warehouse if available
       List<GoogleMapPlace> fallbackLovationlist = [];
       String placeId = "";
       String address = "";
@@ -139,7 +143,8 @@ class AddressBloc extends Bloc<AddressEvent, AddressState> {
         placeId = (state as LocationSearchResults).currentplaceID;
         address = (state as LocationSearchResults).currentlocationaddress;
         selectedaddress = (state as LocationSearchResults).selecteaddress;
-        warehouse = (state as LocationSearchResults).warehouse;
+        warehouse = (state as LocationSearchResults)
+            .warehouse; // Preserve existing warehouse
         differentaddress =
             (state as LocationSearchResults).orderfordefferentaddress;
       }
@@ -150,7 +155,7 @@ class AddressBloc extends Bloc<AddressEvent, AddressState> {
         placeId,
         address,
         selectedaddress,
-        warehouse,
+        warehouse, // Keep existing warehouse on error
         extractAddressDetails(address)["pin"] ?? "",
         differentaddress,
       ));
@@ -302,7 +307,7 @@ class AddressBloc extends Bloc<AddressEvent, AddressState> {
           placeId,
           address,
           selectedaddress,
-          warehouse!,
+          null,
           extractAddressDetails(address)["pin"]!,
           differentaddress));
     } catch (error) {
@@ -316,23 +321,26 @@ class AddressBloc extends Bloc<AddressEvent, AddressState> {
     try {
       emit(AddressLoading());
       print("GetWarehousedataEventcalled");
+      print(event.pincode);
       // await savedaddressrepository.updatecurrentpincode(event.pincode!);
       WarehouseModel? warehouse =
           await savedaddressrepository.getwarehousedetails(event.pincode,
               event.location.lat.toString(), event.location.lang.toString());
+      print(warehouse.toString());
       if (warehouse != null) {
         // Get the current state and update warehouse
         if (state is LocationSearchResults) {
           final currentState = state as LocationSearchResults;
           emit(currentState.copyWith(
             warehouse: warehouse,
+            currentlocationaddress: event.usedaddress,
             pincode: currentState.pincode.isNotEmpty
                 ? currentState.pincode
                 : event.pincode,
           ));
         } else {
-          emit(LocationSearchResults(
-              [], [], "", "", null, warehouse, event.pincode, false));
+          emit(LocationSearchResults([], [], "", event.usedaddress, null,
+              warehouse, event.pincode, false));
         }
       } else {
         emit(const NowarehousefoudState());
@@ -351,6 +359,11 @@ class AddressBloc extends Bloc<AddressEvent, AddressState> {
       print("Error fetching warehouse details: $e");
       return null;
     }
+  }
+
+  Future<void> _onResetAddress(
+      ResetaddressEvent event, Emitter<AddressState> emit) async {
+    emit(AddressInitial()); // Reset to initial state
   }
 }
 
